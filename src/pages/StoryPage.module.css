@@ -1,0 +1,16 @@
+/* StoryPage — main story layout.
+ *
+ * IMPORTANT: do not set `overflow` (or overflow-x / overflow-y) on
+ * <main> or any ancestor of the chapter sections. Any non-visible
+ * overflow value creates a scroll container, which breaks
+ * `position: sticky` on descendants — including the scrollytelling
+ * chapters (Ch 2–6) that rely on a pinned visual panel.
+ *
+ * If horizontal overflow becomes an issue from a specific child,
+ * clip it at that child, not at <main>.
+ */
+
+.main {
+  position: relative;
+  padding-top: var(--nav-height);
+}

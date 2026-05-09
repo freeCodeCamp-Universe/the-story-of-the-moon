@@ -1,0 +1,224 @@
+[
+  {
+    "key": "apollo-8",
+    "label": "Apollo 8",
+    "date": "Dec 21, 1968",
+    "splashdownDate": "Dec 27, 1968",
+    "crew": [
+      "Frank Borman",
+      "James Lovell",
+      "William Anders"
+    ],
+    "oneLiner": "First crewed flight to leave Earth orbit and circle the Moon",
+    "prose": [
+      "Apollo 8 was a landmark 1968 mission that marked the first time humans traveled beyond Earth's orbit to reach the Moon. Astronauts Frank Borman, James Lovell, and William Anders became the first people to witness the lunar far side and see Earth as a distant, whole planet. The mission's primary objective was to test the command and service module systems in deep space while ensuring communication and trajectory models were accurate for lunar distances.",
+      "The mission is iconic for the \"Earthrise\" photograph and the crew's Christmas Eve broadcast, where they read from the Book of Genesis while in lunar orbit. This demonstration of deep-space navigation proved the feasibility of lunar travel and remains one of the most significant achievements in the history of space exploration."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-8.jpg",
+      "creditId": "apollo-8-launch"
+    }
+  },
+  {
+    "key": "apollo-9",
+    "label": "Apollo 9",
+    "date": "Mar 3, 1969",
+    "splashdownDate": "Mar 13, 1969",
+    "crew": [
+      "James McDivitt",
+      "David Scott",
+      "Russell Schweickart"
+    ],
+    "oneLiner": "First crewed test of the lunar module, in Earth orbit",
+    "prose": [
+      "Apollo 9 launched on March 3, 1969, the first crewed flight of the lunar module. During the ten-day mission, Russell Schweickart conducted a critical spacewalk to test the Portable Life Support System backpack. By operating without a life-support tether to the ship, he proved the suit could independently sustain an astronaut in a vacuum, a vital step for future moonwalks.",
+      "The crew also performed a separation test, flying the lunar module approximately 180 kilometers away from the command module. This marked the first independent flight of a crewed spacecraft designed strictly for space. By successfully using the ascent engine to rendezvous and redock, the crew proved the hardware was ready for the Moon."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-9.jpg",
+      "creditId": "apollo-9-lm"
+    }
+  },
+  {
+    "key": "apollo-10",
+    "label": "Apollo 10",
+    "date": "May 18, 1969",
+    "splashdownDate": "May 26, 1969",
+    "crew": [
+      "Thomas Stafford",
+      "John Young",
+      "Eugene Cernan"
+    ],
+    "oneLiner": "Full dress rehearsal in lunar orbit",
+    "prose": [
+      "Apollo 10 launched on May 18, 1969, as the final dress rehearsal for the lunar landing. Thomas Stafford and Eugene Cernan flew the lunar module to within approximately 15 kilometers of the moon's surface, the closest approach yet. This descent allowed the crew to test the landing radar and scout the Apollo 11 touchdown site, confirming the hardware was ready for a landing.",
+      "The mission also included a critical test of the lunar module's ascent stage to simulate a return from the lunar surface. Despite a brief, unintended tumble caused by a switch error, the crew regained control and successfully redocked with the command module. After eight days and 31 lunar orbits, the crew returned to Earth on May 26, clearing the way for humanity's first steps on the Moon."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-10.jpg",
+      "creditId": "apollo-10-lm"
+    }
+  },
+  {
+    "key": "apollo-11",
+    "label": "Apollo 11",
+    "date": "Jul 16, 1969",
+    "splashdownDate": "Jul 24, 1969",
+    "crew": [
+      "Neil Armstrong",
+      "Michael Collins",
+      "Edwin \"Buzz\" Aldrin"
+    ],
+    "oneLiner": "First crewed landing on another world",
+    "prose": [
+      "Apollo 11 launched on July 16, 1969. Four days later, Neil Armstrong and Buzz Aldrin separated the lunar module Eagle from the command module Columbia, where Michael Collins stayed in orbit, and began their descent to Mare Tranquillitatis. The onboard guidance computer triggered a series of program alarms during the final approach, and Armstrong took manual control to steer past a boulder field. Eagle touched down with seconds of fuel reserved before the crew would have been required to abort.",
+      "Armstrong stepped onto the surface about six and a half hours later. He and Aldrin spent roughly two and a half hours outside, collected about 22 kilograms of rock and soil, and left behind a plaque, an American flag, and a seismometer that transmitted data to Earth for years afterward."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-11.jpg",
+      "creditId": "apollo-11-aldrin"
+    }
+  },
+  {
+    "key": "apollo-12",
+    "label": "Apollo 12",
+    "date": "Nov 14, 1969",
+    "splashdownDate": "Nov 24, 1969",
+    "crew": [
+      "Charles Conrad",
+      "Richard Gordon",
+      "Alan Bean"
+    ],
+    "oneLiner": "Precision landing in Oceanus Procellarum",
+    "prose": [
+      "Apollo 12 launched on November 14, 1969, for the second crewed lunar landing mission. Despite being struck by lightning during liftoff, the crew reached the Moon and performed a precision landing, touching down approximately 180 meters from the Surveyor 3 probe. Pete Conrad and Alan Bean conducted two moonwalks, collecting lunar samples and retrieving parts from the probe to study the effects of long-term exposure to the space environment.",
+      "The mission demonstrated the program's ability to land at specific targets, which was critical for future scientific exploration. After spending over 31 hours on the lunar surface, the lunar module ascent stage successfully returned the crew to the command module."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-12.jpg",
+      "creditId": "apollo-12-bean"
+    }
+  },
+  {
+    "key": "apollo-13",
+    "label": "Apollo 13",
+    "date": "Apr 11, 1970",
+    "splashdownDate": "Apr 17, 1970",
+    "crew": [
+      "James Lovell",
+      "John Swigert",
+      "Fred Haise"
+    ],
+    "oneLiner": "An oxygen tank ruptured en route. The crew came home alive",
+    "prose": [
+      "Apollo 13 launched on April 11, 1970, but the planned lunar landing was aborted after an oxygen tank exploded two days into the flight. With the command module losing power and life support, the crew was forced to use the lunar module as a \"lifeboat,\" relying on its systems to survive while looping around the Moon to gain the trajectory needed to return to Earth.",
+      "The mission shifted from a scientific exploration to a rescue operation. Working with mission control, the crew improvised solutions to conserve power and scrub carbon dioxide from the air. Despite the critical damage, the crew successfully transitioned back to the command module for reentry.",
+      "The mission is now remembered as a \"successful failure\" that proved the resilience of the Apollo hardware and teams."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-13.jpg",
+      "creditId": "apollo-13-sm"
+    }
+  },
+  {
+    "key": "apollo-14",
+    "label": "Apollo 14",
+    "date": "Jan 31, 1971",
+    "splashdownDate": "Feb 9, 1971",
+    "crew": [
+      "Alan Shepard",
+      "Stuart Roosa",
+      "Edgar Mitchell"
+    ],
+    "oneLiner": "Landing at Fra Mauro, the site Apollo 13 could not reach",
+    "prose": [
+      "Apollo 14 launched on January 31, 1971. Alan Shepard and Edgar Mitchell successfully landed the lunar module in the Fra Mauro highlands, the site originally intended for the previous mission. During two moonwalks, the crew collected approximately 43 kilograms of lunar samples and utilized a hand-pulled cart to transport equipment across the rugged terrain.",
+      "The mission focused on extensive geological study, including an ambitious hike toward the rim of Cone Crater to sample ancient lunar crust. The crew restored confidence in the program after the near-disaster Apollo 13, and demonstrated the ability to conduct precise landings in scientifically complex terrain."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-14.jpg",
+      "creditId": "apollo-14-shepard"
+    }
+  },
+  {
+    "key": "apollo-15",
+    "label": "Apollo 15",
+    "date": "Jul 26, 1971",
+    "splashdownDate": "Aug 7, 1971",
+    "crew": [
+      "David Scott",
+      "Alfred Worden",
+      "James Irwin"
+    ],
+    "oneLiner": "First mission to carry a lunar rover",
+    "prose": [
+      "Apollo 15 launched on July 26, 1971, as the first mission designed for extended stays and intensive science. David Scott and James Irwin landed the lunar module at the Hadley-Apennine site, where they deployed the first lunar rover. This vehicle allowed the crew to travel a total of approximately 28 kilometers across the surface, significantly expanding their range for geological exploration.",
+      "The mission's primary focus was on advanced lunar geology, highlighted by the discovery of the Genesis Rock, a sample roughly four billion years old. By successfully integrating heavy equipment and conducting three moonwalks, the crew proved that the lunar module could support a sophisticated mobile laboratory."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-15.jpg",
+      "creditId": "apollo-15-rover"
+    }
+  },
+  {
+    "key": "apollo-16",
+    "label": "Apollo 16",
+    "date": "Apr 16, 1972",
+    "splashdownDate": "Apr 27, 1972",
+    "crew": [
+      "John Young",
+      "Thomas Mattingly",
+      "Charles Duke"
+    ],
+    "oneLiner": "First landing in the lunar highlands",
+    "prose": [
+      "Apollo 16 launched on April 16, 1972, as the second mission to utilize the lunar rover for extended exploration. John Young and Charles Duke landed the lunar module in the Descartes Highlands, a rugged region chosen because geologists expected to find volcanic rock there. The crew instead returned samples that proved most highland material was impact breccia, debris from ancient asteroid strikes.",
+      "The mission focused on deploying a complex set of surface experiments and conducting high-speed tests of the rover on the uneven terrain. Despite an engine malfunction in lunar orbit that nearly aborted the landing, the crew successfully demonstrated the versatility of the lunar module in extreme environments."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-16.jpg",
+      "creditId": "apollo-16-young"
+    }
+  },
+  {
+    "key": "apollo-17",
+    "label": "Apollo 17",
+    "date": "Dec 7, 1972",
+    "splashdownDate": "Dec 19, 1972",
+    "crew": [
+      "Eugene Cernan",
+      "Ronald Evans",
+      "Harrison Schmitt"
+    ],
+    "oneLiner": "Final Apollo landing, and the only one with a professional geologist",
+    "prose": [
+      "Apollo 17 launched on December 7, 1972, and was the first mission to include a professional scientist, geologist Harrison Schmitt. Schmitt and Eugene Cernan landed the lunar module in the Taurus-Littrow valley, a site chosen for its mountainous terrain and potential volcanic activity. Using the lunar rover, the crew traveled approximately 35 kilometers, the greatest distance of any mission, and collected roughly 110 kilograms of material.",
+      "The mission focused on deep geological surveying, highlighted by the discovery of \"orange soil\" at Shorty Crater, which provided evidence of the moon's volcanic history. The crew established long-term scientific stations and successfully demonstrated the maximum operational range of the lunar module and rover."
+    ],
+    "photo": {
+      "src": "/ch4/apollo-17.jpg",
+      "creditId": "apollo-17-schmitt"
+    }
+  },
+  {
+    "key": "artemis-2",
+    "label": "Artemis II",
+    "date": "Apr 1, 2026",
+    "splashdownDate": "Apr 10, 2026",
+    "crew": [
+      "Reid Wiseman",
+      "Victor Glover",
+      "Christina Koch",
+      "Jeremy Hansen"
+    ],
+    "oneLiner": "First crewed flight to lunar distance after a fifty-three-year silence",
+    "prose": [
+      "Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing about 6,500 kilometers from the lunar surface and reaching approximately 406,771 kilometers from Earth, farther than any crewed vehicle has flown.",
+      "The crew conducted manual piloting tests to verify how the Orion spacecraft handles in deep space and photographed Earth from far beyond the Moon. They also evaluated the life support, navigation, communications, and heat shield systems that future crews will rely on. With Orion's performance verified, the program is now set to return humans to the lunar surface and reach further into the solar system."
+    ],
+    "photo": {
+      "src": "/ch4/artemis-ii-eclipse.jpg",
+      "creditId": "artemis-ii-eclipse"
+    }
+  }
+]

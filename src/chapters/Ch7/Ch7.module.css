@@ -1,0 +1,33 @@
+/* Ch7 — reflective closing chapter. Narrow prose card, no hero image. */
+
+.prose {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  padding-bottom: var(--space-2xl);
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .prose {
+    font-size: var(--text-body-mobile);
+  }
+}
+
+.paragraph {
+  margin-bottom: var(--space-lg);
+}
+
+.endMarker {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  letter-spacing: 0.05em;
+}

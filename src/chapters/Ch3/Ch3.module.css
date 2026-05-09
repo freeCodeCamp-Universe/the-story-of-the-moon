@@ -1,0 +1,91 @@
+/* Ch3 — Chapter 3: sticky Sun/Earth/Moon + stepped beats. */
+
+.intro {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  margin-bottom: var(--space-3xl);
+  font-family: var(--font-prose);
+  font-size: var(--text-body-mobile);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .intro {
+    font-size: var(--text-body);
+  }
+}
+
+.intro p + p {
+  margin-top: var(--space-lg);
+}
+
+/* ── Visual slot ─────────────────────────────────────────────────── */
+
+.visualSlot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scaleNote {
+  position: absolute;
+  bottom: var(--space-md);
+  left: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  opacity: 0.85;
+  pointer-events: none;
+  text-transform: lowercase;
+}
+
+/* ── Reduced-motion fallback ─────────────────────────────────────── */
+
+.fallbackDiagram {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  margin-inline: auto;
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+}
+
+.fallbackList {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--space-xl);
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  font-family: var(--font-prose);
+  font-size: var(--text-body-mobile);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .fallbackList {
+    font-size: var(--text-body);
+  }
+}
+
+.fallbackList li::before {
+  content: '> ';
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}

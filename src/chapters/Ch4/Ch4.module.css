@@ -1,0 +1,529 @@
+/* Ch4 — Going to the Moon. Pinned single-card timeline with cross-fade
+ * transitions and a 53-year interlude beat between Apollo 17 and Artemis II.
+ * Falls back to a plain vertical list on narrow viewports and under
+ * prefers-reduced-motion (handled in JS by switching to <StaticTimeline>). */
+
+.intro {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  margin-bottom: var(--space-3xl);
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+.intro p + p {
+  margin-top: var(--space-lg);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Pinned timeline ─────────────────────────────────────────────── */
+
+.pinSection {
+  --step-count: 13;
+  --step-length: 50vh;
+  --stage-gutter: clamp(var(--space-md), 3svh, var(--space-xl));
+  --stage-height: min(58rem, calc(100svh - var(--nav-height) - (2 * var(--stage-gutter))));
+  --stage-top: calc(var(--nav-height) + max(var(--space-md), (100svh - var(--nav-height) - var(--stage-height)) / 2));
+  position: relative;
+  min-height: calc(var(--step-count) * var(--step-length));
+  outline: none;
+}
+
+.pinSection:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+}
+
+/* Sentinel track: invisible flex column laid out across the section's
+ * full scroll height. Each sentinel triggers an active-step change as
+ * it crosses the viewport center. */
+.sentinelTrack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.sentinel {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.sentinelInterlude {
+  flex: 1.5 1 0;
+}
+
+/* The final mission gets extra dwell so it doesn't fly past on a single
+ * scroll gesture before the pin releases. */
+.sentinelTrack > .sentinel:last-child {
+  flex: 2.5 1 0;
+}
+
+/* Sticky stage: pinned card area. Height fits the viewport minus nav,
+ * capped so the card doesn't grow unboundedly on tall (4K) displays. */
+.stage {
+  position: sticky;
+  top: var(--stage-top);
+  height: var(--stage-height);
+  display: flex;
+  flex-direction: column;
+  max-width: 84rem;
+  margin-inline: auto;
+  padding: 0 var(--space-lg);
+}
+
+/* ── Progress rail ───────────────────────────────────────────────── */
+
+.rail {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.railTicks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.keyboardHint {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  text-align: end;
+}
+
+.keyboardHint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid rgba(223, 223, 226, 0.5);
+  border-radius: 0.35rem;
+  background: var(--color-bg);
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 767px) {
+  .keyboardHint {
+    display: none;
+  }
+}
+
+@media (min-width: 2400px) {
+  .railTicks {
+    margin-bottom: var(--space-md);
+  }
+
+  .keyboardHint {
+    margin-bottom: var(--space-xl);
+  }
+}
+
+.tickItem {
+  flex: 1 1 0;
+  display: flex;
+}
+
+.tickItemInterlude {
+  flex: 0 0 2rem;
+  justify-content: center;
+}
+
+.tick {
+  flex: 1 1 auto;
+  height: 10px;
+  padding: 0;
+  border: none;
+  background-color: var(--color-border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 200ms, transform 200ms;
+}
+
+.tick:hover {
+  background-color: var(--color-text-muted);
+}
+
+.tick:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.tickActive {
+  background-color: var(--color-accent);
+  transform: scaleY(1.5);
+}
+
+.tickItemInterlude .tick {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px dashed var(--color-border);
+}
+
+.tickItemInterlude .tickActive {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: scale(1.4);
+}
+
+/* ── Deck of panels ──────────────────────────────────────────────── */
+
+.deck {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.deckSlot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translate3d(calc(var(--offset, 0) * 24px), 0, 0);
+  transition: opacity 360ms ease, transform 360ms ease;
+  pointer-events: none;
+}
+
+.deckSlotActive {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+/* ── Mission panel ───────────────────────────────────────────────── */
+
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--color-accent-warm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.panelLabel {
+  white-space: nowrap;
+}
+
+.panelBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  overflow: auto;
+}
+
+@media (max-width: 767px) {
+  .panelHeader {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .panelBody {
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+}
+
+@media (min-width: 900px) {
+  .panelBody {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-2xl);
+    overflow: hidden;
+  }
+}
+
+.panelText {
+  flex: 1 1 50%;
+  font-family: var(--font-prose);
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .panelText {
+    overflow-y: auto;
+    max-height: 100%;
+  }
+}
+
+.oneLiner {
+  font-family: var(--font-prose);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: var(--line-height-heading);
+  margin: 0 0 var(--space-md);
+}
+
+@media (min-width: 900px) {
+  .oneLiner {
+    font-size: var(--text-2xl);
+  }
+}
+
+.crew {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  margin: 0 0 var(--space-xl);
+}
+
+.prose {
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+  margin: 0 0 var(--space-md);
+}
+
+.prose:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .prose {
+    font-size: var(--text-body-mobile);
+  }
+}
+
+.panelPhoto {
+  flex: 1 1 50%;
+  margin: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  gap: var(--space-xs);
+}
+
+.photoFrame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.photoFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.photoCaption {
+  margin-top: var(--space-xs);
+}
+
+/* ── Interlude (53-year gap) ─────────────────────────────────────── */
+
+.interlude {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.interludeText {
+  font-family: var(--font-prose);
+  font-style: italic;
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .interludeText {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* ── Static fallback (mobile, reduced-motion) ────────────────────── */
+
+.staticList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 84rem;
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.staticItem {
+  display: block;
+}
+
+.staticItem .panel,
+.staticItem .interlude {
+  height: auto;
+  min-height: 14rem;
+}
+
+.staticItem .panelBody {
+  overflow: visible;
+}
+
+.staticItem .panelText {
+  overflow: visible;
+  max-height: none;
+}
+
+.staticItem .interlude {
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+@media (max-width: 767px) {
+  .staticItem .interlude {
+    padding: var(--space-xl) var(--space-md);
+  }
+  .staticItem .panel,
+  .staticItem .interlude {
+    box-shadow: none;
+  }}
+
+/* ── Diptych closing ─────────────────────────────────────────────── */
+
+.diptych {
+  max-width: 80rem;
+  margin-inline: auto;
+  margin-top: var(--space-3xl);
+  padding-inline: var(--space-lg);
+  padding-bottom: var(--space-3xl);
+}
+
+.diptychTitle {
+  font-family: var(--font-prose);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 var(--space-2xl);
+}
+
+@media (min-width: 900px) {
+  .diptychTitle {
+    font-size: var(--text-2xl);
+  }
+}
+
+.diptychImages {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+@media (min-width: 700px) {
+  .diptychImages {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+.diptychFigure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.diptychFrame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  min-height: 0;
+}
+
+.diptychFrame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.diptychFrame img.earthriseImage {
+  object-position: center 80%;
+}
+
+.diptychCaption {
+  margin-top: var(--space-xs);
+}
+
+.diptychTie {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .diptychTie {
+    font-size: var(--text-body-mobile);
+  }
+}

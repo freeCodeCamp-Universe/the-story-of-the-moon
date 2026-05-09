@@ -1,0 +1,55 @@
+/* Chapter — section wrapper for each story chapter
+ *
+ * The heading strip lives in a narrow prose column, centered,
+ * so on ultrawide screens the chapter title doesn't span 2000px.
+ * The chapter's children are free to use the full viewport for
+ * their own scrollytelling layouts.
+ */
+
+.section {
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-2xl);
+}
+
+/* ── Header strip (eyebrow + heading), constrained to prose column ── */
+
+.header {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+/* ── Eyebrow question (monospace, above the heading) ─────────────── */
+
+.question {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-sm);
+}
+
+/* ── Chapter heading ─────────────────────────────────────────────── */
+
+.heading {
+  font-family: var(--font-prose);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: var(--line-height-heading);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .heading {
+    font-size: var(--text-3xl);
+  }
+}
+
+/* ── Body wrapper ────────────────────────────────────────────────── */
+
+.body {
+  /* No width constraint — chapters own their own layout below the header. */
+}

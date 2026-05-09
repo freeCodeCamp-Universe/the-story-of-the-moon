@@ -1,0 +1,261 @@
+/* NavStrip — fixed top navigation bar */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  z-index: 100;
+  border-bottom: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-md);
+  padding-inline: var(--space-md);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(10, 10, 35, 0.92);
+}
+
+.brand {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.centerControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  justify-self: center;
+}
+
+.modalCloseButton,
+.shortcutsButton,
+.chapterButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  transition:
+    border-color var(--transition-base),
+    color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.shortcutsButton,
+.chapterButton,
+.modalCloseButton {
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.modalCloseButton {
+  height: calc(var(--nav-height) - var(--space-sm));
+  min-width: calc(var(--nav-height) - var(--space-sm));
+  padding-inline: var(--space-sm);
+  border-radius: 4px;
+}
+
+.shortcutsButton {
+  height: calc(var(--nav-height) - var(--space-sm));
+  min-width: calc(var(--nav-height) - var(--space-sm));
+  padding-inline: var(--space-sm);
+  border-radius: 4px;
+  justify-self: end;
+}
+
+.iconButton:hover,
+.chapterButton:hover,
+.modalCloseButton:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.shortcutsButton:hover,
+.chapterButton:hover,
+.modalCloseButton:hover,
+.shortcutsButtonActive,
+.chapterButtonActive {
+  background: rgba(153, 201, 255, 0.08);
+}
+
+.shortcutsButton svg,
+.modalCloseButton svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.chapterButton {
+  align-items: center;
+  height: calc(var(--nav-height) - var(--space-sm));
+  min-width: min(26rem, calc(100vw - 14rem));
+  max-width: min(26rem, calc(100vw - 14rem));
+  padding-inline: var(--space-md);
+  padding-block: 0;
+  border-radius: 4px;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.chapterButtonActive {
+  border-color: var(--color-accent);
+}
+
+.sectionTitle,
+.shortcutKeys {
+  font-family: var(--font-mono);
+}
+
+.chapterDesktopText,
+.chapterMobileText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.chapterMobileText {
+  display: none;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 149;
+  background: rgba(10, 10, 35, 0.85);
+}
+
+.modal {
+  position: fixed;
+  top: calc(var(--nav-height) + var(--space-md));
+  right: var(--space-md);
+  z-index: 150;
+  width: min(36rem, calc(100vw - (2 * var(--space-md))));
+  max-height: calc(100dvh - var(--nav-height) - (2 * var(--space-md)));
+  overflow-y: auto;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-raised);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.modalTitle {
+  font-size: var(--text-xl);
+  line-height: 1.2;
+}
+
+.modalCloseButton {
+  flex-shrink: 0;
+}
+
+.shortcutSection {
+  margin-top: var(--space-lg);
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.sectionNote {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+}
+
+.shortcutList {
+  margin-top: var(--space-md);
+}
+
+.shortcutRow {
+  display: grid;
+  grid-template-columns: minmax(5rem, 7rem) minmax(0, 1fr);
+  gap: var(--space-sm) var(--space-md);
+  padding-block: var(--space-sm);
+  border-top: 1px solid rgba(223, 223, 226, 0.08);
+}
+
+.shortcutKeys {
+  color: var(--color-accent);
+}
+
+.shortcutKeys kbd,
+.keyboardHint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid rgba(223, 223, 226, 0.5);
+  border-radius: 0.35rem;
+  background: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.shortcutAction {
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .nav {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-sm);
+    padding-inline: var(--space-sm);
+  }
+
+  .brand {
+    font-size: 0.9375rem;
+  }
+
+  .chapterButton {
+    min-width: 0;
+    max-width: min(9rem, calc(100vw - 7rem));
+    padding-inline: var(--space-sm);
+  }
+
+  .chapterDesktopText {
+    display: none;
+  }
+
+  .chapterMobileText {
+    display: block;
+  }
+
+  .shortcutsButton {
+    display: none;
+  }
+
+  .modal {
+    top: var(--nav-height);
+    right: 0;
+    width: 100vw;
+    max-height: calc(100dvh - var(--nav-height));
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+  }
+
+  .shortcutRow {
+    grid-template-columns: 1fr;
+  }
+}

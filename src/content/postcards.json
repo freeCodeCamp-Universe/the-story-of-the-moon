@@ -1,0 +1,35 @@
+[
+  {
+    "id": "moon-disc",
+    "placement": {
+      "after": "ch1"
+    },
+    "image": {
+      "src": "/postcards/apollo-17-moon-disc.jpg",
+      "creditId": "apollo-17-moon-disc"
+    },
+    "caption": ""
+  },
+  {
+    "id": "eclipse",
+    "placement": {
+      "after": "ch2"
+    },
+    "image": {
+      "src": "/postcards/eclipse.jpg",
+      "creditId": "eclipse-photo"
+    },
+    "caption": ""
+  },
+  {
+    "id": "bootprint",
+    "placement": {
+      "after": "ch3"
+    },
+    "image": {
+      "src": "/postcards/bootprint.jpg",
+      "creditId": "apollo-11-bootprint"
+    },
+    "caption": ""
+  }
+]

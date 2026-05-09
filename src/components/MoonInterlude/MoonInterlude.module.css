@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: clamp(18rem, 54vh, 34rem);
+  background: transparent;
+}
+
+@media (min-width: 768px) {
+  .canvas {
+    height: clamp(24rem, 58vh, 42rem);
+  }
+}

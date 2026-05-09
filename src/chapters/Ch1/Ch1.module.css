@@ -1,0 +1,67 @@
+/* Ch1 — Chapter 1: A violent beginning
+ *
+ * Layout: full-bleed hero image → CreditCaption → narrow prose column.
+ * No animation, no interactivity; purely structural and typographic.
+ */
+
+/* ── Hero image ──────────────────────────────────────────────────── */
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: 60vh;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .heroImage {
+    height: 70vh;
+    max-height: 680px;
+  }
+}
+
+/* Constrain the full-bleed feel on very wide screens so the image
+ * doesn't dominate ultrawide monitors. */
+.imageWrapper {
+  max-width: 120rem;
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .imageWrapper {
+    padding-inline: var(--space-2xl);
+  }
+}
+
+/* ── Prose column ────────────────────────────────────────────────── */
+
+.prose {
+  max-width: var(--prose-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-2xl);
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .prose {
+    font-size: var(--text-body-mobile);
+  }
+}
+
+/* ── Individual paragraph ────────────────────────────────────────── */
+
+.paragraph {
+  margin-bottom: var(--space-lg);
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}

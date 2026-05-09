@@ -1,0 +1,11 @@
+/* CreditCaption — inline credit attribution below images */
+
+/* ── Caption text ─────────────────────────────────────────────────── */
+
+.caption {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-top: var(--space-xs);
+}
