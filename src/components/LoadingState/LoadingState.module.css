@@ -1,0 +1,54 @@
+.container {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl);
+  background: var(--color-bg);
+  /* Delay appearance to avoid a flash on fast loads */
+  animation: fadeIn var(--transition-base) ease-out both;
+  animation-delay: 150ms;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+
+.baseRing {
+  /* very dim ring to keep focus on the spinning arc */
+  stroke: rgba(245, 246, 247, 0.12);
+  stroke-linecap: round;
+}
+
+.arc {
+  stroke: var(--color-text);
+  stroke-linecap: round;
+  /* view-box ensures transform-origin: center resolves to the SVG
+     viewport center (28 28), not the element's own bounding box */
+  transform-box: view-box;
+  transform-origin: center;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc {
+    animation: none;
+  }
+
+  .container {
+    animation: none;
+  }
+}
