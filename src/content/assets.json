@@ -15,7 +15,7 @@
   {
     "id": "moon-texture-8k",
     "file": "moon/moon-8k.jpg",
-    "title": "LROC color-shaded Moon texture, 8K (desktop high-DPI)",
+    "title": "LROC color-shaded Moon texture, desktop high-DPI",
     "source": "NASA Goddard Scientific Visualization Studio (CGI Moon Kit, SVS 4720)",
     "sourceUrl": "https://svs.gsfc.nasa.gov/4720/",
     "originalImageUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_8k.tif",
@@ -23,7 +23,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Moon texture: NASA Goddard / Ernie Wright, CGI Moon Kit (SVS 4720).",
-    "alt": "The Moon's near side in natural color, high-resolution version, from the Lunar Reconnaissance Orbiter Camera."
+    "alt": "The Moon's near side in natural color, desktop high-DPI version, from the Lunar Reconnaissance Orbiter Camera."
   },
   {
     "id": "ch1-giant-impact",

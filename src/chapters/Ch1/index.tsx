@@ -1,4 +1,5 @@
 import CreditCaption from '@/components/CreditCaption';
+import OptimizedImage from '@/components/OptimizedImage';
 import { getAsset } from '@/content';
 import styles from './Ch1.module.css';
 
@@ -8,7 +9,7 @@ export default function Ch1() {
   return (
     <>
       <div className={styles.imageWrapper}>
-        <img className={styles.heroImage} src="/ch1/giant-impact.jpg" alt={asset?.alt ?? ''} />
+        <OptimizedImage className={styles.heroImage} src="/ch1/giant-impact.jpg" alt={asset?.alt ?? ''} fetchPriority="high" />
         {asset && <CreditCaption credit={asset} />}
       </div>
 

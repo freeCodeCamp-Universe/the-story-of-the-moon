@@ -1,4 +1,5 @@
 import CreditCaption from '@/components/CreditCaption';
+import OptimizedImage from '@/components/OptimizedImage';
 import { getAsset, moonSamples } from '@/content';
 import styles from './Ch5.module.css';
 
@@ -23,7 +24,7 @@ export default function Ch5() {
           const credit = getAsset(s.creditId);
           return (
             <figure key={s.id} className={styles.sample}>
-              <img className={styles.sampleImage} src={credit ? `/${credit.file}` : undefined} alt={s.alt} />
+              <OptimizedImage className={styles.sampleImage} src={credit ? `/${credit.file}` : undefined} alt={s.alt} loading="lazy" />
               <figcaption className={styles.sampleCaption}>
                 {credit && <CreditCaption credit={credit} />}
                 <div className={styles.sampleMarker}>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { missions, getAsset } from '@/content';
 import CreditCaption from '@/components/CreditCaption';
+import OptimizedImage from '@/components/OptimizedImage';
 import type { Mission } from '@/types/content';
 import styles from './Ch4.module.css';
 
@@ -67,7 +68,7 @@ function MissionPanel({ mission }: { mission: Mission }) {
         </div>
         <figure className={styles.panelPhoto}>
           <div className={styles.photoFrame}>
-            <img src={mission.photo.src} alt={mission.photo.alt} loading="lazy" />
+            <OptimizedImage src={mission.photo.src} alt={mission.photo.alt} loading="lazy" />
           </div>
           {credit && (
             <figcaption className={styles.photoCaption}>
@@ -339,7 +340,7 @@ function Diptych() {
         {earthrise && (
           <figure className={styles.diptychFigure}>
             <div className={styles.diptychFrame}>
-              <img src={`/${earthrise.file}`} className={styles.earthriseImage} alt={earthrise.alt} loading="lazy" />
+              <OptimizedImage src={`/${earthrise.file}`} className={styles.earthriseImage} alt={earthrise.alt} loading="lazy" />
             </div>
             <figcaption className={styles.diptychCaption}>
               <CreditCaption credit={earthrise} />
@@ -349,7 +350,7 @@ function Diptych() {
         {earthset && (
           <figure className={styles.diptychFigure}>
             <div className={styles.diptychFrame}>
-              <img src={`/${earthset.file}`} alt={earthset.alt} loading="lazy" />
+              <OptimizedImage src={`/${earthset.file}`} alt={earthset.alt} loading="lazy" />
             </div>
             <figcaption className={styles.diptychCaption}>
               <CreditCaption credit={earthset} />

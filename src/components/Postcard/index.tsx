@@ -1,5 +1,6 @@
 import type { PostcardData } from '@/types/content';
 import { getAsset } from '@/content';
+import OptimizedImage from '@/components/OptimizedImage';
 import styles from './Postcard.module.css';
 
 type Props = {
@@ -12,7 +13,7 @@ export default function Postcard({ postcard }: Props) {
 
   return (
     <figure className={styles.container}>
-      <img className={imageClassName} src={postcard.image.src} alt={postcard.image.alt} />
+      <OptimizedImage className={imageClassName} src={postcard.image.src} alt={postcard.image.alt} loading="lazy" />
       <figcaption className={styles.caption}>
         {postcard.caption && <span className={styles.captionText}>{postcard.caption}</span>}
         {credit && <span className={styles.captionCredit}>{credit.attributionText}</span>}

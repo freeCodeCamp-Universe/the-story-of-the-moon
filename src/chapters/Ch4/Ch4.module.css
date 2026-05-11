@@ -497,6 +497,11 @@
   min-height: 0;
 }
 
+.diptychFrame > picture {
+  width: 100%;
+  height: 100%;
+}
+
 .diptychFrame img {
   display: block;
   width: 100%;
@@ -505,7 +510,7 @@
   object-position: center center;
 }
 
-.diptychFrame img.earthriseImage {
+.diptychFrame .earthriseImage > img {
   object-position: center 80%;
 }
 

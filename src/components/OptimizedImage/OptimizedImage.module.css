@@ -1,0 +1,18 @@
+.picture {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: inherit;
+  min-height: inherit;
+  max-height: inherit;
+  aspect-ratio: inherit;
+  object-fit: inherit;
+  object-position: inherit;
+  border-radius: inherit;
+}

@@ -134,6 +134,7 @@ export function createMoonScene(
 
   let texture2k: THREE.Texture | null = null;
   let texture8k: THREE.Texture | null = null;
+  let disposed = false;
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = options?.unlit
@@ -154,14 +155,31 @@ export function createMoonScene(
 
   const textureLoader = new THREE.TextureLoader();
 
-  textureLoader.load('/moon/moon-2k.jpg', (loadedTexture) => {
+  const loadTexture = (primarySrc: string, fallbackSrc: string, onLoad: (texture: THREE.Texture) => void) => {
+    const handleLoad = (loadedTexture: THREE.Texture) => {
+      if (disposed) {
+        loadedTexture.dispose();
+        return;
+      }
+      onLoad(loadedTexture);
+    };
+
+    textureLoader.load(primarySrc, handleLoad, undefined, () => {
+      if (primarySrc === fallbackSrc || disposed) {
+        return;
+      }
+      textureLoader.load(fallbackSrc, handleLoad);
+    });
+  };
+
+  loadTexture('/moon/moon-2k.webp', '/moon/moon-2k.jpg', (loadedTexture) => {
     loadedTexture.colorSpace = THREE.SRGBColorSpace;
     texture2k = loadedTexture;
     material.map = loadedTexture;
     material.needsUpdate = true;
 
     if (window.matchMedia('(min-width: 1200px) and (min-resolution: 2dppx)').matches) {
-      textureLoader.load('/moon/moon-8k.jpg', (hiResTexture) => {
+      loadTexture('/moon/moon-8k.webp', '/moon/moon-8k.jpg', (hiResTexture) => {
         hiResTexture.colorSpace = THREE.SRGBColorSpace;
         texture8k = hiResTexture;
         material.map = hiResTexture;
@@ -322,6 +340,7 @@ export function createMoonScene(
       return { x: cx, y: cy, radius, visible };
     },
     dispose() {
+      disposed = true;
       renderer.setAnimationLoop(null);
       resizeObserver.disconnect();
       controls.dispose();

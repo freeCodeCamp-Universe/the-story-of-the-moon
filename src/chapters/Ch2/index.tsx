@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import CreditCaption from '@/components/CreditCaption';
+import OptimizedImage from '@/components/OptimizedImage';
 import ScrollyChapter from '@/components/ScrollyChapter';
 import { getAsset, surfaceFeatures } from '@/content';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -237,7 +238,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   }, []);
 
   if (!webglAvailable) {
-    return <img className={styles.fallbackStatic} src="/moon/moon-2k.jpg" alt="" />;
+    return <OptimizedImage className={styles.fallbackStatic} src="/moon/moon-2k.jpg" alt="" />;
   }
 
   return (
@@ -281,7 +282,12 @@ export default function Ch2() {
         <ol className={styles.fallbackList} aria-label="Notable surface features">
           {surfaceFeatures.map((feature) => (
             <li key={feature.id} className={styles.fallbackItem}>
-              <img className={styles.fallbackImage} src="/moon/moon-2k.jpg" alt={`The Moon's near side; ${feature.name} is located at ${formatLatLon(feature.lat, feature.lon)}.`} />
+              <OptimizedImage
+                className={styles.fallbackImage}
+                src="/moon/moon-2k.jpg"
+                alt={`The Moon's near side; ${feature.name} is located at ${formatLatLon(feature.lat, feature.lon)}.`}
+                loading="lazy"
+              />
               <p className={styles.fallbackMarker}>
                 <span aria-hidden="true">&gt;</span> {formatLatLon(feature.lat, feature.lon)}
               </p>
@@ -337,7 +343,7 @@ function IntroProse() {
           Crater
         </h3>
         <figure className={styles.termFigure}>
-          <img className={styles.termImage} src="/ch2/tycho.jpg" alt={tychoAsset?.alt ?? ''} />
+          <OptimizedImage className={styles.termImage} src="/ch2/tycho.jpg" alt={tychoAsset?.alt ?? ''} loading="lazy" />
           {tychoAsset && <CreditCaption credit={tychoAsset} />}
         </figure>
         <p>
@@ -351,7 +357,7 @@ function IntroProse() {
           Basin
         </h3>
         <figure className={styles.termFigure}>
-          <img className={styles.termImage} src="/ch2/orientale.jpg" alt={orientaleAsset?.alt ?? ''} />
+          <OptimizedImage className={styles.termImage} src="/ch2/orientale.jpg" alt={orientaleAsset?.alt ?? ''} loading="lazy" />
           {orientaleAsset && <CreditCaption credit={orientaleAsset} />}
         </figure>
         <p>

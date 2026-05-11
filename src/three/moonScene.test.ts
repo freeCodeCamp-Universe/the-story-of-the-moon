@@ -168,7 +168,9 @@ describe('createMoonScene', () => {
       load: ReturnType<typeof vi.fn>;
     };
     expect(textureLoaderInstance.load).toHaveBeenCalledWith(
-      '/moon/moon-2k.jpg',
+      '/moon/moon-2k.webp',
+      expect.any(Function),
+      undefined,
       expect.any(Function)
     );
   });

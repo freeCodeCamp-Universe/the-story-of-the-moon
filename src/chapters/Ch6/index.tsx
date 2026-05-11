@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 import CreditCaption from '@/components/CreditCaption';
+import OptimizedImage from '@/components/OptimizedImage';
 import { getAsset } from '@/content';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
@@ -189,7 +190,7 @@ export default function Ch6() {
                     </div>
                     <figure className={styles.figure}>
                       <div className={styles.photoFrame}>
-                        <img className={styles.figureImage} src={`/${credit.file}`} alt={credit.alt} loading="lazy" />
+                        <OptimizedImage className={styles.figureImage} src={`/${credit.file}`} alt={credit.alt} loading="lazy" />
                       </div>
                       <CreditCaption credit={credit} />
                     </figure>
@@ -233,7 +234,7 @@ export default function Ch6() {
                   </div>
                   <figure className={styles.figure}>
                     <div className={styles.photoFrame}>
-                      <img className={styles.figureImage} src={`/${credit.file}`} alt={credit.alt} loading="lazy" />
+                      <OptimizedImage className={styles.figureImage} src={`/${credit.file}`} alt={credit.alt} loading="lazy" />
                     </div>
                     <CreditCaption credit={credit} />
                   </figure>
