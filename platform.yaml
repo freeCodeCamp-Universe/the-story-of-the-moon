@@ -1,0 +1,13 @@
+site: the-story-of-the-moon
+
+build:
+  command: pnpm run build
+  output: dist
+
+deploy:
+  preview: true
+  ignore:
+    - "*.map"
+    - "node_modules/**"
+    - ".git/**"
+    - ".env*"
