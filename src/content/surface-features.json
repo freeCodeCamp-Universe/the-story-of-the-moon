@@ -24,6 +24,14 @@
     "oneLiner": "Copernicus is a textbook example of a complex crater, about 93 kilometers across and roughly 800 million years old. The collision that formed it released enough energy to make solid rock briefly behave like a fluid. The walls slumped inward into a series of stair-step terraces, and the floor rebounded upward at the center into a cluster of peaks. Almost every large fresh crater on the Moon shows the same pattern."
   },
   {
+    "id": "aristarchus",
+    "name": "Aristarchus",
+    "lat": 23.7,
+    "lon": -47.4,
+    "diameterKm": 40,
+    "oneLiner": "Aristarchus is one of the brightest large craters on the Moon, about 40 kilometers across and located on the northwestern near side. Its high-reflectance ejecta and central peak make it a prominent landmark, and the surrounding plateau is one of the Moon's most geologically interesting regions, with evidence of ancient volcanic activity and strange optical effects seen from Earth."
+  },
+  {
     "id": "tycho",
     "name": "Tycho",
     "lat": -43.3,
