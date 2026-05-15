@@ -1,7 +1,6 @@
 export type AssetCredit = {
   id: string;
   file: string;
-  title: string;
   /** Accessible description of the image, used as the img alt attribute. */
   alt: string;
   source: string;

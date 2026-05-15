@@ -4,7 +4,6 @@ const assets = [
   {
     "id": "moon-texture-2k",
     "file": "moon/moon-2k.jpg",
-    "title": "LROC color-shaded Moon texture, equirectangular 2K",
     "source": "NASA Goddard Scientific Visualization Studio (CGI Moon Kit, SVS 4720)",
     "sourceUrl": "https://svs.gsfc.nasa.gov/4720/",
     "originalImageUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg",
@@ -17,7 +16,6 @@ const assets = [
   {
     "id": "moon-texture-8k",
     "file": "moon/moon-8k.jpg",
-    "title": "LROC color-shaded Moon texture, desktop high-DPI",
     "source": "NASA Goddard Scientific Visualization Studio (CGI Moon Kit, SVS 4720)",
     "sourceUrl": "https://svs.gsfc.nasa.gov/4720/",
     "originalImageUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_8k.tif",
@@ -30,7 +28,6 @@ const assets = [
   {
     "id": "ch1-giant-impact",
     "file": "ch1/giant-impact.jpg",
-    "title": "Artist's concept of a high-speed collision (HD 172555)",
     "source": "NASA / JPL-Caltech (Spitzer Space Telescope findings, HD 172555)",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Artist%27s_concept_of_collision_at_HD_172555.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Artist%27s_concept_of_collision_at_HD_172555.jpg",
@@ -43,7 +40,6 @@ const assets = [
   {
     "id": "eclipse-photo",
     "file": "postcards/eclipse.jpg",
-    "title": "Total solar eclipse with corona and Bailey's beads, August 21, 2017 (AFRC2017-0233-005)",
     "source": "NASA Armstrong Flight Research Center",
     "sourceUrl": "https://images.nasa.gov/details/AFRC2017-0233-005",
     "originalImageUrl": "https://images-assets.nasa.gov/image/AFRC2017-0233-005/AFRC2017-0233-005~large.jpg",
@@ -56,7 +52,6 @@ const assets = [
   {
     "id": "apollo-17-moon-disc",
     "file": "postcards/apollo-17-moon-disc.jpg",
-    "title": "Full disc of the Moon photographed by Apollo 17 crewmen (AS17-152-23311)",
     "source": "NASA / Flickr NASA Image and Video Library",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Full_disc_of_the_moon_was_photographed_by_the_Apollo_17_crewmen.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Full_disc_of_the_moon_was_photographed_by_the_Apollo_17_crewmen.jpg",
@@ -69,7 +64,6 @@ const assets = [
   {
     "id": "ch2-aristarchus-crater",
     "file": "ch2/aristarchus.jpg",
-    "title": "Aristarchus crater from the Lunar Reconnaissance Orbiter",
     "source": "NASA Science, Moon Craters",
     "sourceUrl": "https://science.nasa.gov/moon/lunar-craters/",
     "originalImageUrl": "https://science.nasa.gov/wp-content/uploads/2024/10/aristarchus-crater-lro-web-1.jpg",
@@ -82,7 +76,6 @@ const assets = [
   {
     "id": "ch2-mare-orientale",
     "file": "ch2/orientale-artemis.jpg",
-    "title": "Mare Orientale photographed during Artemis II",
     "source": "Wikimedia Commons file page for NASA Artemis II image of Mare Orientale",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mare_Orientale_(Artemis_2).jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Mare_Orientale_%28Artemis_2%29.jpg",
@@ -95,7 +88,6 @@ const assets = [
   {
     "id": "ch2-hertzsprung-basin",
     "file": "ch2/hertzsprung.jpg",
-    "title": "Hertzsprung basin, LRO WAC mosaic",
     "source": "Wikimedia Commons file page for NASA LRO WAC image of Hertzsprung basin",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hertzsprung_(LRO).png",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Hertzsprung_%28LRO%29.png",
@@ -108,7 +100,6 @@ const assets = [
   {
     "id": "apollo-11-bootprint",
     "file": "postcards/bootprint.jpg",
-    "title": "Astronaut bootprint in lunar soil (AS11-40-5878)",
     "source": "NASA, Apollo 11",
     "sourceUrl": "https://images.nasa.gov/details/as11-40-5878",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as11-40-5878/as11-40-5878~large.jpg",
@@ -121,7 +112,6 @@ const assets = [
   {
     "id": "apollo-8-launch",
     "file": "ch4/apollo-8.jpg",
-    "title": "Apollo 8 liftoff (S69-15558)",
     "source": "NASA",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Apollo_8_liftoff.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Apollo_8_liftoff.jpg",
@@ -134,7 +124,6 @@ const assets = [
   {
     "id": "apollo-8-earthrise",
     "file": "postcards/earthrise.jpg",
-    "title": "Earthrise (AS08-14-2383)",
     "source": "NASA, Apollo 8",
     "sourceUrl": "https://images.nasa.gov/details/as08-14-2383",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as08-14-2383/as08-14-2383~large.jpg",
@@ -147,7 +136,6 @@ const assets = [
   {
     "id": "erlanger-crater",
     "file": "moon/erlanger-crater.jpg",
-    "title": "Erlanger crater at local sunrise, LROC NAC",
     "source": "Wikimedia Commons file page for NASA LROC NAC image of Erlanger crater",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Main_erlanger_crater_large.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Main_erlanger_crater_large.jpg",
@@ -160,7 +148,6 @@ const assets = [
   {
     "id": "tranquillitatis-pit",
     "file": "moon/tranquillitatis-pit.jpg",
-    "title": "Mare Tranquillitatis pit crater, LROC NAC",
     "source": "Wikimedia Commons file page for NASA LROC NAC image of the Mare Tranquillitatis pit",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mare_Tranquillitatis_pit_crater.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/17/Mare_Tranquillitatis_pit_crater.jpg",
@@ -173,7 +160,6 @@ const assets = [
   {
     "id": "moon-nearside-farside",
     "file": "moon/nearside-farside.jpg",
-    "title": "The Moon's near side and far side",
     "source": "NASA Moon Formation page",
     "sourceUrl": "https://science.nasa.gov/moon/formation/",
     "originalImageUrl": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/lunar-science/internal_resources/588/moon-nearside-farside_copy.jpg",
@@ -186,7 +172,6 @@ const assets = [
   {
     "id": "apollo-9-lm",
     "file": "ch4/apollo-9.jpg",
-    "title": "David Scott in the Command and Service Module hatch (AS09-20-3064)",
     "source": "NASA, Apollo 9",
     "sourceUrl": "https://images.nasa.gov/details/as09-20-3064",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as09-20-3064/as09-20-3064~large.jpg",
@@ -199,7 +184,6 @@ const assets = [
   {
     "id": "apollo-10-lm",
     "file": "ch4/apollo-10.jpg",
-    "title": "Apollo 10 over the Moon (AS10-27-3873)",
     "source": "NASA, Apollo 10",
     "sourceUrl": "https://images.nasa.gov/details/as10-27-3873",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as10-27-3873/as10-27-3873~large.jpg",
@@ -212,7 +196,6 @@ const assets = [
   {
     "id": "apollo-11-aldrin",
     "file": "ch4/apollo-11.jpg",
-    "title": "Buzz Aldrin on the lunar surface (AS11-40-5903)",
     "source": "NASA, Apollo 11",
     "sourceUrl": "https://images.nasa.gov/details/as11-40-5903",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as11-40-5903/as11-40-5903~large.jpg",
@@ -225,7 +208,6 @@ const assets = [
   {
     "id": "apollo-12-bean",
     "file": "ch4/apollo-12.jpg",
-    "title": "Alan Bean on the lunar surface (AS12-49-7278)",
     "source": "NASA, Apollo 12",
     "sourceUrl": "https://images.nasa.gov/details/as12-49-7278",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as12-49-7278/as12-49-7278~large.jpg",
@@ -238,7 +220,6 @@ const assets = [
   {
     "id": "apollo-13-sm",
     "file": "ch4/apollo-13.jpg",
-    "title": "Damaged Apollo 13 service module after jettison (AS13-59-8500)",
     "source": "NASA, Apollo 13",
     "sourceUrl": "https://images.nasa.gov/details/as13-59-8500",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as13-59-8500/as13-59-8500~large.jpg",
@@ -251,7 +232,6 @@ const assets = [
   {
     "id": "apollo-14-shepard",
     "file": "ch4/apollo-14.jpg",
-    "title": "Apollo 14 on the lunar surface (AS14-66-9306)",
     "source": "NASA, Apollo 14",
     "sourceUrl": "https://images.nasa.gov/details/as14-66-9306",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as14-66-9306/as14-66-9306~large.jpg",
@@ -264,7 +244,6 @@ const assets = [
   {
     "id": "apollo-15-rover",
     "file": "ch4/apollo-15.jpg",
-    "title": "Apollo 15 lunar rover at Hadley Rille (AS15-86-11603)",
     "source": "NASA, Apollo 15",
     "sourceUrl": "https://images.nasa.gov/details/as15-86-11603",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as15-86-11603/as15-86-11603~large.jpg",
@@ -277,7 +256,6 @@ const assets = [
   {
     "id": "apollo-16-young",
     "file": "ch4/apollo-16.jpg",
-    "title": "John Young jumping salute (AS16-113-18339)",
     "source": "NASA, Apollo 16",
     "sourceUrl": "https://images.nasa.gov/details/as16-113-18339",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as16-113-18339/as16-113-18339~large.jpg",
@@ -290,7 +268,6 @@ const assets = [
   {
     "id": "apollo-17-schmitt",
     "file": "ch4/apollo-17.jpg",
-    "title": "Apollo 17 on the lunar surface (AS17-140-21497)",
     "source": "NASA, Apollo 17",
     "sourceUrl": "https://images.nasa.gov/details/as17-140-21497",
     "originalImageUrl": "https://images-assets.nasa.gov/image/as17-140-21497/as17-140-21497~large.jpg",
@@ -303,7 +280,6 @@ const assets = [
   {
     "id": "artemis-ii-earthset",
     "file": "ch4/artemis-ii-earthset.jpg",
-    "title": "Earthset from Orion during Artemis II (art002e009288)",
     "source": "NASA, Artemis II",
     "sourceUrl": "https://www.nasa.gov/image-detail/art002e009288/",
     "originalImageUrl": "https://www.nasa.gov/wp-content/uploads/2026/04/art002e009288orig.jpg",
@@ -316,7 +292,6 @@ const assets = [
   {
     "id": "artemis-ii-eclipse",
     "file": "ch4/artemis-ii-eclipse.jpg",
-    "title": "Orion and the Eclipse (art002e016318)",
     "source": "NASA, Artemis II",
     "sourceUrl": "https://images.nasa.gov/details/art002e016318",
     "originalImageUrl": "https://images-assets.nasa.gov/image/art002e016318/art002e016318~orig.jpg",
@@ -329,7 +304,6 @@ const assets = [
   {
     "id": "ch5-anorthosite-15415",
     "file": "ch5/anorthosite-15415.jpg",
-    "title": "Apollo 15 sample 15415, the Genesis Rock",
     "source": "NASA (S71-42951), via Wikimedia Commons",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Apollo_15_Genesis_Rock.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Apollo_15_Genesis_Rock.jpg",
@@ -342,7 +316,6 @@ const assets = [
   {
     "id": "ch5-basalt-70017",
     "file": "ch5/basalt-70017.jpg",
-    "title": "Apollo 17 sample 70017, a high-titanium mare basalt",
     "source": "NASA Lunar Sample Curator (JSC), via Wikimedia Commons",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lunar_basalt_70017.jpg",
     "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Lunar_basalt_70017.jpg",
