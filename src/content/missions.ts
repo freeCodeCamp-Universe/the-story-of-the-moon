@@ -1,4 +1,7 @@
-[
+import type { MissionSource } from '@/types/content';
+import type { AssetCreditId } from './assets';
+
+const missions = [
   {
     "key": "apollo-8",
     "label": "Apollo 8",
@@ -221,4 +224,6 @@
       "creditId": "artemis-ii-eclipse"
     }
   }
-]
+] as const satisfies readonly MissionSource<AssetCreditId>[];
+
+export default missions;

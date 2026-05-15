@@ -1,4 +1,7 @@
-[
+import type { MoonSampleSource } from '@/types/content';
+import type { AssetCreditId } from './assets';
+
+const moonSamples = [
   {
     "id": "basalt-70017",
     "mission": "Apollo 17",
@@ -19,4 +22,6 @@
     "detail": "This is rock that crystallized early in the Moon's magma ocean and floated to the surface as it cooled. It formed the bright cratered highlands that surround the maria.",
     "creditId": "ch5-anorthosite-15415"
   }
-]
+] as const satisfies readonly MoonSampleSource<AssetCreditId>[];
+
+export default moonSamples;

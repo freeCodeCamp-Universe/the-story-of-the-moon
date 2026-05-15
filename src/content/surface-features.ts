@@ -1,4 +1,6 @@
-[
+import type { SurfaceFeature } from '@/types/content';
+
+const surfaceFeatures = [
   {
     "id": "mare-imbrium",
     "name": "Mare Imbrium",
@@ -50,9 +52,11 @@
   {
     "id": "south-pole-aitken",
     "name": "South Pole-Aitken basin",
-    "lat": -53.0,
-    "lon": -169.0,
+    "lat": -53,
+    "lon": -169,
     "diameterKm": 2500,
     "oneLiner": "The South Pole-Aitken basin is one of the largest and oldest impact structures known anywhere in the solar system, roughly 2,500 kilometers across and at least four billion years old. It covers a huge stretch of the far side, which is why it never appears from Earth. The collision is thought to have punched deep enough to expose material from the lower crust, and possibly the upper mantle. That depth makes it the prime natural laboratory for studying the Moon's deep interior."
   }
-]
+] as const satisfies readonly SurfaceFeature[];
+
+export default surfaceFeatures;

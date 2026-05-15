@@ -1,4 +1,7 @@
-[
+import type { PostcardSource } from '@/types/content';
+import type { AssetCreditId } from './assets';
+
+const postcards = [
   {
     "id": "moon-disc",
     "placement": {
@@ -32,4 +35,6 @@
     },
     "caption": ""
   }
-]
+] as const satisfies readonly PostcardSource<AssetCreditId>[];
+
+export default postcards;

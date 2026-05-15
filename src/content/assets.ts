@@ -1,4 +1,6 @@
-[
+import type { AssetCredit } from '@/types/content';
+
+const assets = [
   {
     "id": "moon-texture-2k",
     "file": "moon/moon-2k.jpg",
@@ -350,4 +352,8 @@
     "attributionText": "Apollo 17 sample 70017, a vesicular high-titanium mare basalt. NASA Lunar Sample Curator, JSC.",
     "alt": "A dark lunar basalt sample from Apollo 17 with a rough, pitted surface, visible vesicles, and a small scale block at the lower right."
   }
-]
+] as const satisfies readonly AssetCredit[];
+
+export type AssetCreditId = (typeof assets)[number]['id'];
+
+export default assets;

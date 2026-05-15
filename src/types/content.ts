@@ -25,7 +25,15 @@ export type SurfaceFeature = {
   oneLiner: string;
 };
 
-export type Mission = {
+export type CreditBackedImage<CreditId extends string = string> = {
+  src: string;
+  alt: string;
+  creditId: CreditId;
+};
+
+export type CreditBackedImageSource<CreditId extends string = string> = Omit<CreditBackedImage<CreditId>, 'alt'>;
+
+export type Mission<CreditId extends string = string> = {
   key: string;
   label: string;
   date: string;
@@ -33,18 +41,22 @@ export type Mission = {
   crew: string[];
   oneLiner: string;
   prose: string[];
-  photo: { src: string; alt: string; creditId: string };
+  photo: CreditBackedImage<CreditId>;
 };
 
 export type GapEntry = {
   type: 'gap';
   prose: string;
-  photo: { src: string; alt: string; creditId: string };
+  photo: CreditBackedImage;
 };
 
 export type MissionEntry = Mission | GapEntry;
 
-export type MoonSample = {
+export type MissionSource<CreditId extends string = string> = Omit<Mission<CreditId>, 'photo'> & {
+  photo: CreditBackedImageSource<CreditId>;
+};
+
+export type MoonSample<CreditId extends string = string> = {
   id: string;
   mission: string;
   sampleNumber: string;
@@ -53,14 +65,22 @@ export type MoonSample = {
   properties: string;
   detail: string;
   alt: string;
-  creditId: string;
+  creditId: CreditId;
 };
 
-export type PostcardData = {
+export type MoonSampleSource<CreditId extends string = string> = Omit<MoonSample<CreditId>, 'alt'>;
+
+export type PostcardPlacementAfter = 'ch1' | 'ch2' | 'ch3' | 'ch5';
+
+export type PostcardData<CreditId extends string = string> = {
   id: string;
-  placement: { after: 'ch2' | 'ch3' | 'ch5' };
-  image: { src: string; alt: string; creditId: string };
+  placement: { after: PostcardPlacementAfter };
+  image: CreditBackedImage<CreditId>;
   caption: string;
+};
+
+export type PostcardSource<CreditId extends string = string> = Omit<PostcardData<CreditId>, 'image'> & {
+  image: CreditBackedImageSource<CreditId>;
 };
 
 export type ChapterMeta = {
