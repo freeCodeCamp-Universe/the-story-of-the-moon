@@ -26,6 +26,18 @@
   margin-top: var(--space-2xl);
 }
 
+.surfaceFeaturesTitle {
+  max-width: 120rem;
+  margin: 0 auto var(--space-lg);
+  padding-inline: var(--space-lg);
+  font-family: var(--font-prose);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: var(--line-height-heading);
+  color: var(--color-text);
+  text-align: center;
+}
+
 /* ── Term sections (crater, basin) ────────────────────────────────── */
 
 .term {
@@ -46,6 +58,31 @@
   margin: 0;
 }
 
+.term p + p {
+  margin-top: 0;
+}
+
+.term p + .termFigure,
+.term p + .termDiptych {
+  margin-top: var(--space-lg);
+}
+
+.termFigure,
+.termDiptych {
+  align-self: center;
+  width: min(
+    calc(100vw - (4 * var(--space-lg))),
+    calc(100% + (4 * var(--space-2xl)))
+  );
+}
+
+@media (max-width: 767px) {
+  .termFigure,
+  .termDiptych {
+    width: min(100%, var(--prose-width));
+  }
+}
+
 .termImage {
   display: block;
   width: 100%;
@@ -54,6 +91,48 @@
   object-fit: cover;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
+}
+
+.termDiptych {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.termDiptychFigure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.termDiptychFrame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-raised);
+  aspect-ratio: 1 / 1;
+}
+
+.termDiptychFrame > picture {
+  width: 100%;
+  height: 100%;
+}
+
+.termDiptychFrame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.termDiptychCaption {
+  margin-top: var(--space-xs);
+}
+
+@media (min-width: 700px) {
+  .termDiptych {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ── Visual slot ─────────────────────────────────────────────────── */

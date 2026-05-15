@@ -148,7 +148,8 @@
   color: var(--color-text);
 }
 
-.stepContent h3 {
+.stepContent h3,
+.stepContent h4 {
   font-family: var(--font-prose);
   font-size: var(--text-xl);
   font-weight: 700;

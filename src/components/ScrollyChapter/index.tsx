@@ -23,6 +23,7 @@ type Props = {
   onActiveStepChange?: (id: string) => void;
   initialStepId?: string;
   ariaLabel?: string;
+  ariaLabelledBy?: string;
   variant?: Variant;
   /** Whether to mark the visual frame aria-hidden (default true). Set
    * to false when the visual hosts focusable controls or interactive
@@ -34,7 +35,17 @@ type Props = {
   visualBelow?: ReactNode;
 };
 
-export default function ScrollyChapter({ visual, steps, onActiveStepChange, initialStepId, ariaLabel, variant = 'side', visualAriaHidden = true, visualBelow }: Props) {
+export default function ScrollyChapter({
+  visual,
+  steps,
+  onActiveStepChange,
+  initialStepId,
+  ariaLabel,
+  ariaLabelledBy,
+  variant = 'side',
+  visualAriaHidden = true,
+  visualBelow,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stepIds = steps.map((s) => s.id);
   const activeId = useScrollySteps(containerRef, stepIds, initialStepId);
@@ -46,7 +57,13 @@ export default function ScrollyChapter({ visual, steps, onActiveStepChange, init
   const containerClass = variant === 'immersive' ? `${styles.container} ${styles.containerImmersive}` : styles.container;
 
   return (
-    <div ref={containerRef} className={containerClass} role="group" aria-label={ariaLabel}>
+    <div
+      ref={containerRef}
+      className={containerClass}
+      role="group"
+      aria-label={ariaLabelledBy ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       <div className={styles.visual}>
         <div className={styles.visualFrame} aria-hidden={visualAriaHidden ? 'true' : undefined}>
           <div className={styles.visualInner}>{visual}</div>

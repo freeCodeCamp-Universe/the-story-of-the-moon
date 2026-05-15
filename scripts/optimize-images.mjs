@@ -14,14 +14,14 @@ const widthOverrides = new Map([
   ['ch4/artemis-ii-earthset.jpg', 2560],
   ['ch4/artemis-ii-eclipse.jpg', 2400],
   ['postcards/apollo-17-moon-disc.jpg', 2200],
-  ['ch2/orientale.jpg', 2400],
+  ['ch2/orientale-artemis.jpg', 2400],
   ['moon/erlanger-crater.jpg', 1800],
 ]);
 
 const qualityOverrides = new Map([
   ['moon/moon-2k.jpg', { jpeg: 84, webp: 82 }],
   ['moon/moon-8k.jpg', { jpeg: 82, webp: 80 }],
-  ['ch2/orientale.jpg', { jpeg: 78, webp: 76 }],
+  ['ch2/orientale-artemis.jpg', { jpeg: 78, webp: 76 }],
 ]);
 
 const defaultQuality = { jpeg: 76, webp: 74 };

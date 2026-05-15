@@ -79,16 +79,29 @@
   },
   {
     "id": "ch2-mare-orientale",
-    "file": "ch2/orientale.jpg",
-    "title": "Mare Orientale with sunset shadows, LRO LOLA hyperwall still (SVS 3917)",
-    "source": "NASA Goddard Scientific Visualization Studio (SVS 3917)",
-    "sourceUrl": "https://svs.gsfc.nasa.gov/3917/",
-    "originalImageUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003917/orientale_hw.0001.jpg",
-    "author": "Ernie Wright, NASA Goddard SVS",
+    "file": "ch2/orientale-artemis.jpg",
+    "title": "Mare Orientale photographed during Artemis II",
+    "source": "Wikimedia Commons file page for NASA Artemis II image of Mare Orientale",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mare_Orientale_(Artemis_2).jpg",
+    "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Mare_Orientale_%28Artemis_2%29.jpg",
+    "author": "NASA",
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-    "attributionText": "Mare Orientale, LRO LOLA elevation. NASA Goddard SVS / Ernie Wright (SVS 3917).",
-    "alt": "An oblique view of Mare Orientale, showing its concentric rings of mountains around a darker central plain, with sunset shadows highlighting the relief."
+    "attributionText": "Mare Orientale photographed by the Artemis II crew. NASA (art002e009277).",
+    "alt": "Mare Orientale fills the center of the Moon, with its dark lava-filled plain surrounded by broad concentric rings. The bright crater Byrgius appears to the left."
+  },
+  {
+    "id": "ch2-hertzsprung-basin",
+    "file": "ch2/hertzsprung.jpg",
+    "title": "Hertzsprung basin, LRO WAC mosaic",
+    "source": "Wikimedia Commons file page for NASA LRO WAC image of Hertzsprung basin",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hertzsprung_(LRO).png",
+    "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Hertzsprung_%28LRO%29.png",
+    "author": "NASA / Lunar Reconnaissance Orbiter",
+    "license": "PD-USGov-NASA",
+    "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "attributionText": "Hertzsprung basin, Lunar Reconnaissance Orbiter WAC mosaic. NASA.",
+    "alt": "A wide-angle Lunar Reconnaissance Orbiter mosaic of Hertzsprung basin on the Moon's far side, showing a broad circular basin ringed by lighter ridges and scattered impact craters."
   },
   {
     "id": "apollo-11-bootprint",
