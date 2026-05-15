@@ -328,7 +328,7 @@ export default function Ch2() {
 }
 
 function IntroProse() {
-  const tychoAsset = getAsset('ch2-tycho-central-peak');
+  const aristarchusAsset = getAsset('ch2-aristarchus-crater');
   const orientaleAsset = getAsset('ch2-mare-orientale');
 
   return (
@@ -343,8 +343,8 @@ function IntroProse() {
           Crater
         </h3>
         <figure className={styles.termFigure}>
-          <OptimizedImage className={styles.termImage} src="/ch2/tycho.jpg" alt={tychoAsset?.alt ?? ''} loading="lazy" />
-          {tychoAsset && <CreditCaption credit={tychoAsset} />}
+          <OptimizedImage className={styles.termImage} src="/ch2/aristarchus.jpg" alt={aristarchusAsset?.alt ?? ''} loading="lazy" />
+          {aristarchusAsset && <CreditCaption credit={aristarchusAsset} />}
         </figure>
         <p>
           A crater is a bowl-shaped depression on the surface of a planet or moon, typically formed by the high-speed impact of a meteorite, asteroid, or comet. These structures are characterized by a circular pit, a sunken floor, and a raised outer

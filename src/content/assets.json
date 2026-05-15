@@ -65,17 +65,17 @@
     "alt": "Full disc of the Moon photographed by the Apollo 17 crew during transearth coast homeward, showing lunar maria including Serenitatis, Tranquillitatis, Nectaris, Fecunditatis, and Crisium."
   },
   {
-    "id": "ch2-tycho-central-peak",
-    "file": "ch2/tycho.jpg",
-    "title": "Tycho crater central peak with summit boulder, LROC",
-    "source": "NASA Goddard Photo and Video, via Flickr",
-    "sourceUrl": "https://www.flickr.com/photos/gsfc/26560950357/",
-    "originalImageUrl": "https://live.staticflickr.com/865/26560950357_45db813baa_o.jpg",
-    "author": "NASA Goddard / Arizona State University, LROC",
-    "license": "CC BY 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
-    "attributionText": "Tycho crater central peak, LROC. NASA Goddard / Arizona State University (CC BY 2.0).",
-    "alt": "An oblique view of the central peak of Tycho crater, with a large boulder perched on the summit and the terraced inner walls visible behind it."
+    "id": "ch2-aristarchus-crater",
+    "file": "ch2/aristarchus.jpg",
+    "title": "Aristarchus crater from the Lunar Reconnaissance Orbiter",
+    "source": "NASA Science, Moon Craters",
+    "sourceUrl": "https://science.nasa.gov/moon/lunar-craters/",
+    "originalImageUrl": "https://science.nasa.gov/wp-content/uploads/2024/10/aristarchus-crater-lro-web-1.jpg",
+    "author": "NASA / GSFC / Arizona State University",
+    "license": "PD-USGov-NASA",
+    "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "attributionText": "Aristarchus crater, Lunar Reconnaissance Orbiter. NASA / GSFC / Arizona State University.",
+    "alt": "This view of Aristarchus crater from the Lunar Reconnaissance Orbiter shows terraced walls and central peaks."
   },
   {
     "id": "ch2-mare-orientale",
