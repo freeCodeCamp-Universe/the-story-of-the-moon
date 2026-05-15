@@ -1,4 +1,4 @@
-import { readFile, rename, writeFile } from 'node:fs/promises';
+import { readFile, readdir, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,7 +7,6 @@ import sharp from 'sharp';
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '..');
 const publicDir = path.join(repoRoot, 'public');
-const assetsPath = path.join(repoRoot, 'src', 'content', 'assets.json');
 
 const widthOverrides = new Map([
   ['moon/moon-8k.jpg', 4096],
@@ -113,9 +112,29 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+async function collectRasterAssets(dir, prefix = '') {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectRasterAssets(fullPath, relativePath)));
+      continue;
+    }
+
+    if (entry.isFile() && rasterPattern.test(entry.name)) {
+      files.push(relativePath);
+    }
+  }
+
+  return files;
+}
+
 async function main() {
-  const assets = JSON.parse(await readFile(assetsPath, 'utf8'));
-  const files = [...new Set(assets.map((asset) => asset.file).filter((file) => rasterPattern.test(file)))];
+  const files = await collectRasterAssets(publicDir);
   const results = [];
 
   for (const relativePath of files) {
