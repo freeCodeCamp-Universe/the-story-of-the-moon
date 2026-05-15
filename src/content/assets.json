@@ -10,7 +10,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Moon texture: NASA Goddard / Ernie Wright, CGI Moon Kit (SVS 4720).",
-    "alt": "The Moon's near side in natural color, from the Lunar Reconnaissance Orbiter Camera."
+    "alt": "A natural-color, equirectangular map of the Moon for 3D rendering, created from Lunar Reconnaissance Orbiter camera and laser altimeter data."
   },
   {
     "id": "moon-texture-8k",
@@ -23,7 +23,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Moon texture: NASA Goddard / Ernie Wright, CGI Moon Kit (SVS 4720).",
-    "alt": "The Moon's near side in natural color, desktop high-DPI version, from the Lunar Reconnaissance Orbiter Camera."
+    "alt": "A natural-color, equirectangular map of the Moon for 3D rendering, created from Lunar Reconnaissance Orbiter camera and laser altimeter data."
   },
   {
     "id": "ch1-giant-impact",
@@ -36,7 +36,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Artist's concept of a high-speed collision. NASA / JPL-Caltech (HD 172555).",
-    "alt": "An artist's impression of the giant impact: two rocky worlds colliding, spraying glowing debris into space against a black background."
+    "alt": "An artist's concept of a Mars-sized body slamming into an Earth-sized world, spraying glowing debris into space against a black background."
   },
   {
     "id": "eclipse-photo",
@@ -49,7 +49,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Total solar eclipse, Aug 21, 2017. NASA / Carla Thomas (AFRC2017-0233-005).",
-    "alt": "A total solar eclipse with the Sun's corona glowing around the dark silhouette of the Moon."
+    "alt": "A total solar eclipse with the Sun's white corona visible around the dark Moon and red Bailey's beads shining along the lunar limb."
   },
   {
     "id": "apollo-17-moon-disc",
@@ -75,7 +75,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Aristarchus crater, Lunar Reconnaissance Orbiter. NASA / GSFC / Arizona State University.",
-    "alt": "This view of Aristarchus crater from the Lunar Reconnaissance Orbiter shows terraced walls and central peaks."
+    "alt": "View of Aristarchus crater from the Lunar Reconnaissance Orbiter, showing slumping terraced walls and peaks in its center. The terrain looks rubble-covered and pitted."
   },
   {
     "id": "ch2-mare-orientale",
@@ -114,7 +114,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/multimedia/guidelines/index.html",
     "attributionText": "Apollo 8 liftoff from Kennedy Space Center, December 21, 1968. NASA (S69-15558).",
-    "alt": "Apollo 8 liftoff from Kennedy Space Center, December 21, 1968."
+    "alt": "Apollo 8's Saturn V rocket lifts off from Kennedy Space Center in a towering column of flame and smoke."
   },
   {
     "id": "apollo-8-earthrise",
@@ -127,7 +127,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Earthrise, Apollo 8, Dec 24, 1968. NASA / William Anders (AS08-14-2383).",
-    "alt": "Earthrise: Earth seen above the lunar horizon, photographed by William Anders during Apollo 8 on December 24, 1968."
+    "alt": "The rising Earth hangs above the gray lunar horizon in a telephoto view taken from Apollo 8."
   },
   {
     "id": "erlanger-crater",
@@ -179,7 +179,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "David Scott in the Command and Service Module hatch, March 1969. NASA (AS09-20-3064).",
-    "alt": "David Scott in the Command and Service Module hatch, photographed from the Lunar Module."
+    "alt": "The docked Apollo 9 command and service module and lunar module are seen with Earth in the background, while David Scott stands in the open command-module hatch."
   },
   {
     "id": "apollo-10-lm",
@@ -192,7 +192,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "The Command and Service Module photographed from the Lunar Module in lunar orbit, May 1969. NASA (AS10-27-3873).",
-    "alt": "The Moon as seen from the Apollo 10 spacecraft in May 1969."
+    "alt": "The Apollo 10 command and service module floats above the Moon, photographed from the lunar module after separation in lunar orbit."
   },
   {
     "id": "apollo-11-aldrin",
@@ -205,7 +205,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Buzz Aldrin on the Moon, July 20, 1969. NASA / Neil Armstrong (AS11-40-5903).",
-    "alt": "Buzz Aldrin on the lunar surface during Apollo 11, with the reflection of Neil Armstrong visible in his visor."
+    "alt": "Buzz Aldrin walks on the lunar surface near a leg of the Apollo 11 lunar module, with Neil Armstrong reflected in his visor."
   },
   {
     "id": "apollo-12-bean",
@@ -218,7 +218,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Alan Bean holding a lunar soil sample container, November 1969. NASA / Charles Conrad (AS12-49-7278).",
-    "alt": "Astronaut Alan Bean on the lunar surface during Apollo 12, holding a sample container."
+    "alt": "Alan Bean holds a lunar soil sample container on the surface during Apollo 12, with Charles Conrad reflected in his helmet visor."
   },
   {
     "id": "apollo-13-sm",
@@ -231,7 +231,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Damaged Service Module photographed from the Lunar Module, April 1970. NASA (AS13-59-8500).",
-    "alt": "The damaged Apollo 13 Service Module photographed from the Lunar Module after separation, showing the blown-out panel."
+    "alt": "The damaged Apollo 13 service module after jettison, with an entire panel blown away and internal equipment exposed."
   },
   {
     "id": "apollo-14-shepard",
@@ -244,7 +244,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "The Lunar Module 'Antares' on the lunar surface, February 1971. NASA (AS14-66-9306).",
-    "alt": "The Lunar Module 'Antares' on the lunar surface at Fra Mauro, February 1971."
+    "alt": "A front view of Apollo 14's lunar module Antares on the Moon, with a bright circular lens flare and the slope of Cone Crater at far left."
   },
   {
     "id": "apollo-15-rover",
@@ -257,7 +257,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "James Irwin and the lunar rover at Hadley Rille, August 1971. NASA (AS15-86-11603).",
-    "alt": "James Irwin and the lunar rover at Hadley Rille, with mountains in the background."
+    "alt": "James Irwin works beside the lunar rover at the Hadley-Apennine site, with the lunar module's shadow in the foreground and Mount Hadley behind him."
   },
   {
     "id": "apollo-16-young",
@@ -270,7 +270,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "John Young's jumping salute, April 1972. NASA / Charles Duke (AS16-113-18339).",
-    "alt": "Astronaut John Young jumping and saluting the United States flag during Apollo 16."
+    "alt": "John Young leaps from the lunar surface in salute beside the United States flag, with the lunar module Orion and rover nearby."
   },
   {
     "id": "apollo-17-schmitt",
@@ -283,7 +283,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Harrison Schmitt standing next to a split lunar boulder, December 1972. NASA (AS17-140-21497).",
-    "alt": "Harrison Schmitt standing next to a split lunar boulder at Taurus-Littrow, December 1972."
+    "alt": "Harrison Schmitt stands beside a huge split lunar boulder at the Taurus-Littrow landing site during Apollo 17."
   },
   {
     "id": "artemis-ii-earthset",
@@ -296,7 +296,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Earthset, Artemis II, Apr 6, 2026. NASA (art002e009288).",
-    "alt": "Earthset through the Orion spacecraft window with the blue and white crescent Earth rising above the Moon's dark surface."
+    "alt": "Earth setting behind the Moon's horizon. Set against the blackness of space, the dark gray surface of the Moon arcs across the foreground. Beyond it, a blue-and-white crescent Earth fills the center of the image, with one tip disappearing beyond the lunar limb."
   },
   {
     "id": "artemis-ii-eclipse",
@@ -309,7 +309,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Solar eclipse captured from a camera mounted on the Orion spacecraft. Venus can be spotted on the left, and Saturn on the right of the Moon. NASA (art002e016318).",
-    "alt": "A solar eclipse seen from Orion during Artemis II, with the Moon blocking the Sun, a glowing halo around the lunar disc, Venus visible to the left, and Saturn visible to the right."
+    "alt": "A solar eclipse seen from Orion during Artemis II, with a glow around the Moon and Venus to the left and Saturn to the right."
   },
   {
     "id": "ch5-anorthosite-15415",
@@ -322,7 +322,7 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Apollo 15 sample 15415, the Genesis Rock, an anorthosite from Spur Crater. NASA (S71-42951).",
-    "alt": "A pale, angular lunar anorthosite rock with a chalky white surface and a darker dust coating along one face, photographed on a black background."
+    "alt": "The Genesis Rock, a pale angular anorthosite with a dark dust-coated area along one side, and a scale block on the right."
   },
   {
     "id": "ch5-basalt-70017",
@@ -335,6 +335,6 @@
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     "attributionText": "Apollo 17 sample 70017, a vesicular high-titanium mare basalt. NASA Lunar Sample Curator, JSC.",
-    "alt": "A dark, rough, roughly fist-sized lunar basalt with a pitted surface and visible vesicles, photographed on a black background in the lunar sample lab."
+    "alt": "A dark lunar basalt sample from Apollo 17 with a rough, pitted surface, visible vesicles, and a small scale block at the lower right."
   }
 ]
