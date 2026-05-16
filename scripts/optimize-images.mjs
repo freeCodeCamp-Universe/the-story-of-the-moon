@@ -1,4 +1,5 @@
-import { readFile, readdir, rename, writeFile } from 'node:fs/promises';
+import process from 'node:process';
+import { readFile, readdir, rename, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -133,8 +134,73 @@ async function collectRasterAssets(dir, prefix = '') {
   return files;
 }
 
-async function main() {
-  const files = await collectRasterAssets(publicDir);
+function toPosixPath(filePath) {
+  return filePath.replace(/\\/g, '/');
+}
+
+function resolveInputPath(input) {
+  const trimmedInput = input.trim();
+
+  if (!trimmedInput) {
+    throw new Error('Received an empty asset path.');
+  }
+
+  if (path.isAbsolute(trimmedInput)) {
+    return path.resolve(trimmedInput);
+  }
+
+  const normalizedInput = path.normalize(trimmedInput);
+  if (normalizedInput === 'public' || normalizedInput.startsWith(`public${path.sep}`)) {
+    return path.resolve(repoRoot, normalizedInput);
+  }
+
+  return path.resolve(publicDir, normalizedInput);
+}
+
+function toRelativePublicPath(absolutePath) {
+  const relativePath = path.relative(publicDir, absolutePath);
+
+  if (!relativePath || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+    throw new Error(`Asset path must stay inside public/: ${absolutePath}`);
+  }
+
+  return toPosixPath(relativePath);
+}
+
+export async function resolveRequestedFiles(inputs = []) {
+  if (inputs.length === 0) {
+    return collectRasterAssets(publicDir);
+  }
+
+  const requestedFiles = new Set();
+
+  for (const input of inputs) {
+    const absoluteInputPath = resolveInputPath(input);
+    const inputStats = await stat(absoluteInputPath);
+    const relativePublicPath = toRelativePublicPath(absoluteInputPath);
+
+    if (inputStats.isDirectory()) {
+      const files = await collectRasterAssets(absoluteInputPath, relativePublicPath);
+      files.forEach((file) => requestedFiles.add(file));
+      continue;
+    }
+
+    if (!inputStats.isFile()) {
+      throw new Error(`Asset path is not a file or directory: ${input}`);
+    }
+
+    if (!rasterPattern.test(relativePublicPath)) {
+      throw new Error(`Asset path must point to a .jpg or .jpeg file: ${input}`);
+    }
+
+    requestedFiles.add(relativePublicPath);
+  }
+
+  return [...requestedFiles].sort();
+}
+
+export async function main(args = process.argv.slice(2)) {
+  const files = await resolveRequestedFiles(args);
   const results = [];
 
   for (const relativePath of files) {
@@ -158,7 +224,9 @@ async function main() {
   console.log(`WebP siblings total: ${formatSize(totalWebpAfter)}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

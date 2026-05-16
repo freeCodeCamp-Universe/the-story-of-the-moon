@@ -30,3 +30,14 @@ pnpm test
 # Build for production
 pnpm build
 ```
+
+## Images
+
+```bash
+# Optimize every raster image in public/
+pnpm optimize:images
+
+# Optimize only specific files or folders
+pnpm optimize:images -- public/moon/lunar-near-side.jpg public/moon/lunar-far-side.jpg
+pnpm optimize:images -- public/moon
+```
