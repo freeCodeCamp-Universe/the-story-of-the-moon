@@ -24,8 +24,23 @@
   margin: 0;
 }
 
-.copyBlock p + p {
+.copyBlock p + p,
+.copyBlock p + ul,
+.copyBlock ul + p {
   margin-top: var(--space-lg);
+}
+
+.copyBlock ul {
+  margin: 0;
+  padding-inline-start: var(--space-xl);
+}
+
+.copyBlock li {
+  padding-inline-start: var(--space-xs);
+}
+
+.copyBlock li + li {
+  margin-top: var(--space-sm);
 }
 
 .section {
@@ -58,10 +73,14 @@
 
 .figure {
   margin: 0;
+  width: min(100%, 28rem);
+  justify-self: center;
 }
 
 .figureStack {
   display: grid;
+  width: min(100%, 28rem);
+  justify-self: center;
   gap: var(--space-lg);
 }
 
@@ -93,13 +112,17 @@
 
 @media (min-width: 900px) {
   .section {
-    padding: var(--space-xl) var(--space-3xl);
-
+    padding: var(--space-2xl) var(--space-5xl);
   }
   
   .sectionContent {
     grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
     align-items: start;
-    gap: var(--space-3xl);
-  }  
+    gap: var(--space-xl);
+  }
+
+  .figure,
+  .figureStack {
+    justify-self: end;
+  }
 }

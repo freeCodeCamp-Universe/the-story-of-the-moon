@@ -147,14 +147,28 @@ export default function Ch6() {
               </p>
               <p>
                 For a body so small and so close to spherical, there is no clear
-                reason for the two halves to differ this much. One prominent
-                theory suggests a smaller, secondary moon once coexisted with
-                ours before eventually colliding with the far side, leaving
-                behind a thick layer of new crust. Other hypotheses propose that
-                uneven internal heat distribution uniquely shaped each face.
-                Despite decades of study, scientists have yet to reach a single
-                consensus.
+                reason for the two halves to differ this much. Despite decades
+                of study, scientists have yet to reach a single consensus,
+                though several compelling theories exist:
               </p>
+              <ul>
+                <li>
+                  <b>The "Big Splat" Theory</b>: A smaller, secondary moon once
+                  coexisted with ours before eventually colliding with the far
+                  side, leaving behind a thick layer of new crust.
+                </li>
+                <li>
+                  <b>The Earthshine Theory</b>: Earth's early heat acted like a
+                  lamp; a molten Earth baked the near side to keep it liquid,
+                  while the shielded far side cooled quickly and formed a
+                  thicker crust first.
+                </li>
+                <li>
+                  <b>Internal Warming Hypotheses</b>: The Moon warmed up
+                  unevenly from the inside out, trapping hot, active magma under
+                  the near side while the far side quickly went cold and rigid.
+                </li>
+              </ul>
             </div>
           </div>
           <div className={styles.figureStack}>

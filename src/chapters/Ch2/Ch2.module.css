@@ -125,10 +125,6 @@
   object-position: center center;
 }
 
-.termDiptychCaption {
-  margin-top: var(--space-xs);
-}
-
 @media (min-width: 700px) {
   .termDiptych {
     grid-template-columns: repeat(2, minmax(0, 1fr));
