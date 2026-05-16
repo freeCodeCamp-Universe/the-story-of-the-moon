@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import styles from './MoonInterlude.module.css';
+import { useEffect, useRef } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import styles from "./MoonInterlude.module.css";
 
-const MOON_FILL = '#f1e8db';
-const MOON_SHADE = '#b8aea2';
-const CRATER_FLOOR = '#cfc5b9';
-const CRATER_DEPTH = '#9f958a';
-const STAR_COLOR = '#f5f6f7';
+const MOON_FILL = "#f1e8db";
+const MOON_SHADE = "#b8aea2";
+const CRATER_FLOOR = "#cfc5b9";
+const CRATER_DEPTH = "#9f958a";
+const STAR_COLOR = "#f5f6f7";
 
 const CRATERS = [
   { x: -0.27, y: -0.48, radius: 0.115, depth: 0.24 },
@@ -50,7 +50,7 @@ function getStars() {
       radius: 0.65 + random() * 1.7,
       baseAlpha: 0.38 + random() * 0.42,
       twinkle: 0.1 + random() * 0.2,
-      periodMs: 2400 + random() * 3200,
+      periodMs: 2000 + random() * 2800,
       phase: random() * Math.PI * 2,
     });
   }
@@ -60,19 +60,29 @@ function getStars() {
 }
 
 function getCanvasContext(canvas: HTMLCanvasElement) {
-  if (typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent)) {
+  if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
     return null;
   }
 
   try {
-    return canvas.getContext('2d');
+    return canvas.getContext("2d");
   } catch {
     return null;
   }
 }
 
-function drawStar(ctx: CanvasRenderingContext2D, width: number, height: number, elapsedMs: number, animate: boolean, star: ReturnType<typeof getStars>[number]) {
-  const oscillation = animate ? Math.sin((elapsedMs / star.periodMs) * Math.PI * 2 + star.phase) * star.twinkle : 0;
+function drawStar(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  elapsedMs: number,
+  animate: boolean,
+  star: ReturnType<typeof getStars>[number],
+) {
+  const oscillation = animate
+    ? Math.sin((elapsedMs / star.periodMs) * Math.PI * 2 + star.phase) *
+      star.twinkle
+    : 0;
 
   ctx.globalAlpha = Math.max(0.14, Math.min(1, star.baseAlpha + oscillation));
   ctx.fillStyle = STAR_COLOR;
@@ -82,7 +92,13 @@ function drawStar(ctx: CanvasRenderingContext2D, width: number, height: number, 
   ctx.globalAlpha = 1;
 }
 
-function drawCrater(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, moonRadius: number, crater: (typeof CRATERS)[number]) {
+function drawCrater(
+  ctx: CanvasRenderingContext2D,
+  centerX: number,
+  centerY: number,
+  moonRadius: number,
+  crater: (typeof CRATERS)[number],
+) {
   const craterX = centerX + crater.x * moonRadius;
   const craterY = centerY + crater.y * moonRadius;
   const craterRadius = crater.radius * moonRadius;
@@ -108,7 +124,13 @@ function drawCrater(ctx: CanvasRenderingContext2D, centerX: number, centerY: num
   ctx.restore();
 }
 
-function drawMoonScene(ctx: CanvasRenderingContext2D, width: number, height: number, elapsedMs: number, animate: boolean) {
+function drawMoonScene(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  elapsedMs: number,
+  animate: boolean,
+) {
   ctx.clearRect(0, 0, width, height);
 
   for (const star of getStars()) {
@@ -131,7 +153,15 @@ function drawMoonScene(ctx: CanvasRenderingContext2D, width: number, height: num
 
   ctx.fillStyle = MOON_FILL;
   ctx.beginPath();
-  ctx.ellipse(moonX - moonRadius * 0.28, moonY - moonRadius * 0.03, moonRadius * 0.98, moonRadius * 1.02, -0.16, 0, Math.PI * 2);
+  ctx.ellipse(
+    moonX - moonRadius * 0.28,
+    moonY - moonRadius * 0.03,
+    moonRadius * 0.98,
+    moonRadius * 1.02,
+    -0.16,
+    0,
+    Math.PI * 2,
+  );
   ctx.fill();
 
   for (const crater of CRATERS) {
@@ -169,7 +199,13 @@ export default function MoonInterlude() {
       }
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawMoonScene(ctx, displayWidth, displayHeight, elapsedMs, !reducedMotion);
+      drawMoonScene(
+        ctx,
+        displayWidth,
+        displayHeight,
+        elapsedMs,
+        !reducedMotion,
+      );
     };
 
     const onAnimationFrame = (timestamp: number) => {
@@ -185,14 +221,14 @@ export default function MoonInterlude() {
 
     let cleanupResize: (() => void) | undefined;
 
-    if (typeof ResizeObserver === 'function') {
+    if (typeof ResizeObserver === "function") {
       const resizeObserver = new ResizeObserver(() => drawCurrentFrame(0));
       resizeObserver.observe(canvas);
       cleanupResize = () => resizeObserver.disconnect();
     } else {
       const onResize = () => drawCurrentFrame(0);
-      window.addEventListener('resize', onResize);
-      cleanupResize = () => window.removeEventListener('resize', onResize);
+      window.addEventListener("resize", onResize);
+      cleanupResize = () => window.removeEventListener("resize", onResize);
     }
 
     if (!reducedMotion) {
@@ -209,7 +245,15 @@ export default function MoonInterlude() {
   }, [reducedMotion]);
 
   return (
-    <figure className={styles.container} role="img" aria-label={reducedMotion ? 'Static moon illustration with stars between chapter 6 and chapter 7.' : 'Animated moon illustration with softly blinking stars between chapter 6 and chapter 7.'}>
+    <figure
+      className={styles.container}
+      role="img"
+      aria-label={
+        reducedMotion
+          ? "Static moon illustration with stars between chapter 6 and chapter 7."
+          : "Animated moon illustration with softly blinking stars between chapter 6 and chapter 7."
+      }
+    >
       <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     </figure>
   );
