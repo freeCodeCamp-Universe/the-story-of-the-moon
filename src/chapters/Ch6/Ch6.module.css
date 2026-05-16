@@ -60,6 +60,11 @@
   margin: 0;
 }
 
+.figureStack {
+  display: grid;
+  gap: var(--space-lg);
+}
+
 .figureFrame {
   overflow: hidden;
   border: 1px solid var(--color-border);

@@ -158,16 +158,28 @@ const assets = [
     "alt": "A near-vertical view of the Mare Tranquillitatis pit: a dark circular opening in the mare plain, with a smooth illuminated floor and scattered boulders inside."
   },
   {
-    "id": "moon-nearside-farside",
-    "file": "moon/nearside-farside.jpg",
-    "source": "NASA Moon Formation page",
-    "sourceUrl": "https://science.nasa.gov/moon/formation/",
-    "originalImageUrl": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/lunar-science/internal_resources/588/moon-nearside-farside_copy.jpg",
-    "author": "NASA",
+    "id": "moon-near-side",
+    "file": "moon/lunar-near-side.jpg",
+    "source": "NASA Science resource page, Lunar Near Side",
+    "sourceUrl": "https://science.nasa.gov/resource/lunar-near-side-2/",
+    "originalImageUrl": "https://assets.science.nasa.gov/content/dam/science/psd/lunar-science/2023/08/133_lro_nearside.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg",
+    "author": "NASA / Goddard Space Flight Center / Arizona State University",
     "license": "PD-USGov-NASA",
     "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-    "attributionText": "The Moon's near side and far side. NASA.",
-    "alt": "A side-by-side comparison of the Moon's near side and far side, showing the darker maria concentrated on the near side and the brighter, more heavily cratered far side."
+    "attributionText": "Near side of Earth's Moon. NASA / Goddard Space Flight Center / Arizona State University.",
+    "alt": "Near side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, with broad dark maria spread across the face."
+  },
+  {
+    "id": "moon-far-side",
+    "file": "moon/lunar-far-side.jpg",
+    "source": "NASA Science resource page, Lunar Far Side",
+    "sourceUrl": "https://science.nasa.gov/resource/lunar-far-side-2/",
+    "originalImageUrl": "https://assets.science.nasa.gov/content/dam/science/psd/lunar-science/2023/08/134_lro_farside.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg",
+    "author": "NASA / Goddard Space Flight Center / Arizona State University",
+    "license": "PD-USGov-NASA",
+    "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "attributionText": "Far side of Earth's Moon. NASA / Goddard Space Flight Center / Arizona State University.",
+    "alt": "Far side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, showing a brighter, densely cratered surface with almost no dark maria."
   },
   {
     "id": "apollo-9-lm",

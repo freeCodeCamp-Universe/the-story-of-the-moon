@@ -32,7 +32,8 @@ function ChapterFigure({ credit }: ChapterFigureProps) {
 export default function Ch6() {
   const erlangerCredit = getAsset("erlanger-crater");
   const tranquillitatisCredit = getAsset("tranquillitatis-pit");
-  const moonHalvesCredit = getAsset("moon-nearside-farside");
+  const moonNearSideCredit = getAsset("moon-near-side");
+  const moonFarSideCredit = getAsset("moon-far-side");
 
   return (
     <>
@@ -156,7 +157,10 @@ export default function Ch6() {
               </p>
             </div>
           </div>
-          <ChapterFigure credit={moonHalvesCredit} />
+          <div className={styles.figureStack}>
+            <ChapterFigure credit={moonNearSideCredit} />
+            <ChapterFigure credit={moonFarSideCredit} />
+          </div>
         </div>
       </section>
     </>
