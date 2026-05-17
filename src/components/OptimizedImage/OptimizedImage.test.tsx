@@ -28,4 +28,24 @@ describe('OptimizedImage', () => {
     expect(container.querySelector('source')).toBeNull();
     expect(screen.getByAltText('Diagram')).toHaveAttribute('src', '/ch3/with-moon.svg');
   });
+
+  it('uses custom responsive webp sources when provided', () => {
+    const { container } = render(
+      <OptimizedImage
+        src="/ch2/hertzsprung.jpg"
+        webpSrcSet="/ch2/hertzsprung-800.webp 800w, /ch2/hertzsprung-1600.webp 1600w"
+        sizes="(min-width: 700px) 50vw, 100vw"
+        alt="Hertzsprung basin"
+      />
+    );
+
+    expect(container.querySelector('source')).toHaveAttribute(
+      'srcset',
+      '/ch2/hertzsprung-800.webp 800w, /ch2/hertzsprung-1600.webp 1600w'
+    );
+    expect(container.querySelector('source')).toHaveAttribute(
+      'sizes',
+      '(min-width: 700px) 50vw, 100vw'
+    );
+  });
 });

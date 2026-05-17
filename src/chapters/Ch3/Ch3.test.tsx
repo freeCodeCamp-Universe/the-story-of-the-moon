@@ -8,6 +8,8 @@ const sceneHandle = {
   setShowEclipse: vi.fn(),
   setShowFullMoon: vi.fn(),
   setShowLunarEclipse: vi.fn(),
+  pause: vi.fn(),
+  resume: vi.fn(),
   dispose: vi.fn(),
 };
 

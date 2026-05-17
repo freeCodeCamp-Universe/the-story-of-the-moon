@@ -16,6 +16,8 @@ export type MoonSceneHandle = {
   setOverlay: (overlayId: string | null) => void;
   setCameraTarget: (target: { lat: number; lon: number }) => void;
   setView: (view: string) => void;
+  pause: () => void;
+  resume: () => void;
   /** Toggle user camera control (drag-to-rotate). */
   setControlsEnabled: (enabled: boolean) => void;
   /**
@@ -245,7 +247,7 @@ export function createMoonScene(
   });
   resizeObserver.observe(canvas.parentElement ?? canvas);
 
-  renderer.setAnimationLoop(() => {
+  const renderFrame = () => {
     if (tweenDuration > 0) {
       const elapsed = performance.now() - tweenStart;
       const t = Math.min(elapsed / tweenDuration, 1);
@@ -263,7 +265,29 @@ export function createMoonScene(
     }
     controls.update();
     renderer.render(scene, camera);
-  });
+  };
+
+  let isLoopRunning = false;
+
+  const resume = () => {
+    if (disposed || isLoopRunning) {
+      return;
+    }
+
+    isLoopRunning = true;
+    renderer.setAnimationLoop(renderFrame);
+  };
+
+  const pause = () => {
+    if (!isLoopRunning) {
+      return;
+    }
+
+    isLoopRunning = false;
+    renderer.setAnimationLoop(null);
+  };
+
+  resume();
 
   // Reused vectors for projectFeature so we don't allocate per frame.
   const projCenter = new THREE.Vector3();
@@ -281,6 +305,8 @@ export function createMoonScene(
     setView(view: string) {
       scene.userData.view = view;
     },
+    pause,
+    resume,
     setControlsEnabled(enabled: boolean) {
       controls.enabled = enabled;
     },
@@ -341,7 +367,7 @@ export function createMoonScene(
     },
     dispose() {
       disposed = true;
-      renderer.setAnimationLoop(null);
+      pause();
       resizeObserver.disconnect();
       controls.dispose();
       geometry.dispose();

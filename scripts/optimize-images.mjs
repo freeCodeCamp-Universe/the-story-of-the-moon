@@ -1,5 +1,5 @@
 import process from "node:process";
-import { readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
+import { readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,11 +22,25 @@ const qualityOverrides = new Map([
   ["moon/moon-8k.jpg", { jpeg: 82, webp: 80 }],
 ]);
 
+const responsiveVariantWidths = new Map([
+  ["ch2/hertzsprung.jpg", [800, 1600]],
+  ["ch2/hertzsprung-topographic.jpg", [800, 1600]],
+  ["ch2/orientale-lro.png", [800, 1600]],
+  ["ch2/orientale-topographic.jpg", [800, 1600]],
+]);
+const responsiveVariantAssets = new Set(responsiveVariantWidths.keys());
+
 const defaultQuality = { jpeg: 76, webp: 74 };
-const rasterPattern = /\.(jpe?g)$/i;
+const rasterPattern = /\.(jpe?g|png)$/i;
+const jpegPattern = /\.jpe?g$/i;
+const pngPattern = /\.png$/i;
 
 function replaceExtension(filePath, nextExtension) {
   return filePath.replace(rasterPattern, nextExtension);
+}
+
+function insertWidthSuffix(filePath, width) {
+  return filePath.replace(rasterPattern, `-${width}$&`);
 }
 
 function getTransformOptions(relativePath) {
@@ -50,12 +64,80 @@ async function writeBufferAtomically(outputPath, buffer) {
   await rename(tempPath, outputPath);
 }
 
+async function encodeSourceBuffer(pipeline, relativePath, jpegQuality) {
+  if (jpegPattern.test(relativePath)) {
+    return pipeline
+      .jpeg({
+        quality: jpegQuality,
+        mozjpeg: true,
+        progressive: true,
+        chromaSubsampling: "4:4:4",
+      })
+      .toBuffer();
+  }
+
+  if (pngPattern.test(relativePath)) {
+    return pipeline
+      .png({
+        compressionLevel: 9,
+        adaptiveFiltering: true,
+      })
+      .toBuffer();
+  }
+
+  throw new Error(`Unsupported raster format: ${relativePath}`);
+}
+
+async function encodeWebpBuffer(pipeline, quality) {
+  return pipeline
+    .webp({
+      quality,
+      effort: 6,
+    })
+    .toBuffer();
+}
+
+async function writeResponsiveVariants(relativePath, sourceBuffer, quality) {
+  const widths = responsiveVariantWidths.get(relativePath) ?? [];
+
+  const outputs = [];
+  for (const width of widths) {
+    const outputRelativePath = replaceExtension(
+      insertWidthSuffix(relativePath, width),
+      ".webp",
+    );
+    const outputPath = path.join(publicDir, outputRelativePath);
+    const buffer = await encodeWebpBuffer(
+      sharp(sourceBuffer, { sequentialRead: true })
+        .rotate()
+        .resize({
+          width,
+          fit: "inside",
+          withoutEnlargement: true,
+        }),
+      quality,
+    );
+    await writeBufferAtomically(outputPath, buffer);
+    outputs.push({
+      file: outputRelativePath,
+      size: buffer.byteLength,
+    });
+  }
+
+  return outputs;
+}
+
+async function removeFileIfPresent(filePath) {
+  await rm(filePath, { force: true });
+}
+
 async function optimizeAsset(relativePath) {
   const inputPath = path.join(publicDir, relativePath);
   const webpPath = path.join(
     publicDir,
     replaceExtension(relativePath, ".webp"),
   );
+  const shouldGenerateDefaultWebp = !responsiveVariantAssets.has(relativePath);
   const sourceBuffer = await readFile(inputPath);
   const { maxWidth, jpeg, webp } = getTransformOptions(relativePath);
 
@@ -73,45 +155,48 @@ async function optimizeAsset(relativePath) {
 
   const before = sourceBuffer.byteLength;
 
-  await writeFileAtomically(
-    inputPath,
-    buildPipeline().jpeg({
-      quality: jpeg,
-      mozjpeg: true,
-      progressive: true,
-      chromaSubsampling: "4:4:4",
-    }),
+  const sourceCandidate = await encodeSourceBuffer(
+    buildPipeline(),
+    relativePath,
+    jpeg,
   );
+  const optimizedSource =
+    maxWidth || sourceCandidate.byteLength < sourceBuffer.byteLength
+      ? sourceCandidate
+      : sourceBuffer;
+  await writeBufferAtomically(inputPath, optimizedSource);
 
-  const optimizedJpeg = await readFile(inputPath);
   let webpQuality = webp;
-  let optimizedWebp = await buildPipeline()
-    .webp({
-      quality: webpQuality,
-      effort: 6,
-    })
-    .toBuffer();
+  let optimizedWebp = Buffer.alloc(0);
 
-  while (
-    optimizedWebp.byteLength >= optimizedJpeg.byteLength &&
-    webpQuality > 56
-  ) {
-    webpQuality -= 6;
-    optimizedWebp = await buildPipeline()
-      .webp({
-        quality: webpQuality,
-        effort: 6,
-      })
-      .toBuffer();
+  if (shouldGenerateDefaultWebp) {
+    optimizedWebp = await encodeWebpBuffer(buildPipeline(), webpQuality);
+
+    while (
+      optimizedWebp.byteLength >= optimizedSource.byteLength &&
+      webpQuality > 56
+    ) {
+      webpQuality -= 6;
+      optimizedWebp = await encodeWebpBuffer(buildPipeline(), webpQuality);
+    }
+
+    await writeBufferAtomically(webpPath, optimizedWebp);
+  } else {
+    await removeFileIfPresent(webpPath);
   }
 
-  await writeBufferAtomically(webpPath, optimizedWebp);
+  const responsiveVariants = await writeResponsiveVariants(
+    relativePath,
+    sourceBuffer,
+    webpQuality,
+  );
 
   return {
     relativePath,
     before,
-    jpegAfter: optimizedJpeg.byteLength,
+    sourceAfter: optimizedSource.byteLength,
     webpAfter: optimizedWebp.byteLength,
+    responsiveVariants,
   };
 }
 
@@ -183,13 +268,15 @@ function toRelativePublicPath(absolutePath) {
 }
 
 export async function resolveRequestedFiles(inputs = []) {
-  if (inputs.length === 0) {
+  const filteredInputs = inputs.filter((input) => input !== "--");
+
+  if (filteredInputs.length === 0) {
     return collectRasterAssets(publicDir);
   }
 
   const requestedFiles = new Set();
 
-  for (const input of inputs) {
+  for (const input of filteredInputs) {
     const absoluteInputPath = resolveInputPath(input);
     const inputStats = await stat(absoluteInputPath);
     const relativePublicPath = toRelativePublicPath(absoluteInputPath);
@@ -209,7 +296,7 @@ export async function resolveRequestedFiles(inputs = []) {
 
     if (!rasterPattern.test(relativePublicPath)) {
       throw new Error(
-        `Asset path must point to a .jpg or .jpeg file: ${input}`,
+        `Asset path must point to a .jpg, .jpeg, or .png file: ${input}`,
       );
     }
 
@@ -228,12 +315,21 @@ export async function main(args = process.argv.slice(2)) {
   }
 
   const totalBefore = results.reduce((sum, result) => sum + result.before, 0);
-  const totalJpegAfter = results.reduce(
-    (sum, result) => sum + result.jpegAfter,
+  const totalSourceAfter = results.reduce(
+    (sum, result) => sum + result.sourceAfter,
     0,
   );
   const totalWebpAfter = results.reduce(
     (sum, result) => sum + result.webpAfter,
+    0,
+  );
+  const totalResponsiveWebpAfter = results.reduce(
+    (sum, result) =>
+      sum +
+      result.responsiveVariants.reduce(
+        (variantSum, variant) => variantSum + variant.size,
+        0,
+      ),
     0,
   );
 
@@ -242,14 +338,23 @@ export async function main(args = process.argv.slice(2)) {
     results.map((result) => ({
       file: result.relativePath,
       before: formatSize(result.before),
-      jpeg: formatSize(result.jpegAfter),
-      webp: formatSize(result.webpAfter),
+      source: formatSize(result.sourceAfter),
+      webp: result.webpAfter === 0 ? "—" : formatSize(result.webpAfter),
+      responsiveWebp:
+        result.responsiveVariants.length === 0
+          ? "—"
+          : result.responsiveVariants
+              .map((variant) => `${variant.file} (${formatSize(variant.size)})`)
+              .join(", "),
     })),
   );
   console.log(
-    `JPEG total: ${formatSize(totalBefore)} -> ${formatSize(totalJpegAfter)}`,
+    `Source total: ${formatSize(totalBefore)} -> ${formatSize(totalSourceAfter)}`,
   );
   console.log(`WebP siblings total: ${formatSize(totalWebpAfter)}`);
+  console.log(
+    `Responsive WebP variants total: ${formatSize(totalResponsiveWebpAfter)}`,
+  );
 }
 
 if (

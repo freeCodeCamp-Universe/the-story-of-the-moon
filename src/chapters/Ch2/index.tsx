@@ -11,6 +11,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import ScrollyChapter from "@/components/ScrollyChapter";
 import { getAsset, surfaceFeatures } from "@/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useViewportActivity } from "@/hooks/useViewportActivity";
 import type { SurfaceFeature } from "@/types/content";
 import type { MoonSceneHandle } from "@/three/moonScene";
 import styles from "./Ch2.module.css";
@@ -18,6 +19,23 @@ import styles from "./Ch2.module.css";
 const surfaceFeaturesHeadingId = "ch2-surface-features-heading";
 const basinCompareHintId = "ch2-basin-compare-hint";
 const basinCompareLiveId = "ch2-basin-compare-live";
+const compareImageSizes = "(min-width: 700px) 50vw, 100vw";
+const hertzsprungWebpSrcSet = [
+  "/ch2/hertzsprung-800.webp 800w",
+  "/ch2/hertzsprung-1600.webp 1600w",
+].join(", ");
+const hertzsprungTopographicWebpSrcSet = [
+  "/ch2/hertzsprung-topographic-800.webp 800w",
+  "/ch2/hertzsprung-topographic-1600.webp 1600w",
+].join(", ");
+const orientaleWebpSrcSet = [
+  "/ch2/orientale-lro-800.webp 800w",
+  "/ch2/orientale-lro-1600.webp 1600w",
+].join(", ");
+const orientaleTopographicWebpSrcSet = [
+  "/ch2/orientale-topographic-800.webp 800w",
+  "/ch2/orientale-topographic-1600.webp 1600w",
+].join(", ");
 
 function formatLatLon(lat: number, lon: number): string {
   const latDir = lat >= 0 ? "N" : "S";
@@ -37,6 +55,11 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   const isInteractingRef = useRef(false);
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
+  const [shouldLoadScene, setShouldLoadScene] = useState(false);
+  const { targetRef, isNearViewport, isVisible } =
+    useViewportActivity<HTMLDivElement>({
+      rootMargin: "320px 0px",
+    });
 
   // Active feature needs to be reachable from the RAF loop without
   // re-triggering the loop effect on every change.
@@ -44,6 +67,16 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   activeFeatureRef.current = activeFeature;
 
   useEffect(() => {
+    if (isNearViewport) {
+      setShouldLoadScene(true);
+    }
+  }, [isNearViewport]);
+
+  useEffect(() => {
+    if (!shouldLoadScene) {
+      return;
+    }
+
     let disposed = false;
     import("@/three/moonScene")
       .then(({ createMoonScene }) => {
@@ -68,6 +101,9 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
           return;
         }
         sceneRef.current = handle;
+        if (!isVisible) {
+          handle.pause();
+        }
         setSceneReady(true);
       })
       .catch(() => {
@@ -78,7 +114,20 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, []);
+  }, [isVisible, shouldLoadScene]);
+
+  useEffect(() => {
+    if (!sceneReady || !sceneRef.current) {
+      return;
+    }
+
+    if (isVisible) {
+      sceneRef.current.resume();
+      return;
+    }
+
+    sceneRef.current.pause();
+  }, [isVisible, sceneReady]);
 
   // Free-rotate interaction.
   //
@@ -232,6 +281,10 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   // screen position each frame. Manipulating DOM directly avoids React
   // re-renders during the animation.
   useEffect(() => {
+    if (!sceneReady || !isVisible) {
+      return;
+    }
+
     const tick = () => {
       const handle = sceneRef.current;
       const label = labelRef.current;
@@ -271,20 +324,23 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isVisible, sceneReady]);
 
   if (!webglAvailable) {
     return (
-      <OptimizedImage
-        className={styles.fallbackStatic}
-        src="/moon/moon-2k.jpg"
-        alt=""
-      />
+      <div ref={targetRef} className={styles.visualSlot}>
+        <OptimizedImage
+          className={styles.fallbackStatic}
+          src="/moon/moon-2k.jpg"
+          alt=""
+        />
+      </div>
     );
   }
 
   return (
     <div
+      ref={targetRef}
       className={styles.visualSlot}
       tabIndex={0}
       role="group"
@@ -513,11 +569,14 @@ function IntroProse() {
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
                 originalSrc="/ch2/hertzsprung.jpg"
+                originalWebpSrcSet={hertzsprungWebpSrcSet}
                 originalAlt={hertzsprungAsset.alt}
                 originalLabel="Original"
                 topographicSrc="/ch2/hertzsprung-topographic.jpg"
+                topographicWebpSrcSet={hertzsprungTopographicWebpSrcSet}
                 topographicLabel="Topographic"
                 describedBy={basinCompareHintId}
+                sizes={compareImageSizes}
                 value={hertzsprungCompareValue}
                 onValueChange={setHertzsprungCompareValue}
               />
@@ -532,11 +591,14 @@ function IntroProse() {
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
                 originalSrc="/ch2/orientale-lro.png"
+                originalWebpSrcSet={orientaleWebpSrcSet}
                 originalAlt={orientaleAsset.alt}
                 originalLabel="Original"
                 topographicSrc="/ch2/orientale-topographic.jpg"
+                topographicWebpSrcSet={orientaleTopographicWebpSrcSet}
                 topographicLabel="Topographic"
                 describedBy={basinCompareHintId}
+                sizes={compareImageSizes}
                 value={orientaleCompareValue}
                 onValueChange={setOrientaleCompareValue}
               />

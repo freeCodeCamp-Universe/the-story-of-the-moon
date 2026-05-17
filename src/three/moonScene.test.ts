@@ -195,6 +195,25 @@ describe('createMoonScene', () => {
     expect(geometryInstance.dispose).toHaveBeenCalledTimes(1);
   });
 
+  it('can pause and resume the animation loop', () => {
+    const canvas = makeMockCanvas(true);
+    const handle = createMoonScene(canvas);
+
+    expect(handle).not.toBeNull();
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setAnimationLoop: ReturnType<typeof vi.fn>;
+    };
+
+    handle?.pause();
+    handle?.resume();
+
+    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(2, null);
+    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(3, expect.any(Function));
+  });
+
   it('returns null when WebGL is unavailable', () => {
     const canvas = makeMockCanvas(false);
 

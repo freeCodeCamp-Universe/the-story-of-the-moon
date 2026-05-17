@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ScrollyChapter, { type ScrollyStep } from '@/components/ScrollyChapter';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { EarthMoonSceneHandle } from '@/three/earthMoonScene';
 import styles from './Ch3.module.css';
 
@@ -138,8 +139,21 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
   const sceneRef = useRef<EarthMoonSceneHandle>(null);
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
+  const [shouldLoadScene, setShouldLoadScene] = useState(false);
+  const { targetRef, isNearViewport, isVisible } =
+    useViewportActivity<HTMLDivElement>({
+      rootMargin: '320px 0px',
+    });
 
   useEffect(() => {
+    if (isNearViewport) {
+      setShouldLoadScene(true);
+    }
+  }, [isNearViewport]);
+
+  useEffect(() => {
+    if (!shouldLoadScene) return;
+
     let disposed = false;
     import('@/three/earthMoonScene')
       .then(({ createEarthMoonScene }) => {
@@ -150,6 +164,9 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
           return;
         }
         sceneRef.current = handle;
+        if (!isVisible) {
+          handle.pause();
+        }
         setSceneReady(true);
       })
       .catch(() => {
@@ -160,7 +177,18 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, []);
+  }, [isVisible, shouldLoadScene]);
+
+  useEffect(() => {
+    if (!sceneReady || !sceneRef.current) return;
+
+    if (isVisible) {
+      sceneRef.current.resume();
+      return;
+    }
+
+    sceneRef.current.pause();
+  }, [isVisible, sceneReady]);
 
   // Runs once on scene-ready to apply the initial step's state, and
   // again whenever the active step changes.
@@ -175,11 +203,15 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
   }, [sceneReady, activeStepId]);
 
   if (!webglAvailable) {
-    return <img className={styles.fallbackDiagram} src="/ch3/with-moon.svg" alt="Schematic showing the Sun, Earth, and Moon in alignment" />;
+    return (
+      <div ref={targetRef} className={styles.visualSlot}>
+        <img className={styles.fallbackDiagram} src="/ch3/with-moon.svg" alt="Schematic showing the Sun, Earth, and Moon in alignment" />
+      </div>
+    );
   }
 
   return (
-    <div className={styles.visualSlot}>
+    <div ref={targetRef} className={styles.visualSlot}>
       <canvas ref={canvasRef} className={styles.canvas} />
       <p className={styles.scaleNote}>not to scale</p>
     </div>

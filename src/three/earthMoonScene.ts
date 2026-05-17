@@ -12,6 +12,8 @@ export type EarthMoonSceneHandle = {
   setShowEclipse: (value: boolean) => void;
   setShowFullMoon: (value: boolean) => void;
   setShowLunarEclipse: (value: boolean) => void;
+  pause: () => void;
+  resume: () => void;
   dispose: () => void;
 } | null;
 
@@ -390,8 +392,9 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   resizeObserver.observe(canvas.parentElement ?? canvas);
 
   const clock = new THREE.Clock();
+  clock.stop();
 
-  renderer.setAnimationLoop(() => {
+  const renderFrame = () => {
     const dt = Math.min(clock.getDelta(), 0.1);
 
     // Earth spin (local Y of tiltGroup).
@@ -463,7 +466,31 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
     }
 
     renderer.render(scene, camera);
-  });
+  };
+
+  let isLoopRunning = false;
+
+  const resume = () => {
+    if (isLoopRunning) {
+      return;
+    }
+
+    isLoopRunning = true;
+    clock.start();
+    renderer.setAnimationLoop(renderFrame);
+  };
+
+  const pause = () => {
+    if (!isLoopRunning) {
+      return;
+    }
+
+    isLoopRunning = false;
+    renderer.setAnimationLoop(null);
+    clock.stop();
+  };
+
+  resume();
 
   return {
     setWithMoon(value: boolean) {
@@ -495,8 +522,10 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
         showFullMoon = false;
       }
     },
+    pause,
+    resume,
     dispose() {
-      renderer.setAnimationLoop(null);
+      pause();
       resizeObserver.disconnect();
       sunGeometry.dispose();
       earthGeometry.dispose();

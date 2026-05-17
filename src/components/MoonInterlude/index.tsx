@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useViewportActivity } from "@/hooks/useViewportActivity";
 import styles from "./MoonInterlude.module.css";
 
 const MOON_FILL = "#f1e8db";
@@ -174,6 +175,9 @@ function drawMoonScene(
 export default function MoonInterlude() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const reducedMotion = useReducedMotion();
+  const { targetRef, isVisible } = useViewportActivity<HTMLElement>({
+    rootMargin: "240px 0px",
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -184,8 +188,13 @@ export default function MoonInterlude() {
 
     let frameId: number | null = null;
     let startTime: number | null = null;
+    const sizeRef = {
+      width: 1,
+      height: 1,
+      dpr: 1,
+    };
 
-    const drawCurrentFrame = (elapsedMs: number) => {
+    const updateCanvasSize = () => {
       const bounds = canvas.getBoundingClientRect();
       const displayWidth = Math.max(1, Math.round(bounds.width));
       const displayHeight = Math.max(1, Math.round(bounds.height));
@@ -193,16 +202,22 @@ export default function MoonInterlude() {
       const nextWidth = Math.round(displayWidth * dpr);
       const nextHeight = Math.round(displayHeight * dpr);
 
+      sizeRef.width = displayWidth;
+      sizeRef.height = displayHeight;
+      sizeRef.dpr = dpr;
+
       if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
         canvas.width = nextWidth;
         canvas.height = nextHeight;
       }
+    };
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const drawCurrentFrame = (elapsedMs: number) => {
+      ctx.setTransform(sizeRef.dpr, 0, 0, sizeRef.dpr, 0, 0);
       drawMoonScene(
         ctx,
-        displayWidth,
-        displayHeight,
+        sizeRef.width,
+        sizeRef.height,
         elapsedMs,
         !reducedMotion,
       );
@@ -217,21 +232,28 @@ export default function MoonInterlude() {
       frameId = window.requestAnimationFrame(onAnimationFrame);
     };
 
+    updateCanvasSize();
     drawCurrentFrame(0);
 
     let cleanupResize: (() => void) | undefined;
 
     if (typeof ResizeObserver === "function") {
-      const resizeObserver = new ResizeObserver(() => drawCurrentFrame(0));
+      const resizeObserver = new ResizeObserver(() => {
+        updateCanvasSize();
+        drawCurrentFrame(0);
+      });
       resizeObserver.observe(canvas);
       cleanupResize = () => resizeObserver.disconnect();
     } else {
-      const onResize = () => drawCurrentFrame(0);
+      const onResize = () => {
+        updateCanvasSize();
+        drawCurrentFrame(0);
+      };
       window.addEventListener("resize", onResize);
       cleanupResize = () => window.removeEventListener("resize", onResize);
     }
 
-    if (!reducedMotion) {
+    if (!reducedMotion && isVisible) {
       frameId = window.requestAnimationFrame(onAnimationFrame);
     }
 
@@ -242,10 +264,11 @@ export default function MoonInterlude() {
 
       cleanupResize?.();
     };
-  }, [reducedMotion]);
+  }, [isVisible, reducedMotion]);
 
   return (
     <figure
+      ref={targetRef}
       className={styles.container}
       role="img"
       aria-label={
