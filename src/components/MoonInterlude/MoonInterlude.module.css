@@ -1,19 +1,56 @@
 .container {
+  position: relative;
   width: 100%;
+  height: clamp(18rem, 54vh, 34rem);
   margin: 0;
   padding: 0;
   background: transparent;
-}
-
-.canvas {
-  display: block;
-  width: 100%;
-  height: clamp(18rem, 54vh, 34rem);
-  background: transparent;
+  overflow: hidden;
+  container-type: size;
 }
 
 @media (min-width: 768px) {
-  .canvas {
+  .container {
     height: clamp(24rem, 58vh, 42rem);
+  }
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: moon-interlude-twinkle var(--moon-star-duration) ease-in-out infinite;
+  animation-delay: var(--moon-star-delay);
+}
+
+.moonWrapper {
+  position: absolute;
+  inset-inline-start: 30cqi;
+  inset-block-start: 34cqb;
+  inline-size: min(31cqi, 57cqb);
+  block-size: min(31cqi, 57cqb);
+  transform: translate(-50%, -50%);
+}
+
+.moonSvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@keyframes moon-interlude-twinkle {
+  0%,
+  100% {
+    opacity: var(--moon-star-low);
+  }
+  50% {
+    opacity: var(--moon-star-high);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    animation: none;
   }
 }

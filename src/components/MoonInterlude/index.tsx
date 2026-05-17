@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
+import type { CSSProperties } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useViewportActivity } from "@/hooks/useViewportActivity";
 import styles from "./MoonInterlude.module.css";
 
 const MOON_FILL = "#f1e8db";
@@ -8,6 +7,10 @@ const MOON_SHADE = "#b8aea2";
 const CRATER_FLOOR = "#cfc5b9";
 const CRATER_DEPTH = "#9f958a";
 const STAR_COLOR = "#f5f6f7";
+
+const MOON_VIEW = 100;
+const MOON_CENTER = MOON_VIEW / 2;
+const MOON_R = MOON_VIEW / 2;
 
 const CRATERS = [
   { x: -0.27, y: -0.48, radius: 0.115, depth: 0.24 },
@@ -23,252 +26,68 @@ const CRATERS = [
   { x: -0.05, y: 0.11, radius: 0.06, depth: 0.14 },
 ];
 
-let starsCache: Array<{
-  x: number;
-  y: number;
-  radius: number;
-  baseAlpha: number;
-  twinkle: number;
-  periodMs: number;
-  phase: number;
-}> | null = null;
+const LIT_FACE_CX = MOON_CENTER - MOON_R * 0.28;
+const LIT_FACE_CY = MOON_CENTER - MOON_R * 0.03;
+const LIT_FACE_ROTATION_DEG = (-0.16 * 180) / Math.PI;
 
-function getStars() {
-  if (starsCache) return starsCache;
+type Star = {
+  xPct: number;
+  yPct: number;
+  diameterPx: number;
+  low: number;
+  high: number;
+  duration: string;
+  delay: string;
+};
 
+function generateStars(): Star[] {
   let seed = 1701;
   const random = () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
     return seed / 4294967296;
   };
 
-  const stars = [];
+  const stars: Star[] = [];
+  for (let i = 0; i < 72; i += 1) {
+    const x = 0.02 + random() * 0.96;
+    const y = 0.04 + random() * 0.9;
+    const radius = 0.65 + random() * 1.7;
+    const baseAlpha = 0.38 + random() * 0.42;
+    const twinkle = 0.1 + random() * 0.2;
+    const periodMs = 2000 + random() * 2800;
+    const phase = random() * Math.PI * 2;
+    const periodSeconds = periodMs / 1000;
 
-  for (let index = 0; index < 72; index += 1) {
     stars.push({
-      x: 0.02 + random() * 0.96,
-      y: 0.04 + random() * 0.9,
-      radius: 0.65 + random() * 1.7,
-      baseAlpha: 0.38 + random() * 0.42,
-      twinkle: 0.1 + random() * 0.2,
-      periodMs: 2000 + random() * 2800,
-      phase: random() * Math.PI * 2,
+      xPct: x * 100,
+      yPct: y * 100,
+      diameterPx: radius * 2,
+      low: Math.max(0.14, baseAlpha - twinkle),
+      high: Math.min(1, baseAlpha + twinkle),
+      duration: `${periodSeconds.toFixed(3)}s`,
+      delay: `${(-(phase / (Math.PI * 2)) * periodSeconds).toFixed(3)}s`,
     });
   }
-
-  starsCache = stars;
   return stars;
 }
 
-function getCanvasContext(canvas: HTMLCanvasElement) {
-  if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
-    return null;
-  }
+const STARS = generateStars();
 
-  try {
-    return canvas.getContext("2d");
-  } catch {
-    return null;
-  }
-}
+const MOON_CLIP_ID = "moon-interlude-disc";
+const craterClipId = (index: number) => `moon-interlude-crater-${index}`;
 
-function drawStar(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  elapsedMs: number,
-  animate: boolean,
-  star: ReturnType<typeof getStars>[number],
-) {
-  const oscillation = animate
-    ? Math.sin((elapsedMs / star.periodMs) * Math.PI * 2 + star.phase) *
-      star.twinkle
-    : 0;
-
-  ctx.globalAlpha = Math.max(0.14, Math.min(1, star.baseAlpha + oscillation));
-  ctx.fillStyle = STAR_COLOR;
-  ctx.beginPath();
-  ctx.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-}
-
-function drawCrater(
-  ctx: CanvasRenderingContext2D,
-  centerX: number,
-  centerY: number,
-  moonRadius: number,
-  crater: (typeof CRATERS)[number],
-) {
-  const craterX = centerX + crater.x * moonRadius;
-  const craterY = centerY + crater.y * moonRadius;
-  const craterRadius = crater.radius * moonRadius;
-  const litRadius = craterRadius * (0.9 + crater.depth * 0.06);
-  const litX = craterX + craterRadius * (0.16 + crater.depth * 0.1);
-  const litY = craterY - craterRadius * 0.02;
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(craterX, craterY, craterRadius, 0, Math.PI * 2);
-  ctx.clip();
-
-  ctx.fillStyle = CRATER_DEPTH;
-  ctx.beginPath();
-  ctx.arc(craterX, craterY, craterRadius, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = CRATER_FLOOR;
-  ctx.beginPath();
-  ctx.arc(litX, litY, litRadius, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.restore();
-}
-
-function drawMoonScene(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  elapsedMs: number,
-  animate: boolean,
-) {
-  ctx.clearRect(0, 0, width, height);
-
-  for (const star of getStars()) {
-    drawStar(ctx, width, height, elapsedMs, animate, star);
-  }
-
-  const moonRadius = Math.min(width * 0.155, height * 0.285);
-  const moonX = width * 0.3;
-  const moonY = height * 0.34;
-
-  ctx.fillStyle = MOON_SHADE;
-  ctx.beginPath();
-  ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
-  ctx.clip();
-
-  ctx.fillStyle = MOON_FILL;
-  ctx.beginPath();
-  ctx.ellipse(
-    moonX - moonRadius * 0.28,
-    moonY - moonRadius * 0.03,
-    moonRadius * 0.98,
-    moonRadius * 1.02,
-    -0.16,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
-
-  for (const crater of CRATERS) {
-    drawCrater(ctx, moonX, moonY, moonRadius, crater);
-  }
-
-  ctx.restore();
-}
+type StarStyle = CSSProperties & {
+  "--moon-star-low": string;
+  "--moon-star-high": string;
+  "--moon-star-duration": string;
+  "--moon-star-delay": string;
+};
 
 export default function MoonInterlude() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const reducedMotion = useReducedMotion();
-  const { targetRef, isVisible } = useViewportActivity<HTMLElement>({
-    rootMargin: "240px 0px",
-  });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = getCanvasContext(canvas);
-    if (!ctx) return;
-
-    let frameId: number | null = null;
-    let startTime: number | null = null;
-    const sizeRef = {
-      width: 1,
-      height: 1,
-      dpr: 1,
-    };
-
-    const updateCanvasSize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      const displayWidth = Math.max(1, Math.round(bounds.width));
-      const displayHeight = Math.max(1, Math.round(bounds.height));
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const nextWidth = Math.round(displayWidth * dpr);
-      const nextHeight = Math.round(displayHeight * dpr);
-
-      sizeRef.width = displayWidth;
-      sizeRef.height = displayHeight;
-      sizeRef.dpr = dpr;
-
-      if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
-        canvas.width = nextWidth;
-        canvas.height = nextHeight;
-      }
-    };
-
-    const drawCurrentFrame = (elapsedMs: number) => {
-      ctx.setTransform(sizeRef.dpr, 0, 0, sizeRef.dpr, 0, 0);
-      drawMoonScene(
-        ctx,
-        sizeRef.width,
-        sizeRef.height,
-        elapsedMs,
-        !reducedMotion,
-      );
-    };
-
-    const onAnimationFrame = (timestamp: number) => {
-      if (startTime === null) {
-        startTime = timestamp;
-      }
-
-      drawCurrentFrame(timestamp - startTime);
-      frameId = window.requestAnimationFrame(onAnimationFrame);
-    };
-
-    updateCanvasSize();
-    drawCurrentFrame(0);
-
-    let cleanupResize: (() => void) | undefined;
-
-    if (typeof ResizeObserver === "function") {
-      const resizeObserver = new ResizeObserver(() => {
-        updateCanvasSize();
-        drawCurrentFrame(0);
-      });
-      resizeObserver.observe(canvas);
-      cleanupResize = () => resizeObserver.disconnect();
-    } else {
-      const onResize = () => {
-        updateCanvasSize();
-        drawCurrentFrame(0);
-      };
-      window.addEventListener("resize", onResize);
-      cleanupResize = () => window.removeEventListener("resize", onResize);
-    }
-
-    if (!reducedMotion && isVisible) {
-      frameId = window.requestAnimationFrame(onAnimationFrame);
-    }
-
-    return () => {
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-
-      cleanupResize?.();
-    };
-  }, [isVisible, reducedMotion]);
 
   return (
     <figure
-      ref={targetRef}
       className={styles.container}
       role="img"
       aria-label={
@@ -277,7 +96,83 @@ export default function MoonInterlude() {
           : "Animated moon illustration with softly blinking stars between chapter 6 and chapter 7."
       }
     >
-      <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
+      {STARS.map((star, index) => {
+        const style: StarStyle = {
+          "--moon-star-low": String(star.low),
+          "--moon-star-high": String(star.high),
+          "--moon-star-duration": star.duration,
+          "--moon-star-delay": star.delay,
+          insetInlineStart: `${star.xPct}%`,
+          insetBlockStart: `${star.yPct}%`,
+          inlineSize: `${star.diameterPx}px`,
+          blockSize: `${star.diameterPx}px`,
+          opacity: star.low,
+          background: STAR_COLOR,
+        };
+        return (
+          <span
+            key={index}
+            className={styles.star}
+            style={style}
+            aria-hidden="true"
+          />
+        );
+      })}
+
+      <div className={styles.moonWrapper} aria-hidden="true">
+        <svg
+          className={styles.moonSvg}
+          viewBox={`0 0 ${MOON_VIEW} ${MOON_VIEW}`}
+        >
+          <defs>
+            <clipPath id={MOON_CLIP_ID}>
+              <circle cx={MOON_CENTER} cy={MOON_CENTER} r={MOON_R} />
+            </clipPath>
+            {CRATERS.map((crater, index) => {
+              const cx = MOON_CENTER + crater.x * MOON_R;
+              const cy = MOON_CENTER + crater.y * MOON_R;
+              const r = crater.radius * MOON_R;
+              return (
+                <clipPath id={craterClipId(index)} key={index}>
+                  <circle cx={cx} cy={cy} r={r} />
+                </clipPath>
+              );
+            })}
+          </defs>
+
+          <circle
+            cx={MOON_CENTER}
+            cy={MOON_CENTER}
+            r={MOON_R}
+            fill={MOON_SHADE}
+          />
+
+          <g clipPath={`url(#${MOON_CLIP_ID})`}>
+            <ellipse
+              cx={LIT_FACE_CX}
+              cy={LIT_FACE_CY}
+              rx={MOON_R * 0.98}
+              ry={MOON_R * 1.02}
+              fill={MOON_FILL}
+              transform={`rotate(${LIT_FACE_ROTATION_DEG} ${LIT_FACE_CX} ${LIT_FACE_CY})`}
+            />
+            {CRATERS.map((crater, index) => {
+              const cx = MOON_CENTER + crater.x * MOON_R;
+              const cy = MOON_CENTER + crater.y * MOON_R;
+              const r = crater.radius * MOON_R;
+              const litR = r * (0.9 + crater.depth * 0.06);
+              const litX = cx + r * (0.16 + crater.depth * 0.1);
+              const litY = cy - r * 0.02;
+              return (
+                <g key={index} clipPath={`url(#${craterClipId(index)})`}>
+                  <circle cx={cx} cy={cy} r={r} fill={CRATER_DEPTH} />
+                  <circle cx={litX} cy={litY} r={litR} fill={CRATER_FLOOR} />
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+      </div>
     </figure>
   );
 }
