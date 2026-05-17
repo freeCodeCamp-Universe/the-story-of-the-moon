@@ -267,7 +267,7 @@ function ApproachStage() {
         <text className={styles.label} x={110} y={35}>
           Theia
         </text>
-        <text className={styles.label} x={202} y={186}>
+        <text className={styles.label} x={242} y={182}>
           Earth
         </text>
         <path
