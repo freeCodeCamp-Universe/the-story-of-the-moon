@@ -9,7 +9,7 @@
   max-width: var(--prose-width);
   margin-inline: auto;
   padding-inline: var(--space-lg);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-4xl);
   font-family: var(--font-prose);
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
@@ -62,13 +62,9 @@
   margin-top: 0;
 }
 
-.term p + .termFigure,
-.term p + .termDiptych {
-  margin-top: var(--space-lg);
-}
-
 .termFigure,
 .termDiptych {
+  margin-block: var(--space-lg);
   align-self: center;
   width: min(
     calc(100vw - (4 * var(--space-lg))),
