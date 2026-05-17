@@ -1,0 +1,80 @@
+.figure {
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: var(--space-lg) 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.stage {
+  min-width: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+.stars {
+  isolation: isolate;
+}
+
+.label {
+  fill: var(--color-text);
+  font-family: var(--font-prose);
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.stageTitle {
+  fill: var(--color-text);
+  font-family: var(--font-prose);
+  font-size: 19px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+/* CSS keyframes make the twinkle easy to disable for reduced-motion users. */
+.star {
+  opacity: 0.25;
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .figure {
+    padding-inline: var(--space-md);
+    padding-bottom: var(--space-xl);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    animation: none;
+    opacity: 0.75;
+  }
+}

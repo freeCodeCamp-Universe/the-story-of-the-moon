@@ -1,6 +1,7 @@
 import CreditCaption from "@/components/CreditCaption";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getAsset } from "@/content";
+import GiantImpactDiagram from "./GiantImpactDiagram";
 import styles from "./Ch1.module.css";
 
 export default function Ch1() {
@@ -42,6 +43,11 @@ export default function Ch1() {
           and clumped together, and the largest clump pulled itself into a
           sphere. That sphere became the Moon.
         </p>
+      </div>
+
+      <GiantImpactDiagram />
+
+      <div className={styles.prose}>
         <p className={styles.paragraph}>
           The giant-impact hypothesis remains the favored model because it
           explains anomalies that other theories cannot:
