@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { surfaceFeatures } from "@/content";
@@ -64,10 +65,71 @@ describe("Ch2", () => {
     );
     const basinImages = within(basinSection).getAllByRole("img");
     expect(basinImages).toHaveLength(2);
+    expect(basinSection.querySelectorAll("img")).toHaveLength(4);
+    expect(
+      within(basinSection).getByRole("slider", {
+        name: "Compare Hertzsprung basin original and topographic views",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(basinSection).getByRole("slider", {
+        name: "Compare Mare Orientale original and topographic views",
+      }),
+    ).toBeInTheDocument();
     expect(
       basinParagraph.compareDocumentPosition(basinImages[0]) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).not.toBe(0);
+  });
+
+  it("should let the basin comparison container toggle both images with O and T", async () => {
+    const user = userEvent.setup();
+
+    reducedMotion = false;
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole("group", {
+      name: "Basin image comparisons",
+    });
+    const sliders = within(comparisonGroup).getAllByRole("slider");
+
+    expect(sliders[0]).toHaveValue("50");
+    expect(sliders[1]).toHaveValue("50");
+
+    comparisonGroup.focus();
+    await user.keyboard("t");
+
+    expect(sliders[0]).toHaveValue("0");
+    expect(sliders[1]).toHaveValue("0");
+
+    await user.keyboard("o");
+
+    expect(sliders[0]).toHaveValue("100");
+    expect(sliders[1]).toHaveValue("100");
+  });
+
+  it("should let each basin slider move independently with the keyboard", async () => {
+    const user = userEvent.setup();
+
+    reducedMotion = false;
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole("group", {
+      name: "Basin image comparisons",
+    });
+    const sliders = within(comparisonGroup).getAllByRole("slider");
+
+    sliders[0].focus();
+    await user.keyboard("{ArrowRight}{ArrowRight}");
+
+    expect(sliders[0]).toHaveValue("52");
+    expect(sliders[1]).toHaveValue("50");
+
+    sliders[1].focus();
+    await user.keyboard("{PageDown}");
+
+    expect(sliders[0]).toHaveValue("52");
+    expect(sliders[1]).toHaveValue("40");
   });
 
   it("should preserve the same heading hierarchy in the reduced-motion fallback", () => {

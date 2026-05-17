@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import CreditCaption from "@/components/CreditCaption";
+import ImageCompareSlider from "@/components/ImageCompareSlider";
 import OptimizedImage from "@/components/OptimizedImage";
 import ScrollyChapter from "@/components/ScrollyChapter";
 import { getAsset, surfaceFeatures } from "@/content";
@@ -9,6 +16,8 @@ import type { MoonSceneHandle } from "@/three/moonScene";
 import styles from "./Ch2.module.css";
 
 const surfaceFeaturesHeadingId = "ch2-surface-features-heading";
+const basinCompareHintId = "ch2-basin-compare-hint";
+const basinCompareLiveId = "ch2-basin-compare-live";
 
 function formatLatLon(lat: number, lon: number): string {
   const latDir = lat >= 0 ? "N" : "S";
@@ -325,7 +334,10 @@ export default function Ch2() {
           <IntroProse />
         </div>
         <section aria-labelledby={surfaceFeaturesHeadingId}>
-          <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
+          <h3
+            id={surfaceFeaturesHeadingId}
+            className={styles.surfaceFeaturesTitle}
+          >
             Surface features of the Moon
           </h3>
           <ol
@@ -387,7 +399,44 @@ export default function Ch2() {
 function IntroProse() {
   const aristarchusAsset = getAsset("ch2-aristarchus-crater");
   const orientaleAsset = getAsset("ch2-mare-orientale");
+  const orientaleTopographicAsset = getAsset("ch2-mare-orientale-topographic");
   const hertzsprungAsset = getAsset("ch2-hertzsprung-basin");
+  const hertzsprungTopographicAsset = getAsset(
+    "ch2-hertzsprung-basin-topographic",
+  );
+  const [hertzsprungCompareValue, setHertzsprungCompareValue] = useState(50);
+  const [orientaleCompareValue, setOrientaleCompareValue] = useState(50);
+
+  const formatCompareStatus = (value: number) =>
+    value === 100
+      ? "Full original view"
+      : value === 0
+        ? "Full topographic view"
+        : `${value}% original, ${100 - value}% topographic`;
+
+  const basinCompareStatus =
+    `Hertzsprung: ${formatCompareStatus(hertzsprungCompareValue)}. Mare Orientale: ${formatCompareStatus(orientaleCompareValue)}.`;
+
+  const handleBasinCompareKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+
+    const key = event.key.toLowerCase();
+
+    if (key === "o") {
+      event.preventDefault();
+      setHertzsprungCompareValue(100);
+      setOrientaleCompareValue(100);
+      return;
+    }
+
+    if (key === "t") {
+      event.preventDefault();
+      setHertzsprungCompareValue(0);
+      setOrientaleCompareValue(0);
+    }
+  };
 
   return (
     <>
@@ -442,34 +491,58 @@ function IntroProse() {
           (singular: mare), which significantly alter the geological landscape
           of the planetary body.
         </p>
-        <div className={styles.termDiptych}>
-          {hertzsprungAsset && (
+        <div
+          className={styles.termDiptych}
+          role="group"
+          tabIndex={0}
+          aria-label="Basin image comparisons"
+          aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`}
+          aria-keyshortcuts="O T"
+          onKeyDownCapture={handleBasinCompareKeyDown}
+        >
+          <p id={basinCompareHintId} className={styles.hint}>
+            Drag, or press <kbd>←</kbd> <kbd>→</kbd> to slide.
+            <br />
+            Press <kbd>O</kbd> for original or <kbd>T</kbd> for topographic.
+          </p>
+          <p id={basinCompareLiveId} className="sr-only" aria-live="polite">
+            {basinCompareStatus}
+          </p>
+          {hertzsprungAsset && hertzsprungTopographicAsset && (
             <figure className={styles.termDiptychFigure}>
-              <div className={styles.termDiptychFrame}>
-                <OptimizedImage
-                  className={styles.termDiptychImage}
-                  src="/ch2/hertzsprung.jpg"
-                  alt={hertzsprungAsset.alt}
-                  loading="lazy"
-                />
-              </div>
+              <ImageCompareSlider
+                label="Compare Hertzsprung basin original and topographic views"
+                originalSrc="/ch2/hertzsprung.jpg"
+                originalAlt={hertzsprungAsset.alt}
+                originalLabel="Original"
+                topographicSrc="/ch2/hertzsprung-topographic.jpg"
+                topographicLabel="Topographic"
+                describedBy={basinCompareHintId}
+                value={hertzsprungCompareValue}
+                onValueChange={setHertzsprungCompareValue}
+              />
               <figcaption className={styles.termDiptychCaption}>
                 <CreditCaption credit={hertzsprungAsset} />
+                <CreditCaption credit={hertzsprungTopographicAsset} />
               </figcaption>
             </figure>
           )}
-          {orientaleAsset && (
+          {orientaleAsset && orientaleTopographicAsset && (
             <figure className={styles.termDiptychFigure}>
-              <div className={styles.termDiptychFrame}>
-                <OptimizedImage
-                  className={styles.termDiptychImage}
-                  src="/ch2/orientale-artemis.jpg"
-                  alt={orientaleAsset.alt}
-                  loading="lazy"
-                />
-              </div>
+              <ImageCompareSlider
+                label="Compare Mare Orientale original and topographic views"
+                originalSrc="/ch2/orientale-lro.png"
+                originalAlt={orientaleAsset.alt}
+                originalLabel="Original"
+                topographicSrc="/ch2/orientale-topographic.jpg"
+                topographicLabel="Topographic"
+                describedBy={basinCompareHintId}
+                value={orientaleCompareValue}
+                onValueChange={setOrientaleCompareValue}
+              />
               <figcaption className={styles.termDiptychCaption}>
                 <CreditCaption credit={orientaleAsset} />
+                <CreditCaption credit={orientaleTopographicAsset} />
               </figcaption>
             </figure>
           )}

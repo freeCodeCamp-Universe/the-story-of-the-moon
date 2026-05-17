@@ -91,19 +91,33 @@ const assets = [
   },
   {
     id: "ch2-mare-orientale",
-    file: "ch2/orientale-artemis.jpg",
-    source:
-      "Wikimedia Commons file page for NASA Artemis II image of Mare Orientale",
+    file: "ch2/orientale-lro.png",
+    source: "Wikimedia Commons file page for LRO image of Mare Orientale",
     sourceUrl:
-      "https://commons.wikimedia.org/wiki/File:Mare_Orientale_(Artemis_2).jpg",
+      "https://commons.wikimedia.org/wiki/File:Mare_Orientale_(LRO).png",
     originalImageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/1/10/Mare_Orientale_%28Artemis_2%29.jpg",
-    author: "NASA",
+      "https://upload.wikimedia.org/wikipedia/commons/3/32/Mare_Orientale_%28LRO%29.png",
+    author: "NASA / Lunar Reconnaissance Orbiter",
     license: "PD-USGov-NASA",
     licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
     attributionText:
-      "Mare Orientale photographed by the Artemis II crew. NASA (art002e009277).",
-    alt: "Mare Orientale fills the center of the Moon, with its dark lava-filled plain surrounded by broad concentric rings. The bright crater Byrgius appears to the left.",
+      "Mare Orientale, Lunar Reconnaissance Orbiter mosaic. NASA.",
+    alt: "A grayscale Lunar Reconnaissance Orbiter view of Mare Orientale, showing the circular basin, dark floor, and broad surrounding rings in the same framing as the topographic map.",
+  },
+  {
+    id: "ch2-mare-orientale-topographic",
+    file: "ch2/orientale-topographic.jpg",
+    source: "Wikimedia Commons file page for GLD100 topographic map of Mare Orientale",
+    sourceUrl:
+      "https://commons.wikimedia.org/wiki/File:Mare_Orientale_(GLD100).jpg",
+    originalImageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mare_Orientale_%28GLD100%29.jpg",
+    author: "NASA / Lunar Reconnaissance Orbiter",
+    license: "PD-USGov-NASA",
+    licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    attributionText:
+      "Mare Orientale GLD100 topographic map, derived from Lunar Reconnaissance Orbiter data. NASA.",
+    alt: "A color-shaded topographic map of Mare Orientale, showing its ringed basin structure in blue, green, yellow, and red elevation bands.",
   },
   {
     id: "ch2-hertzsprung-basin",
@@ -119,6 +133,20 @@ const assets = [
     attributionText:
       "Hertzsprung basin, Lunar Reconnaissance Orbiter WAC mosaic. NASA.",
     alt: "A wide-angle Lunar Reconnaissance Orbiter mosaic of Hertzsprung basin on the Moon's far side, showing a broad circular basin ringed by lighter ridges and scattered impact craters.",
+  },
+  {
+    id: "ch2-hertzsprung-basin-topographic",
+    file: "ch2/hertzsprung-topographic.jpg",
+    source: "Wikimedia Commons file page for GLD100 topographic map of Hertzsprung basin",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Hertzsprung_(GLD100).jpg",
+    originalImageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/1/13/Hertzsprung_%28GLD100%29.jpg",
+    author: "NASA / Lunar Reconnaissance Orbiter",
+    license: "PD-USGov-NASA",
+    licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    attributionText:
+      "Hertzsprung GLD100 topographic map, derived from Lunar Reconnaissance Orbiter data. NASA.",
+    alt: "A color-shaded topographic map of Hertzsprung basin on the Moon's far side, with the basin rings and surrounding craters shown in contrasting elevation colors.",
   },
   {
     id: "apollo-11-bootprint",

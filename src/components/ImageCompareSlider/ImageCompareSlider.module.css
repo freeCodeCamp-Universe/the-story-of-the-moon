@@ -1,0 +1,119 @@
+.root {
+  --split-position: 50%;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-raised);
+  aspect-ratio: 1 / 1;
+}
+
+.sliderInput {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.sliderInput:focus-visible + .scene,
+.sliderInput:focus-visible + .scene .handle {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.baseImage,
+.overlayLayer,
+.overlayImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.overlayLayer {
+  clip-path: inset(0 calc(100% - var(--split-position)) 0 0);
+}
+
+.baseImage img,
+.overlayImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split-position);
+  z-index: 2;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(245, 246, 247, 0.88);
+}
+
+.handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(245, 246, 247, 0.92);
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(27, 27, 50, 0.9) 0,
+      rgba(27, 27, 50, 0.9) 45%,
+      rgba(245, 246, 247, 0.92) 45%,
+      rgba(245, 246, 247, 0.92) 55%,
+      rgba(27, 27, 50, 0.9) 55%,
+      rgba(27, 27, 50, 0.9) 100%
+    );
+  box-shadow: 0 0 0 1px rgba(10, 10, 35, 0.5);
+}
+
+.badgeRow {
+  position: absolute;
+  inset: var(--space-sm) var(--space-sm) auto;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgba(223, 223, 226, 0.35);
+  background: rgba(10, 10, 35, 0.82);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+  .badge {
+    font-size: 0.8125rem;
+  }
+}

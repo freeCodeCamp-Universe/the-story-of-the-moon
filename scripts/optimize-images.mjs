@@ -1,27 +1,25 @@
-import process from 'node:process';
-import { readFile, readdir, rename, stat, writeFile } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import process from "node:process";
+import { readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import sharp from 'sharp';
+import sharp from "sharp";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(scriptDir, '..');
-const publicDir = path.join(repoRoot, 'public');
+const repoRoot = path.resolve(scriptDir, "..");
+const publicDir = path.join(repoRoot, "public");
 
 const widthOverrides = new Map([
-  ['moon/moon-8k.jpg', 4096],
-  ['ch4/artemis-ii-earthset.jpg', 2560],
-  ['ch4/artemis-ii-eclipse.jpg', 2400],
-  ['postcards/apollo-17-moon-disc.jpg', 2200],
-  ['ch2/orientale-artemis.jpg', 2400],
-  ['moon/erlanger-crater.jpg', 1800],
+  ["moon/moon-8k.jpg", 4096],
+  ["ch4/artemis-ii-earthset.jpg", 2560],
+  ["ch4/artemis-ii-eclipse.jpg", 2400],
+  ["postcards/apollo-17-moon-disc.jpg", 2200],
+  ["moon/erlanger-crater.jpg", 1800],
 ]);
 
 const qualityOverrides = new Map([
-  ['moon/moon-2k.jpg', { jpeg: 84, webp: 82 }],
-  ['moon/moon-8k.jpg', { jpeg: 82, webp: 80 }],
-  ['ch2/orientale-artemis.jpg', { jpeg: 78, webp: 76 }],
+  ["moon/moon-2k.jpg", { jpeg: 84, webp: 82 }],
+  ["moon/moon-8k.jpg", { jpeg: 82, webp: 80 }],
 ]);
 
 const defaultQuality = { jpeg: 76, webp: 74 };
@@ -54,14 +52,21 @@ async function writeBufferAtomically(outputPath, buffer) {
 
 async function optimizeAsset(relativePath) {
   const inputPath = path.join(publicDir, relativePath);
-  const webpPath = path.join(publicDir, replaceExtension(relativePath, '.webp'));
+  const webpPath = path.join(
+    publicDir,
+    replaceExtension(relativePath, ".webp"),
+  );
   const sourceBuffer = await readFile(inputPath);
   const { maxWidth, jpeg, webp } = getTransformOptions(relativePath);
 
   const buildPipeline = () => {
     let pipeline = sharp(sourceBuffer, { sequentialRead: true }).rotate();
     if (maxWidth) {
-      pipeline = pipeline.resize({ width: maxWidth, fit: 'inside', withoutEnlargement: true });
+      pipeline = pipeline.resize({
+        width: maxWidth,
+        fit: "inside",
+        withoutEnlargement: true,
+      });
     }
     return pipeline;
   };
@@ -74,8 +79,8 @@ async function optimizeAsset(relativePath) {
       quality: jpeg,
       mozjpeg: true,
       progressive: true,
-      chromaSubsampling: '4:4:4',
-    })
+      chromaSubsampling: "4:4:4",
+    }),
   );
 
   const optimizedJpeg = await readFile(inputPath);
@@ -87,7 +92,10 @@ async function optimizeAsset(relativePath) {
     })
     .toBuffer();
 
-  while (optimizedWebp.byteLength >= optimizedJpeg.byteLength && webpQuality > 56) {
+  while (
+    optimizedWebp.byteLength >= optimizedJpeg.byteLength &&
+    webpQuality > 56
+  ) {
     webpQuality -= 6;
     optimizedWebp = await buildPipeline()
       .webp({
@@ -113,7 +121,7 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-async function collectRasterAssets(dir, prefix = '') {
+async function collectRasterAssets(dir, prefix = "") {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
 
@@ -135,14 +143,14 @@ async function collectRasterAssets(dir, prefix = '') {
 }
 
 function toPosixPath(filePath) {
-  return filePath.replace(/\\/g, '/');
+  return filePath.replace(/\\/g, "/");
 }
 
 function resolveInputPath(input) {
   const trimmedInput = input.trim();
 
   if (!trimmedInput) {
-    throw new Error('Received an empty asset path.');
+    throw new Error("Received an empty asset path.");
   }
 
   if (path.isAbsolute(trimmedInput)) {
@@ -150,7 +158,10 @@ function resolveInputPath(input) {
   }
 
   const normalizedInput = path.normalize(trimmedInput);
-  if (normalizedInput === 'public' || normalizedInput.startsWith(`public${path.sep}`)) {
+  if (
+    normalizedInput === "public" ||
+    normalizedInput.startsWith(`public${path.sep}`)
+  ) {
     return path.resolve(repoRoot, normalizedInput);
   }
 
@@ -160,7 +171,11 @@ function resolveInputPath(input) {
 function toRelativePublicPath(absolutePath) {
   const relativePath = path.relative(publicDir, absolutePath);
 
-  if (!relativePath || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+  if (
+    !relativePath ||
+    relativePath.startsWith("..") ||
+    path.isAbsolute(relativePath)
+  ) {
     throw new Error(`Asset path must stay inside public/: ${absolutePath}`);
   }
 
@@ -180,7 +195,10 @@ export async function resolveRequestedFiles(inputs = []) {
     const relativePublicPath = toRelativePublicPath(absoluteInputPath);
 
     if (inputStats.isDirectory()) {
-      const files = await collectRasterAssets(absoluteInputPath, relativePublicPath);
+      const files = await collectRasterAssets(
+        absoluteInputPath,
+        relativePublicPath,
+      );
       files.forEach((file) => requestedFiles.add(file));
       continue;
     }
@@ -190,7 +208,9 @@ export async function resolveRequestedFiles(inputs = []) {
     }
 
     if (!rasterPattern.test(relativePublicPath)) {
-      throw new Error(`Asset path must point to a .jpg or .jpeg file: ${input}`);
+      throw new Error(
+        `Asset path must point to a .jpg or .jpeg file: ${input}`,
+      );
     }
 
     requestedFiles.add(relativePublicPath);
@@ -208,8 +228,14 @@ export async function main(args = process.argv.slice(2)) {
   }
 
   const totalBefore = results.reduce((sum, result) => sum + result.before, 0);
-  const totalJpegAfter = results.reduce((sum, result) => sum + result.jpegAfter, 0);
-  const totalWebpAfter = results.reduce((sum, result) => sum + result.webpAfter, 0);
+  const totalJpegAfter = results.reduce(
+    (sum, result) => sum + result.jpegAfter,
+    0,
+  );
+  const totalWebpAfter = results.reduce(
+    (sum, result) => sum + result.webpAfter,
+    0,
+  );
 
   console.log(`Optimized ${results.length} raster assets.`);
   console.table(
@@ -218,13 +244,18 @@ export async function main(args = process.argv.slice(2)) {
       before: formatSize(result.before),
       jpeg: formatSize(result.jpegAfter),
       webp: formatSize(result.webpAfter),
-    }))
+    })),
   );
-  console.log(`JPEG total: ${formatSize(totalBefore)} -> ${formatSize(totalJpegAfter)}`);
+  console.log(
+    `JPEG total: ${formatSize(totalBefore)} -> ${formatSize(totalJpegAfter)}`,
+  );
   console.log(`WebP siblings total: ${formatSize(totalWebpAfter)}`);
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
   main().catch((error) => {
     console.error(error);
     process.exitCode = 1;
