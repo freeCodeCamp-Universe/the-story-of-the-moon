@@ -187,7 +187,7 @@
 
 .shortcutRow {
   display: grid;
-  grid-template-columns: minmax(5rem, 7rem) minmax(0, 1fr);
+  grid-template-columns: minmax(8rem, 10rem) minmax(0, 1fr);
   gap: var(--space-sm) var(--space-md);
   padding-block: var(--space-sm);
   border-top: 1px solid rgba(223, 223, 226, 0.08);
@@ -195,6 +195,11 @@
 
 .shortcutKeys {
   color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.shortcutSeparator {
+  color: var(--color-text);
 }
 
 .shortcutKeys kbd,
