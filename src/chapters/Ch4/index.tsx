@@ -379,8 +379,9 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
             })}
           </ol>
           <p id={keyboardHintId} className={styles.keyboardHint}>
-            Use <kbd>←</kbd> / <kbd>→</kbd> to move through the timeline. Use{" "}
-            <kbd>[</kbd> / <kbd>]</kbd> to jump to first / last.
+            Scroll up / down or use <kbd>←</kbd> / <kbd>→</kbd> to move through
+            the timeline. Use <kbd>[</kbd> / <kbd>]</kbd> to jump to first /
+            last.
           </p>
         </div>
 
