@@ -1,21 +1,23 @@
 /* Ch5 — static chapter: prose column + paired sample photos. */
 
-.prose {
+.section {
   max-width: var(--prose-width);
   margin-inline: auto;
   padding-inline: var(--space-lg);
-  padding-top: var(--space-xl);
-  padding-bottom: var(--space-2xl);
-  font-family: var(--font-prose);
-  font-size: var(--text-body);
-  line-height: var(--line-height-prose);
-  color: var(--color-text);
+  margin-block-start: var(--space-2xl);
 }
 
-@media (max-width: 767px) {
-  .prose {
-    font-size: var(--text-body-mobile);
-  }
+.section + .section {
+  margin-block-start: var(--space-4xl);
+}
+
+.heading {
+  max-width: var(--prose-width);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: var(--line-height-heading);
+  margin: 0 0 var(--space-lg);
+  font-size: var(--text-2xl);
 }
 
 .paragraph {
@@ -26,11 +28,18 @@
   margin-bottom: 0;
 }
 
+.intro {
+  max-width: var(--prose-width);
+  margin: 0 auto;
+  padding-inline: var(--space-lg);
+}
+
 /* Paired sample photos: basalt vs. anorthosite */
 
 .compare {
   max-width: 72rem;
   margin-inline: auto;
+  margin-block: var(--space-lg);
   padding-inline: var(--space-lg);
   padding-block: var(--space-xl);
   display: grid;
@@ -73,7 +82,7 @@
   margin-top: var(--space-md);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: var(--color-accent);
+  color: var(--color-accent-warm);
 }
 
 .sampleProperties {

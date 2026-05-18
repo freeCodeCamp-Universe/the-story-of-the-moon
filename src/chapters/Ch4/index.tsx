@@ -453,13 +453,18 @@ function Diptych() {
         )}
       </div>
       <p className={styles.diptychTie}>
-        In 1968, the Earth appeared to the Apollo 8 crew as a sudden
-        revelation—a fragile, blue marble emerging from the darkness. Bill
-        Anders captured it in a moment of unplanned observation. Fifty-eight
-        years later, the Artemis II crew arrived at that same horizon with their
-        cameras ready. These two moments stand in contrast: the first was the
-        unexpected discovery of our world from a distance, while the second is
-        the intentional return to that vantage point.
+        In 1968, the Apollo 8 crew was caught off guard by a striking sight:
+        Earth rising as a fragile blue marble against the dark void. Bill Anders
+        captured the moment spontaneously during an unplanned pause in their
+        schedule, and said afterward that they had come to explore the Moon and
+        ended up discovering Earth. The picture he brought back changed how the
+        planet saw itself.
+      </p>
+      <p className={styles.diptychTie}>
+        Fifty-eight years later, the Artemis II crew headed for the same vantage
+        with cameras already set up, taking Earthset as Earth slipped behind the
+        lunar horizon. This time, looking backward was a deliberate act of
+        self-discovery.
       </p>
     </section>
   );

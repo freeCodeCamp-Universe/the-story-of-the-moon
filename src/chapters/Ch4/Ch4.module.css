@@ -516,6 +516,11 @@
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text);
+  padding-inline: var(--space-lg);
+}
+
+.diptychTie + .diptychTie {
+  margin-top: var(--space-lg);
 }
 
 @media (max-width: 767px) {

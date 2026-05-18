@@ -65,7 +65,7 @@
 .sectionTitle {
   margin: 0;
   font-family: var(--font-prose);
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
   font-weight: 700;
   line-height: var(--line-height-heading);
   color: var(--color-text);
