@@ -15,6 +15,7 @@ export type FeatureProjection = {
 export type MoonSceneHandle = {
   setOverlay: (overlayId: string | null) => void;
   setCameraTarget: (target: { lat: number; lon: number }) => void;
+  getCameraLatLon: () => { lat: number; lon: number };
   setView: (view: string) => void;
   pause: () => void;
   resume: () => void;
@@ -103,6 +104,31 @@ function latLonToCameraPosition(lat: number, lon: number, radius: number) {
     x: radius * Math.sin(phi) * Math.cos(theta),
     y: radius * Math.cos(phi),
     z: radius * Math.sin(phi) * Math.sin(theta),
+  };
+}
+
+function normalizeLongitude(lon: number) {
+  if (lon <= -180) {
+    return lon + 360;
+  }
+  if (lon > 180) {
+    return lon - 360;
+  }
+  return lon;
+}
+
+export function cameraPositionToLatLon(position: { x: number; y: number; z: number }) {
+  const radius = Math.hypot(position.x, position.y, position.z);
+  if (radius === 0) {
+    return { lat: 0, lon: 0 };
+  }
+
+  const lat = 90 - (Math.acos(Math.min(1, Math.max(-1, position.y / radius))) * 180) / Math.PI;
+  const lon = normalizeLongitude((-(Math.atan2(position.z, position.x) * 180)) / Math.PI);
+
+  return {
+    lat: Math.max(-90, Math.min(90, lat)),
+    lon,
   };
 }
 
@@ -302,6 +328,9 @@ export function createMoonScene(
       scene.userData.overlayId = overlayId;
     },
     setCameraTarget,
+    getCameraLatLon() {
+      return cameraPositionToLatLon(camera.position);
+    },
     setView(view: string) {
       scene.userData.view = view;
     },

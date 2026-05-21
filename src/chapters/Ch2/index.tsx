@@ -43,6 +43,13 @@ function formatLatLon(lat: number, lon: number): string {
   return `${Math.abs(lat).toFixed(1)}°${latDir} ${Math.abs(lon).toFixed(1)}°${lonDir}`;
 }
 
+function getFeatureLabelText(feature: Pick<SurfaceFeature, "name" | "lat" | "lon">) {
+  return {
+    name: feature.name,
+    coords: formatLatLon(feature.lat, feature.lon),
+  };
+}
+
 function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<MoonSceneHandle>(null);
@@ -51,11 +58,18 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   const rafRef = useRef<number | null>(null);
   const showAnnotationRef = useRef(false);
   const hideTimer = useRef<number | null>(null);
+  const rotationAnnouncementTimerRef = useRef<number | null>(null);
   const idleTimerRef = useRef<number | null>(null);
+  const rotationAnnouncementToggleRef = useRef(false);
   const isInteractingRef = useRef(false);
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
   const [shouldLoadScene, setShouldLoadScene] = useState(false);
+  const [labelText, setLabelText] = useState<{
+    name: string;
+    coords: string;
+  } | null>(null);
+  const [rotationAnnouncement, setRotationAnnouncement] = useState("");
   const { targetRef, isNearViewport, isVisible } =
     useViewportActivity<HTMLDivElement>({
       rootMargin: "320px 0px",
@@ -65,6 +79,75 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   // re-triggering the loop effect on every change.
   const activeFeatureRef = useRef(activeFeature);
   activeFeatureRef.current = activeFeature;
+
+  const setAnnotationVisibility = useCallback((visible: boolean) => {
+    showAnnotationRef.current = visible;
+    if (annotationRef.current) {
+      annotationRef.current.classList.toggle(styles.annotationVisible, visible);
+    }
+  }, []);
+
+  const clearRotationAnnouncement = useCallback(() => {
+    if (rotationAnnouncementTimerRef.current) {
+      clearTimeout(rotationAnnouncementTimerRef.current);
+      rotationAnnouncementTimerRef.current = null;
+    }
+    setRotationAnnouncement("");
+  }, []);
+
+  const scheduleRotationAnnouncement = useCallback(() => {
+    if (rotationAnnouncementTimerRef.current) {
+      clearTimeout(rotationAnnouncementTimerRef.current);
+    }
+    rotationAnnouncementTimerRef.current = window.setTimeout(() => {
+      rotationAnnouncementTimerRef.current = null;
+      const cameraLatLon = sceneRef.current?.getCameraLatLon();
+      if (!cameraLatLon) {
+        return;
+      }
+      rotationAnnouncementToggleRef.current =
+        !rotationAnnouncementToggleRef.current;
+      const suffix = rotationAnnouncementToggleRef.current ? "\u200B" : "";
+      setRotationAnnouncement(
+        `Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`,
+      );
+    }, 600);
+  }, []);
+
+  const scheduleRecover = useCallback(() => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = window.setTimeout(() => {
+      isInteractingRef.current = false;
+      const feature = activeFeatureRef.current;
+      clearRotationAnnouncement();
+      setLabelText(null);
+      sceneRef.current?.setCameraTarget({
+        lat: feature.lat,
+        lon: feature.lon,
+      });
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = window.setTimeout(() => {
+        setLabelText(getFeatureLabelText(feature));
+        setAnnotationVisibility(true);
+      }, 950);
+    }, 1200);
+  }, [clearRotationAnnouncement, setAnnotationVisibility]);
+
+  useEffect(() => {
+    if (!sceneReady || isInteractingRef.current) {
+      return;
+    }
+
+    const nextLabel = getFeatureLabelText(activeFeatureRef.current);
+
+    setLabelText((current) =>
+      current &&
+      current.name === nextLabel.name &&
+      current.coords === nextLabel.coords
+        ? current
+        : nextLabel,
+    );
+  }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon]);
 
   useEffect(() => {
     if (isNearViewport) {
@@ -111,10 +194,11 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       });
     return () => {
       disposed = true;
+      clearRotationAnnouncement();
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, [isVisible, shouldLoadScene]);
+  }, [clearRotationAnnouncement, isVisible, shouldLoadScene]);
 
   useEffect(() => {
     if (!sceneReady || !sceneRef.current) {
@@ -141,42 +225,21 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const IDLE_MS = 1200;
-
-    const setAnnotation = (visible: boolean) => {
-      showAnnotationRef.current = visible;
-      if (annotationRef.current) {
-        annotationRef.current.classList.toggle(
-          styles.annotationVisible,
-          visible,
-        );
-      }
-    };
-
-    const scheduleRecover = () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = window.setTimeout(() => {
-        const feature = activeFeatureRef.current;
-        sceneRef.current?.setCameraTarget({
-          lat: feature.lat,
-          lon: feature.lon,
-        });
-        // Annotation reappears once the camera tween has landed.
-        if (hideTimer.current) clearTimeout(hideTimer.current);
-        hideTimer.current = window.setTimeout(() => setAnnotation(true), 950);
-      }, IDLE_MS);
-    };
-
     const onPointerDown = () => {
       isInteractingRef.current = true;
-      setAnnotation(false);
+      setAnnotationVisibility(false);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      if (rotationAnnouncementTimerRef.current) {
+        clearTimeout(rotationAnnouncementTimerRef.current);
+        rotationAnnouncementTimerRef.current = null;
+      }
     };
 
     const onPointerRelease = () => {
       if (!isInteractingRef.current) return;
       isInteractingRef.current = false;
+      scheduleRotationAnnouncement();
       scheduleRecover();
     };
 
@@ -191,8 +254,12 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       canvas.removeEventListener("pointercancel", onPointerRelease);
       canvas.removeEventListener("pointerleave", onPointerRelease);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      if (rotationAnnouncementTimerRef.current) {
+        clearTimeout(rotationAnnouncementTimerRef.current);
+        rotationAnnouncementTimerRef.current = null;
+      }
     };
-  }, []);
+  }, [scheduleRecover, scheduleRotationAnnouncement, setAnnotationVisibility]);
 
   // Keyboard rotation: arrow keys spin the Moon while the visual
   // region has focus. Same idle-recover behavior as drag — once the
@@ -220,6 +287,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       }
       event.preventDefault();
       sceneRef.current?.rotateBy({ deltaAzimuth, deltaPolar });
+      scheduleRotationAnnouncement();
 
       // Treat key activity the same as a drag: hide the label, then
       // recover after the reader stops pressing keys.
@@ -228,20 +296,9 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       annotationRef.current?.classList.remove(styles.annotationVisible);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = window.setTimeout(() => {
-        isInteractingRef.current = false;
-        const feature = activeFeatureRef.current;
-        sceneRef.current?.setCameraTarget({
-          lat: feature.lat,
-          lon: feature.lon,
-        });
-        hideTimer.current = window.setTimeout(() => {
-          showAnnotationRef.current = true;
-          annotationRef.current?.classList.add(styles.annotationVisible);
-        }, 950);
-      }, 1200);
+      scheduleRecover();
     },
-    [],
+    [scheduleRecover, scheduleRotationAnnouncement],
   );
 
   // Drive camera + stage annotation visibility when the active feature
@@ -276,6 +333,15 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
   }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon]);
+
+  useEffect(() => {
+    return () => {
+      if (rotationAnnouncementTimerRef.current) {
+        clearTimeout(rotationAnnouncementTimerRef.current);
+        rotationAnnouncementTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // RAF loop: keep the ring and label locked to the feature's projected
   // screen position each frame. Manipulating DOM directly avoids React
@@ -344,7 +410,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       className={styles.visualSlot}
       tabIndex={0}
       role="group"
-      aria-label="Interactive view of the Moon. Use arrow keys to rotate."
+      aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature."
       onKeyDown={onKeyDown}
     >
       <p className={styles.hint} aria-hidden="true">
@@ -356,13 +422,22 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
         <div
           ref={annotationRef}
           className={styles.annotation}
-          aria-hidden="true"
+          aria-live="polite"
+          aria-atomic="true"
         >
           <div ref={labelRef} className={styles.label}>
-            {activeFeature.name}
+            {labelText ? (
+              <>
+                {labelText.name}
+                <span className="sr-only">{`, ${labelText.coords}`}</span>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {rotationAnnouncement}
+      </p>
     </div>
   );
 }

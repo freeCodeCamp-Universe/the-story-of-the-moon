@@ -64,12 +64,6 @@ export default function ScrollyChapter({
       aria-label={ariaLabelledBy ? undefined : ariaLabel}
       aria-labelledby={ariaLabelledBy}
     >
-      <div className={styles.visual}>
-        <div className={styles.visualFrame} aria-hidden={visualAriaHidden ? 'true' : undefined}>
-          <div className={styles.visualInner}>{visual}</div>
-        </div>
-        {visualBelow && <div className={styles.visualBelow}>{visualBelow}</div>}
-      </div>
       <ol className={styles.steps}>
         {steps.map((step) => (
           <li key={step.id} data-step-id={step.id} className={`${styles.step}${activeId === step.id ? ` ${styles.stepActive}` : ''}`}>
@@ -82,6 +76,12 @@ export default function ScrollyChapter({
           </li>
         ))}
       </ol>
+      <div className={styles.visual}>
+        <div className={styles.visualFrame} aria-hidden={visualAriaHidden ? 'true' : undefined}>
+          <div className={styles.visualInner}>{visual}</div>
+        </div>
+        {visualBelow && <div className={styles.visualBelow}>{visualBelow}</div>}
+      </div>
     </div>
   );
 }

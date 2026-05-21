@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 
-import { createMoonScene } from '@/three/moonScene';
+import { cameraPositionToLatLon, createMoonScene } from '@/three/moonScene';
 
 vi.mock('three', () => {
   const MockTextureLoader = vi.fn(function MockTextureLoader() {
@@ -220,5 +220,24 @@ describe('createMoonScene', () => {
     const handle = createMoonScene(canvas);
 
     expect(handle).toBeNull();
+  });
+
+  it('round-trips camera lat/lon back from a camera position', () => {
+    const radius = 2.5;
+    const latLon = cameraPositionToLatLon({
+      x: radius * 0.6123724357,
+      y: radius * 0.5,
+      z: radius * 0.6123724357,
+    });
+
+    expect(latLon.lat).toBeCloseTo(30, 6);
+    expect(latLon.lon).toBeCloseTo(-45, 6);
+  });
+
+  it('normalizes a -180 longitude result to 180', () => {
+    const latLon = cameraPositionToLatLon({ x: -2.5, y: 0, z: 0 });
+
+    expect(latLon.lat).toBeCloseTo(0, 6);
+    expect(latLon.lon).toBe(180);
   });
 });

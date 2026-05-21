@@ -11,20 +11,34 @@ vi.mock("@/hooks/useReducedMotion", () => ({
   useReducedMotion: () => reducedMotion,
 }));
 
+vi.mock("@/hooks/useViewportActivity", () => ({
+  useViewportActivity: () => ({
+    targetRef: { current: null },
+    isNearViewport: false,
+    isVisible: false,
+  }),
+}));
+
 vi.mock("@/components/ScrollyChapter", () => ({
   default: ({
     steps,
+    visual,
+    visualBelow,
     ariaLabel,
     ariaLabelledBy,
   }: {
     steps: Array<{ id: string; content: React.ReactNode }>;
+    visual?: React.ReactNode;
+    visualBelow?: React.ReactNode;
     ariaLabel?: string;
     ariaLabelledBy?: string;
   }) => (
     <section role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
+      {visual}
       {steps.map((step) => (
         <article key={step.id}>{step.content}</article>
       ))}
+      {visualBelow}
     </section>
   ),
 }));
@@ -145,5 +159,32 @@ describe("Ch2", () => {
     expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(
       surfaceFeatures.length,
     );
+  });
+
+  it("should expose the active moon feature label as a polite live region", () => {
+    reducedMotion = false;
+    render(<Ch2 />);
+
+    const visualGroup = screen.getByRole("group", {
+      name: "Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.",
+    });
+    const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
+    const annotationLiveRegion = Array.from(liveRegions).find(
+      (region) => !region.classList.contains("sr-only"),
+    );
+    const rotationLiveRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains("sr-only"),
+    );
+
+    expect(liveRegions).toHaveLength(2);
+    expect(annotationLiveRegion).not.toBeNull();
+    expect(rotationLiveRegion).not.toBeNull();
+    if (!annotationLiveRegion || !rotationLiveRegion) {
+      throw new Error("Expected both Ch2 live regions to render.");
+    }
+    expect(annotationLiveRegion).toHaveAttribute("aria-atomic", "true");
+    expect(annotationLiveRegion).not.toHaveAttribute("aria-hidden");
+    expect(rotationLiveRegion).toHaveAttribute("aria-atomic", "true");
+    expect(rotationLiveRegion.textContent).toBe("");
   });
 });

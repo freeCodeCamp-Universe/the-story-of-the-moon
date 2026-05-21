@@ -11,7 +11,8 @@
 
 .container {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   max-width: 120rem;
   margin-inline: auto;
   padding-inline: var(--space-lg);
@@ -23,6 +24,7 @@
   .container {
     display: grid;
     grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+    grid-template-areas: 'visual steps';
     gap: var(--space-2xl);
     padding-inline: var(--space-2xl);
     align-items: start;
@@ -32,6 +34,7 @@
 /* ── Visual column ────────────────────────────────────────────────── */
 
 .visual {
+  order: -1;
   position: sticky;
   /* Leave breathing room above and below the pinned visual so, when
    * the sticky releases after the last step, the image doesn't exit
@@ -43,6 +46,7 @@
 
 @media (min-width: 900px) {
   .visual {
+    grid-area: visual;
     margin-top: var(--space-xl);
   }
 }
@@ -82,6 +86,7 @@
 /* ── Steps column ─────────────────────────────────────────────────── */
 
 .steps {
+  grid-area: steps;
   position: relative;
   list-style: none;
   padding: 0;
@@ -174,14 +179,14 @@
 .containerImmersive {
   display: grid;
   grid-template-columns: 1fr;
+  grid-template-areas: 'stack';
   max-width: none;
   padding-inline: 0;
   gap: 0;
 }
 
 .containerImmersive .visual {
-  grid-row: 1;
-  grid-column: 1;
+  grid-area: stack;
   position: sticky;
   top: var(--nav-height);
   width: 100%;
@@ -197,8 +202,7 @@
 }
 
 .containerImmersive .steps {
-  grid-row: 1;
-  grid-column: 1;
+  grid-area: stack;
   position: relative;
   z-index: 2;
   padding-inline: var(--space-lg);
@@ -264,7 +268,8 @@
  * scrollytelling cards. */
 @media (max-width: 899px) {
   .containerImmersive {
-    display: block;
+    display: flex;
+    flex-direction: column;
     max-width: 120rem;
     margin-inline: auto;
     padding-inline: var(--space-lg);
@@ -272,8 +277,7 @@
   }
 
   .containerImmersive .visual {
-    grid-row: auto;
-    grid-column: auto;
+    order: -1;
     position: sticky;
     top: calc(var(--nav-height) + var(--space-xl));
     width: 100%;
@@ -289,8 +293,6 @@
   }
 
   .containerImmersive .steps {
-    grid-row: auto;
-    grid-column: auto;
     display: block;
     padding: 0;
     gap: 0;
