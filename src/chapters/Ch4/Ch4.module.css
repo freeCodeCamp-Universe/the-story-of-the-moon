@@ -43,9 +43,12 @@
   outline: none;
 }
 
-.pinSection:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -4px;
+/* The section is 650vh tall (pinned-scroll trick), so its own outline
+ * would extend far past the viewport. Render the focus ring on the
+ * sticky .stage instead, which is what's actually visible. */
+.pinSection:focus-visible .stage {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Sentinel track: invisible flex column laid out across the section's
@@ -169,7 +172,7 @@
 }
 
 .tick:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: var(--focus-ring);
   outline-offset: 3px;
 }
 

@@ -184,9 +184,20 @@
   outline: none;
 }
 
-.visualSlot:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -2px;
+/* The canvas and sceneStage are absolutely positioned and would paint
+ * over an outline drawn on .visualSlot itself. Draw the focus ring as
+ * a top-layer pseudo-element so it surrounds the whole slot. */
+.visualSlot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 2px solid transparent;
+  z-index: 2;
+}
+
+.visualSlot:focus-visible::after {
+  border-color: var(--color-focus);
 }
 
 .hint {
