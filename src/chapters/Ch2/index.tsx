@@ -20,21 +20,21 @@ const surfaceFeaturesHeadingId = "ch2-surface-features-heading";
 const basinCompareHintId = "ch2-basin-compare-hint";
 const basinCompareLiveId = "ch2-basin-compare-live";
 const compareImageSizes = "(min-width: 700px) 50vw, 100vw";
-const hertzsprungWebpSrcSet = [
-  "/ch2/hertzsprung-800.webp 800w",
-  "/ch2/hertzsprung-1600.webp 1600w",
+const hertzsprungAvifSrcSet = [
+  "/ch2/hertzsprung-800.avif 800w",
+  "/ch2/hertzsprung-1600.avif 1600w",
 ].join(", ");
-const hertzsprungTopographicWebpSrcSet = [
-  "/ch2/hertzsprung-topographic-800.webp 800w",
-  "/ch2/hertzsprung-topographic-1600.webp 1600w",
+const hertzsprungTopographicAvifSrcSet = [
+  "/ch2/hertzsprung-topographic-800.avif 800w",
+  "/ch2/hertzsprung-topographic-1600.avif 1600w",
 ].join(", ");
-const orientaleWebpSrcSet = [
-  "/ch2/orientale-lro-800.webp 800w",
-  "/ch2/orientale-lro-1600.webp 1600w",
+const orientaleAvifSrcSet = [
+  "/ch2/orientale-lro-800.avif 800w",
+  "/ch2/orientale-lro-1600.avif 1600w",
 ].join(", ");
-const orientaleTopographicWebpSrcSet = [
-  "/ch2/orientale-topographic-800.webp 800w",
-  "/ch2/orientale-topographic-1600.webp 1600w",
+const orientaleTopographicAvifSrcSet = [
+  "/ch2/orientale-topographic-800.avif 800w",
+  "/ch2/orientale-topographic-1600.avif 1600w",
 ].join(", ");
 
 function formatLatLon(lat: number, lon: number): string {
@@ -569,11 +569,11 @@ function IntroProse() {
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
                 originalSrc="/ch2/hertzsprung.jpg"
-                originalWebpSrcSet={hertzsprungWebpSrcSet}
+                originalAvifSrcSet={hertzsprungAvifSrcSet}
                 originalAlt={hertzsprungAsset.alt}
                 originalLabel="Original"
                 topographicSrc="/ch2/hertzsprung-topographic.jpg"
-                topographicWebpSrcSet={hertzsprungTopographicWebpSrcSet}
+                topographicAvifSrcSet={hertzsprungTopographicAvifSrcSet}
                 topographicLabel="Topographic"
                 describedBy={basinCompareHintId}
                 sizes={compareImageSizes}
@@ -591,11 +591,11 @@ function IntroProse() {
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
                 originalSrc="/ch2/orientale-lro.png"
-                originalWebpSrcSet={orientaleWebpSrcSet}
+                originalAvifSrcSet={orientaleAvifSrcSet}
                 originalAlt={orientaleAsset.alt}
                 originalLabel="Original"
                 topographicSrc="/ch2/orientale-topographic.jpg"
-                topographicWebpSrcSet={orientaleTopographicWebpSrcSet}
+                topographicAvifSrcSet={orientaleTopographicAvifSrcSet}
                 topographicLabel="Topographic"
                 describedBy={basinCompareHintId}
                 sizes={compareImageSizes}

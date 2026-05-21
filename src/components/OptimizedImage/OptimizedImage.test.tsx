@@ -1,51 +1,75 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, it, should } from 'vitest';
 
 import OptimizedImage from './index';
 
+const chaiShould = should();
+
 describe('OptimizedImage', () => {
-  it('renders a webp source for jpeg inputs', () => {
-    const { container } = render(<OptimizedImage src="/postcards/eclipse.jpg" alt="Eclipse" />);
+  it('should render a derived avif source for jpeg inputs', async () => {
+    const user = userEvent.setup();
+    render(<OptimizedImage src="/postcards/eclipse.jpg" alt="Eclipse" />);
 
-    const source = container.querySelector('source');
-    const image = screen.getByAltText('Eclipse');
+    const image = screen.getByRole('img', { name: 'Eclipse' });
+    const picture = image.closest('picture');
+    const source = picture?.querySelector('source');
 
-    expect(source).not.toBeNull();
-    expect(source).toHaveAttribute('srcset', '/postcards/eclipse.webp');
-    expect(image).toHaveAttribute('src', '/postcards/eclipse.jpg');
-    expect(image).toHaveAttribute('decoding', 'auto');
+    await user.hover(image);
+
+    chaiShould.equal(picture instanceof HTMLPictureElement, true);
+    if (!(source instanceof HTMLSourceElement)) {
+      throw new Error('Expected an AVIF source element.');
+    }
+
+    chaiShould.equal(source.getAttribute('srcset'), '/postcards/eclipse.avif');
+    chaiShould.equal(source.getAttribute('type'), 'image/avif');
+    chaiShould.equal(image.getAttribute('src'), '/postcards/eclipse.jpg');
+    chaiShould.equal(image.getAttribute('decoding'), 'auto');
   });
 
-  it('keeps lazy images on async decoding', () => {
+  it('should keep lazy images on async decoding', () => {
     render(<OptimizedImage src="/postcards/bootprint.jpg" alt="Bootprint" loading="lazy" />);
 
-    expect(screen.getByAltText('Bootprint')).toHaveAttribute('decoding', 'async');
+    chaiShould.equal(
+      screen.getByRole('img', { name: 'Bootprint' }).getAttribute('decoding'),
+      'async'
+    );
   });
 
-  it('renders a plain img for svg inputs', () => {
+  it('should render a plain img for svg inputs', () => {
     const { container } = render(<OptimizedImage src="/ch3/with-moon.svg" alt="Diagram" />);
+    const image = screen.queryByRole('img', { name: 'Diagram' });
 
-    expect(container.querySelector('source')).toBeNull();
-    expect(screen.getByAltText('Diagram')).toHaveAttribute('src', '/ch3/with-moon.svg');
+    chaiShould.equal(container.querySelector('source'), null);
+    if (!(image instanceof HTMLImageElement)) {
+      throw new Error('Expected an image element.');
+    }
+    chaiShould.equal(image.getAttribute('src'), '/ch3/with-moon.svg');
   });
 
-  it('uses custom responsive webp sources when provided', () => {
-    const { container } = render(
+  it('should honor a caller supplied avif srcSet', () => {
+    render(
       <OptimizedImage
         src="/ch2/hertzsprung.jpg"
-        webpSrcSet="/ch2/hertzsprung-800.webp 800w, /ch2/hertzsprung-1600.webp 1600w"
+        avifSrcSet="/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w"
         sizes="(min-width: 700px) 50vw, 100vw"
         alt="Hertzsprung basin"
       />
     );
 
-    expect(container.querySelector('source')).toHaveAttribute(
-      'srcset',
-      '/ch2/hertzsprung-800.webp 800w, /ch2/hertzsprung-1600.webp 1600w'
+    const image = screen.getByRole('img', { name: 'Hertzsprung basin' });
+    const source = image.closest('picture')?.querySelector('source');
+
+    if (!(source instanceof HTMLSourceElement)) {
+      throw new Error('Expected an AVIF source element.');
+    }
+
+    chaiShould.equal(
+      source.getAttribute('srcset'),
+      '/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w'
     );
-    expect(container.querySelector('source')).toHaveAttribute(
-      'sizes',
-      '(min-width: 700px) 50vw, 100vw'
-    );
+    chaiShould.equal(source.getAttribute('sizes'), '(min-width: 700px) 50vw, 100vw');
+    chaiShould.equal(source.getAttribute('type'), 'image/avif');
   });
 });

@@ -18,8 +18,12 @@ const widthOverrides = new Map([
 ]);
 
 const qualityOverrides = new Map([
-  ["moon/moon-2k.jpg", { jpeg: 84, webp: 82 }],
-  ["moon/moon-8k.jpg", { jpeg: 82, webp: 80 }],
+  ["moon/moon-2k.jpg", { jpeg: 84, avif: 76 }],
+  ["moon/moon-8k.jpg", { jpeg: 82, avif: 74 }],
+]);
+
+const excludedAssets = new Set([
+  "favicon-32x32.png",
 ]);
 
 const responsiveVariantWidths = new Map([
@@ -30,7 +34,7 @@ const responsiveVariantWidths = new Map([
 ]);
 const responsiveVariantAssets = new Set(responsiveVariantWidths.keys());
 
-const defaultQuality = { jpeg: 76, webp: 74 };
+const defaultQuality = { jpeg: 76, avif: 55 };
 const rasterPattern = /\.(jpe?g|png)$/i;
 const jpegPattern = /\.jpe?g$/i;
 const pngPattern = /\.png$/i;
@@ -88,11 +92,11 @@ async function encodeSourceBuffer(pipeline, relativePath, jpegQuality) {
   throw new Error(`Unsupported raster format: ${relativePath}`);
 }
 
-async function encodeWebpBuffer(pipeline, quality) {
+async function encodeAvifBuffer(pipeline, quality) {
   return pipeline
-    .webp({
+    .avif({
       quality,
-      effort: 6,
+      effort: 4,
     })
     .toBuffer();
 }
@@ -104,10 +108,10 @@ async function writeResponsiveVariants(relativePath, sourceBuffer, quality) {
   for (const width of widths) {
     const outputRelativePath = replaceExtension(
       insertWidthSuffix(relativePath, width),
-      ".webp",
+      ".avif",
     );
     const outputPath = path.join(publicDir, outputRelativePath);
-    const buffer = await encodeWebpBuffer(
+    const buffer = await encodeAvifBuffer(
       sharp(sourceBuffer, { sequentialRead: true })
         .rotate()
         .resize({
@@ -133,13 +137,13 @@ async function removeFileIfPresent(filePath) {
 
 async function optimizeAsset(relativePath) {
   const inputPath = path.join(publicDir, relativePath);
-  const webpPath = path.join(
+  const avifPath = path.join(
     publicDir,
-    replaceExtension(relativePath, ".webp"),
+    replaceExtension(relativePath, ".avif"),
   );
-  const shouldGenerateDefaultWebp = !responsiveVariantAssets.has(relativePath);
+  const shouldGenerateDefaultAvif = !responsiveVariantAssets.has(relativePath);
   const sourceBuffer = await readFile(inputPath);
-  const { maxWidth, jpeg, webp } = getTransformOptions(relativePath);
+  const { maxWidth, jpeg, avif } = getTransformOptions(relativePath);
 
   const buildPipeline = () => {
     let pipeline = sharp(sourceBuffer, { sequentialRead: true }).rotate();
@@ -166,36 +170,36 @@ async function optimizeAsset(relativePath) {
       : sourceBuffer;
   await writeBufferAtomically(inputPath, optimizedSource);
 
-  let webpQuality = webp;
-  let optimizedWebp = Buffer.alloc(0);
+  let avifQuality = avif;
+  let optimizedAvif = Buffer.alloc(0);
 
-  if (shouldGenerateDefaultWebp) {
-    optimizedWebp = await encodeWebpBuffer(buildPipeline(), webpQuality);
+  if (shouldGenerateDefaultAvif) {
+    optimizedAvif = await encodeAvifBuffer(buildPipeline(), avifQuality);
 
     while (
-      optimizedWebp.byteLength >= optimizedSource.byteLength &&
-      webpQuality > 56
+      optimizedAvif.byteLength >= optimizedSource.byteLength &&
+      avifQuality > 35
     ) {
-      webpQuality -= 6;
-      optimizedWebp = await encodeWebpBuffer(buildPipeline(), webpQuality);
+      avifQuality -= 5;
+      optimizedAvif = await encodeAvifBuffer(buildPipeline(), avifQuality);
     }
 
-    await writeBufferAtomically(webpPath, optimizedWebp);
+    await writeBufferAtomically(avifPath, optimizedAvif);
   } else {
-    await removeFileIfPresent(webpPath);
+    await removeFileIfPresent(avifPath);
   }
 
   const responsiveVariants = await writeResponsiveVariants(
     relativePath,
     sourceBuffer,
-    webpQuality,
+    avifQuality,
   );
 
   return {
     relativePath,
     before,
     sourceAfter: optimizedSource.byteLength,
-    webpAfter: optimizedWebp.byteLength,
+    avifAfter: optimizedAvif.byteLength,
     responsiveVariants,
   };
 }
@@ -219,7 +223,11 @@ async function collectRasterAssets(dir, prefix = "") {
       continue;
     }
 
-    if (entry.isFile() && rasterPattern.test(entry.name)) {
+    if (
+      entry.isFile() &&
+      rasterPattern.test(entry.name) &&
+      !excludedAssets.has(relativePath)
+    ) {
       files.push(relativePath);
     }
   }
@@ -300,6 +308,12 @@ export async function resolveRequestedFiles(inputs = []) {
       );
     }
 
+    if (excludedAssets.has(relativePublicPath)) {
+      throw new Error(
+        `Asset is excluded from optimization: ${relativePublicPath}`,
+      );
+    }
+
     requestedFiles.add(relativePublicPath);
   }
 
@@ -319,11 +333,11 @@ export async function main(args = process.argv.slice(2)) {
     (sum, result) => sum + result.sourceAfter,
     0,
   );
-  const totalWebpAfter = results.reduce(
-    (sum, result) => sum + result.webpAfter,
+  const totalAvifAfter = results.reduce(
+    (sum, result) => sum + result.avifAfter,
     0,
   );
-  const totalResponsiveWebpAfter = results.reduce(
+  const totalResponsiveAvifAfter = results.reduce(
     (sum, result) =>
       sum +
       result.responsiveVariants.reduce(
@@ -339,8 +353,8 @@ export async function main(args = process.argv.slice(2)) {
       file: result.relativePath,
       before: formatSize(result.before),
       source: formatSize(result.sourceAfter),
-      webp: result.webpAfter === 0 ? "—" : formatSize(result.webpAfter),
-      responsiveWebp:
+      avif: result.avifAfter === 0 ? "—" : formatSize(result.avifAfter),
+      responsiveAvif:
         result.responsiveVariants.length === 0
           ? "—"
           : result.responsiveVariants
@@ -351,9 +365,9 @@ export async function main(args = process.argv.slice(2)) {
   console.log(
     `Source total: ${formatSize(totalBefore)} -> ${formatSize(totalSourceAfter)}`,
   );
-  console.log(`WebP siblings total: ${formatSize(totalWebpAfter)}`);
+  console.log(`AVIF siblings total: ${formatSize(totalAvifAfter)}`);
   console.log(
-    `Responsive WebP variants total: ${formatSize(totalResponsiveWebpAfter)}`,
+    `Responsive AVIF variants total: ${formatSize(totalResponsiveAvifAfter)}`,
   );
 }
 

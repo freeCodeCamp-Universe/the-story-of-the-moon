@@ -3,13 +3,13 @@ import styles from './OptimizedImage.module.css';
 
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> & {
   src?: string;
-  webpSrcSet?: string;
+  avifSrcSet?: string;
 };
 
 const rasterSourcePattern = /\.(jpe?g|png)$/i;
 
-function toWebpPath(src: string) {
-  return src.replace(rasterSourcePattern, '.webp');
+function toAvifPath(src: string) {
+  return src.replace(rasterSourcePattern, '.avif');
 }
 
 export default function OptimizedImage({
@@ -20,7 +20,7 @@ export default function OptimizedImage({
   loading,
   srcSet,
   sizes,
-  webpSrcSet,
+  avifSrcSet,
   ...imgProps
 }: Props) {
   const resolvedDecoding = decoding ?? (loading === 'lazy' ? 'async' : 'auto');
@@ -56,7 +56,7 @@ export default function OptimizedImage({
 
   return (
     <picture className={pictureClassName}>
-      <source srcSet={webpSrcSet ?? toWebpPath(src)} sizes={sizes} type="image/webp" />
+      <source srcSet={avifSrcSet ?? toAvifPath(src)} sizes={sizes} type="image/avif" />
       {image}
     </picture>
   );

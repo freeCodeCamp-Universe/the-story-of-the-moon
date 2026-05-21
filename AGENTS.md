@@ -41,7 +41,7 @@ These instructions apply to the whole repository unless a more specific instruct
 - Prefer the shared `OptimizedImage` component for raster images rendered by the app.
 - For large raster images that render at multiple layout sizes, provide responsive sources and `sizes` instead of shipping a single oversized asset to every viewport.
 - For content-backed images, keep alt text in `src/content/assets.json`; that file is the single source of truth used to enrich other content models.
-- When adding or changing managed raster images under `public/`, run `pnpm optimize:images` so the source asset, WebP sibling, and any configured responsive WebP variants stay in sync with repo expectations.
+- When adding or changing managed raster images under `public/`, run `pnpm optimize:images` so the source asset, AVIF sibling, and any configured responsive AVIF variants stay in sync with repo expectations.
 - If a raster asset needs responsive variants, declare that in `scripts/optimize-images.mjs` instead of adding one-off generated files by hand.
 - If you add a new content asset, update the relevant content JSON so the image, credit, and alt text remain wired together.
 

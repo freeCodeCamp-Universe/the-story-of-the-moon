@@ -174,14 +174,14 @@ export function createMoonScene(
     });
   };
 
-  loadTexture('/moon/moon-2k.webp', '/moon/moon-2k.jpg', (loadedTexture) => {
+  loadTexture('/moon/moon-2k.avif', '/moon/moon-2k.jpg', (loadedTexture) => {
     loadedTexture.colorSpace = THREE.SRGBColorSpace;
     texture2k = loadedTexture;
     material.map = loadedTexture;
     material.needsUpdate = true;
 
     if (window.matchMedia('(min-width: 1200px) and (min-resolution: 2dppx)').matches) {
-      loadTexture('/moon/moon-8k.webp', '/moon/moon-8k.jpg', (hiResTexture) => {
+      loadTexture('/moon/moon-8k.avif', '/moon/moon-8k.jpg', (hiResTexture) => {
         hiResTexture.colorSpace = THREE.SRGBColorSpace;
         texture8k = hiResTexture;
         material.map = hiResTexture;

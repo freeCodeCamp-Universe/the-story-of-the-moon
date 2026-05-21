@@ -30,6 +30,18 @@ describe('resolveRequestedFiles', () => {
       'ch2/orientale-lro.png',
     ]);
   });
+
+  it('should skip excluded assets during directory expansion', async () => {
+    const files = await resolveRequestedFiles();
+
+    expect(files).not.toContain('favicon-32x32.png');
+  });
+
+  it('should reject excluded assets when requested explicitly', async () => {
+    await expect(resolveRequestedFiles(['public/favicon-32x32.png'])).rejects.toThrow(
+      'Asset is excluded from optimization: favicon-32x32.png',
+    );
+  });
 });
 
 describe('main', () => {
@@ -43,13 +55,13 @@ describe('main', () => {
       expect.arrayContaining([
         expect.objectContaining({
           file: 'ch2/hertzsprung.jpg',
-          webp: '—',
-          responsiveWebp: expect.stringContaining('ch2/hertzsprung-800.webp'),
+          avif: '—',
+          responsiveAvif: expect.stringContaining('ch2/hertzsprung-800.avif'),
         }),
       ]),
     );
     expect(logSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Responsive WebP variants total:')
+      expect.stringContaining('Responsive AVIF variants total:')
     );
-  });
+  }, 15000);
 });

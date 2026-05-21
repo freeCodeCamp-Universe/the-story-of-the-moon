@@ -7,11 +7,11 @@ import styles from "./ImageCompareSlider.module.css";
 type Props = {
   label: string;
   originalSrc: string;
-  originalWebpSrcSet?: string;
+  originalAvifSrcSet?: string;
   originalAlt: string;
   originalLabel: string;
   topographicSrc: string;
-  topographicWebpSrcSet?: string;
+  topographicAvifSrcSet?: string;
   topographicLabel: string;
   describedBy?: string;
   sizes?: string;
@@ -43,11 +43,11 @@ function getValueText(value: number, originalLabel: string, topographicLabel: st
 export default function ImageCompareSlider({
   label,
   originalSrc,
-  originalWebpSrcSet,
+  originalAvifSrcSet,
   originalAlt,
   originalLabel,
   topographicSrc,
-  topographicWebpSrcSet,
+  topographicAvifSrcSet,
   topographicLabel,
   describedBy,
   sizes,
@@ -115,7 +115,7 @@ export default function ImageCompareSlider({
           <OptimizedImage
             className={styles.baseImage}
             src={topographicSrc}
-            webpSrcSet={topographicWebpSrcSet}
+            avifSrcSet={topographicAvifSrcSet}
             sizes={sizes}
             alt=""
             aria-hidden="true"
@@ -125,7 +125,7 @@ export default function ImageCompareSlider({
             <OptimizedImage
               className={styles.overlayImage}
               src={originalSrc}
-              webpSrcSet={originalWebpSrcSet}
+              avifSrcSet={originalAvifSrcSet}
               sizes={sizes}
               alt={originalAlt}
               loading="lazy"
