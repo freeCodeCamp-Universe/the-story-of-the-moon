@@ -118,7 +118,7 @@ export default function Ch6() {
       </section>
 
       <section className={styles.section} aria-labelledby="ch6-halves-heading">
-        <div className={styles.sectionContent}>
+        <div className={`${styles.sectionContent} ${styles.sectionContentFlow}`}>
           <div className={styles.textColumn}>
             <div className={styles.sectionHeader}>
               <h3 id="ch6-halves-heading" className={styles.sectionTitle}>
@@ -136,6 +136,10 @@ export default function Ch6() {
                 history's first photographs of the region, revealing a landscape
                 that defied expectations.
               </p>
+              <div className={styles.figurePair}>
+                <ChapterFigure credit={moonNearSideCredit} />
+                <ChapterFigure credit={moonFarSideCredit} />
+              </div>
               <p>
                 The face we see from Earth is mottled with wide dark plains
                 formed by ancient lava. The far side has almost none of them: it
@@ -170,10 +174,6 @@ export default function Ch6() {
                 </li>
               </ul>
             </div>
-          </div>
-          <div className={styles.figureStack}>
-            <ChapterFigure credit={moonNearSideCredit} />
-            <ChapterFigure credit={moonFarSideCredit} />
           </div>
         </div>
       </section>
