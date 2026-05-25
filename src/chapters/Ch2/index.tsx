@@ -414,8 +414,11 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       onKeyDown={onKeyDown}
     >
       <p className={styles.hint} aria-hidden="true">
-        Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to
-        rotate
+        <span className={styles.hintMobile}>Drag to rotate</span>
+        <span className={styles.hintDesktop}>
+          Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to
+          rotate
+        </span>
       </p>
       <div className={styles.sceneStage}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
