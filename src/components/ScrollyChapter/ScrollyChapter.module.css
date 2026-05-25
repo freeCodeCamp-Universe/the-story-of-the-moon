@@ -127,6 +127,23 @@
     min-height: 70vh;
     padding-block: 15vh;
   }
+
+  /* Sticky visual pins against the nav. Breathing room above the
+     visualFrame comes from padding-top inside .visual, and a solid
+     background covers any prose scrolling behind it (including the
+     caption strip inside .visualBelow, which is a child of .visual). */
+  .visual {
+    top: var(--nav-height);
+    padding-top: var(--space-xl);
+    background-color: var(--color-bg);
+  }
+
+  /* Belt-and-suspenders: also give .visualBelow its own background so
+     the caption strip stays opaque even if it ever ends up outside
+     .visual's bounds. */
+  .visualBelow {
+    background-color: var(--color-bg);
+  }
 }
 
 /* ── Step marker (mono, terminal-prompt) ─────────────────────────── */
