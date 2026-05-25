@@ -87,7 +87,6 @@
   flex-direction: column;
   max-width: 84rem;
   margin-inline: auto;
-  padding: 0 var(--space-lg);
 }
 
 /* ── Progress rail ───────────────────────────────────────────────── */
