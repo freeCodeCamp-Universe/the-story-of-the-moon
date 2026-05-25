@@ -27,6 +27,9 @@
 .sliderInput:focus-visible + .scene .handle {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
+  box-shadow:
+    0 0 0 1px rgba(10, 10, 35, 0.9),
+    0 0 0 6px rgba(10, 10, 35, 0.55);
 }
 
 .scene {
