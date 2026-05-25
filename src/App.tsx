@@ -1,5 +1,12 @@
-import Router from '@/router';
+import { lazy, Suspense } from 'react';
+import LoadingState from '@/components/LoadingState';
+
+const StoryPage = lazy(() => import('@/pages/StoryPage'));
 
 export default function App() {
-  return <Router />;
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <StoryPage />
+    </Suspense>
+  );
 }
