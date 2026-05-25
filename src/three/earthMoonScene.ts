@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import {
+  BP_DESKTOP,
+  BP_WIDE,
+  BP_ULTRAWIDE,
+} from "@/utils/breakpoints";
 
 /**
  * Sun / Earth / Moon scene for Chapter 3.
@@ -48,9 +53,11 @@ const CAMERA_DISTANCE_DESKTOP = 12;
 const CARD_OCCLUDED_PX = 544 + 48 + 32;
 // Below this canvas width the chapter falls back to a sticky sidebar
 // layout (matching Ch2) and the camera fits the whole composition.
-const IMMERSIVE_MIN_WIDTH = 900;
-const IMMERSIVE_WIDE_MIN_WIDTH = 1800;
-const IMMERSIVE_ULTRAWIDE_MIN_WIDTH = 2800;
+// Thresholds come from the canonical breakpoint constants so this
+// scene stays in sync with the responsive CSS layout boundaries.
+const IMMERSIVE_MIN_WIDTH = BP_DESKTOP;
+const IMMERSIVE_WIDE_MIN_WIDTH = BP_WIDE;
+const IMMERSIVE_ULTRAWIDE_MIN_WIDTH = BP_ULTRAWIDE;
 
 type ImmersiveDesktopFrame = {
   moonOffsetPx: number;
