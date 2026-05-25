@@ -229,7 +229,11 @@
   color: var(--color-text);
 }
 
-@media (max-width: 767px) {
+/* Mobile + tablet: no physical keyboard expected, so the shortcuts
+   button is hidden and the chapter button moves to the inline-end.
+   Boundary matches the codebase-wide 900px tablet/desktop split
+   (ScrollyChapter, earthMoonScene's IMMERSIVE_MIN_WIDTH, etc.). */
+@media (max-width: 899px) {
   .nav {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: var(--space-sm);
