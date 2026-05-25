@@ -53,7 +53,7 @@ describe('OptimizedImage', () => {
       <OptimizedImage
         src="/ch2/hertzsprung.jpg"
         avifSrcSet="/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w"
-        sizes="(min-width: 700px) 50vw, 100vw"
+        sizes="(min-width: 768px) 50vw, 100vw"
         alt="Hertzsprung basin"
       />
     );
@@ -69,7 +69,7 @@ describe('OptimizedImage', () => {
       source.getAttribute('srcset'),
       '/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w'
     );
-    chaiShould.equal(source.getAttribute('sizes'), '(min-width: 700px) 50vw, 100vw');
+    chaiShould.equal(source.getAttribute('sizes'), '(min-width: 768px) 50vw, 100vw');
     chaiShould.equal(source.getAttribute('type'), 'image/avif');
   });
 });

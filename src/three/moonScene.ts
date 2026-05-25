@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { BP_DESKTOP } from '@/utils/breakpoints';
 
 export type FeatureProjection = {
   /** Pixel x relative to the canvas's top-left corner (CSS px). */
@@ -206,7 +207,7 @@ export function createMoonScene(
     material.map = loadedTexture;
     material.needsUpdate = true;
 
-    if (window.matchMedia('(min-width: 1200px) and (min-resolution: 2dppx)').matches) {
+    if (window.matchMedia(`(min-width: ${BP_DESKTOP}px) and (min-resolution: 2dppx)`).matches) {
       loadTexture('/moon/moon-8k.avif', '/moon/moon-8k.jpg', (hiResTexture) => {
         hiResTexture.colorSpace = THREE.SRGBColorSpace;
         texture8k = hiResTexture;

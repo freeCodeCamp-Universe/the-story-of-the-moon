@@ -19,7 +19,7 @@ import styles from "./Ch2.module.css";
 const surfaceFeaturesHeadingId = "ch2-surface-features-heading";
 const basinCompareHintId = "ch2-basin-compare-hint";
 const basinCompareLiveId = "ch2-basin-compare-live";
-const compareImageSizes = "(min-width: 700px) 50vw, 100vw";
+const compareImageSizes = "(min-width: 768px) 50vw, 100vw";
 const hertzsprungAvifSrcSet = [
   "/ch2/hertzsprung-800.avif 800w",
   "/ch2/hertzsprung-1600.avif 1600w",

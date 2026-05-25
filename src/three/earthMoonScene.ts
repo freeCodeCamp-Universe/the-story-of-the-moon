@@ -1,9 +1,5 @@
 import * as THREE from "three";
-import {
-  BP_DESKTOP,
-  BP_WIDE,
-  BP_ULTRAWIDE,
-} from "@/utils/breakpoints";
+import { BP_DESKTOP, BP_WIDE, BP_ULTRAWIDE } from "@/utils/breakpoints";
 
 /**
  * Sun / Earth / Moon scene for Chapter 3.
@@ -51,13 +47,6 @@ const CAMERA_DISTANCE_DESKTOP = 12;
 // the scene so the Moon's rightmost orbit position stays left of
 // the card with some visual breathing room.
 const CARD_OCCLUDED_PX = 544 + 48 + 32;
-// Below this canvas width the chapter falls back to a sticky sidebar
-// layout (matching Ch2) and the camera fits the whole composition.
-// Thresholds come from the canonical breakpoint constants so this
-// scene stays in sync with the responsive CSS layout boundaries.
-const IMMERSIVE_MIN_WIDTH = BP_DESKTOP;
-const IMMERSIVE_WIDE_MIN_WIDTH = BP_WIDE;
-const IMMERSIVE_ULTRAWIDE_MIN_WIDTH = BP_ULTRAWIDE;
 
 type ImmersiveDesktopFrame = {
   moonOffsetPx: number;
@@ -65,14 +54,14 @@ type ImmersiveDesktopFrame = {
 };
 
 function getImmersiveDesktopFrame(width: number): ImmersiveDesktopFrame | null {
-  if (width >= IMMERSIVE_ULTRAWIDE_MIN_WIDTH) {
+  if (width >= BP_ULTRAWIDE) {
     return {
       moonOffsetPx: 600,
       sunX: -9.7,
     };
   }
 
-  if (width >= IMMERSIVE_WIDE_MIN_WIDTH) {
+  if (width >= BP_WIDE) {
     return {
       moonOffsetPx: 200,
       sunX: -8.75,
@@ -252,7 +241,7 @@ export function createEarthMoonScene(
   // Pick a camera distance + lookAt that fits the scene for the
   // canvas size.
   //
-  // Above IMMERSIVE_MIN_WIDTH the chapter is in its immersive
+  // Above BP_DESKTOP the chapter is in its immersive
   // desktop layout (full-viewport sticky scene with a step card
   // overlaid on the right). The camera stays at its authored
   // distance; lookAt shifts right as the viewport widens so the
@@ -269,7 +258,7 @@ export function createEarthMoonScene(
     const aspect = w / h;
     const fov = (CAMERA_FOV_DEG * Math.PI) / 180;
 
-    if (w >= IMMERSIVE_MIN_WIDTH) {
+    if (w >= BP_DESKTOP) {
       const frame = getImmersiveDesktopFrame(w);
       const distance = CAMERA_DISTANCE_DESKTOP;
       const halfViewWidth = distance * Math.tan(fov / 2) * aspect;
@@ -287,7 +276,7 @@ export function createEarthMoonScene(
       return;
     }
 
-    // Sticky-sidebar layout (mobile + tablet, below IMMERSIVE_MIN_WIDTH).
+    // Sticky-sidebar layout (mobile + tablet, below BP_DESKTOP).
     // Sun is always cropped against the left view edge (its right limb
     // sits at the view's inline-start, matching the desktop framing).
     // Two regimes for the rest of the composition:

@@ -30,7 +30,7 @@
   padding-inline: var(--space-lg);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   .imageWrapper {
     padding-inline: var(--space-2xl);
   }

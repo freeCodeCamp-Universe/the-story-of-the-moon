@@ -468,7 +468,7 @@
   margin-bottom: var(--space-2xl);
 }
 
-@media (min-width: 700px) {
+@media (min-width: 768px) {
   .diptychImages {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-xl);
