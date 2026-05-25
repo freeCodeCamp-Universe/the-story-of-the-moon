@@ -52,11 +52,20 @@
 }
 
 .visualFrame {
-  /* Mobile: 50vh keeps the visual present but leaves room for prose. */
-  height: 50vh;
+  /* Mobile baseline (<768px): 35vh keeps the visual present but leaves
+     room for prose. */
+  height: 35vh;
   background-color: var(--color-bg-raised);
   border: 1px solid var(--color-border);
   border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .visualFrame {
+    /* Tablet: 30vh — the wider canvas at tablet widths fits the scene
+       comfortably without needing as much vertical space. */
+    height: 30vh;
+  }
 }
 
 @media (min-width: 900px) {
@@ -279,14 +288,20 @@
   .containerImmersive .visual {
     order: -1;
     position: sticky;
-    top: calc(var(--nav-height) + var(--space-xl));
+    /* Pin against the nav. Breathing room above the visualFrame comes
+       from padding-top *inside* .visual rather than a `top` offset, so
+       .visual's background extends across that space and covers any
+       prose scrolling behind it. */
+    top: var(--nav-height);
+    padding-top: var(--space-xl);
     width: 100%;
     margin: 0;
     z-index: 1;
+    background-color: var(--color-bg);
   }
 
   .containerImmersive .visualFrame {
-    height: 50vh;
+    height: 35vh;
     border: 1px solid var(--color-border);
     border-radius: 2px;
     background-color: var(--color-bg-raised);
@@ -319,5 +334,14 @@
 
   .containerImmersive .step:last-child {
     padding-bottom: 55vh;
+  }
+}
+
+/* Tablet step within the sticky-sidebar fallback: shorter scene height
+   to match the wider canvas aspect, matching the non-immersive
+   .visualFrame tablet rule. */
+@media (min-width: 768px) and (max-width: 899px) {
+  .containerImmersive .visualFrame {
+    height: 30vh;
   }
 }

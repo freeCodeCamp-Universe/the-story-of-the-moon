@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 /**
  * Sun / Earth / Moon scene for Chapter 3.
@@ -87,7 +87,9 @@ function makeOrbitRing(radius: number, color: number) {
   const points: THREE.Vector3[] = [];
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
-    points.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
+    points.push(
+      new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius),
+    );
   }
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const material = new THREE.LineDashedMaterial({
@@ -118,16 +120,23 @@ function makeSunHalo(position: THREE.Vector3, scale: number) {
 
 function createHaloCanvas(): HTMLCanvasElement {
   const size = 256;
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
-  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, 'rgba(255, 244, 204, 1)');
-  grad.addColorStop(0.2, 'rgba(255, 210, 122, 0.6)');
-  grad.addColorStop(0.6, 'rgba(241, 190, 50, 0.15)');
-  grad.addColorStop(1, 'rgba(241, 190, 50, 0)');
+  const grad = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  grad.addColorStop(0, "rgba(255, 244, 204, 1)");
+  grad.addColorStop(0.2, "rgba(255, 210, 122, 0.6)");
+  grad.addColorStop(0.6, "rgba(241, 190, 50, 0.15)");
+  grad.addColorStop(1, "rgba(241, 190, 50, 0)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, size, size);
   return canvas;
@@ -140,54 +149,74 @@ function createEarthCanvas(): HTMLCanvasElement {
   // there are obvious features, not because the texture is accurate.
   const width = 1024;
   const height = 512;
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
 
   const ocean = ctx.createLinearGradient(0, 0, 0, height);
-  ocean.addColorStop(0, '#3a7fb5');
-  ocean.addColorStop(0.5, '#4d96c8');
-  ocean.addColorStop(1, '#356b9a');
+  ocean.addColorStop(0, "#3a7fb5");
+  ocean.addColorStop(0.5, "#4d96c8");
+  ocean.addColorStop(1, "#356b9a");
   ctx.fillStyle = ocean;
   ctx.fillRect(0, 0, width, height);
 
-  const blobs: Array<{ cx: number; cy: number; rx: number; ry: number; fill: string }> = [
-    { cx: 0.15, cy: 0.38, rx: 0.04, ry: 0.07, fill: '#a6cde4' },
-    { cx: 0.28, cy: 0.62, rx: 0.05, ry: 0.06, fill: '#b5d6e9' },
-    { cx: 0.42, cy: 0.44, rx: 0.06, ry: 0.09, fill: '#9ec4e0' },
-    { cx: 0.55, cy: 0.7, rx: 0.04, ry: 0.05, fill: '#b5d6e9' },
-    { cx: 0.68, cy: 0.36, rx: 0.05, ry: 0.08, fill: '#a6cde4' },
-    { cx: 0.82, cy: 0.58, rx: 0.05, ry: 0.07, fill: '#9ec4e0' },
+  const blobs: Array<{
+    cx: number;
+    cy: number;
+    rx: number;
+    ry: number;
+    fill: string;
+  }> = [
+    { cx: 0.15, cy: 0.38, rx: 0.04, ry: 0.07, fill: "#a6cde4" },
+    { cx: 0.28, cy: 0.62, rx: 0.05, ry: 0.06, fill: "#b5d6e9" },
+    { cx: 0.42, cy: 0.44, rx: 0.06, ry: 0.09, fill: "#9ec4e0" },
+    { cx: 0.55, cy: 0.7, rx: 0.04, ry: 0.05, fill: "#b5d6e9" },
+    { cx: 0.68, cy: 0.36, rx: 0.05, ry: 0.08, fill: "#a6cde4" },
+    { cx: 0.82, cy: 0.58, rx: 0.05, ry: 0.07, fill: "#9ec4e0" },
   ];
 
   for (const blob of blobs) {
     ctx.fillStyle = blob.fill;
     ctx.beginPath();
-    ctx.ellipse(blob.cx * width, blob.cy * height, blob.rx * width, blob.ry * height, 0, 0, Math.PI * 2);
+    ctx.ellipse(
+      blob.cx * width,
+      blob.cy * height,
+      blob.rx * width,
+      blob.ry * height,
+      0,
+      0,
+      Math.PI * 2,
+    );
     ctx.fill();
   }
 
   // Polar caps — light cool bands top and bottom.
   const polar = ctx.createLinearGradient(0, 0, 0, height);
-  polar.addColorStop(0, 'rgba(235, 240, 248, 0.85)');
-  polar.addColorStop(0.08, 'rgba(235, 240, 248, 0)');
-  polar.addColorStop(0.92, 'rgba(235, 240, 248, 0)');
-  polar.addColorStop(1, 'rgba(235, 240, 248, 0.85)');
+  polar.addColorStop(0, "rgba(235, 240, 248, 0.85)");
+  polar.addColorStop(0.08, "rgba(235, 240, 248, 0)");
+  polar.addColorStop(0.92, "rgba(235, 240, 248, 0)");
+  polar.addColorStop(1, "rgba(235, 240, 248, 0.85)");
   ctx.fillStyle = polar;
   ctx.fillRect(0, 0, width, height);
 
   return canvas;
 }
 
-export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneHandle {
-  if (!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))) {
+export function createEarthMoonScene(
+  canvas: HTMLCanvasElement,
+): EarthMoonSceneHandle {
+  if (!(canvas.getContext("webgl2") ?? canvas.getContext("webgl"))) {
     return null;
   }
 
   const { width, height } = getCanvasSize(canvas);
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(width, height);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -195,7 +224,23 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x1b1b32);
 
-  const camera = new THREE.PerspectiveCamera(CAMERA_FOV_DEG, width / height, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(
+    CAMERA_FOV_DEG,
+    width / height,
+    0.1,
+    200,
+  );
+
+  // ── Earth-Moon system group ───────────────────────────────────────
+  // Wraps the Earth, Moon, orbit ring and umbra so the whole system
+  // can be translated along X without touching the Sun. fitCamera
+  // shifts it on wide-aspect canvases (tablet) so Earth + Moon land
+  // right of center while the Sun stays cropped at the left view edge.
+  // The Sun stays in the scene directly, so its world position, halo,
+  // and directional-light direction are unaffected. Declared here,
+  // before fitCamera is first called, so its position can be set then.
+  const systemGroup = new THREE.Group();
+  scene.add(systemGroup);
 
   // Pick a camera distance + lookAt that fits the scene for the
   // canvas size.
@@ -228,29 +273,66 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
       const moonOffsetPx = frame?.moonOffsetPx ?? w / 2 - CARD_OCCLUDED_PX;
       const moonOffsetWorld = (moonOffsetPx / (w / 2)) * halfViewWidth;
       const lookAtX = MOON_ORBIT - moonOffsetWorld;
+      systemGroup.position.x = 0;
       // Keep the vertical camera angle the same across distances.
       camera.position.set(0, (2.5 * distance) / 10, distance);
       camera.lookAt(lookAtX, 0, 0);
       return;
     }
 
-    // Mobile (sticky-sidebar) layout: mirror the desktop effect —
-    // Earth and Moon prominent, Sun partially cut off on the left so
-    // only the right edge of the disc and its halo read as the light
-    // source. Distance matches the desktop camera so the elements
-    // render at the same size across layouts.
+    // Sticky-sidebar layout (mobile + tablet, below IMMERSIVE_MIN_WIDTH).
+    // Sun is always cropped against the left view edge (its right limb
+    // sits at the view's inline-start, matching the desktop framing).
+    // Two regimes for the rest of the composition:
+    //
+    // 1. Narrow aspect (mobile portrait): the camera distance grows if
+    //    needed to keep the Moon visible; the Earth-Moon system stays
+    //    at its world origin and gets pushed toward the right naturally
+    //    as the small view width is consumed by the cropped Sun.
+    //
+    // 2. Wide aspect (tablet landscape, iPad portrait at 30vh): the
+    //    Earth-Moon system shifts right in world coordinates so Earth
+    //    lands at the canvas center while the Sun stays cropped at the
+    //    left view edge. Without this shift, the wider canvas would
+    //    leave Earth and Moon stuck in the inline-start corner.
+    //    Lighting is unaffected — sunLight is a DirectionalLight, so
+    //    only its direction (target − position) matters and that's set
+    //    in world space independent of the system group.
     currentSunX = SUN_X;
-    const distance = CAMERA_DISTANCE_DESKTOP;
-    const halfViewWidth = distance * Math.tan(fov / 2) * aspect;
-    // Target: Sun's right edge ~half a radius left of the view
-    // centerline, so roughly a quarter of the disc is visible.
-    let lookAtX = currentSunX + 0.5 * SUN_RADIUS + halfViewWidth;
-    // Guard: on very narrow aspects the formula above would push the
-    // Moon off the right edge. Clamp so Moon + radius stays inside
-    // the view with a small margin.
-    const minLookAtX = MOON_ORBIT + MOON_RADIUS - halfViewWidth + 0.3;
-    lookAtX = Math.max(lookAtX, minLookAtX);
-    camera.position.set(0, (2.5 * distance) / 10, distance);
+    const tanHalfFov = Math.tan(fov / 2);
+    const MOON_RIGHT_EDGE = MOON_ORBIT + MOON_RADIUS + 0.3;
+    // Default anchor: a quarter of the Sun disc shows at the left view
+    // edge. Used for narrow aspects (mobile portrait) and as the
+    // detection baseline for whether we're in the wide branch.
+    const NARROW_VISIBLE_LEFT = SUN_X + 0.5 * SUN_RADIUS;
+    const minHalfViewWidth = (MOON_RIGHT_EDGE - NARROW_VISIBLE_LEFT) / 2;
+    let distance = CAMERA_DISTANCE_DESKTOP;
+    let halfViewWidth = distance * tanHalfFov * aspect;
+    if (halfViewWidth < minHalfViewWidth) {
+      halfViewWidth = minHalfViewWidth;
+      distance = halfViewWidth / (tanHalfFov * aspect);
+    }
+    // Wide-aspect (tablet) detection: at the narrow anchor the camera
+    // lookAt would sit right of world origin. In that regime we apply
+    // tablet-only nudges — show a bit more Sun and shift the Earth-Moon
+    // system slightly right of canvas center — without touching mobile-
+    // portrait or desktop framing.
+    const wideAspect = NARROW_VISIBLE_LEFT + halfViewWidth > 0;
+    const TABLET_SUN_NUDGE = 0.2;
+    const TABLET_EARTH_NUDGE = 1.0;
+    const visibleLeft = wideAspect
+      ? NARROW_VISIBLE_LEFT - TABLET_SUN_NUDGE
+      : NARROW_VISIBLE_LEFT;
+    const lookAtX = visibleLeft + halfViewWidth;
+    systemGroup.position.x = wideAspect ? lookAtX + TABLET_EARTH_NUDGE : 0;
+    // Align camera X with lookAt so the view direction has no X
+    // component. Without this, when lookAtX is far from 0 (wide-aspect
+    // tablet case), the camera's up vector picks up an X tilt and
+    // points at the same world Y=0 project to different canvas Y —
+    // making Sun, Earth and Moon read as misaligned along the eclipse
+    // axis. The desktop branch is untouched (its lookAtX stays close
+    // to 0 and the tilt is negligible).
+    camera.position.set(lookAtX, (2.5 * distance) / 10, distance);
     camera.lookAt(lookAtX, 0, 0);
   };
 
@@ -284,7 +366,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   //     earth         (spins on local Y)
   //     tiltIndicator (amber spindle along tilt axis)
   const precessionGroup = new THREE.Group();
-  scene.add(precessionGroup);
+  systemGroup.add(precessionGroup);
 
   const tiltGroup = new THREE.Group();
   tiltGroup.rotation.z = THREE.MathUtils.degToRad(DEFAULT_TILT_DEG);
@@ -337,13 +419,13 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   });
   const moon = new THREE.Mesh(moonGeometry, moonMaterial);
   moon.position.set(MOON_ORBIT, 0, 0);
-  scene.add(moon);
+  systemGroup.add(moon);
 
   // ── Orbit ring ────────────────────────────────────────────────────
   const orbitTilt = THREE.MathUtils.degToRad(ORBIT_TILT_DEG);
   const orbitRing = makeOrbitRing(MOON_ORBIT, 0x6f98a8);
   orbitRing.line.rotation.z = orbitTilt;
-  scene.add(orbitRing.line);
+  systemGroup.add(orbitRing.line);
 
   // ── Umbra cone (solar eclipse visual) ─────────────────────────────
   // Hand-drawn shadow cone from moon toward earth, shown only during the
@@ -360,7 +442,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   });
   const umbra = new THREE.Mesh(umbraGeometry, umbraMaterial);
   umbra.visible = false;
-  scene.add(umbra);
+  systemGroup.add(umbra);
 
   // ── State ─────────────────────────────────────────────────────────
   // Start moon at +z (closer to camera, clearly off the sun-earth axis).
@@ -430,22 +512,38 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
     // as seen from above earth's north pole.
     if (withMoon) {
       if (showEclipse) {
-        moon.position.set(-MOON_ORBIT * Math.cos(orbitTilt), -MOON_ORBIT * Math.sin(orbitTilt), 0);
+        moon.position.set(
+          -MOON_ORBIT * Math.cos(orbitTilt),
+          -MOON_ORBIT * Math.sin(orbitTilt),
+          0,
+        );
         // Cone apex sits at the moon, base UMBRA_HEIGHT toward earth along
         // the moon→earth direction (cos t, sin t). Center is the midpoint.
         const dirX = Math.cos(orbitTilt);
         const dirY = Math.sin(orbitTilt);
-        umbra.position.set((UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX, (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY, 0);
+        umbra.position.set(
+          (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX,
+          (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY,
+          0,
+        );
         // Default cone axis is +Y; rotating around Z by π/2 + tilt aligns
         // the apex with the moon and the base with the earthward end.
         umbra.rotation.set(0, 0, Math.PI / 2 + orbitTilt);
         umbra.visible = true;
       } else if (showFullMoon || showLunarEclipse) {
-        moon.position.set(MOON_ORBIT * Math.cos(orbitTilt), MOON_ORBIT * Math.sin(orbitTilt), 0);
+        moon.position.set(
+          MOON_ORBIT * Math.cos(orbitTilt),
+          MOON_ORBIT * Math.sin(orbitTilt),
+          0,
+        );
         umbra.visible = false;
       } else {
         moonAngle += 0.09 * dt;
-        moon.position.set(Math.cos(moonAngle) * MOON_ORBIT * Math.cos(orbitTilt), Math.cos(moonAngle) * MOON_ORBIT * Math.sin(orbitTilt), -Math.sin(moonAngle) * MOON_ORBIT);
+        moon.position.set(
+          Math.cos(moonAngle) * MOON_ORBIT * Math.cos(orbitTilt),
+          Math.cos(moonAngle) * MOON_ORBIT * Math.sin(orbitTilt),
+          -Math.sin(moonAngle) * MOON_ORBIT,
+        );
         umbra.visible = false;
       }
     }
