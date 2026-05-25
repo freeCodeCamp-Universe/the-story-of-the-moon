@@ -12,7 +12,7 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: var(--space-md);
-  padding-inline: var(--space-md);
+  padding-inline: var(--space-2xl);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   background-color: rgba(10, 10, 35, 0.92);
