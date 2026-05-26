@@ -78,7 +78,9 @@
   border: none;
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--transition-base), color var(--transition-base);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
   white-space: normal;
 }
 

@@ -1,49 +1,31 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
-import { CreditCaption } from "@/components/CreditCaption/CreditCaption";
-import { ImageCompareSlider } from "@/components/ImageCompareSlider/ImageCompareSlider";
-import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
-import { ScrollyChapter } from "@/components/ScrollyChapter/ScrollyChapter";
-import { getAsset, surfaceFeatures } from "@/content";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useViewportActivity } from "@/hooks/useViewportActivity";
-import type { SurfaceFeature } from "@/types/content";
-import type { MoonSceneHandle } from "@/three/moonScene";
-import styles from "./Ch2.module.css";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
+import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
+import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { ScrollyChapter } from '@/components/ScrollyChapter/ScrollyChapter';
+import { getAsset, surfaceFeatures } from '@/content';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useViewportActivity } from '@/hooks/useViewportActivity';
+import type { SurfaceFeature } from '@/types/content';
+import type { MoonSceneHandle } from '@/three/moonScene';
+import styles from './Ch2.module.css';
 
-const surfaceFeaturesHeadingId = "ch2-surface-features-heading";
-const basinCompareHintId = "ch2-basin-compare-hint";
-const basinCompareLiveId = "ch2-basin-compare-live";
-const compareImageSizes = "(min-width: 768px) 50vw, 100vw";
-const hertzsprungAvifSrcSet = [
-  "/ch2/hertzsprung-800.avif 800w",
-  "/ch2/hertzsprung-1600.avif 1600w",
-].join(", ");
-const hertzsprungTopographicAvifSrcSet = [
-  "/ch2/hertzsprung-topographic-800.avif 800w",
-  "/ch2/hertzsprung-topographic-1600.avif 1600w",
-].join(", ");
-const orientaleAvifSrcSet = [
-  "/ch2/orientale-lro-800.avif 800w",
-  "/ch2/orientale-lro-1600.avif 1600w",
-].join(", ");
-const orientaleTopographicAvifSrcSet = [
-  "/ch2/orientale-topographic-800.avif 800w",
-  "/ch2/orientale-topographic-1600.avif 1600w",
-].join(", ");
+const surfaceFeaturesHeadingId = 'ch2-surface-features-heading';
+const basinCompareHintId = 'ch2-basin-compare-hint';
+const basinCompareLiveId = 'ch2-basin-compare-live';
+const compareImageSizes = '(min-width: 768px) 50vw, 100vw';
+const hertzsprungAvifSrcSet = ['/ch2/hertzsprung-800.avif 800w', '/ch2/hertzsprung-1600.avif 1600w'].join(', ');
+const hertzsprungTopographicAvifSrcSet = ['/ch2/hertzsprung-topographic-800.avif 800w', '/ch2/hertzsprung-topographic-1600.avif 1600w'].join(', ');
+const orientaleAvifSrcSet = ['/ch2/orientale-lro-800.avif 800w', '/ch2/orientale-lro-1600.avif 1600w'].join(', ');
+const orientaleTopographicAvifSrcSet = ['/ch2/orientale-topographic-800.avif 800w', '/ch2/orientale-topographic-1600.avif 1600w'].join(', ');
 
 function formatLatLon(lat: number, lon: number): string {
-  const latDir = lat >= 0 ? "N" : "S";
-  const lonDir = lon >= 0 ? "E" : "W";
+  const latDir = lat >= 0 ? 'N' : 'S';
+  const lonDir = lon >= 0 ? 'E' : 'W';
   return `${Math.abs(lat).toFixed(1)}°${latDir} ${Math.abs(lon).toFixed(1)}°${lonDir}`;
 }
 
-function getFeatureLabelText(feature: Pick<SurfaceFeature, "name" | "lat" | "lon">) {
+function getFeatureLabelText(feature: Pick<SurfaceFeature, 'name' | 'lat' | 'lon'>) {
   return {
     name: feature.name,
     coords: formatLatLon(feature.lat, feature.lon),
@@ -69,11 +51,10 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
     name: string;
     coords: string;
   } | null>(null);
-  const [rotationAnnouncement, setRotationAnnouncement] = useState("");
-  const { targetRef, isNearViewport, isVisible } =
-    useViewportActivity<HTMLDivElement>({
-      rootMargin: "320px 0px",
-    });
+  const [rotationAnnouncement, setRotationAnnouncement] = useState('');
+  const { targetRef, isNearViewport, isVisible } = useViewportActivity<HTMLDivElement>({
+    rootMargin: '320px 0px',
+  });
 
   // Active feature needs to be reachable from the RAF loop without
   // re-triggering the loop effect on every change.
@@ -92,7 +73,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       clearTimeout(rotationAnnouncementTimerRef.current);
       rotationAnnouncementTimerRef.current = null;
     }
-    setRotationAnnouncement("");
+    setRotationAnnouncement('');
   }, []);
 
   const scheduleRotationAnnouncement = useCallback(() => {
@@ -105,12 +86,9 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       if (!cameraLatLon) {
         return;
       }
-      rotationAnnouncementToggleRef.current =
-        !rotationAnnouncementToggleRef.current;
-      const suffix = rotationAnnouncementToggleRef.current ? "\u200B" : "";
-      setRotationAnnouncement(
-        `Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`,
-      );
+      rotationAnnouncementToggleRef.current = !rotationAnnouncementToggleRef.current;
+      const suffix = rotationAnnouncementToggleRef.current ? '\u200B' : '';
+      setRotationAnnouncement(`Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`);
     }, 600);
   }, []);
 
@@ -140,13 +118,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
 
     const nextLabel = getFeatureLabelText(activeFeatureRef.current);
 
-    setLabelText((current) =>
-      current &&
-      current.name === nextLabel.name &&
-      current.coords === nextLabel.coords
-        ? current
-        : nextLabel,
-    );
+    setLabelText((current) => (current && current.name === nextLabel.name && current.coords === nextLabel.coords ? current : nextLabel));
   }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon]);
 
   useEffect(() => {
@@ -161,7 +133,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
     }
 
     let disposed = false;
-    import("@/three/moonScene")
+    import('@/three/moonScene')
       .then(({ createMoonScene }) => {
         if (disposed || !canvasRef.current) return;
         const handle = createMoonScene(canvasRef.current, {
@@ -243,16 +215,16 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       scheduleRecover();
     };
 
-    canvas.addEventListener("pointerdown", onPointerDown);
-    canvas.addEventListener("pointerup", onPointerRelease);
-    canvas.addEventListener("pointercancel", onPointerRelease);
-    canvas.addEventListener("pointerleave", onPointerRelease);
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointerup', onPointerRelease);
+    canvas.addEventListener('pointercancel', onPointerRelease);
+    canvas.addEventListener('pointerleave', onPointerRelease);
 
     return () => {
-      canvas.removeEventListener("pointerdown", onPointerDown);
-      canvas.removeEventListener("pointerup", onPointerRelease);
-      canvas.removeEventListener("pointercancel", onPointerRelease);
-      canvas.removeEventListener("pointerleave", onPointerRelease);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      canvas.removeEventListener('pointerup', onPointerRelease);
+      canvas.removeEventListener('pointercancel', onPointerRelease);
+      canvas.removeEventListener('pointerleave', onPointerRelease);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       if (rotationAnnouncementTimerRef.current) {
         clearTimeout(rotationAnnouncementTimerRef.current);
@@ -270,16 +242,16 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       let deltaAzimuth = 0;
       let deltaPolar = 0;
       switch (event.key) {
-        case "ArrowLeft":
+        case 'ArrowLeft':
           deltaAzimuth = -STEP;
           break;
-        case "ArrowRight":
+        case 'ArrowRight':
           deltaAzimuth = STEP;
           break;
-        case "ArrowUp":
+        case 'ArrowUp':
           deltaPolar = -STEP;
           break;
-        case "ArrowDown":
+        case 'ArrowDown':
           deltaPolar = STEP;
           break;
         default:
@@ -298,7 +270,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       scheduleRecover();
     },
-    [scheduleRecover, scheduleRotationAnnouncement],
+    [scheduleRecover, scheduleRotationAnnouncement]
   );
 
   // Drive camera + stage annotation visibility when the active feature
@@ -357,11 +329,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       const feature = activeFeatureRef.current;
 
       if (handle && label && canvasRef.current) {
-        const proj = handle.projectFeature(
-          feature.lat,
-          feature.lon,
-          feature.diameterKm,
-        );
+        const proj = handle.projectFeature(feature.lat, feature.lon, feature.diameterKm);
         if (proj) {
           // Label normally sits to the right of the feature point.
           // On narrow canvases (or for features near the right edge)
@@ -377,10 +345,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
           // sphere (e.g., South Pole–Aitken basin).
           const shouldShow = showAnnotationRef.current && proj.visible;
           if (annotationRef.current) {
-            annotationRef.current.classList.toggle(
-              styles.annotationVisible,
-              shouldShow,
-            );
+            annotationRef.current.classList.toggle(styles.annotationVisible, shouldShow);
           }
         }
       }
@@ -395,39 +360,22 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   if (!webglAvailable) {
     return (
       <div ref={targetRef} className={styles.visualSlot}>
-        <OptimizedImage
-          className={styles.fallbackStatic}
-          src="/moon/moon-2k.jpg"
-          alt=""
-        />
+        <OptimizedImage className={styles.fallbackStatic} src="/moon/moon-2k.jpg" alt="" />
       </div>
     );
   }
 
   return (
-    <div
-      ref={targetRef}
-      className={styles.visualSlot}
-      tabIndex={0}
-      role="group"
-      aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature."
-      onKeyDown={onKeyDown}
-    >
+    <div ref={targetRef} className={styles.visualSlot} tabIndex={0} role="group" aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature." onKeyDown={onKeyDown}>
       <p className={styles.hint} aria-hidden="true">
         <span className={styles.hintMobile}>Drag to rotate</span>
         <span className={styles.hintDesktop}>
-          Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to
-          rotate
+          Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to rotate
         </span>
       </p>
       <div className={styles.sceneStage}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
-        <div
-          ref={annotationRef}
-          className={styles.annotation}
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div ref={annotationRef} className={styles.annotation} aria-live="polite" aria-atomic="true">
           <div ref={labelRef} className={styles.label}>
             {labelText ? (
               <>
@@ -446,7 +394,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
 }
 
 function VisualBelow() {
-  const moonCredit = getAsset("moon-texture-2k");
+  const moonCredit = getAsset('moon-texture-2k');
   return moonCredit ? <CreditCaption credit={moonCredit} /> : null;
 }
 
@@ -458,8 +406,7 @@ export default function Ch2() {
     setActiveId(id);
   }, []);
 
-  const activeFeature =
-    surfaceFeatures.find((f) => f.id === activeId) ?? surfaceFeatures[0];
+  const activeFeature = surfaceFeatures.find((f) => f.id === activeId) ?? surfaceFeatures[0];
 
   if (reducedMotion) {
     return (
@@ -468,27 +415,15 @@ export default function Ch2() {
           <IntroProse />
         </div>
         <section aria-labelledby={surfaceFeaturesHeadingId}>
-          <h3
-            id={surfaceFeaturesHeadingId}
-            className={styles.surfaceFeaturesTitle}
-          >
+          <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
             Surface features of the Moon
           </h3>
-          <ol
-            className={styles.fallbackList}
-            aria-label="Notable surface features"
-          >
+          <ol className={styles.fallbackList} aria-label="Notable surface features">
             {surfaceFeatures.map((feature) => (
               <li key={feature.id} className={styles.fallbackItem}>
-                <OptimizedImage
-                  className={styles.fallbackImage}
-                  src="/moon/moon-2k.jpg"
-                  alt={`The Moon's near side; ${feature.name} is located at ${formatLatLon(feature.lat, feature.lon)}.`}
-                  loading="lazy"
-                />
+                <OptimizedImage className={styles.fallbackImage} src="/moon/moon-2k.jpg" alt={`The Moon's near side; ${feature.name} is located at ${formatLatLon(feature.lat, feature.lon)}.`} loading="lazy" />
                 <p className={styles.fallbackMarker}>
-                  <span aria-hidden="true">&gt;</span>{" "}
-                  {formatLatLon(feature.lat, feature.lon)}
+                  <span aria-hidden="true">&gt;</span> {formatLatLon(feature.lat, feature.lon)}
                 </p>
                 <h4 className={styles.fallbackName}>{feature.name}</h4>
                 <p className={styles.fallbackOneLiner}>{feature.oneLiner}</p>
@@ -531,25 +466,17 @@ export default function Ch2() {
 }
 
 function IntroProse() {
-  const aristarchusAsset = getAsset("ch2-aristarchus-crater");
-  const orientaleAsset = getAsset("ch2-mare-orientale");
-  const orientaleTopographicAsset = getAsset("ch2-mare-orientale-topographic");
-  const hertzsprungAsset = getAsset("ch2-hertzsprung-basin");
-  const hertzsprungTopographicAsset = getAsset(
-    "ch2-hertzsprung-basin-topographic",
-  );
+  const aristarchusAsset = getAsset('ch2-aristarchus-crater');
+  const orientaleAsset = getAsset('ch2-mare-orientale');
+  const orientaleTopographicAsset = getAsset('ch2-mare-orientale-topographic');
+  const hertzsprungAsset = getAsset('ch2-hertzsprung-basin');
+  const hertzsprungTopographicAsset = getAsset('ch2-hertzsprung-basin-topographic');
   const [hertzsprungCompareValue, setHertzsprungCompareValue] = useState(50);
   const [orientaleCompareValue, setOrientaleCompareValue] = useState(50);
 
-  const formatCompareStatus = (value: number) =>
-    value === 100
-      ? "Full original view"
-      : value === 0
-        ? "Full topographic view"
-        : `${value}% original, ${100 - value}% topographic`;
+  const formatCompareStatus = (value: number) => (value === 100 ? 'Full original view' : value === 0 ? 'Full topographic view' : `${value}% original, ${100 - value}% topographic`);
 
-  const basinCompareStatus =
-    `Hertzsprung: ${formatCompareStatus(hertzsprungCompareValue)}. Mare Orientale: ${formatCompareStatus(orientaleCompareValue)}.`;
+  const basinCompareStatus = `Hertzsprung: ${formatCompareStatus(hertzsprungCompareValue)}. Mare Orientale: ${formatCompareStatus(orientaleCompareValue)}.`;
 
   const handleBasinCompareKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.altKey || event.ctrlKey || event.metaKey) {
@@ -557,7 +484,7 @@ function IntroProse() {
     }
 
     const key = event.key.toLowerCase();
-    const nextValue = key === "o" ? 100 : key === "t" ? 0 : null;
+    const nextValue = key === 'o' ? 100 : key === 't' ? 0 : null;
 
     if (nextValue === null) {
       return;
@@ -565,18 +492,15 @@ function IntroProse() {
 
     event.preventDefault();
 
-    if (
-      event.target instanceof HTMLElement &&
-      event.target !== event.currentTarget
-    ) {
-      const compareFigure = event.target.closest<HTMLElement>("[data-basin-compare]");
+    if (event.target instanceof HTMLElement && event.target !== event.currentTarget) {
+      const compareFigure = event.target.closest<HTMLElement>('[data-basin-compare]');
 
-      if (compareFigure?.dataset.basinCompare === "hertzsprung") {
+      if (compareFigure?.dataset.basinCompare === 'hertzsprung') {
         setHertzsprungCompareValue(nextValue);
         return;
       }
 
-      if (compareFigure?.dataset.basinCompare === "orientale") {
+      if (compareFigure?.dataset.basinCompare === 'orientale') {
         setOrientaleCompareValue(nextValue);
         return;
       }
@@ -589,12 +513,8 @@ function IntroProse() {
   return (
     <>
       <p>
-        For four billion years, space objects have been hitting the Moon.
-        Asteroids, comets, and pieces of other worlds all leave a mark when they
-        strike. The Moon has no rain, no wind, no oceans to wash those marks
-        away. Earth was struck just as often, but it buried its own wounds under
-        oceans and shifting continents. The Moon we see today is the record of
-        every collision the inner solar system could throw at it.
+        For four billion years, space objects have been hitting the Moon. Asteroids, comets, and pieces of other worlds all leave a mark when they strike. The Moon has no rain, no wind, no oceans to wash those marks away. Earth was struck just as
+        often, but it buried its own wounds under oceans and shifting continents. The Moon we see today is the record of every collision the inner solar system could throw at it.
       </p>
 
       <section className={styles.term} aria-labelledby="ch2-crater-heading">
@@ -602,21 +522,11 @@ function IntroProse() {
           Crater
         </h3>
         <p>
-          A crater is a bowl-shaped depression on the surface of a planet or
-          moon, typically formed by the high-speed impact of a meteorite,
-          asteroid, or comet. These structures are characterized by a circular
-          pit, a sunken floor, and a raised outer rim created by the
-          displacement of rock during the collision. In smaller craters, the
-          interior is usually a simple, smooth curve, while slightly larger ones
-          may feature a central peak where the ground rebounded after the hit.
+          A crater is a bowl-shaped depression on the surface of a planet or moon, typically formed by the high-speed impact of a meteorite, asteroid, or comet. These structures are characterized by a circular pit, a sunken floor, and a raised outer
+          rim created by the displacement of rock during the collision. In smaller craters, the interior is usually a simple, smooth curve, while slightly larger ones may feature a central peak where the ground rebounded after the hit.
         </p>
         <figure className={styles.termFigure}>
-          <OptimizedImage
-            className={styles.termImage}
-            src="/ch2/aristarchus.jpg"
-            alt={aristarchusAsset?.alt ?? ""}
-            loading="lazy"
-          />
+          <OptimizedImage className={styles.termImage} src="/ch2/aristarchus.jpg" alt={aristarchusAsset?.alt ?? ''} loading="lazy" />
           {aristarchusAsset && <CreditCaption credit={aristarchusAsset} />}
         </figure>
       </section>
@@ -626,28 +536,11 @@ function IntroProse() {
           Basin
         </h3>
         <p>
-          A basin is a massive impact structure that represents the largest and
-          most complex class of craters, generally defined by a diameter
-          exceeding 300 kilometers. Unlike standard craters, the immense energy
-          required to form a basin causes the crust to behave like a fluid,
-          resulting in a flat interior floor and multiple concentric rings that
-          resemble a bullseye.
+          A basin is a massive impact structure that represents the largest and most complex class of craters, generally defined by a diameter exceeding 300 kilometers. Unlike standard craters, the immense energy required to form a basin causes the
+          crust to behave like a fluid, resulting in a flat interior floor and multiple concentric rings that resemble a bullseye.
         </p>
-        <p>
-          Over time, these giant depressions are often filled with rising
-          subsurface lava, forming dark, smooth volcanic plains known as maria
-          (singular: mare), which significantly alter the geological landscape
-          of the planetary body.
-        </p>
-        <div
-          className={styles.termDiptych}
-          role="group"
-          tabIndex={0}
-          aria-label="Basin image comparisons"
-          aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`}
-          aria-keyshortcuts="O T"
-          onKeyDownCapture={handleBasinCompareKeyDown}
-        >
+        <p>Over time, these giant depressions are often filled with rising subsurface lava, forming dark, smooth volcanic plains known as maria (singular: mare), which significantly alter the geological landscape of the planetary body.</p>
+        <div className={styles.termDiptych} role="group" tabIndex={0} aria-label="Basin image comparisons" aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`} aria-keyshortcuts="O T" onKeyDownCapture={handleBasinCompareKeyDown}>
           <p id={basinCompareHintId} className={styles.hint}>
             Drag, or press <kbd>←</kbd> <kbd>→</kbd> to slide.
             <br />
@@ -657,10 +550,7 @@ function IntroProse() {
             {basinCompareStatus}
           </p>
           {hertzsprungAsset && hertzsprungTopographicAsset && (
-            <figure
-              className={styles.termDiptychFigure}
-              data-basin-compare="hertzsprung"
-            >
+            <figure className={styles.termDiptychFigure} data-basin-compare="hertzsprung">
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
                 originalSrc="/ch2/hertzsprung.jpg"
@@ -682,10 +572,7 @@ function IntroProse() {
             </figure>
           )}
           {orientaleAsset && orientaleTopographicAsset && (
-            <figure
-              className={styles.termDiptychFigure}
-              data-basin-compare="orientale"
-            >
+            <figure className={styles.termDiptychFigure} data-basin-compare="orientale">
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
                 originalSrc="/ch2/orientale-lro.png"

@@ -156,7 +156,9 @@
   letter-spacing: 0.04em;
   margin-bottom: var(--space-md);
   opacity: 0.45;
-  transition: opacity var(--transition-base), color var(--transition-base);
+  transition:
+    opacity var(--transition-base),
+    color var(--transition-base);
 }
 
 .stepActive .marker {

@@ -182,9 +182,7 @@ describe('createEarthMoonScene', () => {
       }
 
       if (type === 'webgl2' || type === 'webgl') {
-        return this.dataset.webgl === 'enabled'
-          ? ({} as ReturnType<HTMLCanvasElement['getContext']>)
-          : null;
+        return this.dataset.webgl === 'enabled' ? ({} as ReturnType<HTMLCanvasElement['getContext']>) : null;
       }
 
       return null;
@@ -200,7 +198,7 @@ describe('createEarthMoonScene', () => {
         };
         resizeObservers.push(instance);
         return instance;
-      }) as unknown as typeof ResizeObserver,
+      }) as unknown as typeof ResizeObserver
     );
   });
 
@@ -294,9 +292,7 @@ describe('createEarthMoonScene', () => {
     ({ precessionGroup, tiltGroup, moon, orbitRing } = getLatestSceneState());
 
     expect(precessionGroup.rotation.y).toBeLessThan(wobblePrecession);
-    expect(Math.abs(tiltGroup.rotation.z - baselineTilt)).toBeLessThan(
-      Math.abs(wobbleTilt - baselineTilt),
-    );
+    expect(Math.abs(tiltGroup.rotation.z - baselineTilt)).toBeLessThan(Math.abs(wobbleTilt - baselineTilt));
     expect(moon.visible).toBe(true);
     expect(orbitRing.visible).toBe(true);
   });

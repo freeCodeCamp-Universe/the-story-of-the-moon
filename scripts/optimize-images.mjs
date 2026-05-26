@@ -1,36 +1,34 @@
-import process from "node:process";
-import { readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import process from 'node:process';
+import { readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import sharp from "sharp";
+import sharp from 'sharp';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(scriptDir, "..");
-const publicDir = path.join(repoRoot, "public");
+const repoRoot = path.resolve(scriptDir, '..');
+const publicDir = path.join(repoRoot, 'public');
 
 const widthOverrides = new Map([
-  ["moon/moon-8k.jpg", 4096],
-  ["ch4/artemis-ii-earthset.jpg", 2560],
-  ["ch4/artemis-ii-eclipse.jpg", 2400],
-  ["postcards/apollo-17-moon-disc.jpg", 2200],
-  ["moon/erlanger-crater.jpg", 1800],
+  ['moon/moon-8k.jpg', 4096],
+  ['ch4/artemis-ii-earthset.jpg', 2560],
+  ['ch4/artemis-ii-eclipse.jpg', 2400],
+  ['postcards/apollo-17-moon-disc.jpg', 2200],
+  ['moon/erlanger-crater.jpg', 1800],
 ]);
 
 const qualityOverrides = new Map([
-  ["moon/moon-2k.jpg", { jpeg: 84, avif: 76 }],
-  ["moon/moon-8k.jpg", { jpeg: 82, avif: 74 }],
+  ['moon/moon-2k.jpg', { jpeg: 84, avif: 76 }],
+  ['moon/moon-8k.jpg', { jpeg: 82, avif: 74 }],
 ]);
 
-const excludedAssets = new Set([
-  "favicon-32x32.png",
-]);
+const excludedAssets = new Set(['favicon-32x32.png']);
 
 const responsiveVariantWidths = new Map([
-  ["ch2/hertzsprung.jpg", [800, 1600]],
-  ["ch2/hertzsprung-topographic.jpg", [800, 1600]],
-  ["ch2/orientale-lro.png", [800, 1600]],
-  ["ch2/orientale-topographic.jpg", [800, 1600]],
+  ['ch2/hertzsprung.jpg', [800, 1600]],
+  ['ch2/hertzsprung-topographic.jpg', [800, 1600]],
+  ['ch2/orientale-lro.png', [800, 1600]],
+  ['ch2/orientale-topographic.jpg', [800, 1600]],
 ]);
 const responsiveVariantAssets = new Set(responsiveVariantWidths.keys());
 
@@ -75,7 +73,7 @@ async function encodeSourceBuffer(pipeline, relativePath, jpegQuality) {
         quality: jpegQuality,
         mozjpeg: true,
         progressive: true,
-        chromaSubsampling: "4:4:4",
+        chromaSubsampling: '4:4:4',
       })
       .toBuffer();
   }
@@ -106,20 +104,15 @@ async function writeResponsiveVariants(relativePath, sourceBuffer, quality) {
 
   const outputs = [];
   for (const width of widths) {
-    const outputRelativePath = replaceExtension(
-      insertWidthSuffix(relativePath, width),
-      ".avif",
-    );
+    const outputRelativePath = replaceExtension(insertWidthSuffix(relativePath, width), '.avif');
     const outputPath = path.join(publicDir, outputRelativePath);
     const buffer = await encodeAvifBuffer(
-      sharp(sourceBuffer, { sequentialRead: true })
-        .rotate()
-        .resize({
-          width,
-          fit: "inside",
-          withoutEnlargement: true,
-        }),
-      quality,
+      sharp(sourceBuffer, { sequentialRead: true }).rotate().resize({
+        width,
+        fit: 'inside',
+        withoutEnlargement: true,
+      }),
+      quality
     );
     await writeBufferAtomically(outputPath, buffer);
     outputs.push({
@@ -137,10 +130,7 @@ async function removeFileIfPresent(filePath) {
 
 async function optimizeAsset(relativePath) {
   const inputPath = path.join(publicDir, relativePath);
-  const avifPath = path.join(
-    publicDir,
-    replaceExtension(relativePath, ".avif"),
-  );
+  const avifPath = path.join(publicDir, replaceExtension(relativePath, '.avif'));
   const shouldGenerateDefaultAvif = !responsiveVariantAssets.has(relativePath);
   const sourceBuffer = await readFile(inputPath);
   const { maxWidth, jpeg, avif } = getTransformOptions(relativePath);
@@ -150,7 +140,7 @@ async function optimizeAsset(relativePath) {
     if (maxWidth) {
       pipeline = pipeline.resize({
         width: maxWidth,
-        fit: "inside",
+        fit: 'inside',
         withoutEnlargement: true,
       });
     }
@@ -159,15 +149,8 @@ async function optimizeAsset(relativePath) {
 
   const before = sourceBuffer.byteLength;
 
-  const sourceCandidate = await encodeSourceBuffer(
-    buildPipeline(),
-    relativePath,
-    jpeg,
-  );
-  const optimizedSource =
-    maxWidth || sourceCandidate.byteLength < sourceBuffer.byteLength
-      ? sourceCandidate
-      : sourceBuffer;
+  const sourceCandidate = await encodeSourceBuffer(buildPipeline(), relativePath, jpeg);
+  const optimizedSource = maxWidth || sourceCandidate.byteLength < sourceBuffer.byteLength ? sourceCandidate : sourceBuffer;
   await writeBufferAtomically(inputPath, optimizedSource);
 
   let avifQuality = avif;
@@ -176,10 +159,7 @@ async function optimizeAsset(relativePath) {
   if (shouldGenerateDefaultAvif) {
     optimizedAvif = await encodeAvifBuffer(buildPipeline(), avifQuality);
 
-    while (
-      optimizedAvif.byteLength >= optimizedSource.byteLength &&
-      avifQuality > 35
-    ) {
+    while (optimizedAvif.byteLength >= optimizedSource.byteLength && avifQuality > 35) {
       avifQuality -= 5;
       optimizedAvif = await encodeAvifBuffer(buildPipeline(), avifQuality);
     }
@@ -189,11 +169,7 @@ async function optimizeAsset(relativePath) {
     await removeFileIfPresent(avifPath);
   }
 
-  const responsiveVariants = await writeResponsiveVariants(
-    relativePath,
-    sourceBuffer,
-    avifQuality,
-  );
+  const responsiveVariants = await writeResponsiveVariants(relativePath, sourceBuffer, avifQuality);
 
   return {
     relativePath,
@@ -210,7 +186,7 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-async function collectRasterAssets(dir, prefix = "") {
+async function collectRasterAssets(dir, prefix = '') {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
 
@@ -223,11 +199,7 @@ async function collectRasterAssets(dir, prefix = "") {
       continue;
     }
 
-    if (
-      entry.isFile() &&
-      rasterPattern.test(entry.name) &&
-      !excludedAssets.has(relativePath)
-    ) {
+    if (entry.isFile() && rasterPattern.test(entry.name) && !excludedAssets.has(relativePath)) {
       files.push(relativePath);
     }
   }
@@ -236,14 +208,14 @@ async function collectRasterAssets(dir, prefix = "") {
 }
 
 function toPosixPath(filePath) {
-  return filePath.replace(/\\/g, "/");
+  return filePath.replace(/\\/g, '/');
 }
 
 function resolveInputPath(input) {
   const trimmedInput = input.trim();
 
   if (!trimmedInput) {
-    throw new Error("Received an empty asset path.");
+    throw new Error('Received an empty asset path.');
   }
 
   if (path.isAbsolute(trimmedInput)) {
@@ -251,10 +223,7 @@ function resolveInputPath(input) {
   }
 
   const normalizedInput = path.normalize(trimmedInput);
-  if (
-    normalizedInput === "public" ||
-    normalizedInput.startsWith(`public${path.sep}`)
-  ) {
+  if (normalizedInput === 'public' || normalizedInput.startsWith(`public${path.sep}`)) {
     return path.resolve(repoRoot, normalizedInput);
   }
 
@@ -264,11 +233,7 @@ function resolveInputPath(input) {
 function toRelativePublicPath(absolutePath) {
   const relativePath = path.relative(publicDir, absolutePath);
 
-  if (
-    !relativePath ||
-    relativePath.startsWith("..") ||
-    path.isAbsolute(relativePath)
-  ) {
+  if (!relativePath || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
     throw new Error(`Asset path must stay inside public/: ${absolutePath}`);
   }
 
@@ -276,7 +241,7 @@ function toRelativePublicPath(absolutePath) {
 }
 
 export async function resolveRequestedFiles(inputs = []) {
-  const filteredInputs = inputs.filter((input) => input !== "--");
+  const filteredInputs = inputs.filter((input) => input !== '--');
 
   if (filteredInputs.length === 0) {
     return collectRasterAssets(publicDir);
@@ -290,10 +255,7 @@ export async function resolveRequestedFiles(inputs = []) {
     const relativePublicPath = toRelativePublicPath(absoluteInputPath);
 
     if (inputStats.isDirectory()) {
-      const files = await collectRasterAssets(
-        absoluteInputPath,
-        relativePublicPath,
-      );
+      const files = await collectRasterAssets(absoluteInputPath, relativePublicPath);
       files.forEach((file) => requestedFiles.add(file));
       continue;
     }
@@ -303,15 +265,11 @@ export async function resolveRequestedFiles(inputs = []) {
     }
 
     if (!rasterPattern.test(relativePublicPath)) {
-      throw new Error(
-        `Asset path must point to a .jpg, .jpeg, or .png file: ${input}`,
-      );
+      throw new Error(`Asset path must point to a .jpg, .jpeg, or .png file: ${input}`);
     }
 
     if (excludedAssets.has(relativePublicPath)) {
-      throw new Error(
-        `Asset is excluded from optimization: ${relativePublicPath}`,
-      );
+      throw new Error(`Asset is excluded from optimization: ${relativePublicPath}`);
     }
 
     requestedFiles.add(relativePublicPath);
@@ -329,23 +287,9 @@ export async function main(args = process.argv.slice(2)) {
   }
 
   const totalBefore = results.reduce((sum, result) => sum + result.before, 0);
-  const totalSourceAfter = results.reduce(
-    (sum, result) => sum + result.sourceAfter,
-    0,
-  );
-  const totalAvifAfter = results.reduce(
-    (sum, result) => sum + result.avifAfter,
-    0,
-  );
-  const totalResponsiveAvifAfter = results.reduce(
-    (sum, result) =>
-      sum +
-      result.responsiveVariants.reduce(
-        (variantSum, variant) => variantSum + variant.size,
-        0,
-      ),
-    0,
-  );
+  const totalSourceAfter = results.reduce((sum, result) => sum + result.sourceAfter, 0);
+  const totalAvifAfter = results.reduce((sum, result) => sum + result.avifAfter, 0);
+  const totalResponsiveAvifAfter = results.reduce((sum, result) => sum + result.responsiveVariants.reduce((variantSum, variant) => variantSum + variant.size, 0), 0);
 
   console.log(`Optimized ${results.length} raster assets.`);
   console.table(
@@ -353,28 +297,16 @@ export async function main(args = process.argv.slice(2)) {
       file: result.relativePath,
       before: formatSize(result.before),
       source: formatSize(result.sourceAfter),
-      avif: result.avifAfter === 0 ? "—" : formatSize(result.avifAfter),
-      responsiveAvif:
-        result.responsiveVariants.length === 0
-          ? "—"
-          : result.responsiveVariants
-              .map((variant) => `${variant.file} (${formatSize(variant.size)})`)
-              .join(", "),
-    })),
+      avif: result.avifAfter === 0 ? '—' : formatSize(result.avifAfter),
+      responsiveAvif: result.responsiveVariants.length === 0 ? '—' : result.responsiveVariants.map((variant) => `${variant.file} (${formatSize(variant.size)})`).join(', '),
+    }))
   );
-  console.log(
-    `Source total: ${formatSize(totalBefore)} -> ${formatSize(totalSourceAfter)}`,
-  );
+  console.log(`Source total: ${formatSize(totalBefore)} -> ${formatSize(totalSourceAfter)}`);
   console.log(`AVIF siblings total: ${formatSize(totalAvifAfter)}`);
-  console.log(
-    `Responsive AVIF variants total: ${formatSize(totalResponsiveAvifAfter)}`,
-  );
+  console.log(`Responsive AVIF variants total: ${formatSize(totalResponsiveAvifAfter)}`);
 }
 
-if (
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
     console.error(error);
     process.exitCode = 1;

@@ -14,14 +14,8 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
  * short steps), we pick the one whose vertical center is closest to
  * the trigger line.
  */
-export function useScrollySteps(
-  containerRef: RefObject<HTMLElement | null>,
-  stepIds: string[],
-  initialStepId?: string
-): string | null {
-  const [activeStepId, setActiveStepId] = useState<string | null>(
-    initialStepId ?? stepIds[0] ?? null
-  );
+export function useScrollySteps(containerRef: RefObject<HTMLElement | null>, stepIds: string[], initialStepId?: string): string | null {
+  const [activeStepId, setActiveStepId] = useState<string | null>(initialStepId ?? stepIds[0] ?? null);
   const activeIdRef = useRef(activeStepId);
   activeIdRef.current = activeStepId;
 

@@ -5,14 +5,9 @@ type Options = {
   threshold?: number | number[];
 };
 
-export function useViewportActivity<T extends Element>({
-  rootMargin = '0px',
-  threshold = 0,
-}: Options = {}) {
+export function useViewportActivity<T extends Element>({ rootMargin = '0px', threshold = 0 }: Options = {}) {
   const targetRef = useRef<T | null>(null);
-  const [isNearViewport, setIsNearViewport] = useState(
-    typeof IntersectionObserver === 'undefined'
-  );
+  const [isNearViewport, setIsNearViewport] = useState(typeof IntersectionObserver === 'undefined');
   const [isDocumentVisible, setIsDocumentVisible] = useState(() => {
     if (typeof document === 'undefined') {
       return true;

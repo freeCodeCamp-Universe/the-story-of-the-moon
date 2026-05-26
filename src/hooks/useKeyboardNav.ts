@@ -1,14 +1,14 @@
-import { useEffect } from "react";
-import { CHAPTER_IDS } from "@/data/chapters";
+import { useEffect } from 'react';
+import { CHAPTER_IDS } from '@/data/chapters';
 
 export function scrollToChapter(index: number) {
   const id = CHAPTER_IDS[index];
   if (!id) return;
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 }
 
 function getCurrentChapterIndex() {
-  const chapterId = window.location.hash.replace("#", "");
+  const chapterId = window.location.hash.replace('#', '');
   const index = CHAPTER_IDS.indexOf(chapterId);
   return index === -1 ? 0 : index;
 }
@@ -30,20 +30,13 @@ export function useKeyboardNav() {
       if (!(target instanceof HTMLElement)) return;
 
       const tag = target.tagName;
-      if (
-        tag === "INPUT" ||
-        tag === "TEXTAREA" ||
-        tag === "SELECT" ||
-        tag === "BUTTON" ||
-        tag === "A" ||
-        target.isContentEditable
-      ) {
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A' || target.isContentEditable) {
         return;
       }
 
       const normalizedKey = e.key.toLowerCase();
 
-      if (e.key >= "1" && e.key <= "9") {
+      if (e.key >= '1' && e.key <= '9') {
         const idx = parseInt(e.key, 10) - 1;
         if (idx < CHAPTER_IDS.length) {
           e.preventDefault();
@@ -54,8 +47,7 @@ export function useKeyboardNav() {
       }
 
       if (e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
-        const chapterOffset =
-          normalizedKey === "n" ? 1 : normalizedKey === "p" ? -1 : 0;
+        const chapterOffset = normalizedKey === 'n' ? 1 : normalizedKey === 'p' ? -1 : 0;
 
         if (chapterOffset !== 0 && scrollToRelativeChapter(chapterOffset)) {
           e.preventDefault();
@@ -63,7 +55,7 @@ export function useKeyboardNav() {
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 }

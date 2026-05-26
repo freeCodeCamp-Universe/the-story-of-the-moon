@@ -1,12 +1,12 @@
-import type { CSSProperties } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
-import styles from "./MoonInterlude.module.css";
+import type { CSSProperties } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import styles from './MoonInterlude.module.css';
 
-const MOON_FILL = "#f1e8db";
-const MOON_SHADE = "#b8aea2";
-const CRATER_FLOOR = "#cfc5b9";
-const CRATER_DEPTH = "#9f958a";
-const STAR_COLOR = "#f5f6f7";
+const MOON_FILL = '#f1e8db';
+const MOON_SHADE = '#b8aea2';
+const CRATER_FLOOR = '#cfc5b9';
+const CRATER_DEPTH = '#9f958a';
+const STAR_COLOR = '#f5f6f7';
 
 const MOON_VIEW = 100;
 const MOON_CENTER = MOON_VIEW / 2;
@@ -73,35 +73,27 @@ function generateStars(): Star[] {
 
 const STARS = generateStars();
 
-const MOON_CLIP_ID = "moon-interlude-disc";
+const MOON_CLIP_ID = 'moon-interlude-disc';
 const craterClipId = (index: number) => `moon-interlude-crater-${index}`;
 
 type StarStyle = CSSProperties & {
-  "--moon-star-low": string;
-  "--moon-star-high": string;
-  "--moon-star-duration": string;
-  "--moon-star-delay": string;
+  '--moon-star-low': string;
+  '--moon-star-high': string;
+  '--moon-star-duration': string;
+  '--moon-star-delay': string;
 };
 
 export function MoonInterlude() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <figure
-      className={styles.container}
-      role="img"
-      aria-label={
-        reducedMotion
-          ? "Static moon illustration with stars between chapter 6 and chapter 7."
-          : "Animated moon illustration with softly blinking stars between chapter 6 and chapter 7."
-      }
-    >
+    <figure className={styles.container} role="img" aria-label={reducedMotion ? 'Static moon illustration with stars between chapter 6 and chapter 7.' : 'Animated moon illustration with softly blinking stars between chapter 6 and chapter 7.'}>
       {STARS.map((star, index) => {
         const style: StarStyle = {
-          "--moon-star-low": String(star.low),
-          "--moon-star-high": String(star.high),
-          "--moon-star-duration": star.duration,
-          "--moon-star-delay": star.delay,
+          '--moon-star-low': String(star.low),
+          '--moon-star-high': String(star.high),
+          '--moon-star-duration': star.duration,
+          '--moon-star-delay': star.delay,
           insetInlineStart: `${star.xPct}%`,
           insetBlockStart: `${star.yPct}%`,
           inlineSize: `${star.diameterPx}px`,
@@ -109,21 +101,11 @@ export function MoonInterlude() {
           opacity: star.low,
           background: STAR_COLOR,
         };
-        return (
-          <span
-            key={index}
-            className={styles.star}
-            style={style}
-            aria-hidden="true"
-          />
-        );
+        return <span key={index} className={styles.star} style={style} aria-hidden="true" />;
       })}
 
       <div className={styles.moonWrapper} aria-hidden="true">
-        <svg
-          className={styles.moonSvg}
-          viewBox={`0 0 ${MOON_VIEW} ${MOON_VIEW}`}
-        >
+        <svg className={styles.moonSvg} viewBox={`0 0 ${MOON_VIEW} ${MOON_VIEW}`}>
           <defs>
             <clipPath id={MOON_CLIP_ID}>
               <circle cx={MOON_CENTER} cy={MOON_CENTER} r={MOON_R} />
@@ -140,22 +122,10 @@ export function MoonInterlude() {
             })}
           </defs>
 
-          <circle
-            cx={MOON_CENTER}
-            cy={MOON_CENTER}
-            r={MOON_R}
-            fill={MOON_SHADE}
-          />
+          <circle cx={MOON_CENTER} cy={MOON_CENTER} r={MOON_R} fill={MOON_SHADE} />
 
           <g clipPath={`url(#${MOON_CLIP_ID})`}>
-            <ellipse
-              cx={LIT_FACE_CX}
-              cy={LIT_FACE_CY}
-              rx={MOON_R * 0.98}
-              ry={MOON_R * 1.02}
-              fill={MOON_FILL}
-              transform={`rotate(${LIT_FACE_ROTATION_DEG} ${LIT_FACE_CX} ${LIT_FACE_CY})`}
-            />
+            <ellipse cx={LIT_FACE_CX} cy={LIT_FACE_CY} rx={MOON_R * 0.98} ry={MOON_R * 1.02} fill={MOON_FILL} transform={`rotate(${LIT_FACE_ROTATION_DEG} ${LIT_FACE_CX} ${LIT_FACE_CY})`} />
             {CRATERS.map((crater, index) => {
               const cx = MOON_CENTER + crater.x * MOON_R;
               const cy = MOON_CENTER + crater.y * MOON_R;

@@ -149,11 +149,7 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    expect(THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-      1,
-      64,
-      64
-    );
+    expect(THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(1, 64, 64);
   });
 
   it('loads the 2k moon texture', () => {
@@ -167,12 +163,7 @@ describe('createMoonScene', () => {
     const textureLoaderInstance = textureLoaderCtor.mock.results[0]?.value as {
       load: ReturnType<typeof vi.fn>;
     };
-    expect(textureLoaderInstance.load).toHaveBeenCalledWith(
-      '/moon/moon-2k.avif',
-      expect.any(Function),
-      undefined,
-      expect.any(Function)
-    );
+    expect(textureLoaderInstance.load).toHaveBeenCalledWith('/moon/moon-2k.avif', expect.any(Function), undefined, expect.any(Function));
   });
 
   it('disposes renderer and geometry on dispose()', () => {

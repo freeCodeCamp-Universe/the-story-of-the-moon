@@ -4,11 +4,7 @@ import { createElement } from 'react';
 
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';
 
-function HookHarness({
-  onActiveChapterChange,
-}: {
-  onActiveChapterChange?: (chapterId: string) => void;
-}) {
+function HookHarness({ onActiveChapterChange }: { onActiveChapterChange?: (chapterId: string) => void }) {
   useChapterFragmentSync(onActiveChapterChange);
   return null;
 }
@@ -46,10 +42,7 @@ describe('useChapterFragmentSync', () => {
       takeRecords = takeRecords;
     }
 
-    vi.stubGlobal(
-      'IntersectionObserver',
-      IntersectionObserverMock as unknown as typeof IntersectionObserver
-    );
+    vi.stubGlobal('IntersectionObserver', IntersectionObserverMock as unknown as typeof IntersectionObserver);
   });
 
   afterEach(() => {

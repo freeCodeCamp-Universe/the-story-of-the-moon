@@ -1,27 +1,20 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { missions, getAsset } from "@/content";
-import { CreditCaption } from "@/components/CreditCaption/CreditCaption";
-import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
-import type { Mission } from "@/types/content";
-import styles from "./Ch4.module.css";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { missions, getAsset } from '@/content';
+import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
+import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import type { Mission } from '@/types/content';
+import styles from './Ch4.module.css';
 
-type Step = { kind: "mission"; mission: Mission } | { kind: "interlude" };
+type Step = { kind: 'mission'; mission: Mission } | { kind: 'interlude' };
 
-const INTERLUDE_BEFORE_KEY = "artemis-2";
-const INTERLUDE_TEXT = "Fifty-three years pass.";
+const INTERLUDE_BEFORE_KEY = 'artemis-2';
+const INTERLUDE_TEXT = 'Fifty-three years pass.';
 
 function buildSteps(list: Mission[]): Step[] {
   const out: Step[] = [];
   for (const m of list) {
-    if (m.key === INTERLUDE_BEFORE_KEY) out.push({ kind: "interlude" });
-    out.push({ kind: "mission", mission: m });
+    if (m.key === INTERLUDE_BEFORE_KEY) out.push({ kind: 'interlude' });
+    out.push({ kind: 'mission', mission: m });
   }
   return out;
 }
@@ -29,7 +22,7 @@ function buildSteps(list: Mission[]): Step[] {
 function formatMissionDateRange(mission: Mission) {
   const launch = new Date(mission.date);
   const splash = new Date(mission.splashdownDate);
-  const enDash = "\u2013";
+  const enDash = '\u2013';
 
   if (Number.isNaN(launch.getTime()) || Number.isNaN(splash.getTime())) {
     return `${mission.date}${enDash}${mission.splashdownDate}`;
@@ -37,16 +30,16 @@ function formatMissionDateRange(mission: Mission) {
 
   const sameYear = launch.getFullYear() === splash.getFullYear();
   const sameMonth = sameYear && launch.getMonth() === splash.getMonth();
-  const launchFormatter = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
+  const launchFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
   });
-  const splashMonthFormatter = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
+  const splashMonthFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
   });
-  const splashDayFormatter = new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
+  const splashDayFormatter = new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
   });
 
   if (sameYear && sameMonth) {
@@ -57,16 +50,13 @@ function formatMissionDateRange(mission: Mission) {
     return `${launchFormatter.format(launch)}${enDash}${splashMonthFormatter.format(splash)}, ${launch.getFullYear()}`;
   }
 
-  return `${new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(launch)}${enDash}${new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(splash)}`;
+  return `${new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(launch)}${enDash}${new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(splash)}`;
 }
 
 function MissionPanel({ mission }: { mission: Mission }) {
   const credit = getAsset(mission.photo.creditId);
   return (
-    <article
-      className={styles.panel}
-      aria-labelledby={`mission-${mission.key}`}
-    >
+    <article className={styles.panel} aria-labelledby={`mission-${mission.key}`}>
       <header className={styles.panelHeader}>
         <span className={styles.panelLabel}>
           {mission.label} · {formatMissionDateRange(mission)}
@@ -77,7 +67,7 @@ function MissionPanel({ mission }: { mission: Mission }) {
           <h3 id={`mission-${mission.key}`} className={styles.oneLiner}>
             {mission.oneLiner}
           </h3>
-          <p className={styles.crew}>{mission.crew.join(" · ")}</p>
+          <p className={styles.crew}>{mission.crew.join(' · ')}</p>
           {mission.prose.map((p, i) => (
             <p key={i} className={styles.prose}>
               {p}
@@ -86,11 +76,7 @@ function MissionPanel({ mission }: { mission: Mission }) {
         </div>
         <figure className={styles.panelPhoto}>
           <div className={styles.photoFrame}>
-            <OptimizedImage
-              src={mission.photo.src}
-              alt={mission.photo.alt}
-              loading="lazy"
-            />
+            <OptimizedImage src={mission.photo.src} alt={mission.photo.alt} loading="lazy" />
           </div>
           {credit && (
             <figcaption className={styles.photoCaption}>
@@ -112,30 +98,26 @@ function InterludePanel() {
 }
 
 function StepContent({ step }: { step: Step }) {
-  return step.kind === "mission" ? (
-    <MissionPanel mission={step.mission} />
-  ) : (
-    <InterludePanel />
-  );
+  return step.kind === 'mission' ? <MissionPanel mission={step.mission} /> : <InterludePanel />;
 }
 
 function useTimelineMode() {
-  const [mode, setMode] = useState<"static" | "animated">("static");
+  const [mode, setMode] = useState<'static' | 'animated'>('static');
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const wide = window.matchMedia("(min-width: 900px)");
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const wide = window.matchMedia('(min-width: 900px)');
 
     const update = () => {
-      setMode(!motion.matches && wide.matches ? "animated" : "static");
+      setMode(!motion.matches && wide.matches ? 'animated' : 'static');
     };
     update();
-    motion.addEventListener("change", update);
-    wide.addEventListener("change", update);
+    motion.addEventListener('change', update);
+    wide.addEventListener('change', update);
     return () => {
-      motion.removeEventListener("change", update);
-      wide.removeEventListener("change", update);
+      motion.removeEventListener('change', update);
+      wide.removeEventListener('change', update);
     };
   }, []);
 
@@ -160,16 +142,11 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const liveRef = useRef<HTMLDivElement | null>(null);
-  const pendingJumpRef = useRef<{ index: number; scrollTop: number } | null>(
-    null,
-  );
+  const pendingJumpRef = useRef<{ index: number; scrollTop: number } | null>(null);
   const pendingJumpTimeoutRef = useRef<number | null>(null);
   const keyboardHintId = useId();
 
-  const missionCount = useMemo(
-    () => steps.filter((s) => s.kind === "mission").length,
-    [steps],
-  );
+  const missionCount = useMemo(() => steps.filter((s) => s.kind === 'mission').length, [steps]);
 
   const clearPendingJump = useCallback(() => {
     pendingJumpRef.current = null;
@@ -182,7 +159,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
   useEffect(() => clearPendingJump, [clearPendingJump]);
 
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
+    if (typeof IntersectionObserver === 'undefined') return;
     const observer = new IntersectionObserver(
       (entries) => {
         const pendingJump = pendingJumpRef.current;
@@ -193,10 +170,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
             return idx === pendingJump.index;
           });
 
-          if (
-            targetVisible ||
-            Math.abs(window.scrollY - pendingJump.scrollTop) <= 2
-          ) {
+          if (targetVisible || Math.abs(window.scrollY - pendingJump.scrollTop) <= 2) {
             setActive(pendingJump.index);
             clearPendingJump();
             return;
@@ -212,7 +186,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
           }
         }
       },
-      { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
     );
     sentinelRefs.current.forEach((el) => el && observer.observe(el));
     return () => {
@@ -225,10 +199,8 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
     if (!liveRef.current) return;
     const step = steps[active];
     if (!step) return;
-    if (step.kind === "mission") {
-      const num = steps
-        .slice(0, active + 1)
-        .filter((s) => s.kind === "mission").length;
+    if (step.kind === 'mission') {
+      const num = steps.slice(0, active + 1).filter((s) => s.kind === 'mission').length;
       liveRef.current.textContent = `${step.mission.label}, ${formatMissionDateRange(step.mission)}. ${num} of ${missionCount}.`;
     } else {
       liveRef.current.textContent = `Interlude. ${INTERLUDE_TEXT}`;
@@ -244,24 +216,12 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
 
       const targetRect = target.getBoundingClientRect();
       const sectionRect = section.getBoundingClientRect();
-      const stageHeight = stage
-        ? stage.getBoundingClientRect().height
-        : window.innerHeight;
-      const navHeight =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--nav-height",
-          ),
-        ) || 0;
+      const stageHeight = stage ? stage.getBoundingClientRect().height : window.innerHeight;
+      const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
 
-      const desired =
-        window.scrollY +
-        targetRect.top +
-        targetRect.height / 2 -
-        window.innerHeight / 2;
+      const desired = window.scrollY + targetRect.top + targetRect.height / 2 - window.innerHeight / 2;
       const minScroll = window.scrollY + sectionRect.top - navHeight;
-      const maxScroll =
-        window.scrollY + sectionRect.bottom - navHeight - stageHeight;
+      const maxScroll = window.scrollY + sectionRect.bottom - navHeight - stageHeight;
       const clamped = Math.max(minScroll, Math.min(maxScroll, desired));
 
       clearPendingJump();
@@ -272,25 +232,23 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
       }, 1000);
 
       setActive(index);
-      window.scrollTo({ top: clamped, behavior: "smooth" });
+      window.scrollTo({ top: clamped, behavior: 'smooth' });
     },
-    [clearPendingJump],
+    [clearPendingJump]
   );
 
   const handleKey = useCallback(
-    (e: Pick<KeyboardEvent, "key" | "preventDefault">) => {
+    (e: Pick<KeyboardEvent, 'key' | 'preventDefault'>) => {
       let next = active;
-      if (e.key === "ArrowDown" || e.key === "ArrowRight")
-        next = Math.min(steps.length - 1, active + 1);
-      else if (e.key === "ArrowUp" || e.key === "ArrowLeft")
-        next = Math.max(0, active - 1);
-      else if (e.key === "[") next = 0;
-      else if (e.key === "]") next = steps.length - 1;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = Math.min(steps.length - 1, active + 1);
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = Math.max(0, active - 1);
+      else if (e.key === '[') next = 0;
+      else if (e.key === ']') next = steps.length - 1;
       else return;
       e.preventDefault();
       jumpTo(next);
     },
-    [active, steps.length, jumpTo],
+    [active, steps.length, jumpTo]
   );
 
   useEffect(() => {
@@ -303,43 +261,26 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
         const isInsideTimeline = section.contains(target);
         if (isInsideTimeline) return;
 
-        const isInteractive =
-          target.isContentEditable ||
-          target.closest(
-            'input, textarea, select, button, a, [role="button"], [role="link"]',
-          );
+        const isInteractive = target.isContentEditable || target.closest('input, textarea, select, button, a, [role="button"], [role="link"]');
 
         if (isInteractive) return;
       }
 
       const sectionRect = section.getBoundingClientRect();
-      const navHeight =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--nav-height",
-          ),
-        ) || 0;
-      const isInView =
-        sectionRect.top < window.innerHeight && sectionRect.bottom > navHeight;
+      const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
+      const isInView = sectionRect.top < window.innerHeight && sectionRect.bottom > navHeight;
 
       if (!isInView) return;
 
       handleKey(event);
     }
 
-    window.addEventListener("keydown", handleWindowKeyDown);
-    return () => window.removeEventListener("keydown", handleWindowKeyDown);
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [handleKey]);
 
   return (
-    <section
-      ref={sectionRef}
-      className={styles.pinSection}
-      aria-label="Apollo and Artemis missions"
-      aria-describedby={keyboardHintId}
-      tabIndex={0}
-      onKeyDown={handleKey}
-    >
+    <section ref={sectionRef} className={styles.pinSection} aria-label="Apollo and Artemis missions" aria-describedby={keyboardHintId} tabIndex={0} onKeyDown={handleKey}>
       <div className={styles.sentinelTrack} aria-hidden="true">
         {steps.map((step, i) => (
           <div
@@ -348,7 +289,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
               sentinelRefs.current[i] = el;
             }}
             data-step={i}
-            className={`${styles.sentinel} ${step.kind === "interlude" ? styles.sentinelInterlude : ""}`}
+            className={`${styles.sentinel} ${step.kind === 'interlude' ? styles.sentinelInterlude : ''}`}
           />
         ))}
       </div>
@@ -358,30 +299,16 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
           <ol className={styles.railTicks} aria-label="Timeline progress">
             {steps.map((step, i) => {
               const isActive = i === active;
-              const label =
-                step.kind === "mission"
-                  ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}`
-                  : "Interlude";
+              const label = step.kind === 'mission' ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}` : 'Interlude';
               return (
-                <li
-                  key={i}
-                  className={`${styles.tickItem} ${step.kind === "interlude" ? styles.tickItemInterlude : ""}`}
-                >
-                  <button
-                    type="button"
-                    className={`${styles.tick} ${isActive ? styles.tickActive : ""}`}
-                    aria-label={label}
-                    aria-current={isActive ? "true" : undefined}
-                    onClick={() => jumpTo(i)}
-                  />
+                <li key={i} className={`${styles.tickItem} ${step.kind === 'interlude' ? styles.tickItemInterlude : ''}`}>
+                  <button type="button" className={`${styles.tick} ${isActive ? styles.tickActive : ''}`} aria-label={label} aria-current={isActive ? 'true' : undefined} onClick={() => jumpTo(i)} />
                 </li>
               );
             })}
           </ol>
           <p id={keyboardHintId} className={styles.keyboardHint}>
-            Scroll up / down or use <kbd>←</kbd> / <kbd>→</kbd> to move through
-            the timeline. Use <kbd>[</kbd> / <kbd>]</kbd> to jump to first /
-            last.
+            Scroll up / down or use <kbd>←</kbd> / <kbd>→</kbd> to move through the timeline. Use <kbd>[</kbd> / <kbd>]</kbd> to jump to first / last.
           </p>
         </div>
 
@@ -392,8 +319,8 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
             return (
               <div
                 key={i}
-                className={`${styles.deckSlot} ${isActive ? styles.deckSlotActive : ""} ${step.kind === "interlude" ? styles.deckSlotInterlude : ""}`}
-                style={{ "--offset": offset } as React.CSSProperties}
+                className={`${styles.deckSlot} ${isActive ? styles.deckSlotActive : ''} ${step.kind === 'interlude' ? styles.deckSlotInterlude : ''}`}
+                style={{ '--offset': offset } as React.CSSProperties}
                 aria-hidden={!isActive}
                 inert={!isActive}
               >
@@ -404,19 +331,14 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
         </div>
       </div>
 
-      <div
-        ref={liveRef}
-        className={styles.srOnly}
-        aria-live="polite"
-        aria-atomic="true"
-      />
+      <div ref={liveRef} className={styles.srOnly} aria-live="polite" aria-atomic="true" />
     </section>
   );
 }
 
 function Diptych() {
-  const earthrise = getAsset("apollo-8-earthrise");
-  const earthset = getAsset("artemis-ii-earthset");
+  const earthrise = getAsset('apollo-8-earthrise');
+  const earthset = getAsset('artemis-ii-earthset');
   return (
     <section className={styles.diptych} aria-labelledby="diptych-title">
       <h3 id="diptych-title" className={styles.diptychTitle}>
@@ -426,12 +348,7 @@ function Diptych() {
         {earthrise && (
           <figure className={styles.diptychFigure}>
             <div className={styles.diptychFrame}>
-              <OptimizedImage
-                src={`/${earthrise.file}`}
-                className={styles.earthriseImage}
-                alt={earthrise.alt}
-                loading="lazy"
-              />
+              <OptimizedImage src={`/${earthrise.file}`} className={styles.earthriseImage} alt={earthrise.alt} loading="lazy" />
             </div>
             <figcaption className={styles.diptychCaption}>
               <CreditCaption credit={earthrise} />
@@ -441,11 +358,7 @@ function Diptych() {
         {earthset && (
           <figure className={styles.diptychFigure}>
             <div className={styles.diptychFrame}>
-              <OptimizedImage
-                src={`/${earthset.file}`}
-                alt={earthset.alt}
-                loading="lazy"
-              />
+              <OptimizedImage src={`/${earthset.file}`} alt={earthset.alt} loading="lazy" />
             </div>
             <figcaption className={styles.diptychCaption}>
               <CreditCaption credit={earthset} />
@@ -454,18 +367,11 @@ function Diptych() {
         )}
       </div>
       <p className={styles.diptychTie}>
-        In 1968, the Apollo 8 crew was caught off guard by a striking sight:
-        Earth rising as a fragile blue marble against the dark void. Bill Anders
-        captured the moment spontaneously during an unplanned pause in their
-        schedule, and said afterward that they had come to explore the Moon and
-        ended up discovering Earth. The picture he brought back changed how the
-        planet saw itself.
+        In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void. Bill Anders captured the moment spontaneously during an unplanned pause in their schedule, and said afterward
+        that they had come to explore the Moon and ended up discovering Earth. The picture he brought back changed how the planet saw itself.
       </p>
       <p className={styles.diptychTie}>
-        Fifty-eight years later, the Artemis II crew headed for the same vantage
-        with cameras already set up, taking Earthset as Earth slipped behind the
-        lunar horizon. This time, looking backward was a deliberate act of
-        self-discovery.
+        Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up, taking Earthset as Earth slipped behind the lunar horizon. This time, looking backward was a deliberate act of self-discovery.
       </p>
     </section>
   );
@@ -479,24 +385,16 @@ export default function Ch4() {
     <>
       <div className={styles.intro}>
         <p>
-          The Apollo program began in 1961 with the objective of landing humans
-          on the Moon and returning them safely to Earth. The goal was achieved
-          through a systematic roadmap of discovery, where each mission served
-          as a vital prerequisite for the next.
+          The Apollo program began in 1961 with the objective of landing humans on the Moon and returning them safely to Earth. The goal was achieved through a systematic roadmap of discovery, where each mission served as a vital prerequisite for the
+          next.
         </p>
         <p>
-          This progression established the foundation for our return to deep
-          space. From the pioneering lunar orbits of Apollo 8 to the completion
-          of Artemis II, every mission in this sequence represents a necessary
-          step in the ongoing evolution of lunar exploration.
+          This progression established the foundation for our return to deep space. From the pioneering lunar orbits of Apollo 8 to the completion of Artemis II, every mission in this sequence represents a necessary step in the ongoing evolution of
+          lunar exploration.
         </p>
       </div>
 
-      {mode === "animated" ? (
-        <PinnedTimeline steps={steps} />
-      ) : (
-        <StaticTimeline steps={steps} />
-      )}
+      {mode === 'animated' ? <PinnedTimeline steps={steps} /> : <StaticTimeline steps={steps} />}
 
       <Diptych />
     </>

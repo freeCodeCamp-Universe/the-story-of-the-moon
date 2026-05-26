@@ -163,7 +163,9 @@
   background-color: var(--color-border);
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 200ms, transform 200ms;
+  transition:
+    background-color 200ms,
+    transform 200ms;
 }
 
 .tick:hover {
@@ -208,7 +210,9 @@
   inset: 0;
   opacity: 0;
   transform: translate3d(calc(var(--offset, 0) * 24px), 0, 0);
-  transition: opacity 360ms ease, transform 360ms ease;
+  transition:
+    opacity 360ms ease,
+    transform 360ms ease;
   pointer-events: none;
 }
 
@@ -435,7 +439,8 @@
   .staticItem .panel,
   .staticItem .interlude {
     box-shadow: none;
-  }}
+  }
+}
 
 /* ── Diptych closing ─────────────────────────────────────────────── */
 

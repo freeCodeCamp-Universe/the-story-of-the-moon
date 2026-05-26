@@ -7,7 +7,7 @@ build:
 deploy:
   preview: true
   ignore:
-    - "*.map"
-    - "node_modules/**"
-    - ".git/**"
-    - ".env*"
+    - '*.map'
+    - 'node_modules/**'
+    - '.git/**'
+    - '.env*'

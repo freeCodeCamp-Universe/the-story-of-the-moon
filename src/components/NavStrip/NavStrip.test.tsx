@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { NavStrip } from "@/components/NavStrip/NavStrip";
+import { NavStrip } from '@/components/NavStrip/NavStrip';
 
 const originalNavigatorPlatform = window.navigator.platform;
 
@@ -11,7 +11,7 @@ function setupChapterTargets() {
 
   for (let i = 1; i <= 7; i += 1) {
     const id = `chapter-${i}`;
-    const section = document.createElement("section");
+    const section = document.createElement('section');
     section.id = id;
     const scrollSpy = vi.fn();
     section.scrollIntoView = scrollSpy;
@@ -22,79 +22,65 @@ function setupChapterTargets() {
   return scrollSpies;
 }
 
-describe("NavStrip", () => {
+describe('NavStrip', () => {
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
   });
 
   afterEach(() => {
-    Object.defineProperty(window.navigator, "platform", {
+    Object.defineProperty(window.navigator, 'platform', {
       configurable: true,
       value: originalNavigatorPlatform,
     });
     vi.restoreAllMocks();
   });
 
-  it("shows the story title and omits previous and next buttons", () => {
+  it('shows the story title and omits previous and next buttons', () => {
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
 
-    expect(screen.getByText("The Story of the Moon")).toBeInTheDocument();
-    expect(screen.queryByLabelText("previous chapter")).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("next chapter")).not.toBeInTheDocument();
+    expect(screen.getByText('The Story of the Moon')).toBeInTheDocument();
+    expect(screen.queryByLabelText('previous chapter')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('next chapter')).not.toBeInTheDocument();
   });
 
-  it("opens the chapter dropdown and navigates to the selected chapter", async () => {
+  it('opens the chapter dropdown and navigates to the selected chapter', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     const scrollSpies = setupChapterTargets();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={onNavigate} />);
 
-    await user.click(
-      screen.getByRole("button", { name: /open chapter list/i }),
-    );
-    await user.click(
-      screen.getByRole("button", { name: "3. A partner that steadies us" }),
-    );
+    await user.click(screen.getByRole('button', { name: /open chapter list/i }));
+    await user.click(screen.getByRole('button', { name: '3. A partner that steadies us' }));
 
-    expect(onNavigate).toHaveBeenCalledWith("chapter-3");
-    expect(scrollSpies.get("chapter-3")).toHaveBeenCalledWith({
-      behavior: "smooth",
+    expect(onNavigate).toHaveBeenCalledWith('chapter-3');
+    expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
+      behavior: 'smooth',
     });
   });
 
-  it("closes the chapter dropdown when clicking elsewhere in the nav", async () => {
+  it('closes the chapter dropdown when clicking elsewhere in the nav', async () => {
     const user = userEvent.setup();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
 
-    await user.click(
-      screen.getByRole("button", { name: /open chapter list/i }),
-    );
-    expect(
-      screen.getByRole("button", { name: "3. A partner that steadies us" }),
-    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /open chapter list/i }));
+    expect(screen.getByRole('button', { name: '3. A partner that steadies us' })).toBeInTheDocument();
 
-    await user.click(screen.getByText("The Story of the Moon"));
+    await user.click(screen.getByText('The Story of the Moon'));
 
-    expect(
-      screen.queryByRole("button", { name: "3. A partner that steadies us" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '3. A partner that steadies us' })).not.toBeInTheDocument();
   });
 
-  it("shows next, previous, and direct chapter keyboard shortcuts", async () => {
+  it('shows next, previous, and direct chapter keyboard shortcuts', async () => {
     const user = userEvent.setup();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
 
-    await user.click(
-      screen.getByRole("button", { name: /show keyboard shortcuts/i }),
-    );
+    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
 
-    expect(
-      screen.getByText("Jump directly to chapters 1 through 7"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Go to the next chapter")).toBeInTheDocument();
-    expect(screen.getByText("Go to the previous chapter")).toBeInTheDocument();
+    expect(screen.getByText('Jump directly to chapters 1 through 7')).toBeInTheDocument();
+    expect(screen.getByText('Go to the next chapter')).toBeInTheDocument();
+    expect(screen.getByText('Go to the previous chapter')).toBeInTheDocument();
   });
 });

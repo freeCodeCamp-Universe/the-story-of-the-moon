@@ -23,15 +23,7 @@ function renderDropdown({
   const onSelect = vi.fn();
   const onClose = vi.fn();
 
-  render(
-    <ChapterDropdown
-      isOpen={isOpen}
-      activeChapterId={activeChapterId}
-      onSelect={onSelect}
-      onClose={onClose}
-      triggerRef={triggerRef}
-    />,
-  );
+  render(<ChapterDropdown isOpen={isOpen} activeChapterId={activeChapterId} onSelect={onSelect} onClose={onClose} triggerRef={triggerRef} />);
 
   return { triggerRef, onSelect, onClose };
 }
@@ -48,27 +40,21 @@ describe('ChapterDropdown', () => {
   it('should render nothing while closed', () => {
     renderDropdown({ isOpen: false });
 
-    expect(
-      screen.queryByRole('button', { name: '1. A violent beginning, perhaps' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '1. A violent beginning, perhaps' })).not.toBeInTheDocument();
   });
 
   it('should render the chapter list and focus the active chapter', () => {
     renderDropdown({ activeChapterId: 'chapter-3' });
 
     expect(screen.getAllByRole('button')).toHaveLength(7);
-    expect(
-      screen.getByRole('button', { name: '3. A partner that steadies us' }),
-    ).toHaveFocus();
+    expect(screen.getByRole('button', { name: '3. A partner that steadies us' })).toHaveFocus();
   });
 
   it('should call onSelect with the clicked chapter id', async () => {
     const user = userEvent.setup();
     const { onSelect } = renderDropdown({ activeChapterId: 'chapter-2' });
 
-    await user.click(
-      screen.getByRole('button', { name: '5. What the rocks told us' }),
-    );
+    await user.click(screen.getByRole('button', { name: '5. What the rocks told us' }));
 
     expect(onSelect).toHaveBeenCalledWith('chapter-5');
   });

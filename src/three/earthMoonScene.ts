@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { BP_DESKTOP, BP_WIDE, BP_ULTRAWIDE } from "@/utils/breakpoints";
+import * as THREE from 'three';
+import { BP_DESKTOP, BP_WIDE, BP_ULTRAWIDE } from '@/utils/breakpoints';
 
 /**
  * Sun / Earth / Moon scene for Chapter 3.
@@ -83,9 +83,7 @@ function makeOrbitRing(radius: number, color: number) {
   const points: THREE.Vector3[] = [];
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius),
-    );
+    points.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
   }
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const material = new THREE.LineDashedMaterial({
@@ -116,23 +114,16 @@ function makeSunHalo(position: THREE.Vector3, scale: number) {
 
 function createHaloCanvas(): HTMLCanvasElement {
   const size = 256;
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
-  const grad = ctx.createRadialGradient(
-    size / 2,
-    size / 2,
-    0,
-    size / 2,
-    size / 2,
-    size / 2,
-  );
-  grad.addColorStop(0, "rgba(255, 244, 204, 1)");
-  grad.addColorStop(0.2, "rgba(255, 210, 122, 0.6)");
-  grad.addColorStop(0.6, "rgba(241, 190, 50, 0.15)");
-  grad.addColorStop(1, "rgba(241, 190, 50, 0)");
+  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, 'rgba(255, 244, 204, 1)');
+  grad.addColorStop(0.2, 'rgba(255, 210, 122, 0.6)');
+  grad.addColorStop(0.6, 'rgba(241, 190, 50, 0.15)');
+  grad.addColorStop(1, 'rgba(241, 190, 50, 0)');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, size, size);
   return canvas;
@@ -145,16 +136,16 @@ function createEarthCanvas(): HTMLCanvasElement {
   // there are obvious features, not because the texture is accurate.
   const width = 1024;
   const height = 512;
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
 
   const ocean = ctx.createLinearGradient(0, 0, 0, height);
-  ocean.addColorStop(0, "#3a7fb5");
-  ocean.addColorStop(0.5, "#4d96c8");
-  ocean.addColorStop(1, "#356b9a");
+  ocean.addColorStop(0, '#3a7fb5');
+  ocean.addColorStop(0.5, '#4d96c8');
+  ocean.addColorStop(1, '#356b9a');
   ctx.fillStyle = ocean;
   ctx.fillRect(0, 0, width, height);
 
@@ -165,45 +156,35 @@ function createEarthCanvas(): HTMLCanvasElement {
     ry: number;
     fill: string;
   }> = [
-    { cx: 0.15, cy: 0.38, rx: 0.04, ry: 0.07, fill: "#a6cde4" },
-    { cx: 0.28, cy: 0.62, rx: 0.05, ry: 0.06, fill: "#b5d6e9" },
-    { cx: 0.42, cy: 0.44, rx: 0.06, ry: 0.09, fill: "#9ec4e0" },
-    { cx: 0.55, cy: 0.7, rx: 0.04, ry: 0.05, fill: "#b5d6e9" },
-    { cx: 0.68, cy: 0.36, rx: 0.05, ry: 0.08, fill: "#a6cde4" },
-    { cx: 0.82, cy: 0.58, rx: 0.05, ry: 0.07, fill: "#9ec4e0" },
+    { cx: 0.15, cy: 0.38, rx: 0.04, ry: 0.07, fill: '#a6cde4' },
+    { cx: 0.28, cy: 0.62, rx: 0.05, ry: 0.06, fill: '#b5d6e9' },
+    { cx: 0.42, cy: 0.44, rx: 0.06, ry: 0.09, fill: '#9ec4e0' },
+    { cx: 0.55, cy: 0.7, rx: 0.04, ry: 0.05, fill: '#b5d6e9' },
+    { cx: 0.68, cy: 0.36, rx: 0.05, ry: 0.08, fill: '#a6cde4' },
+    { cx: 0.82, cy: 0.58, rx: 0.05, ry: 0.07, fill: '#9ec4e0' },
   ];
 
   for (const blob of blobs) {
     ctx.fillStyle = blob.fill;
     ctx.beginPath();
-    ctx.ellipse(
-      blob.cx * width,
-      blob.cy * height,
-      blob.rx * width,
-      blob.ry * height,
-      0,
-      0,
-      Math.PI * 2,
-    );
+    ctx.ellipse(blob.cx * width, blob.cy * height, blob.rx * width, blob.ry * height, 0, 0, Math.PI * 2);
     ctx.fill();
   }
 
   // Polar caps — light cool bands top and bottom.
   const polar = ctx.createLinearGradient(0, 0, 0, height);
-  polar.addColorStop(0, "rgba(235, 240, 248, 0.85)");
-  polar.addColorStop(0.08, "rgba(235, 240, 248, 0)");
-  polar.addColorStop(0.92, "rgba(235, 240, 248, 0)");
-  polar.addColorStop(1, "rgba(235, 240, 248, 0.85)");
+  polar.addColorStop(0, 'rgba(235, 240, 248, 0.85)');
+  polar.addColorStop(0.08, 'rgba(235, 240, 248, 0)');
+  polar.addColorStop(0.92, 'rgba(235, 240, 248, 0)');
+  polar.addColorStop(1, 'rgba(235, 240, 248, 0.85)');
   ctx.fillStyle = polar;
   ctx.fillRect(0, 0, width, height);
 
   return canvas;
 }
 
-export function createEarthMoonScene(
-  canvas: HTMLCanvasElement,
-): EarthMoonSceneHandle {
-  if (!(canvas.getContext("webgl2") ?? canvas.getContext("webgl"))) {
+export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneHandle {
+  if (!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))) {
     return null;
   }
 
@@ -220,12 +201,7 @@ export function createEarthMoonScene(
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x1b1b32);
 
-  const camera = new THREE.PerspectiveCamera(
-    CAMERA_FOV_DEG,
-    width / height,
-    0.1,
-    200,
-  );
+  const camera = new THREE.PerspectiveCamera(CAMERA_FOV_DEG, width / height, 0.1, 200);
 
   // ── Earth-Moon system group ───────────────────────────────────────
   // Wraps the Earth, Moon, orbit ring and umbra so the whole system
@@ -316,9 +292,7 @@ export function createEarthMoonScene(
     const wideAspect = NARROW_VISIBLE_LEFT + halfViewWidth > 0;
     const TABLET_SUN_NUDGE = 0.2;
     const TABLET_EARTH_NUDGE = 1.0;
-    const visibleLeft = wideAspect
-      ? NARROW_VISIBLE_LEFT - TABLET_SUN_NUDGE
-      : NARROW_VISIBLE_LEFT;
+    const visibleLeft = wideAspect ? NARROW_VISIBLE_LEFT - TABLET_SUN_NUDGE : NARROW_VISIBLE_LEFT;
     const lookAtX = visibleLeft + halfViewWidth;
     systemGroup.position.x = wideAspect ? lookAtX + TABLET_EARTH_NUDGE : 0;
     // Align camera X with lookAt so the view direction has no X
@@ -508,38 +482,22 @@ export function createEarthMoonScene(
     // as seen from above earth's north pole.
     if (withMoon) {
       if (showEclipse) {
-        moon.position.set(
-          -MOON_ORBIT * Math.cos(orbitTilt),
-          -MOON_ORBIT * Math.sin(orbitTilt),
-          0,
-        );
+        moon.position.set(-MOON_ORBIT * Math.cos(orbitTilt), -MOON_ORBIT * Math.sin(orbitTilt), 0);
         // Cone apex sits at the moon, base UMBRA_HEIGHT toward earth along
         // the moon→earth direction (cos t, sin t). Center is the midpoint.
         const dirX = Math.cos(orbitTilt);
         const dirY = Math.sin(orbitTilt);
-        umbra.position.set(
-          (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX,
-          (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY,
-          0,
-        );
+        umbra.position.set((UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX, (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY, 0);
         // Default cone axis is +Y; rotating around Z by π/2 + tilt aligns
         // the apex with the moon and the base with the earthward end.
         umbra.rotation.set(0, 0, Math.PI / 2 + orbitTilt);
         umbra.visible = true;
       } else if (showFullMoon || showLunarEclipse) {
-        moon.position.set(
-          MOON_ORBIT * Math.cos(orbitTilt),
-          MOON_ORBIT * Math.sin(orbitTilt),
-          0,
-        );
+        moon.position.set(MOON_ORBIT * Math.cos(orbitTilt), MOON_ORBIT * Math.sin(orbitTilt), 0);
         umbra.visible = false;
       } else {
         moonAngle += 0.09 * dt;
-        moon.position.set(
-          Math.cos(moonAngle) * MOON_ORBIT * Math.cos(orbitTilt),
-          Math.cos(moonAngle) * MOON_ORBIT * Math.sin(orbitTilt),
-          -Math.sin(moonAngle) * MOON_ORBIT,
-        );
+        moon.position.set(Math.cos(moonAngle) * MOON_ORBIT * Math.cos(orbitTilt), Math.cos(moonAngle) * MOON_ORBIT * Math.sin(orbitTilt), -Math.sin(moonAngle) * MOON_ORBIT);
         umbra.visible = false;
       }
     }

@@ -125,7 +125,7 @@ export function cameraPositionToLatLon(position: { x: number; y: number; z: numb
   }
 
   const lat = 90 - (Math.acos(Math.min(1, Math.max(-1, position.y / radius))) * 180) / Math.PI;
-  const lon = normalizeLongitude((-(Math.atan2(position.z, position.x) * 180)) / Math.PI);
+  const lon = normalizeLongitude(-(Math.atan2(position.z, position.x) * 180) / Math.PI);
 
   return {
     lat: Math.max(-90, Math.min(90, lat)),
@@ -133,10 +133,7 @@ export function cameraPositionToLatLon(position: { x: number; y: number; z: numb
   };
 }
 
-export function createMoonScene(
-  canvas: HTMLCanvasElement,
-  options?: MoonSceneOptions
-): MoonSceneHandle {
+export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOptions): MoonSceneHandle {
   if (!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))) {
     return null;
   }
@@ -166,9 +163,7 @@ export function createMoonScene(
   let disposed = false;
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
-  const material = options?.unlit
-    ? new THREE.MeshBasicMaterial({ map: texture2k })
-    : new THREE.MeshStandardMaterial({ map: texture2k });
+  const material = options?.unlit ? new THREE.MeshBasicMaterial({ map: texture2k }) : new THREE.MeshStandardMaterial({ map: texture2k });
   const moon = new THREE.Mesh(geometry, material);
   moon.position.set(0, 0, 0);
   scene.add(moon);
@@ -358,11 +353,7 @@ export function createMoonScene(
       const theta = (-lon * Math.PI) / 180;
 
       // Unit vector from sphere center to the feature's surface point.
-      projCenter.set(
-        Math.sin(phi) * Math.cos(theta),
-        Math.cos(phi),
-        Math.sin(phi) * Math.sin(theta)
-      );
+      projCenter.set(Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta));
 
       // Visible if the surface normal at the feature has a component
       // toward the camera (dot product > 0).

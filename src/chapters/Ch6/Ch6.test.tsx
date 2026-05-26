@@ -7,11 +7,7 @@ describe('Ch6', () => {
   it('should render Chapter 6 as three labeled sections with imagery', () => {
     render(<Ch6 />);
 
-    const sectionNames = [
-      'Floors in permanent shadow',
-      'Tunnels under the surface',
-      "Two halves that don't match",
-    ] as const;
+    const sectionNames = ['Floors in permanent shadow', 'Tunnels under the surface', "Two halves that don't match"] as const;
     const sections = sectionNames.map((name) => screen.getByRole('region', { name }));
 
     expect(sections).toHaveLength(3);
@@ -24,7 +20,11 @@ describe('Ch6', () => {
     });
 
     const halvesSection = screen.getByRole('region', { name: "Two halves that don't match" });
-    expect(within(halvesSection).getAllByRole('img').map((image) => image.getAttribute('alt'))).toEqual([
+    expect(
+      within(halvesSection)
+        .getAllByRole('img')
+        .map((image) => image.getAttribute('alt'))
+    ).toEqual([
       "Near side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, with broad dark maria spread across the face.",
       "Far side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, showing a brighter, densely cratered surface with almost no dark maria.",
     ]);

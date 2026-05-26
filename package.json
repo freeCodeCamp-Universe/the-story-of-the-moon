@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "lint": "prettier . --check",
+    "lint:fix": "prettier . --write",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
@@ -25,6 +27,7 @@
     "@types/three": "^0.170.0",
     "@vitejs/plugin-react": "5.0.4",
     "jsdom": "^25.0.1",
+    "prettier": "3.8.3",
     "sharp": "^0.34.5",
     "typescript": "^5.8.3",
     "vite": "7.1.7",

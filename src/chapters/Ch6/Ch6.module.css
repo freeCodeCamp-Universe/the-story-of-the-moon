@@ -138,7 +138,7 @@
   .section {
     padding: var(--space-2xl) var(--space-5xl);
   }
-  
+
   .sectionContent {
     grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
     align-items: start;

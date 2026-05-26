@@ -21,7 +21,7 @@ describe('ScrollyChapter', () => {
             content: <h3>Tycho</h3>,
           },
         ]}
-      />,
+      />
     );
 
     const group = screen.getByRole('group', {

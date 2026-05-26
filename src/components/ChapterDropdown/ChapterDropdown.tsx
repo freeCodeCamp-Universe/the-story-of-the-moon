@@ -10,13 +10,7 @@ type Props = {
   triggerRef: React.RefObject<HTMLElement | null>;
 };
 
-export function ChapterDropdown({
-  isOpen,
-  activeChapterId,
-  onSelect,
-  onClose,
-  triggerRef,
-}: Props) {
+export function ChapterDropdown({ isOpen, activeChapterId, onSelect, onClose, triggerRef }: Props) {
   const activeItemRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,11 +57,7 @@ export function ChapterDropdown({
 
             return (
               <li key={chapter.id}>
-                <button
-                  ref={isActive ? activeItemRef : undefined}
-                  className={`${styles.item}${isActive ? ` ${styles.itemActive}` : ''}`}
-                  onClick={() => onSelect(chapter.id)}
-                >
+                <button ref={isActive ? activeItemRef : undefined} className={`${styles.item}${isActive ? ` ${styles.itemActive}` : ''}`} onClick={() => onSelect(chapter.id)}>
                   {chapter.index}. {chapter.title}
                 </button>
               </li>

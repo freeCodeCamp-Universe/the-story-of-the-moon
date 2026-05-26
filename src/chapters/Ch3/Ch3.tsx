@@ -140,10 +140,9 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
   const [shouldLoadScene, setShouldLoadScene] = useState(false);
-  const { targetRef, isNearViewport, isVisible } =
-    useViewportActivity<HTMLDivElement>({
-      rootMargin: '320px 0px',
-    });
+  const { targetRef, isNearViewport, isVisible } = useViewportActivity<HTMLDivElement>({
+    rootMargin: '320px 0px',
+  });
 
   useEffect(() => {
     if (isNearViewport) {
