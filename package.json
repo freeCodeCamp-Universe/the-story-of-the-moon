@@ -8,12 +8,21 @@
     "build": "tsc --noEmit && vite build",
     "lint": "pnpm lint:ts && prettier . --check",
     "lint:fix": "pnpm lint:ts:fix && prettier . --write",
+    "lint:staged": "lint-staged",
     "lint:ts": "eslint .",
     "lint:ts:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "optimize:images": "node scripts/optimize-images.mjs"
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,mjs,cjs,json,md,css,html,yaml,yml}": "prettier --write"
   },
   "dependencies": {
     "react": "19.0.0",
@@ -31,7 +40,9 @@
     "@vitejs/plugin-react": "5.0.4",
     "eslint": "^10.4.0",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^17.0.5",
     "prettier": "3.8.3",
     "sharp": "^0.34.5",
     "typescript": "^5.8.3",
