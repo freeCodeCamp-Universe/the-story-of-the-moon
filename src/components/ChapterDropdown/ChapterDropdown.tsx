@@ -10,7 +10,7 @@ type Props = {
   triggerRef: React.RefObject<HTMLElement | null>;
 };
 
-export default function ChapterDropdown({
+export function ChapterDropdown({
   isOpen,
   activeChapterId,
   onSelect,

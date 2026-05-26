@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import MoonInterlude from '@/components/MoonInterlude';
+import { MoonInterlude } from '@/components/MoonInterlude/MoonInterlude';
 
 const mockUseReducedMotion = vi.fn<() => boolean>();
 

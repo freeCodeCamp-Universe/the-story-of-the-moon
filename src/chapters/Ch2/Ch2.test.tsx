@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { surfaceFeatures } from "@/content";
-import Ch2 from "@/chapters/Ch2";
+import Ch2 from "@/chapters/Ch2/Ch2";
 
 let reducedMotion = false;
 
@@ -19,8 +19,8 @@ vi.mock("@/hooks/useViewportActivity", () => ({
   }),
 }));
 
-vi.mock("@/components/ScrollyChapter", () => ({
-  default: ({
+vi.mock("@/components/ScrollyChapter/ScrollyChapter", () => ({
+  ScrollyChapter: ({
     steps,
     visual,
     visualBelow,

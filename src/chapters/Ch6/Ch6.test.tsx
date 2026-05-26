@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import Ch6 from './index';
+import Ch6 from './Ch6';
 
 describe('Ch6', () => {
   it('should render Chapter 6 as three labeled sections with imagery', () => {

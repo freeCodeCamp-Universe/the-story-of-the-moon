@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
-import Ch1 from '@/chapters/Ch1';
-import Ch2 from '@/chapters/Ch2';
-import Ch3 from '@/chapters/Ch3';
-import Ch4 from '@/chapters/Ch4';
-import Ch5 from '@/chapters/Ch5';
-import Ch6 from '@/chapters/Ch6';
-import Ch7 from '@/chapters/Ch7';
-import Chapter from '@/components/Chapter';
-import MoonInterlude from '@/components/MoonInterlude';
-import NavStrip from '@/components/NavStrip';
-import Postcard from '@/components/Postcard';
+import { Ch1, Ch2, Ch3, Ch4, Ch5, Ch6, Ch7 } from '@/chapters';
+import { Chapter, MoonInterlude, NavStrip, Postcard } from '@/components';
 import { postcards } from '@/content';
 import { CHAPTERS } from '@/data/chapters';
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';

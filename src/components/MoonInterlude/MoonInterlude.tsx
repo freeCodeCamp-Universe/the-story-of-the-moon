@@ -83,7 +83,7 @@ type StarStyle = CSSProperties & {
   "--moon-star-delay": string;
 };
 
-export default function MoonInterlude() {
+export function MoonInterlude() {
   const reducedMotion = useReducedMotion();
 
   return (

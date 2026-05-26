@@ -5,10 +5,10 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import CreditCaption from "@/components/CreditCaption";
-import ImageCompareSlider from "@/components/ImageCompareSlider";
-import OptimizedImage from "@/components/OptimizedImage";
-import ScrollyChapter from "@/components/ScrollyChapter";
+import { CreditCaption } from "@/components/CreditCaption/CreditCaption";
+import { ImageCompareSlider } from "@/components/ImageCompareSlider/ImageCompareSlider";
+import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
+import { ScrollyChapter } from "@/components/ScrollyChapter/ScrollyChapter";
 import { getAsset, surfaceFeatures } from "@/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useViewportActivity } from "@/hooks/useViewportActivity";

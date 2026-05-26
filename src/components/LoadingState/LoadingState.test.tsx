@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import LoadingState from './index';
+import { LoadingState } from './LoadingState';
 
 describe('LoadingState', () => {
   it('renders an accessible status live region', () => {

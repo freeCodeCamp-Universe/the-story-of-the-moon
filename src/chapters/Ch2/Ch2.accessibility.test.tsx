@@ -37,8 +37,8 @@ vi.mock('@/three/moonScene', () => ({
   createMoonScene,
 }));
 
-vi.mock('@/components/ScrollyChapter', () => ({
-  default: ({
+vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
+  ScrollyChapter: ({
     steps,
     visual,
     visualBelow,
@@ -78,7 +78,7 @@ describe('Ch2 accessibility', () => {
   it('announces a single debounced coordinate update after keyboard rotation', async () => {
     sceneHandle.getCameraLatLon.mockReturnValue({ lat: 12.3, lon: -45.6 });
 
-    const { default: Ch2 } = await import('@/chapters/Ch2');
+    const { default: Ch2 } = await import('@/chapters/Ch2/Ch2');
     render(<Ch2 />);
 
     await waitFor(() => {
@@ -129,7 +129,7 @@ describe('Ch2 accessibility', () => {
   it('announces a debounced coordinate update after pointer drag release', async () => {
     sceneHandle.getCameraLatLon.mockReturnValue({ lat: -8.4, lon: 22.1 });
 
-    const { default: Ch2 } = await import('@/chapters/Ch2');
+    const { default: Ch2 } = await import('@/chapters/Ch2/Ch2');
     render(<Ch2 />);
 
     await waitFor(() => {

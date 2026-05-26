@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import ChapterDropdown from "@/components/ChapterDropdown";
+import { ChapterDropdown } from "@/components/ChapterDropdown/ChapterDropdown";
 import { CHAPTERS } from "@/data/chapters";
 import { scrollToChapter } from "@/hooks/useKeyboardNav";
 import styles from "./NavStrip.module.css";
@@ -39,7 +39,7 @@ function CloseIcon() {
   );
 }
 
-export default function NavStrip({ activeChapterId, onNavigate }: Props) {
+export function NavStrip({ activeChapterId, onNavigate }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const chapterButtonRef = useRef<HTMLButtonElement | null>(null);

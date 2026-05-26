@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import LoadingState from '@/components/LoadingState';
+import { LoadingState } from '@/components';
 
 const StoryPage = lazy(() => import('@/pages/StoryPage'));
 

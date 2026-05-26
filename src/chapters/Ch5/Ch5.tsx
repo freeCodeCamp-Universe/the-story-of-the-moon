@@ -1,5 +1,5 @@
-import CreditCaption from "@/components/CreditCaption";
-import OptimizedImage from "@/components/OptimizedImage";
+import { CreditCaption } from "@/components/CreditCaption/CreditCaption";
+import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
 import { getAsset, moonSamples } from "@/content";
 import styles from "./Ch5.module.css";
 

@@ -1,6 +1,6 @@
 import type { CSSProperties, ChangeEvent, KeyboardEvent } from "react";
 
-import OptimizedImage from "@/components/OptimizedImage";
+import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
 
 import styles from "./ImageCompareSlider.module.css";
 
@@ -40,7 +40,7 @@ function getValueText(value: number, originalLabel: string, topographicLabel: st
   return `${value}% ${originalLabel.toLowerCase()}, ${MAX_VALUE - value}% ${topographicLabel.toLowerCase()}`;
 }
 
-export default function ImageCompareSlider({
+export function ImageCompareSlider({
   label,
   originalSrc,
   originalAvifSrcSet,

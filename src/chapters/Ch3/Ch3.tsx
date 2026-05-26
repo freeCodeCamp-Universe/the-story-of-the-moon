@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import ScrollyChapter, { type ScrollyStep } from '@/components/ScrollyChapter';
+import { ScrollyChapter, type ScrollyStep } from '@/components/ScrollyChapter/ScrollyChapter';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { EarthMoonSceneHandle } from '@/three/earthMoonScene';

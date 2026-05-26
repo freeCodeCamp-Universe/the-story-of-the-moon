@@ -4,7 +4,7 @@ import styles from './LoadingState.module.css';
 // Arc covers ~75 % of the circumference (~103.67), gap fills the rest (~34.56).
 const ARC_DASHARRAY = '103.67 34.56';
 
-export default function LoadingState() {
+export function LoadingState() {
   return (
     <div className={styles.container} role="status">
       <svg

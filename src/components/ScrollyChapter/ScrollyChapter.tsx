@@ -35,7 +35,7 @@ type Props = {
   visualBelow?: ReactNode;
 };
 
-export default function ScrollyChapter({
+export function ScrollyChapter({
   visual,
   steps,
   onActiveStepChange,

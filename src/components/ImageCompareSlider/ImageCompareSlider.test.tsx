@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, it } from "vitest";
 
-import ImageCompareSlider from "@/components/ImageCompareSlider";
+import { ImageCompareSlider } from "@/components/ImageCompareSlider/ImageCompareSlider";
 
 function Harness() {
   const [value, setValue] = useState(50);

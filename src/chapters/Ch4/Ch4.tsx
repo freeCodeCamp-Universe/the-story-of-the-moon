@@ -7,8 +7,8 @@ import {
   useState,
 } from "react";
 import { missions, getAsset } from "@/content";
-import CreditCaption from "@/components/CreditCaption";
-import OptimizedImage from "@/components/OptimizedImage";
+import { CreditCaption } from "@/components/CreditCaption/CreditCaption";
+import { OptimizedImage } from "@/components/OptimizedImage/OptimizedImage";
 import type { Mission } from "@/types/content";
 import styles from "./Ch4.module.css";
 

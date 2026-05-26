@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import Ch3 from '@/chapters/Ch3';
+import Ch3 from '@/chapters/Ch3/Ch3';
 
 const sceneHandle = {
   setWithMoon: vi.fn(),
@@ -17,8 +17,8 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: () => false,
 }));
 
-vi.mock('@/components/ScrollyChapter', () => ({
-  default: ({ visual }: { visual: React.ReactNode }) => <div>{visual}</div>,
+vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
+  ScrollyChapter: ({ visual }: { visual: React.ReactNode }) => <div>{visual}</div>,
 }));
 
 vi.mock('@/three/earthMoonScene', () => ({

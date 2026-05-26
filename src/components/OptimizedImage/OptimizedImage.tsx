@@ -12,7 +12,7 @@ function toAvifPath(src: string) {
   return src.replace(rasterSourcePattern, '.avif');
 }
 
-export default function OptimizedImage({
+export function OptimizedImage({
   src,
   alt,
   className,

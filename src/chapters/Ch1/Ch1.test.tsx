@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import Ch1 from "./index";
+import Ch1 from "./Ch1";
 
 describe("Ch1", () => {
   it("should place the giant-impact diagram between the opening prose and the remaining explanation", () => {

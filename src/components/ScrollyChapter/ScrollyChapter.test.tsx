@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import ScrollyChapter from '@/components/ScrollyChapter';
+import { ScrollyChapter } from '@/components/ScrollyChapter/ScrollyChapter';
 
 vi.mock('@/hooks/useScrollySteps', () => ({
   useScrollySteps: () => 'step-1',

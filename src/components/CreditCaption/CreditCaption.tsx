@@ -5,6 +5,6 @@ type Props = {
   credit: AssetCredit;
 };
 
-export default function CreditCaption({ credit }: Props) {
+export function CreditCaption({ credit }: Props) {
   return <p className={styles.caption}>{credit.attributionText}</p>;
 }

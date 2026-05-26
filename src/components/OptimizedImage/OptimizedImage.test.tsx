@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, should } from 'vitest';
 
-import OptimizedImage from './index';
+import { OptimizedImage } from './OptimizedImage';
 
 const chaiShould = should();
 

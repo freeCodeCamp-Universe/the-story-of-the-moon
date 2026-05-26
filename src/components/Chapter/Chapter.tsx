@@ -8,7 +8,7 @@ type Props = {
   children: ReactNode;
 };
 
-export default function Chapter({ id, question, title, children }: Props) {
+export function Chapter({ id, question, title, children }: Props) {
   return (
     <section id={id} aria-labelledby={`${id}-heading`} className={styles.section}>
       <header className={styles.header}>
