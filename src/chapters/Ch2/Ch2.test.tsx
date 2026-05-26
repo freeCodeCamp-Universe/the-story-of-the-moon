@@ -221,29 +221,6 @@ describe("Ch2", () => {
     expect(sliders[1]).toHaveValue("40");
   });
 
-  it("should preserve Home and End keyboard controls on each basin slider", async () => {
-    const user = userEvent.setup();
-
-    render(<Ch2 />);
-
-    const comparisonGroup = screen.getByRole("group", {
-      name: "Basin image comparisons",
-    });
-    const sliders = within(comparisonGroup).getAllByRole("slider");
-
-    sliders[0].focus();
-    await user.keyboard("{End}");
-
-    expect(sliders[0]).toHaveValue("100");
-    expect(sliders[1]).toHaveValue("50");
-
-    sliders[1].focus();
-    await user.keyboard("{Home}");
-
-    expect(sliders[0]).toHaveValue("100");
-    expect(sliders[1]).toHaveValue("0");
-  });
-
   it("should ignore modified O and T basin shortcuts", () => {
     render(<Ch2 />);
 

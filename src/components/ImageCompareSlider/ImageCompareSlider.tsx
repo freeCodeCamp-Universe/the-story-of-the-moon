@@ -70,18 +70,6 @@ export function ImageCompareSlider({
       PageUp: PAGE_STEP,
     };
 
-    if (event.key === "Home") {
-      event.preventDefault();
-      onValueChange(MIN_VALUE);
-      return;
-    }
-
-    if (event.key === "End") {
-      event.preventDefault();
-      onValueChange(MAX_VALUE);
-      return;
-    }
-
     const delta = keySteps[event.key];
 
     if (delta === undefined) {

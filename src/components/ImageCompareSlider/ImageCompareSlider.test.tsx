@@ -65,16 +65,5 @@ describe("ImageCompareSlider", () => {
       "aria-valuetext",
       "42% original, 58% topographic",
     );
-
-    await user.keyboard("{End}");
-    expect(slider).toHaveValue("100");
-    expect(slider).toHaveAttribute("aria-valuetext", "Full original view");
-
-    await user.keyboard("{Home}");
-    expect(slider).toHaveValue("0");
-    expect(slider).toHaveAttribute(
-      "aria-valuetext",
-      "Full topographic view",
-    );
   });
 });
