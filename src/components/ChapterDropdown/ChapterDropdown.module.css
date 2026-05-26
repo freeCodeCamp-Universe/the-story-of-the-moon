@@ -107,6 +107,17 @@
   content: '> ';
 }
 
+@media (min-width: 768px) and (max-width: 899px) {
+  .panel {
+    left: auto;
+    right: var(--space-sm);
+    transform: translateY(0);
+    min-width: min(20rem, calc(100vw - (2 * var(--space-sm))));
+    max-width: min(28rem, calc(100vw - (2 * var(--space-sm))));
+    width: min(28rem, calc(100vw - (2 * var(--space-sm))));
+  }
+}
+
 @media (max-width: 767px) {
   .panel {
     left: 0;
