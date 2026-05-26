@@ -1,11 +1,31 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { surfaceFeatures } from "@/content";
 import Ch2 from "@/chapters/Ch2/Ch2";
 
 let reducedMotion = false;
+let viewportState = {
+  isNearViewport: false,
+  isVisible: false,
+};
+
+const sceneHandle = {
+  dispose: vi.fn(),
+  getCameraLatLon: vi.fn(),
+  pause: vi.fn(),
+  projectFeature: vi.fn(() => ({
+    x: 120,
+    y: 80,
+    visible: true,
+  })),
+  resume: vi.fn(),
+  rotateBy: vi.fn(),
+  setCameraTarget: vi.fn(),
+};
+
+const createMoonScene = vi.fn(() => sceneHandle);
 
 vi.mock("@/hooks/useReducedMotion", () => ({
   useReducedMotion: () => reducedMotion,
@@ -14,9 +34,12 @@ vi.mock("@/hooks/useReducedMotion", () => ({
 vi.mock("@/hooks/useViewportActivity", () => ({
   useViewportActivity: () => ({
     targetRef: { current: null },
-    isNearViewport: false,
-    isVisible: false,
+    ...viewportState,
   }),
+}));
+
+vi.mock("@/three/moonScene", () => ({
+  createMoonScene,
 }));
 
 vi.mock("@/components/ScrollyChapter/ScrollyChapter", () => ({
@@ -44,8 +67,21 @@ vi.mock("@/components/ScrollyChapter/ScrollyChapter", () => ({
 }));
 
 describe("Ch2", () => {
-  it("should render the intro figures after the text and name the surface-features group from the visible heading", () => {
+  beforeEach(() => {
     reducedMotion = false;
+    viewportState = {
+      isNearViewport: false,
+      isVisible: false,
+    };
+    sceneHandle.getCameraLatLon.mockReturnValue({ lat: 12.3, lon: -45.6 });
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should render the intro figures after the text and name the surface-features group from the visible heading", () => {
     render(<Ch2 />);
 
     const title = screen.getByRole("heading", {
@@ -99,7 +135,6 @@ describe("Ch2", () => {
   it("should let the basin comparison container toggle both images with O and T", async () => {
     const user = userEvent.setup();
 
-    reducedMotion = false;
     render(<Ch2 />);
 
     const comparisonGroup = screen.getByRole("group", {
@@ -125,7 +160,6 @@ describe("Ch2", () => {
   it("should let each basin slider move independently with the keyboard", async () => {
     const user = userEvent.setup();
 
-    reducedMotion = false;
     render(<Ch2 />);
 
     const comparisonGroup = screen.getByRole("group", {
@@ -162,7 +196,6 @@ describe("Ch2", () => {
   });
 
   it("should expose the active moon feature label as a polite live region", () => {
-    reducedMotion = false;
     render(<Ch2 />);
 
     const visualGroup = screen.getByRole("group", {
@@ -186,5 +219,98 @@ describe("Ch2", () => {
     expect(annotationLiveRegion).not.toHaveAttribute("aria-hidden");
     expect(rotationLiveRegion).toHaveAttribute("aria-atomic", "true");
     expect(rotationLiveRegion.textContent).toBe("");
+  });
+
+  it("should announce a single debounced coordinate update after keyboard rotation", async () => {
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+    sceneHandle.getCameraLatLon.mockReturnValue({ lat: 12.3, lon: -45.6 });
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+    sceneHandle.setCameraTarget.mockClear();
+
+    const visualGroup = screen.getByRole("group", {
+      name: "Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.",
+    });
+    const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
+    const rotationRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains("sr-only"),
+    );
+
+    if (!rotationRegion) {
+      throw new Error("Expected a hidden rotation live region.");
+    }
+
+    vi.useFakeTimers();
+    fireEvent.keyDown(visualGroup, { key: "ArrowRight" });
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+    fireEvent.keyDown(visualGroup, { key: "ArrowRight" });
+
+    act(() => {
+      vi.advanceTimersByTime(599);
+    });
+    expect(rotationRegion.textContent).toBe("");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(sceneHandle.rotateBy).toHaveBeenCalledTimes(2);
+    expect(sceneHandle.getCameraLatLon).toHaveBeenCalledTimes(1);
+    expect(rotationRegion.textContent).toContain("Viewing 12.3°N 45.6°W");
+
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+
+    expect(sceneHandle.setCameraTarget).toHaveBeenCalledTimes(1);
+    expect(rotationRegion.textContent).toBe("");
+  });
+
+  it("should announce a debounced coordinate update after pointer drag release", async () => {
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+    sceneHandle.getCameraLatLon.mockReturnValue({ lat: -8.4, lon: 22.1 });
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+    sceneHandle.setCameraTarget.mockClear();
+
+    const visualGroup = screen.getByRole("group", {
+      name: "Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.",
+    });
+    const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
+    const rotationRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains("sr-only"),
+    );
+    const canvas = visualGroup.querySelector("canvas");
+
+    if (!rotationRegion || !canvas) {
+      throw new Error("Expected the Ch2 visual canvas and hidden live region.");
+    }
+
+    vi.useFakeTimers();
+    fireEvent.pointerDown(canvas);
+    fireEvent.pointerUp(canvas);
+
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+
+    expect(sceneHandle.getCameraLatLon).toHaveBeenCalledTimes(1);
+    expect(rotationRegion.textContent).toContain("Viewing 8.4°S 22.1°E");
   });
 });
