@@ -557,19 +557,33 @@ function IntroProse() {
     }
 
     const key = event.key.toLowerCase();
+    const nextValue = key === "o" ? 100 : key === "t" ? 0 : null;
 
-    if (key === "o") {
-      event.preventDefault();
-      setHertzsprungCompareValue(100);
-      setOrientaleCompareValue(100);
+    if (nextValue === null) {
       return;
     }
 
-    if (key === "t") {
-      event.preventDefault();
-      setHertzsprungCompareValue(0);
-      setOrientaleCompareValue(0);
+    event.preventDefault();
+
+    if (
+      event.target instanceof HTMLElement &&
+      event.target !== event.currentTarget
+    ) {
+      const compareFigure = event.target.closest<HTMLElement>("[data-basin-compare]");
+
+      if (compareFigure?.dataset.basinCompare === "hertzsprung") {
+        setHertzsprungCompareValue(nextValue);
+        return;
+      }
+
+      if (compareFigure?.dataset.basinCompare === "orientale") {
+        setOrientaleCompareValue(nextValue);
+        return;
+      }
     }
+
+    setHertzsprungCompareValue(nextValue);
+    setOrientaleCompareValue(nextValue);
   };
 
   return (
@@ -643,7 +657,10 @@ function IntroProse() {
             {basinCompareStatus}
           </p>
           {hertzsprungAsset && hertzsprungTopographicAsset && (
-            <figure className={styles.termDiptychFigure}>
+            <figure
+              className={styles.termDiptychFigure}
+              data-basin-compare="hertzsprung"
+            >
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
                 originalSrc="/ch2/hertzsprung.jpg"
@@ -665,7 +682,10 @@ function IntroProse() {
             </figure>
           )}
           {orientaleAsset && orientaleTopographicAsset && (
-            <figure className={styles.termDiptychFigure}>
+            <figure
+              className={styles.termDiptychFigure}
+              data-basin-compare="orientale"
+            >
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
                 originalSrc="/ch2/orientale-lro.png"

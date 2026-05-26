@@ -132,7 +132,7 @@ describe("Ch2", () => {
     ).not.toBe(0);
   });
 
-  it("should let the basin comparison container toggle both images with O and T", async () => {
+  it("should let the basin comparison group toggle both images when the group itself has focus", async () => {
     const user = userEvent.setup();
 
     render(<Ch2 />);
@@ -140,21 +140,62 @@ describe("Ch2", () => {
     const comparisonGroup = screen.getByRole("group", {
       name: "Basin image comparisons",
     });
+    const basinStatus = within(comparisonGroup).getByText(/^Hertzsprung:/);
     const sliders = within(comparisonGroup).getAllByRole("slider");
 
+    expect(comparisonGroup).toHaveAttribute("aria-keyshortcuts", "O T");
     expect(sliders[0]).toHaveValue("50");
     expect(sliders[1]).toHaveValue("50");
+    expect(basinStatus).toHaveTextContent(
+      "Hertzsprung: 50% original, 50% topographic. Mare Orientale: 50% original, 50% topographic.",
+    );
 
     comparisonGroup.focus();
     await user.keyboard("t");
 
     expect(sliders[0]).toHaveValue("0");
     expect(sliders[1]).toHaveValue("0");
+    expect(basinStatus).toHaveTextContent(
+      "Hertzsprung: Full topographic view. Mare Orientale: Full topographic view.",
+    );
 
     await user.keyboard("o");
 
     expect(sliders[0]).toHaveValue("100");
     expect(sliders[1]).toHaveValue("100");
+    expect(basinStatus).toHaveTextContent(
+      "Hertzsprung: Full original view. Mare Orientale: Full original view.",
+    );
+  });
+
+  it("should let O and T update only the focused basin comparison slider", async () => {
+    const user = userEvent.setup();
+
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole("group", {
+      name: "Basin image comparisons",
+    });
+    const basinStatus = within(comparisonGroup).getByText(/^Hertzsprung:/);
+    const sliders = within(comparisonGroup).getAllByRole("slider");
+
+    sliders[0].focus();
+    await user.keyboard("t");
+
+    expect(sliders[0]).toHaveValue("0");
+    expect(sliders[1]).toHaveValue("50");
+    expect(basinStatus).toHaveTextContent(
+      "Hertzsprung: Full topographic view. Mare Orientale: 50% original, 50% topographic.",
+    );
+
+    sliders[1].focus();
+    await user.keyboard("o");
+
+    expect(sliders[0]).toHaveValue("0");
+    expect(sliders[1]).toHaveValue("100");
+    expect(basinStatus).toHaveTextContent(
+      "Hertzsprung: Full topographic view. Mare Orientale: Full original view.",
+    );
   });
 
   it("should let each basin slider move independently with the keyboard", async () => {
@@ -178,6 +219,45 @@ describe("Ch2", () => {
 
     expect(sliders[0]).toHaveValue("52");
     expect(sliders[1]).toHaveValue("40");
+  });
+
+  it("should preserve Home and End keyboard controls on each basin slider", async () => {
+    const user = userEvent.setup();
+
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole("group", {
+      name: "Basin image comparisons",
+    });
+    const sliders = within(comparisonGroup).getAllByRole("slider");
+
+    sliders[0].focus();
+    await user.keyboard("{End}");
+
+    expect(sliders[0]).toHaveValue("100");
+    expect(sliders[1]).toHaveValue("50");
+
+    sliders[1].focus();
+    await user.keyboard("{Home}");
+
+    expect(sliders[0]).toHaveValue("100");
+    expect(sliders[1]).toHaveValue("0");
+  });
+
+  it("should ignore modified O and T basin shortcuts", () => {
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole("group", {
+      name: "Basin image comparisons",
+    });
+    const sliders = within(comparisonGroup).getAllByRole("slider");
+
+    fireEvent.keyDown(sliders[0], { key: "t", altKey: true });
+    fireEvent.keyDown(sliders[1], { key: "o", ctrlKey: true });
+    fireEvent.keyDown(sliders[1], { key: "t", metaKey: true });
+
+    expect(sliders[0]).toHaveValue("50");
+    expect(sliders[1]).toHaveValue("50");
   });
 
   it("should preserve the same heading hierarchy in the reduced-motion fallback", () => {
