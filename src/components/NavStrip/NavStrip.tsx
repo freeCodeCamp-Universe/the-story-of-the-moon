@@ -119,39 +119,40 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
 
   return (
     <>
-      <nav className={styles.nav} aria-label="Chapters">
-        <p className={styles.brand}>The Story of the Moon</p>
+      <header className={styles.header}>
+        <h1 className={styles.brand}>The Story of the Moon</h1>
+        <nav className={styles.nav} aria-label="Chapters">
+          <div className={styles.centerControls}>
+            <button
+              ref={chapterButtonRef}
+              type="button"
+              className={`${styles.chapterButton}${isDropdownOpen ? ` ${styles.chapterButtonActive}` : ''}`}
+              onClick={() => setIsDropdownOpen((value) => !value)}
+              aria-expanded={isDropdownOpen}
+              aria-controls="chapter-dropdown"
+              aria-label={`open chapter list, current chapter ${currentChapter.index}: ${currentChapter.title}`}
+            >
+              <span className={styles.chapterDesktopText}>
+                {currentChapter.index}. {currentChapter.title}
+              </span>
+              <span className={styles.chapterMobileText}>Chapter {currentChapter.index}</span>
+            </button>
+          </div>
 
-        <div className={styles.centerControls}>
           <button
-            ref={chapterButtonRef}
+            ref={shortcutsButtonRef}
             type="button"
-            className={`${styles.chapterButton}${isDropdownOpen ? ` ${styles.chapterButtonActive}` : ''}`}
-            onClick={() => setIsDropdownOpen((value) => !value)}
-            aria-expanded={isDropdownOpen}
-            aria-controls="chapter-dropdown"
-            aria-label={`open chapter list, current chapter ${currentChapter.index}: ${currentChapter.title}`}
+            className={`${styles.shortcutsButton}${isShortcutsOpen ? ` ${styles.shortcutsButtonActive}` : ''}`}
+            onClick={() => setIsShortcutsOpen(true)}
+            aria-label="show keyboard shortcuts"
+            aria-haspopup="dialog"
+            aria-expanded={isShortcutsOpen}
+            aria-controls="keyboard-shortcuts-dialog"
           >
-            <span className={styles.chapterDesktopText}>
-              {currentChapter.index}. {currentChapter.title}
-            </span>
-            <span className={styles.chapterMobileText}>Chapter {currentChapter.index}</span>
+            <KeyboardIcon />
           </button>
-        </div>
-
-        <button
-          ref={shortcutsButtonRef}
-          type="button"
-          className={`${styles.shortcutsButton}${isShortcutsOpen ? ` ${styles.shortcutsButtonActive}` : ''}`}
-          onClick={() => setIsShortcutsOpen(true)}
-          aria-label="show keyboard shortcuts"
-          aria-haspopup="dialog"
-          aria-expanded={isShortcutsOpen}
-          aria-controls="keyboard-shortcuts-dialog"
-        >
-          <KeyboardIcon />
-        </button>
-      </nav>
+        </nav>
+      </header>
 
       <ChapterDropdown isOpen={isDropdownOpen} activeChapterId={activeChapterId} onSelect={handleSelect} onClose={() => setIsDropdownOpen(false)} triggerRef={chapterButtonRef} />
 

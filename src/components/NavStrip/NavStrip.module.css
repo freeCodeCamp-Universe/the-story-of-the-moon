@@ -1,6 +1,6 @@
-/* NavStrip — fixed top navigation bar */
+/* NavStrip — fixed page header and chapter navigation */
 
-.nav {
+.header {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,6 +16,10 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   background-color: rgba(10, 10, 35, 0.92);
+}
+
+.nav {
+  display: contents;
 }
 
 .brand {
@@ -234,7 +238,7 @@
    Boundary matches the codebase-wide 900px tablet/desktop split
    (ScrollyChapter, earthMoonScene's IMMERSIVE_MIN_WIDTH, etc.). */
 @media (max-width: 899px) {
-  .nav {
+  .header {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: var(--space-sm);
     padding-inline: var(--space-sm);

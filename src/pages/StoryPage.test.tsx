@@ -90,6 +90,18 @@ describe('StoryPage', () => {
     expect(container.querySelector('#main')).toBe(main);
   });
 
+  it('should expose a single page heading and chapter navigation before main content', () => {
+    render(<StoryPage />);
+
+    const pageHeading = screen.getByRole('heading', { level: 1, name: 'The Story of the Moon' });
+    const chapterNav = screen.getByRole('navigation', { name: 'Chapters' });
+    const main = screen.getByRole('main');
+
+    expect(screen.getAllByRole('heading', { level: 1, name: 'The Story of the Moon' })).toHaveLength(1);
+    expect(pageHeading.compareDocumentPosition(main) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(chapterNav.compareDocumentPosition(main) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('should render all chapter regions, postcards, and the interlude', () => {
     const { container } = render(<StoryPage />);
 

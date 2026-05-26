@@ -35,10 +35,12 @@ describe('NavStrip', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows the story title and omits previous and next buttons', () => {
+  it('shows the story title as the page heading and preserves the chapter nav landmark', () => {
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
 
-    expect(screen.getByText('The Story of the Moon')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'The Story of the Moon' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Chapters' })).toBeInTheDocument();
     expect(screen.queryByLabelText('previous chapter')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('next chapter')).not.toBeInTheDocument();
   });
@@ -59,7 +61,7 @@ describe('NavStrip', () => {
     });
   });
 
-  it('closes the chapter dropdown when clicking elsewhere in the nav', async () => {
+  it('closes the chapter dropdown when clicking elsewhere in the header', async () => {
     const user = userEvent.setup();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
