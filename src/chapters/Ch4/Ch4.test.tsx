@@ -49,9 +49,7 @@ class MockIntersectionObserver {
   readonly rootMargin = '-50% 0px -50% 0px';
   readonly thresholds = [0];
 
-  constructor(private readonly callback: IntersectionObserverCallback) {
-    activeObserver = this;
-  }
+  constructor(private readonly callback: IntersectionObserverCallback) {}
 
   observe = (element: Element) => {
     this.observed.add(element);
@@ -160,7 +158,11 @@ describe('Ch4', () => {
     Object.defineProperty(window, 'IntersectionObserver', {
       configurable: true,
       writable: true,
-      value: MockIntersectionObserver,
+      value: function (this: IntersectionObserver, callback: IntersectionObserverCallback) {
+        const observer = new MockIntersectionObserver(callback);
+        activeObserver = observer;
+        return observer;
+      } as unknown as typeof IntersectionObserver,
     });
 
     document.documentElement.style.setProperty('--nav-height', '100px');

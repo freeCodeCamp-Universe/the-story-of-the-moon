@@ -33,7 +33,7 @@ vi.mock('three', async () => {
     render = vi.fn();
     dispose = vi.fn();
 
-    constructor(_: unknown) {
+    constructor() {
       threeState.renderers.push(this);
     }
   }
@@ -417,7 +417,8 @@ describe('createEarthMoonScene', () => {
     clock.getDelta.mockReturnValue(0);
     renderFrame();
 
-    let { camera, systemGroup, sun, halo, sunLight } = getLatestSceneState();
+    const { camera, systemGroup } = getLatestSceneState();
+    let { sun, halo, sunLight } = getLatestSceneState();
 
     expect(camera.position.x).toBeCloseTo(0, 6);
     expect(camera.position.y).toBeCloseTo(3, 6);

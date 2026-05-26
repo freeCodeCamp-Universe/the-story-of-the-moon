@@ -239,7 +239,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
 
   const handleKey = useCallback(
     (e: Pick<KeyboardEvent, 'key' | 'preventDefault'>) => {
-      let next = active;
+      let next: number;
       if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = Math.min(steps.length - 1, active + 1);
       else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = Math.max(0, active - 1);
       else if (e.key === '[') next = 0;
