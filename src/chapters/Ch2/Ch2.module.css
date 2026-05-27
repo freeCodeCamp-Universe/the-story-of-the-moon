@@ -351,11 +351,16 @@
   margin-bottom: var(--space-sm);
 }
 
-.fallbackOneLiner {
+.fallbackDescription {
   font-family: var(--font-prose);
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text-muted);
+  margin: 0;
+}
+
+.fallbackDescription + .fallbackDescription {
+  margin-top: var(--space-md);
 }
 
 .fallbackImage {

@@ -426,7 +426,11 @@ export default function Ch2() {
                   <span aria-hidden="true">&gt;</span> {formatLatLon(feature.lat, feature.lon)}
                 </p>
                 <h4 className={styles.fallbackName}>{feature.name}</h4>
-                <p className={styles.fallbackOneLiner}>{feature.oneLiner}</p>
+                {feature.description.map((paragraph, index) => (
+                  <p key={`${feature.id}-fallback-${index}`} className={styles.fallbackDescription}>
+                    {paragraph}
+                  </p>
+                ))}
               </li>
             ))}
           </ol>
@@ -456,7 +460,9 @@ export default function Ch2() {
           content: (
             <>
               <h4>{feature.name}</h4>
-              <p>{feature.oneLiner}</p>
+              {feature.description.map((paragraph, index) => (
+                <p key={`${feature.id}-${index}`}>{paragraph}</p>
+              ))}
             </>
           ),
         }))}

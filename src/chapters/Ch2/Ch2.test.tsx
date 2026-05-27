@@ -216,6 +216,25 @@ describe('Ch2', () => {
     expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(surfaceFeatures.length);
   });
 
+  it('should render each surface-feature description as separate paragraphs', () => {
+    render(<Ch2 />);
+
+    const mareImbriumHeading = screen.getByRole('heading', {
+      level: 4,
+      name: 'Mare Imbrium',
+    });
+    const mareImbriumArticle = mareImbriumHeading.closest('article');
+
+    if (!mareImbriumArticle) {
+      throw new Error('Expected Mare Imbrium to render inside an article.');
+    }
+
+    const descriptionParagraphs = within(mareImbriumArticle).getAllByText((_, element) => element?.tagName.toLowerCase() === 'p');
+    expect(descriptionParagraphs).toHaveLength(surfaceFeatures[0].description.length);
+    expect(descriptionParagraphs[0]).toHaveTextContent('Mare Imbrium is the largest dark plain on the side of the Moon that faces Earth');
+    expect(descriptionParagraphs[1]).toHaveTextContent('Over the next several hundred million years, lava welled up from the lunar interior');
+  });
+
   it('should expose the active moon feature label as a polite live region', () => {
     render(<Ch2 />);
 

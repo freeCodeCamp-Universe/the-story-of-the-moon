@@ -21,7 +21,7 @@ export type SurfaceFeature = {
   lon: number;
   /** Approximate diameter in kilometers; used to size the annotation ring. */
   diameterKm: number;
-  oneLiner: string;
+  description: string[];
 };
 
 export type CreditBackedImage<CreditId extends string = string> = {
