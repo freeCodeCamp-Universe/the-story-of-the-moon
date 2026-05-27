@@ -82,22 +82,28 @@ function create2dContext() {
 
 function makeCanvas(webglAvailable = true, width = 800, height = 600) {
   const canvas = document.createElement('canvas');
+  const wrapper = document.createElement('div');
+  wrapper.appendChild(canvas);
 
-  Object.defineProperty(canvas, 'clientWidth', {
-    configurable: true,
-    get: () => width,
-  });
-  Object.defineProperty(canvas, 'clientHeight', {
-    configurable: true,
-    get: () => height,
-  });
+  // getCanvasSize measures the parent (the canvas fills it via CSS), so the
+  // mock dimensions live on the wrapper. They're mirrored onto the canvas too
+  // since jsdom does no layout.
+  const defineSize = (el: HTMLElement) => {
+    Object.defineProperty(el, 'clientWidth', {
+      configurable: true,
+      get: () => width,
+    });
+    Object.defineProperty(el, 'clientHeight', {
+      configurable: true,
+      get: () => height,
+    });
+  };
+  defineSize(canvas);
+  defineSize(wrapper);
 
   if (webglAvailable) {
     canvas.dataset.webgl = 'enabled';
   }
-
-  const wrapper = document.createElement('div');
-  wrapper.appendChild(canvas);
 
   return {
     canvas,
@@ -208,6 +214,16 @@ describe('createEarthMoonScene', () => {
     const handle = createEarthMoonScene(canvas);
 
     expect(handle).not.toBeNull();
+  });
+
+  it('should size the renderer without writing inline canvas styles', () => {
+    const { canvas } = makeCanvas(true, 800, 600);
+
+    createEarthMoonScene(canvas);
+
+    // updateStyle=false keeps CSS in charge of the display size; passing the
+    // default (true) would pin clientWidth and break adaptive resizing.
+    expect(getRenderer().setSize).toHaveBeenCalledWith(800, 600, false);
   });
 
   it('should return null when WebGL is unavailable', () => {
@@ -490,7 +506,7 @@ describe('createEarthMoonScene', () => {
     const earthTextureDispose = vi.spyOn(earthMap, 'dispose');
     const haloTextureDispose = vi.spyOn(haloTexture, 'dispose');
 
-    expect(renderer.setSize).toHaveBeenLastCalledWith(1200, 500);
+    expect(renderer.setSize).toHaveBeenLastCalledWith(1200, 500, false);
     expect(camera.aspect).toBeCloseTo(1200 / 500, 6);
 
     handle?.dispose();

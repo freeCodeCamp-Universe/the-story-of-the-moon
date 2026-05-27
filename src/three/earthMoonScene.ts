@@ -71,10 +71,16 @@ function getImmersiveDesktopFrame(width: number): ImmersiveDesktopFrame | null {
   return null;
 }
 
+// Measure the element that drives layout. The canvas fills its parent via
+// CSS (width/height: 100%), so we read the parent's content box rather than
+// the canvas's own. renderer.setSize is called with updateStyle=false so the
+// canvas never gets inline px dimensions that would pin clientWidth and stop
+// the ResizeObserver from ever seeing a new size.
 function getCanvasSize(canvas: HTMLCanvasElement) {
+  const box = canvas.parentElement ?? canvas;
   return {
-    width: Math.max(canvas.clientWidth, 1),
-    height: Math.max(canvas.clientHeight, 1),
+    width: Math.max(box.clientWidth, 1),
+    height: Math.max(box.clientHeight, 1),
   };
 }
 
@@ -195,7 +201,10 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
     alpha: true,
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(width, height);
+  // updateStyle=false: let CSS (.canvas { width/height: 100% }) own the
+  // display size. Writing inline px here would pin canvas.clientWidth and
+  // stop the ResizeObserver from ever seeing a new size.
+  renderer.setSize(width, height, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
@@ -432,7 +441,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
 
   const resizeObserver = new ResizeObserver(() => {
     const nextSize = getCanvasSize(canvas);
-    renderer.setSize(nextSize.width, nextSize.height);
+    renderer.setSize(nextSize.width, nextSize.height, false);
     camera.aspect = nextSize.width / nextSize.height;
     camera.updateProjectionMatrix();
     fitCamera(nextSize.width, nextSize.height);
