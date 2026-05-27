@@ -102,25 +102,36 @@ vi.mock('three/addons/controls/OrbitControls.js', () => ({
   }),
 }));
 
-globalThis.ResizeObserver = vi.fn(function ResizeObserver() {
+let lastResizeCallback: ResizeObserverCallback | null = null;
+let lastObserved: Element | null = null;
+
+globalThis.ResizeObserver = vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+  lastResizeCallback = callback;
   return {
-    observe: vi.fn(),
+    observe: vi.fn((target: Element) => {
+      lastObserved = target;
+    }),
     disconnect: vi.fn(),
   };
 }) as unknown as typeof ResizeObserver;
 
+// The canvas fills its parent via CSS, so getCanvasSize measures the parent.
+// The mock parent carries the dimensions; the canvas mirrors them.
 function makeMockCanvas(webglAvailable = true) {
+  const parentElement = { addEventListener: vi.fn(), clientWidth: 800, clientHeight: 600 };
   return {
     getContext: vi.fn().mockReturnValue(webglAvailable ? {} : null),
     clientWidth: 800,
     clientHeight: 600,
-    parentElement: { addEventListener: vi.fn() },
+    parentElement,
   } as unknown as HTMLCanvasElement;
 }
 
 describe('createMoonScene', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    lastResizeCallback = null;
+    lastObserved = null;
     vi.stubGlobal(
       'matchMedia',
       vi.fn().mockReturnValue({
@@ -230,5 +241,59 @@ describe('createMoonScene', () => {
 
     expect(latLon.lat).toBeCloseTo(0, 6);
     expect(latLon.lon).toBe(180);
+  });
+
+  it('sizes the renderer without writing inline canvas styles', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setSize: ReturnType<typeof vi.fn>;
+    };
+
+    // updateStyle=false keeps CSS in charge of the display size; passing the
+    // default (true) would pin clientWidth and break adaptive resizing.
+    expect(rendererInstance.setSize).toHaveBeenCalledWith(800, 600, false);
+  });
+
+  it('observes the canvas parent so resize tracks the laid-out box', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    expect(lastObserved).toBe(canvas.parentElement);
+  });
+
+  it('re-sizes the renderer and camera when the parent box changes', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setSize: ReturnType<typeof vi.fn>;
+    };
+    const cameraInstance = cameraCtor.mock.results[0]?.value as {
+      aspect: number;
+      updateProjectionMatrix: ReturnType<typeof vi.fn>;
+    };
+
+    rendererInstance.setSize.mockClear();
+    cameraInstance.updateProjectionMatrix.mockClear();
+
+    // Simulate the viewport growing wider (e.g. portrait -> landscape).
+    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+    parent.clientWidth = 1200;
+    parent.clientHeight = 600;
+
+    expect(lastResizeCallback).not.toBeNull();
+    lastResizeCallback?.([], {} as ResizeObserver);
+
+    expect(rendererInstance.setSize).toHaveBeenCalledWith(1200, 600, false);
+    expect(cameraInstance.aspect).toBe(2);
+    expect(cameraInstance.updateProjectionMatrix).toHaveBeenCalledTimes(1);
   });
 });
