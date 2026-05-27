@@ -10,7 +10,7 @@ export default function Ch1() {
   return (
     <>
       <div className={styles.imageWrapper}>
-        <OptimizedImage className={styles.heroImage} src="/ch1/giant-impact.jpg" alt={asset?.alt ?? ''} fetchPriority="high" />
+        <OptimizedImage className={styles.heroImage} src="/ch1/giant-impact.jpg" alt={asset?.alt ?? ''} loading="eager" fetchPriority="high" />
         {asset && <CreditCaption credit={asset} />}
       </div>
 

@@ -23,6 +23,17 @@ describe('Ch1', () => {
     expect(diagram.compareDocumentPosition(fourthParagraph) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
   });
 
+  it('should eagerly prioritize the opening giant-impact image', () => {
+    render(<Ch1 />);
+
+    const heroImage = screen.getByRole('img', {
+      name: /artist's concept shows a celestial body/i,
+    });
+
+    expect(heroImage).toHaveAttribute('loading', 'eager');
+    expect(heroImage).toHaveAttribute('fetchpriority', 'high');
+  });
+
   it('should render four accessible giant-impact stage illustrations with captions', () => {
     render(<Ch1 />);
 
