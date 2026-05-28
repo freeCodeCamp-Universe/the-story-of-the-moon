@@ -147,7 +147,7 @@ describe('createMoonScene', () => {
     );
   });
 
-  it('returns a non-null handle when WebGL is available', () => {
+  it('should return a non-null handle when WebGL is available', () => {
     const canvas = makeMockCanvas(true);
 
     const handle = createMoonScene(canvas);
@@ -155,7 +155,7 @@ describe('createMoonScene', () => {
     expect(handle).not.toBeNull();
   });
 
-  it('creates moon geometry with expected segments', () => {
+  it('should create moon geometry with expected segments', () => {
     const canvas = makeMockCanvas(true);
 
     createMoonScene(canvas);
@@ -163,7 +163,7 @@ describe('createMoonScene', () => {
     expect(THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(1, 64, 64);
   });
 
-  it('loads the 2k moon texture', () => {
+  it('should load the 2k moon texture', () => {
     const canvas = makeMockCanvas(true);
 
     createMoonScene(canvas);
@@ -177,7 +177,7 @@ describe('createMoonScene', () => {
     expect(textureLoaderInstance.load).toHaveBeenCalledWith('/moon/moon-2k.avif', expect.any(Function), undefined, expect.any(Function));
   });
 
-  it('disposes renderer and geometry on dispose()', () => {
+  it('should dispose renderer and geometry on dispose()', () => {
     const canvas = makeMockCanvas(true);
     const handle = createMoonScene(canvas);
 
@@ -197,7 +197,7 @@ describe('createMoonScene', () => {
     expect(geometryInstance.dispose).toHaveBeenCalledTimes(1);
   });
 
-  it('can pause and resume the animation loop', () => {
+  it('should pause and resume the animation loop', () => {
     const canvas = makeMockCanvas(true);
     const handle = createMoonScene(canvas);
 
@@ -216,7 +216,7 @@ describe('createMoonScene', () => {
     expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(3, expect.any(Function));
   });
 
-  it('returns null when WebGL is unavailable', () => {
+  it('should return null when WebGL is unavailable', () => {
     const canvas = makeMockCanvas(false);
 
     const handle = createMoonScene(canvas);
@@ -224,7 +224,7 @@ describe('createMoonScene', () => {
     expect(handle).toBeNull();
   });
 
-  it('round-trips camera lat/lon back from a camera position', () => {
+  it('should round-trip camera lat/lon back from a camera position', () => {
     const radius = 2.5;
     const latLon = cameraPositionToLatLon({
       x: radius * 0.6123724357,
@@ -236,14 +236,14 @@ describe('createMoonScene', () => {
     expect(latLon.lon).toBeCloseTo(-45, 6);
   });
 
-  it('normalizes a -180 longitude result to 180', () => {
+  it('should normalize a -180 longitude result to 180', () => {
     const latLon = cameraPositionToLatLon({ x: -2.5, y: 0, z: 0 });
 
     expect(latLon.lat).toBeCloseTo(0, 6);
     expect(latLon.lon).toBe(180);
   });
 
-  it('sizes the renderer without writing inline canvas styles', () => {
+  it('should size the renderer without writing inline canvas styles', () => {
     const canvas = makeMockCanvas(true);
 
     createMoonScene(canvas);
@@ -258,7 +258,7 @@ describe('createMoonScene', () => {
     expect(rendererInstance.setSize).toHaveBeenCalledWith(800, 600, false);
   });
 
-  it('observes the canvas parent so resize tracks the laid-out box', () => {
+  it('should observe the canvas parent so resize tracks the laid-out box', () => {
     const canvas = makeMockCanvas(true);
 
     createMoonScene(canvas);
@@ -266,7 +266,7 @@ describe('createMoonScene', () => {
     expect(lastObserved).toBe(canvas.parentElement);
   });
 
-  it('re-sizes the renderer and camera when the parent box changes', () => {
+  it('should re-size the renderer and camera when the parent box changes', () => {
     const canvas = makeMockCanvas(true);
 
     createMoonScene(canvas);
@@ -295,5 +295,64 @@ describe('createMoonScene', () => {
     expect(rendererInstance.setSize).toHaveBeenCalledWith(1200, 600, false);
     expect(cameraInstance.aspect).toBe(2);
     expect(cameraInstance.updateProjectionMatrix).toHaveBeenCalledTimes(1);
+  });
+
+  it('should ignore sub-pixel resize jitter so the moon does not visibly resize', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setSize: ReturnType<typeof vi.fn>;
+    };
+    const cameraInstance = cameraCtor.mock.results[0]?.value as {
+      aspect: number;
+      updateProjectionMatrix: ReturnType<typeof vi.fn>;
+    };
+
+    rendererInstance.setSize.mockClear();
+    cameraInstance.updateProjectionMatrix.mockClear();
+    const aspectBefore = cameraInstance.aspect;
+
+    // Simulate fractional-pixel jitter (e.g. mobile URL-bar animation
+    // or pinch-zoom): both deltas under 1 CSS px.
+    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+    parent.clientWidth = 800.4;
+    parent.clientHeight = 600.3;
+
+    expect(lastResizeCallback).not.toBeNull();
+    lastResizeCallback?.([], {} as ResizeObserver);
+
+    expect(rendererInstance.setSize).not.toHaveBeenCalled();
+    expect(cameraInstance.updateProjectionMatrix).not.toHaveBeenCalled();
+    expect(cameraInstance.aspect).toBe(aspectBefore);
+  });
+
+  it('should still apply a resize once the cumulative change crosses one pixel', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setSize: ReturnType<typeof vi.fn>;
+    };
+
+    rendererInstance.setSize.mockClear();
+
+    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+
+    // First tick: 0.4 px wider — below the dead-band, ignored.
+    parent.clientWidth = 800.4;
+    lastResizeCallback?.([], {} as ResizeObserver);
+    expect(rendererInstance.setSize).not.toHaveBeenCalled();
+
+    // Second tick: now 2 px wider than the last observed size (800),
+    // crossing the threshold — resize must fire.
+    parent.clientWidth = 802;
+    lastResizeCallback?.([], {} as ResizeObserver);
+    expect(rendererInstance.setSize).toHaveBeenCalledWith(802, 600, false);
   });
 });
