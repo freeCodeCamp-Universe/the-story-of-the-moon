@@ -288,15 +288,21 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       lon: activeFeature.lon,
     });
 
-    // Hide label during the 900ms camera tween; reveal once it lands.
+    // Snap to hidden instantly (annotationInstant disables the opacity
+    // transition): the label's text and projected position swap to the
+    // new feature this frame, so a 300ms fade-out would briefly show the
+    // new label at the wrong spot while the camera is still tweening.
+    // The transition is re-enabled for the fade-in once the tween lands.
     showAnnotationRef.current = false;
     if (annotationRef.current) {
+      annotationRef.current.classList.add(styles.annotationInstant);
       annotationRef.current.classList.remove(styles.annotationVisible);
     }
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
       showAnnotationRef.current = true;
       if (annotationRef.current) {
+        annotationRef.current.classList.remove(styles.annotationInstant);
         annotationRef.current.classList.add(styles.annotationVisible);
       }
     }, 950);

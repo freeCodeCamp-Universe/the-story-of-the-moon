@@ -265,6 +265,14 @@
   opacity: 1;
 }
 
+/* Snap to the hidden state with no fade. Applied when the active
+ * feature changes so the relabeled, not-yet-repositioned annotation
+ * doesn't linger through a 300ms fade-out. Removed for the fade-in
+ * once the camera tween lands. */
+.annotationInstant {
+  transition: none;
+}
+
 .label {
   /* left/top set via inline style each frame — these coordinates are
    * the feature's projected screen position. The text is offset to the
