@@ -374,8 +374,8 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   return (
     <div ref={targetRef} className={styles.visualSlot} tabIndex={0} role="group" aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature." onKeyDown={onKeyDown}>
       <p className={styles.hint} aria-hidden="true">
-        <span className={styles.hintMobile}>Drag to rotate</span>
-        <span className={styles.hintDesktop}>
+        <span className={styles.sceneHintMobile}>Drag to rotate</span>
+        <span className={styles.sceneHintDesktop}>
           Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to rotate
         </span>
       </p>

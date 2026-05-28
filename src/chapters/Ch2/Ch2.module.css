@@ -219,22 +219,21 @@
   letter-spacing: 0.04em;
 }
 
-/* Mobile: short hint without keyboard glyphs (no physical keyboard
-   expected). Desktop/tablet show the full hint with arrow keys. */
-.hintMobile {
+/* Mobile: short moon scene hint without keyboard glyphs. Desktop/tablet show the full hint with arrow keys. */
+.sceneHintMobile {
   display: inline;
 }
 
-.hintDesktop {
+.sceneHintDesktop {
   display: none;
 }
 
 @media (min-width: 768px) {
-  .hintMobile {
+  .sceneHintMobile {
     display: none;
   }
 
-  .hintDesktop {
+  .sceneHintDesktop {
     display: inline;
   }
 }
