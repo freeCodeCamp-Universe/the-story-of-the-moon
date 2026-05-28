@@ -44,8 +44,8 @@
   font-size: var(--text-sm);
   color: var(--color-text);
   line-height: 1.5;
-  /* Ensure text doesn't run too long */
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-md);
@@ -57,7 +57,9 @@
 }
 
 .captionCredit {
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  min-width: 0;
   color: var(--color-text-muted);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
