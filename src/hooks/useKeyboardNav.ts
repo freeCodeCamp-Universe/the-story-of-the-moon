@@ -29,8 +29,7 @@ export function useKeyboardNav() {
       const target = e.target;
       if (!(target instanceof HTMLElement)) return;
 
-      const tag = target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A' || target.isContentEditable) {
+      if (target.isContentEditable || target.closest('input, textarea, select')) {
         return;
       }
 

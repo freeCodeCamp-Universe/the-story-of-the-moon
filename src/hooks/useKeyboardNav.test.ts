@@ -45,7 +45,7 @@ describe('useKeyboardNav', () => {
     vi.restoreAllMocks();
   });
 
-  it('keys 1-7 jump to the matching chapter and higher digits are ignored', () => {
+  it('should jump to the matching chapter for keys 1-7 and ignore higher digits', () => {
     const scrollSpies = setupChapters();
     render(createElement(HookHarness));
 
@@ -63,7 +63,7 @@ describe('useKeyboardNav', () => {
     expect(scrollSpies.get('chapter-9')).not.toHaveBeenCalled();
   });
 
-  it('shift+n and shift+p move to the next or previous chapter from the current hash', () => {
+  it('should move to the next or previous chapter with shift+n and shift+p from the current hash', () => {
     const scrollSpies = setupChapters();
     render(createElement(HookHarness));
 
@@ -81,7 +81,7 @@ describe('useKeyboardNav', () => {
     });
   });
 
-  it('ignores shift+n and shift+p when there is no adjacent chapter', () => {
+  it('should ignore shift+n and shift+p when there is no adjacent chapter', () => {
     const scrollSpies = setupChapters();
     render(createElement(HookHarness));
 
@@ -96,7 +96,7 @@ describe('useKeyboardNav', () => {
     }
   });
 
-  it('does not handle keys when focus is on an input', () => {
+  it('should not handle keys when focus is on an input', () => {
     const scrollSpies = setupChapters();
     const input = document.createElement('input');
     document.body.append(input);
@@ -109,7 +109,32 @@ describe('useKeyboardNav', () => {
     }
   });
 
-  it('ignores plain n and p', () => {
+  it('should handle global shortcuts when focus is on a button', () => {
+    const scrollSpies = setupChapters();
+    const button = document.createElement('button');
+    document.body.append(button);
+    render(createElement(HookHarness));
+
+    pressKey('2', button);
+
+    window.location.hash = '#chapter-3';
+    pressKey('N', button, { shiftKey: true });
+
+    window.location.hash = '#chapter-4';
+    pressKey('P', button, { shiftKey: true });
+
+    expect(scrollSpies.get('chapter-2')).toHaveBeenCalledWith({
+      behavior: 'smooth',
+    });
+    expect(scrollSpies.get('chapter-4')).toHaveBeenCalledWith({
+      behavior: 'smooth',
+    });
+    expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
+      behavior: 'smooth',
+    });
+  });
+
+  it('should ignore plain n and p', () => {
     const scrollSpies = setupChapters();
     render(createElement(HookHarness));
 
@@ -121,7 +146,7 @@ describe('useKeyboardNav', () => {
     }
   });
 
-  it('scrollToChapter ignores out-of-range indexes', () => {
+  it('should ignore out-of-range indexes in scrollToChapter', () => {
     const getElementByIdSpy = vi.spyOn(document, 'getElementById');
 
     scrollToChapter(-1);
