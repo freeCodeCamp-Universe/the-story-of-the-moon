@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -81,9 +81,42 @@ describe('NavStrip', () => {
 
     await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
 
+    const showDialogAction = screen.getByText('Show keyboard shortcuts');
+    const showDialogRow = showDialogAction.closest('div');
+
+    expect(showDialogRow).not.toBeNull();
+    expect(within(showDialogRow as HTMLElement).getByText('Shift', { selector: 'kbd' })).toBeInTheDocument();
+    expect(within(showDialogRow as HTMLElement).getByText('/', { selector: 'kbd' })).toBeInTheDocument();
     expect(screen.getByText('Jump directly to chapters 1 through 7')).toBeInTheDocument();
     expect(screen.getByText('Go to the next chapter')).toBeInTheDocument();
     expect(screen.getByText('Go to the previous chapter')).toBeInTheDocument();
+  });
+
+  it('should open the keyboard shortcuts dialog with the common question-mark shortcut', () => {
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
+
+    fireEvent.keyDown(window, { key: '?', shiftKey: true });
+
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+    expect(screen.getByText('Show keyboard shortcuts')).toBeInTheDocument();
+  });
+
+  it('should open the keyboard shortcuts dialog when focus is on nav buttons', () => {
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
+
+    const chapterButton = screen.getByRole('button', { name: /open chapter list/i });
+    chapterButton.focus();
+    fireEvent.keyDown(chapterButton, { key: '?', shiftKey: true });
+
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+
+    const shortcutsButton = screen.getByRole('button', { name: /show keyboard shortcuts/i });
+    shortcutsButton.focus();
+    fireEvent.keyDown(shortcutsButton, { key: '?', shiftKey: true });
+
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
   });
 
   it('should keep focus trapped inside the keyboard shortcuts dialog', async () => {

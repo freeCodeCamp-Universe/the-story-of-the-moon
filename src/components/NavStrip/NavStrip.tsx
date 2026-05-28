@@ -10,6 +10,7 @@ type Props = {
 };
 
 const GLOBAL_SHORTCUTS = [
+  { keys: 'Shift + /', action: 'Show keyboard shortcuts' },
   { keys: '1-7', action: 'Jump directly to chapters 1 through 7' },
   { keys: 'Shift + N', action: 'Go to the next chapter' },
   { keys: 'Shift + P', action: 'Go to the previous chapter' },
@@ -19,6 +20,14 @@ const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([dis
 
 function getFocusableElements(container: HTMLElement) {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+}
+
+function shouldIgnoreGlobalShortcutTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  return target.isContentEditable || Boolean(target.closest('input, textarea, select'));
 }
 
 function KeyboardIcon() {
@@ -80,6 +89,26 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isShortcutsOpen]);
+
+  useEffect(() => {
+    function handleGlobalShortcuts(event: KeyboardEvent) {
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+
+      if (shouldIgnoreGlobalShortcutTarget(event.target)) {
+        return;
+      }
+
+      if (event.key === '?') {
+        event.preventDefault();
+        setIsShortcutsOpen(true);
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalShortcuts);
+    return () => window.removeEventListener('keydown', handleGlobalShortcuts);
+  }, []);
 
   function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'Tab') return;
