@@ -32,8 +32,8 @@ type PlanetProps = {
   cy: number;
   radius: number;
   fillId: string;
-  marks: readonly BodyMark[];
-  markFill: string;
+  marks?: readonly BodyMark[];
+  markFill?: string;
   markOpacity?: number;
 };
 
@@ -150,7 +150,7 @@ function Stars({ stars }: { stars: readonly Star[] }) {
   );
 }
 
-function Planet({ cx, cy, radius, fillId, marks, markFill, markOpacity = 0.32 }: PlanetProps) {
+function Planet({ cx, cy, radius, fillId, marks = [], markFill, markOpacity = 0.32 }: PlanetProps) {
   return (
     <g>
       <circle cx={cx} cy={cy} r={radius} fill={`url(#${fillId})`} />
@@ -195,7 +195,7 @@ function ApproachStage() {
   return (
     <div className={styles.stage}>
       <StageSvg idPrefix={prefix} title="Approach stage of the giant-impact hypothesis." desc="Theia approaches the young Earth from the upper left on an angled path." stageTitle="Approach" stars={starSets.approach}>
-        <Planet cx={74} cy={58} radius={24} fillId={`${prefix}-theia`} marks={craterMarks} markFill="#8c969e" markOpacity={0.34} />
+        <Planet cx={74} cy={58} radius={24} fillId={`${prefix}-theia`} />
         <Planet cx={202} cy={120} radius={48} fillId={`${prefix}-earth`} marks={earthMarks} markFill="#2682a4" markOpacity={0.38} />
         <text className={styles.label} x={110} y={35}>
           Theia
@@ -243,7 +243,7 @@ function ImpactStage() {
   return (
     <div className={styles.stage}>
       <StageSvg idPrefix={prefix} title="Impact stage of the giant-impact hypothesis." desc="Theia is partly swallowed by Earth during the impact, while bright fragments spray outward." stageTitle="Impact" stars={starSets.impact}>
-        <Planet cx={129} cy={67} radius={23} fillId={`${prefix}-theia`} marks={craterMarks} markFill="#8c969e" markOpacity={0.34} />
+        <Planet cx={129} cy={67} radius={23} fillId={`${prefix}-theia`} />
         <Planet cx={176} cy={102} radius={48} fillId={`${prefix}-earth`} marks={earthMarks} markFill="#2682a4" markOpacity={0.38} />
         {ejectaChunks.map((d) => (
           <path key={d} d={d} fill="#f5f6f7" opacity="0.9" />
@@ -369,23 +369,15 @@ function DebrisRingStage() {
 
 function CoalesceStage() {
   const prefix = 'giant-impact-coalesce';
-  const orbitCenterX = 144;
-  const orbitCenterY = 102;
 
   return (
     <div className={styles.stage}>
       <StageSvg idPrefix={prefix} title="Coalescence stage of the giant-impact hypothesis." desc="A small moon now orbits Earth after the debris ring gathers into one body." stageTitle="Coalesce" stars={starSets.coalesce}>
-        <g transform={`rotate(17 ${orbitCenterX} ${orbitCenterY})`} clipPath={`url(#${prefix}-back-half)`}>
-          <ellipse cx={orbitCenterX} cy={orbitCenterY} rx="103" ry="38" fill="none" stroke="#858b95" strokeWidth="2.25" opacity="0.78" />
-        </g>
         <Planet cx={153} cy={102} radius={48} fillId={`${prefix}-earth`} marks={earthMarks} markFill="#2682a4" markOpacity={0.38} />
-        <g transform={`rotate(17 ${orbitCenterX} ${orbitCenterY})`} clipPath={`url(#${prefix}-front-half)`}>
-          <ellipse cx={orbitCenterX} cy={orbitCenterY} rx="103" ry="38" fill="none" stroke="#8d949e" strokeWidth="2.25" opacity="0.82" />
-        </g>
-        <text className={styles.label} x={66} y={34}>
+        <text className={styles.label} x={66} y={54}>
           Moon
         </text>
-        <Planet cx={64} cy={54} radius={13} fillId={`${prefix}-moon`} marks={craterMarks} markFill="#98a3ac" markOpacity={0.26} />
+        <Planet cx={64} cy={74} radius={13} fillId={`${prefix}-moon`} marks={craterMarks} markFill="#4a525b" markOpacity={0.45} />
       </StageSvg>
     </div>
   );
