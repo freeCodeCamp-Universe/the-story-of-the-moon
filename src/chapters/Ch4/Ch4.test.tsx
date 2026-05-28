@@ -184,6 +184,20 @@ describe('Ch4', () => {
     vi.restoreAllMocks();
   });
 
+  it('should render the chapter intro and the closing diptych heading with its narrative copy', () => {
+    render(<Ch4 />);
+
+    expect(screen.getByText(/The Apollo program began in 1961 with the objective of landing humans on the Moon and returning them safely to Earth\./)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        level: 3,
+        name: 'The same horizon',
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void\./)).toBeInTheDocument();
+    expect(screen.getByText(/Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up/i)).toBeInTheDocument();
+  });
+
   it('should keep the clicked mission active instead of snapping to the previous one', async () => {
     const user = userEvent.setup();
 
