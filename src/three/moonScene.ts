@@ -256,8 +256,19 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   scene.userData.overlayId = null as string | null;
   scene.userData.view = 'default';
 
+  let lastObservedWidth = width;
+  let lastObservedHeight = height;
   const resizeObserver = new ResizeObserver(() => {
     const nextSize = getCanvasSize(canvas);
+    // Dead-band: ignore sub-pixel jitter from iOS Safari's URL-bar
+    // show/hide animation. Without this, every toolbar transition
+    // recomputes aspect → fitCameraRadius → camera distance, which
+    // makes the Moon visibly resize in sync with the toolbar.
+    if (Math.abs(nextSize.width - lastObservedWidth) < 1 && Math.abs(nextSize.height - lastObservedHeight) < 1) {
+      return;
+    }
+    lastObservedWidth = nextSize.width;
+    lastObservedHeight = nextSize.height;
     renderer.setSize(nextSize.width, nextSize.height, false);
     const aspect = nextSize.width / nextSize.height;
     camera.aspect = aspect;
