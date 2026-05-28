@@ -120,21 +120,21 @@ describe('Ch2', () => {
     const sliders = within(comparisonGroup).getAllByRole('slider');
 
     expect(comparisonGroup).toHaveAttribute('aria-keyshortcuts', 'O T');
-    expect(sliders[0]).toHaveValue('50');
-    expect(sliders[1]).toHaveValue('50');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '50');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
     expect(basinStatus).toHaveTextContent('Hertzsprung: 50% original, 50% topographic. Mare Orientale: 50% original, 50% topographic.');
 
     comparisonGroup.focus();
     await user.keyboard('t');
 
-    expect(sliders[0]).toHaveValue('0');
-    expect(sliders[1]).toHaveValue('0');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
     expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: Full topographic view.');
 
     await user.keyboard('o');
 
-    expect(sliders[0]).toHaveValue('100');
-    expect(sliders[1]).toHaveValue('100');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '100');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '100');
     expect(basinStatus).toHaveTextContent('Hertzsprung: Full original view. Mare Orientale: Full original view.');
   });
 
@@ -152,15 +152,15 @@ describe('Ch2', () => {
     sliders[0].focus();
     await user.keyboard('t');
 
-    expect(sliders[0]).toHaveValue('0');
-    expect(sliders[1]).toHaveValue('50');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
     expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: 50% original, 50% topographic.');
 
     sliders[1].focus();
     await user.keyboard('o');
 
-    expect(sliders[0]).toHaveValue('0');
-    expect(sliders[1]).toHaveValue('100');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '100');
     expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: Full original view.');
   });
 
@@ -177,14 +177,43 @@ describe('Ch2', () => {
     sliders[0].focus();
     await user.keyboard('{ArrowRight}{ArrowRight}');
 
-    expect(sliders[0]).toHaveValue('52');
-    expect(sliders[1]).toHaveValue('50');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '52');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
 
     sliders[1].focus();
     await user.keyboard('{PageDown}');
 
-    expect(sliders[0]).toHaveValue('52');
-    expect(sliders[1]).toHaveValue('40');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '52');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '40');
+  });
+
+  it('should let O and T update the basin slider that the pointer is hovering over without requiring focus', () => {
+    render(<Ch2 />);
+
+    const comparisonGroup = screen.getByRole('group', {
+      name: 'Basin image comparisons',
+    });
+    const sliders = within(comparisonGroup).getAllByRole('slider');
+
+    fireEvent.pointerMove(sliders[0]);
+    fireEvent.keyDown(window, { key: 'o' });
+
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '100');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
+    expect(sliders[0]).not.toHaveFocus();
+
+    fireEvent.pointerMove(sliders[1]);
+    fireEvent.keyDown(window, { key: 't' });
+
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '100');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
+    expect(sliders[1]).not.toHaveFocus();
+
+    fireEvent.pointerLeave(comparisonGroup);
+    fireEvent.keyDown(window, { key: 'o' });
+
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '100');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
   });
 
   it('should ignore modified O and T basin shortcuts', () => {
@@ -199,8 +228,8 @@ describe('Ch2', () => {
     fireEvent.keyDown(sliders[1], { key: 'o', ctrlKey: true });
     fireEvent.keyDown(sliders[1], { key: 't', metaKey: true });
 
-    expect(sliders[0]).toHaveValue('50');
-    expect(sliders[1]).toHaveValue('50');
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '50');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
   });
 
   it('should preserve the same heading hierarchy in the reduced-motion fallback', () => {

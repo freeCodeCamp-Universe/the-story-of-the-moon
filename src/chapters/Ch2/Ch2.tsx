@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
@@ -490,6 +490,24 @@ function IntroProse() {
 
   const basinCompareStatus = `Hertzsprung: ${formatCompareStatus(hertzsprungCompareValue)}. Mare Orientale: ${formatCompareStatus(orientaleCompareValue)}.`;
 
+  const basinCompareRef = useRef<HTMLDivElement | null>(null);
+  const hoveredFigureRef = useRef<string | null>(null);
+
+  const applyBasinCompareShortcut = useCallback((nextValue: number, scope: string | null) => {
+    if (scope === 'hertzsprung') {
+      setHertzsprungCompareValue(nextValue);
+      return;
+    }
+
+    if (scope === 'orientale') {
+      setOrientaleCompareValue(nextValue);
+      return;
+    }
+
+    setHertzsprungCompareValue(nextValue);
+    setOrientaleCompareValue(nextValue);
+  }, []);
+
   const handleBasinCompareKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.altKey || event.ctrlKey || event.metaKey) {
       return;
@@ -504,23 +522,68 @@ function IntroProse() {
 
     event.preventDefault();
 
+    let scope: string | null = null;
+
     if (event.target instanceof HTMLElement && event.target !== event.currentTarget) {
-      const compareFigure = event.target.closest<HTMLElement>('[data-basin-compare]');
-
-      if (compareFigure?.dataset.basinCompare === 'hertzsprung') {
-        setHertzsprungCompareValue(nextValue);
-        return;
-      }
-
-      if (compareFigure?.dataset.basinCompare === 'orientale') {
-        setOrientaleCompareValue(nextValue);
-        return;
-      }
+      scope = event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset.basinCompare ?? null;
     }
 
-    setHertzsprungCompareValue(nextValue);
-    setOrientaleCompareValue(nextValue);
+    applyBasinCompareShortcut(nextValue, scope);
   };
+
+  const handleBasinComparePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!(event.target instanceof HTMLElement)) {
+      hoveredFigureRef.current = null;
+      return;
+    }
+
+    hoveredFigureRef.current = event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset.basinCompare ?? null;
+  };
+
+  const handleBasinComparePointerLeave = () => {
+    hoveredFigureRef.current = null;
+  };
+
+  useEffect(() => {
+    const handleWindowKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+      const nextValue = key === 'o' ? 100 : key === 't' ? 0 : null;
+
+      if (nextValue === null) {
+        return;
+      }
+
+      const basinCompare = basinCompareRef.current;
+
+      if (!basinCompare) {
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      const focusInside = activeElement instanceof Node && basinCompare.contains(activeElement);
+
+      if (focusInside) {
+        return;
+      }
+
+      if (hoveredFigureRef.current === null) {
+        return;
+      }
+
+      event.preventDefault();
+      applyBasinCompareShortcut(nextValue, hoveredFigureRef.current);
+    };
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleWindowKeyDown);
+    };
+  }, [applyBasinCompareShortcut]);
 
   return (
     <>
@@ -552,7 +615,18 @@ function IntroProse() {
           crust to behave like a fluid, resulting in a flat interior floor and multiple concentric rings that resemble a bullseye.
         </p>
         <p>Over time, these giant depressions are often filled with rising subsurface lava, forming dark, smooth volcanic plains known as maria (singular: mare), which significantly alter the geological landscape of the planetary body.</p>
-        <div className={styles.termDiptych} role="group" tabIndex={0} aria-label="Basin image comparisons" aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`} aria-keyshortcuts="O T" onKeyDownCapture={handleBasinCompareKeyDown}>
+        <div
+          ref={basinCompareRef}
+          className={styles.termDiptych}
+          role="group"
+          tabIndex={0}
+          aria-label="Basin image comparisons"
+          aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`}
+          aria-keyshortcuts="O T"
+          onKeyDownCapture={handleBasinCompareKeyDown}
+          onPointerMove={handleBasinComparePointerMove}
+          onPointerLeave={handleBasinComparePointerLeave}
+        >
           <p id={basinCompareHintId} className={`${styles.hint} ${styles.basinCompareHint}`}>
             Drag, or press <kbd>←</kbd> <kbd>→</kbd> to slide.
             <br />
