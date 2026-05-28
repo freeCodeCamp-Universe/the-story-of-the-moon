@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
@@ -14,6 +14,12 @@ const GLOBAL_SHORTCUTS = [
   { keys: 'Shift + N', action: 'Go to the next chapter' },
   { keys: 'Shift + P', action: 'Go to the previous chapter' },
 ];
+
+const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(', ');
+
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+}
 
 function KeyboardIcon() {
   return (
@@ -39,6 +45,7 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const chapterButtonRef = useRef<HTMLButtonElement | null>(null);
   const shortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const shortcutsDialogRef = useRef<HTMLDivElement | null>(null);
   const closeShortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasOpenedDropdownRef = useRef(false);
   const hasOpenedShortcutsRef = useRef(false);
@@ -73,6 +80,38 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isShortcutsOpen]);
+
+  function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Tab') return;
+
+    const dialog = shortcutsDialogRef.current;
+    if (!dialog) return;
+
+    const focusableElements = getFocusableElements(dialog);
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    const activeElement = document.activeElement;
+    const isFocusInsideDialog = activeElement instanceof HTMLElement && dialog.contains(activeElement);
+
+    if (event.shiftKey) {
+      if (!isFocusInsideDialog || activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+      return;
+    }
+
+    if (!isFocusInsideDialog || activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
 
   useEffect(() => {
     if (!isShortcutsOpen && hasOpenedShortcutsRef.current) {
@@ -159,7 +198,7 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
       {isShortcutsOpen ? (
         <>
           <div className={styles.modalOverlay} aria-hidden="true" onClick={() => setIsShortcutsOpen(false)} />
-          <div id="keyboard-shortcuts-dialog" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="keyboard-shortcuts-title">
+          <div ref={shortcutsDialogRef} id="keyboard-shortcuts-dialog" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="keyboard-shortcuts-title" tabIndex={-1} onKeyDown={handleShortcutsDialogKeyDown}>
             <div className={styles.modalHeader}>
               <h2 id="keyboard-shortcuts-title" className={styles.modalTitle}>
                 Keyboard shortcuts

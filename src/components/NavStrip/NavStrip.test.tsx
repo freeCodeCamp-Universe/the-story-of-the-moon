@@ -35,7 +35,7 @@ describe('NavStrip', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows the story title as the page heading and preserves the chapter nav landmark', () => {
+  it('should show the story title as the page heading and preserve the chapter nav landmark', () => {
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
 
     expect(screen.getByRole('banner')).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('NavStrip', () => {
     expect(screen.queryByLabelText('next chapter')).not.toBeInTheDocument();
   });
 
-  it('opens the chapter dropdown and navigates to the selected chapter', async () => {
+  it('should open the chapter dropdown and navigate to the selected chapter', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     const scrollSpies = setupChapterTargets();
@@ -61,7 +61,7 @@ describe('NavStrip', () => {
     });
   });
 
-  it('closes the chapter dropdown when clicking elsewhere in the header', async () => {
+  it('should close the chapter dropdown when clicking elsewhere in the header', async () => {
     const user = userEvent.setup();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
@@ -74,7 +74,7 @@ describe('NavStrip', () => {
     expect(screen.queryByRole('button', { name: '3. A partner that steadies us' })).not.toBeInTheDocument();
   });
 
-  it('shows next, previous, and direct chapter keyboard shortcuts', async () => {
+  it('should show next, previous, and direct chapter keyboard shortcuts', async () => {
     const user = userEvent.setup();
 
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
@@ -84,5 +84,23 @@ describe('NavStrip', () => {
     expect(screen.getByText('Jump directly to chapters 1 through 7')).toBeInTheDocument();
     expect(screen.getByText('Go to the next chapter')).toBeInTheDocument();
     expect(screen.getByText('Go to the previous chapter')).toBeInTheDocument();
+  });
+
+  it('should keep focus trapped inside the keyboard shortcuts dialog', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+
+    const closeButton = screen.getByRole('button', { name: /close keyboard shortcuts/i });
+
+    expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(closeButton).toHaveFocus();
   });
 });
