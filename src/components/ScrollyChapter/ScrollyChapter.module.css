@@ -54,7 +54,7 @@
 .visualFrame {
   /* Mobile baseline (<768px): 35svh keeps the visual present but leaves
      room for prose. svh (small-viewport-height) is anchored to the
-     URL-bar-showing state and is static across iOS Safari's toolbar
+     URL-bar-showing state and is static across WebKit's toolbar
      transitions, so the moon scene doesn't resize as the bar toggles. */
   height: 35svh;
   background-color: var(--color-bg-raised);

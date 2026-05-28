@@ -13,7 +13,11 @@
 .image {
   display: block;
   width: 100%;
-  height: 60vh;
+  /* svh (small-viewport-height) is static across WebKit's URL-bar
+   * animation. Using vh here let the postcard height shift during the
+   * toolbar transition, which made the page jump as scroll-anchoring
+   * tried to compensate. */
+  height: 60svh;
   object-fit: cover;
   object-position: center;
 }
@@ -27,7 +31,7 @@
     /* On wider screens prefer the 16/9 ratio if height allows */
     aspect-ratio: 16 / 9;
     height: auto;
-    max-height: 80vh;
+    max-height: 80svh;
   }
 }
 
