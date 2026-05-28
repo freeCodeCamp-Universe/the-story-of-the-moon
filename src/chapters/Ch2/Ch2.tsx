@@ -553,7 +553,7 @@ function IntroProse() {
         </p>
         <p>Over time, these giant depressions are often filled with rising subsurface lava, forming dark, smooth volcanic plains known as maria (singular: mare), which significantly alter the geological landscape of the planetary body.</p>
         <div className={styles.termDiptych} role="group" tabIndex={0} aria-label="Basin image comparisons" aria-describedby={`${basinCompareHintId} ${basinCompareLiveId}`} aria-keyshortcuts="O T" onKeyDownCapture={handleBasinCompareKeyDown}>
-          <p id={basinCompareHintId} className={styles.hint}>
+          <p id={basinCompareHintId} className={`${styles.hint} ${styles.basinCompareHint}`}>
             Drag, or press <kbd>←</kbd> <kbd>→</kbd> to slide.
             <br />
             Press <kbd>O</kbd> for original or <kbd>T</kbd> for topographic.

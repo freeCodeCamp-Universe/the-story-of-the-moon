@@ -103,6 +103,16 @@
   z-index: auto;
 }
 
+.basinCompareHint {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .basinCompareHint {
+    display: block;
+  }
+}
+
 .termDiptychFigure {
   margin: 0;
   display: flex;
