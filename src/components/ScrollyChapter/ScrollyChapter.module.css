@@ -52,11 +52,9 @@
 }
 
 .visualFrame {
-  /* Mobile baseline (<768px): 35svh keeps the visual present but leaves
-     room for prose. svh (small-viewport-height) is anchored to the
-     URL-bar-showing state and is static across WebKit's toolbar
-     transitions, so the moon scene doesn't resize as the bar toggles. */
-  height: 35svh;
+  /* Mobile baseline (<768px): 35vh keeps the visual present but leaves
+     room for prose. */
+  height: 35vh;
   background-color: var(--color-bg-raised);
   border: 1px solid var(--color-border);
   border-radius: 2px;
@@ -64,9 +62,9 @@
 
 @media (min-width: 768px) {
   .visualFrame {
-    /* Tablet: 30svh — the wider canvas at tablet widths fits the scene
+    /* Tablet: 30vh — the wider canvas at tablet widths fits the scene
        comfortably without needing as much vertical space. */
-    height: 30svh;
+    height: 30vh;
   }
 }
 
@@ -322,7 +320,7 @@
   }
 
   .containerImmersive .visualFrame {
-    height: 35svh;
+    height: 35vh;
     border: 1px solid var(--color-border);
     border-radius: 2px;
     background-color: var(--color-bg-raised);
@@ -363,6 +361,6 @@
    .visualFrame tablet rule. */
 @media (min-width: 768px) and (max-width: 899px) {
   .containerImmersive .visualFrame {
-    height: 30svh;
+    height: 30vh;
   }
 }

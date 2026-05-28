@@ -36,13 +36,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
-  /* Stop the browser from repositioning the scroll position when an
-   * element resizes off-screen. The page is a linear scroll narrative
-   * with no dynamically inserted content above the viewport, so
-   * anchoring buys us nothing; in WebKit it actively causes a
-   * couple-of-pixel jump near the Postcard interstitials as the URL
-   * bar toggles and sticky containers cross the viewport. */
-  overflow-anchor: none;
 }
 
 @media (max-width: 767px) {

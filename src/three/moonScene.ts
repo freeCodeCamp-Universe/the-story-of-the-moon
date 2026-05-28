@@ -260,10 +260,9 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   let lastObservedHeight = height;
   const resizeObserver = new ResizeObserver(() => {
     const nextSize = getCanvasSize(canvas);
-    // Dead-band: ignore sub-pixel jitter from WebKit's URL-bar
-    // show/hide animation. Without this, every toolbar transition
-    // recomputes aspect → fitCameraRadius → camera distance, which
-    // makes the Moon visibly resize in sync with the toolbar.
+    // Dead-band: ignore sub-pixel jitter. fitCameraRadius is non-linear
+    // in aspect, so even a fractional-pixel change pushes the camera
+    // distance by a visible amount and reads as the Moon resizing.
     if (Math.abs(nextSize.width - lastObservedWidth) < 1 && Math.abs(nextSize.height - lastObservedHeight) < 1) {
       return;
     }
