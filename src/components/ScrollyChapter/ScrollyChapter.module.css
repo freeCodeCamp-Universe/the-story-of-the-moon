@@ -134,7 +134,7 @@
      caption strip inside .visualBelow, which is a child of .visual). */
   .visual {
     top: var(--nav-height);
-    padding-top: var(--space-xl);
+    padding-block: var(--space-md);
     background-color: var(--color-bg);
   }
 
@@ -312,7 +312,7 @@
        .visual's background extends across that space and covers any
        prose scrolling behind it. */
     top: var(--nav-height);
-    padding-top: var(--space-xl);
+    padding-block: var(--space-md);
     width: 100%;
     margin: 0;
     z-index: 1;
