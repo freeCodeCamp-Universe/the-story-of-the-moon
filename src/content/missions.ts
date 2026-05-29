@@ -59,7 +59,7 @@ const missions = [
     oneLiner: 'First crewed landing on another world',
     prose: [
       'Apollo 11 launched on July 16, 1969. Four days later, Neil Armstrong and Buzz Aldrin separated the lunar module Eagle from the command module Columbia, where Michael Collins stayed in orbit, and began their descent to Mare Tranquillitatis. The onboard guidance computer triggered a series of program alarms during the final approach, and Armstrong took manual control to steer past a boulder field. Eagle touched down with seconds of fuel reserved before the crew would have been required to abort.',
-      'Armstrong stepped onto the surface about six and a half hours later. He and Aldrin spent roughly two and a half hours outside, collected about 22 kilograms of rock and soil, and left behind a plaque, an American flag, and a seismometer that transmitted data to Earth for years afterward.',
+      'Armstrong stepped onto the surface about six and a half hours later. He and Aldrin spent roughly two and a half hours outside, collected 21.6 kilograms of rock and soil, and left behind a plaque, an American flag, and a seismometer that transmitted data to Earth for years afterward.',
     ],
     photo: {
       src: '/ch4/apollo-11.jpg',
@@ -107,7 +107,7 @@ const missions = [
     crew: ['Alan Shepard', 'Stuart Roosa', 'Edgar Mitchell'],
     oneLiner: 'Landing at Fra Mauro, the site Apollo 13 could not reach',
     prose: [
-      'Apollo 14 launched on January 31, 1971. Alan Shepard and Edgar Mitchell successfully landed the lunar module in the Fra Mauro highlands, the site originally intended for the previous mission. During two moonwalks, the crew collected approximately 43 kilograms of lunar samples and utilized a hand-pulled cart to transport equipment across the rugged terrain.',
+      'Apollo 14 launched on January 31, 1971. Alan Shepard and Edgar Mitchell successfully landed the lunar module in the Fra Mauro highlands, the site originally intended for the previous mission. During two moonwalks, the crew collected 42 kilograms of lunar samples and utilized a hand-pulled cart to transport equipment across the rugged terrain.',
       'The mission focused on extensive geological study, including an ambitious hike toward the rim of Cone Crater to sample ancient lunar crust. The crew restored confidence in the program after the near-disaster Apollo 13, and demonstrated the ability to conduct precise landings in scientifically complex terrain.',
     ],
     photo: {
@@ -123,7 +123,7 @@ const missions = [
     crew: ['David Scott', 'Alfred Worden', 'James Irwin'],
     oneLiner: 'First mission to carry a lunar rover',
     prose: [
-      'Apollo 15 launched on July 26, 1971, as the first mission designed for extended stays and intensive science. David Scott and James Irwin landed the lunar module at the Hadley-Apennine site, where they deployed the first lunar rover. This vehicle allowed the crew to travel a total of approximately 28 kilometers across the surface, significantly expanding their range for geological exploration.',
+      'Apollo 15 launched on July 26, 1971, as the first mission designed for extended stays and intensive science. David Scott and James Irwin landed the lunar module at the Hadley-Apennine site, where they deployed the first lunar rover. This vehicle allowed the crew to travel a total of 27.8 kilometers across the surface, significantly expanding their range for geological exploration.',
       "The mission's primary focus was on advanced lunar geology, highlighted by the discovery of the Genesis Rock, a sample roughly four billion years old. By successfully integrating heavy equipment and conducting three moonwalks, the crew proved that the lunar module could support a sophisticated mobile laboratory.",
     ],
     photo: {
@@ -155,7 +155,7 @@ const missions = [
     crew: ['Eugene Cernan', 'Ronald Evans', 'Harrison Schmitt'],
     oneLiner: 'Final Apollo landing, and the only one with a professional geologist',
     prose: [
-      'Apollo 17 launched on December 7, 1972, and was the first mission to include a professional scientist, geologist Harrison Schmitt. Schmitt and Eugene Cernan landed the lunar module in the Taurus-Littrow valley, a site chosen for its mountainous terrain and potential volcanic activity. Using the lunar rover, the crew traveled approximately 35 kilometers, the greatest distance of any mission, and collected roughly 110 kilograms of material.',
+      'Apollo 17 launched on December 7, 1972, and was the first mission to include a professional scientist, geologist Harrison Schmitt. Schmitt and Eugene Cernan landed the lunar module in the Taurus-Littrow valley, a site chosen for its mountainous terrain and potential volcanic activity. Using the lunar rover, the crew traveled nearly 36 kilometers, the greatest distance of any mission, and collected 110.5 kilograms of material.',
       'The mission focused on deep geological surveying, highlighted by the discovery of "orange soil" at Shorty Crater, which provided evidence of the moon\'s volcanic history. The crew established long-term scientific stations and successfully demonstrated the maximum operational range of the lunar module and rover.',
     ],
     photo: {
@@ -171,7 +171,7 @@ const missions = [
     crew: ['Reid Wiseman', 'Victor Glover', 'Christina Koch', 'Jeremy Hansen'],
     oneLiner: 'First crewed flight to lunar distance after a fifty-three-year silence',
     prose: [
-      'Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing about 6,500 kilometers from the lunar surface and reaching approximately 406,771 kilometers from Earth, farther than any crewed vehicle has flown.',
+      'Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing 6,545 kilometers from the lunar surface and reaching 406,773 kilometers from Earth, farther than any crewed vehicle has flown.',
       "The crew conducted manual piloting tests to verify how the Orion spacecraft handles in deep space and photographed Earth from far beyond the Moon. They also evaluated the life support, navigation, communications, and heat shield systems that future crews will rely on. With Orion's performance verified, the program is now set to return humans to the lunar surface and reach further into the solar system.",
     ],
     photo: {
