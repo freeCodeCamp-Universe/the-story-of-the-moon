@@ -41,13 +41,6 @@ export type MoonSceneOptions = {
   enableOrbitControls?: boolean;
   autoRotate?: boolean;
   initialTarget?: { lat: number; lon: number };
-  /** Render the Moon with an unlit material, so the baked color-shaded
-   * texture is shown as imaged with no additional sun-direction shading.
-   * Use for teaching scenes where features on every side should remain
-   * legible (e.g. surface-feature tour). Default false keeps the
-   * lit-vs-unlit hemisphere split that drives shadow-based stories
-   * (e.g. south-pole permanent shadows). */
-  unlit?: boolean;
 };
 
 const CAMERA_RADIUS_BASE = 2.5;
@@ -172,19 +165,12 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   let disposed = false;
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
-  const material = options?.unlit ? new THREE.MeshBasicMaterial({ map: texture2k }) : new THREE.MeshStandardMaterial({ map: texture2k });
+  // The Moon texture already includes its own tonal shading, so render it
+  // unlit to preserve the authored brightness and avoid scene-light shifts.
+  const material = new THREE.MeshBasicMaterial({ map: texture2k });
   const moon = new THREE.Mesh(geometry, material);
   moon.position.set(0, 0, 0);
   scene.add(moon);
-
-  if (!options?.unlit) {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
-  }
 
   const textureLoader = new THREE.TextureLoader();
 

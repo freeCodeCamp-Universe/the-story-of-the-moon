@@ -145,11 +145,6 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
             lat: activeFeatureRef.current.lat,
             lon: activeFeatureRef.current.lon,
           },
-          // The CGI Moon Kit texture already bakes in topographic
-          // shading; render it without an additional sun-direction
-          // light so features on every side stay legible as the
-          // reader rotates the Moon.
-          unlit: true,
         });
         if (handle === null) {
           setWebglAvailable(false);

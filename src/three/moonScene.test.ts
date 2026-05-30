@@ -24,7 +24,7 @@ vi.mock('three', () => {
   const MockSphereGeometry = vi.fn(function MockSphereGeometry() {
     return { dispose: vi.fn() };
   });
-  const MockMeshStandardMaterial = vi.fn(function MockMeshStandardMaterial() {
+  const MockMeshBasicMaterial = vi.fn(function MockMeshBasicMaterial() {
     return {
       map: null,
       needsUpdate: false,
@@ -51,12 +51,6 @@ vi.mock('three', () => {
       lookAt: vi.fn(),
     };
   });
-  const MockAmbientLight = vi.fn(function MockAmbientLight() {
-    return {};
-  });
-  const MockDirectionalLight = vi.fn(function MockDirectionalLight() {
-    return { position: { set: vi.fn() } };
-  });
   const MockColor = vi.fn(function MockColor() {
     return {};
   });
@@ -73,12 +67,10 @@ vi.mock('three', () => {
   return {
     WebGLRenderer: MockWebGLRenderer,
     SphereGeometry: MockSphereGeometry,
-    MeshStandardMaterial: MockMeshStandardMaterial,
+    MeshBasicMaterial: MockMeshBasicMaterial,
     Mesh: MockMesh,
     Scene: MockScene,
     PerspectiveCamera: MockPerspectiveCamera,
-    AmbientLight: MockAmbientLight,
-    DirectionalLight: MockDirectionalLight,
     TextureLoader: MockTextureLoader,
     Color: MockColor,
     Vector3: MockVector3,
@@ -161,6 +153,14 @@ describe('createMoonScene', () => {
     createMoonScene(canvas);
 
     expect(THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(1, 64, 64);
+  });
+
+  it('should render the moon with an unlit material', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    expect(THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({ map: null });
   });
 
   it('should load the 2k moon texture', () => {
