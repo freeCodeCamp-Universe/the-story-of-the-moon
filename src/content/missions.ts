@@ -59,7 +59,7 @@ const missions = [
     oneLiner: 'First crewed landing on another world',
     prose: [
       'Apollo 11 launched on July 16, 1969. Four days later, Neil Armstrong and Buzz Aldrin separated the lunar module Eagle from the command module Columbia, where Michael Collins stayed in orbit, and began their descent to Mare Tranquillitatis. The onboard guidance computer triggered a series of program alarms during the final approach, and Armstrong took manual control to steer past a boulder field. Eagle touched down with seconds of fuel reserved before the crew would have been required to abort.',
-      'Armstrong stepped onto the surface about six and a half hours later. He and Aldrin spent roughly two and a half hours outside, collected 21.6 kilograms of rock and soil, and left behind a plaque, an American flag, and a seismometer that transmitted data to Earth for years afterward.',
+      'Armstrong stepped onto the surface about six and a half hours later. He and Aldrin spent two and a half hours outside, collected 21.6 kilograms of rock and soil, and left behind a plaque, an American flag, and a seismometer that transmitted data to Earth for years afterward.',
     ],
     photo: {
       src: '/ch4/apollo-11.jpg',
@@ -169,9 +169,9 @@ const missions = [
     date: 'Apr 1, 2026',
     splashdownDate: 'Apr 10, 2026',
     crew: ['Reid Wiseman', 'Victor Glover', 'Christina Koch', 'Jeremy Hansen'],
-    oneLiner: 'First crewed flight to lunar distance after a fifty-three-year silence',
+    oneLiner: 'First crewed Artemis flight, and the farthest from Earth humans have flown',
     prose: [
-      'Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing 6,545 kilometers from the lunar surface and reaching 406,773 kilometers from Earth, farther than any crewed vehicle has flown.',
+      'Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program, and the first to carry humans toward the Moon since Apollo 17. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing 6,545 kilometers from the lunar surface and reaching 406,773 kilometers from Earth, farther than any crewed vehicle has flown.',
       "The crew conducted manual piloting tests to verify how the Orion spacecraft handles in deep space and photographed Earth from far beyond the Moon. They also evaluated the life support, navigation, communications, and heat shield systems that future crews will rely on. With Orion's performance verified, the program is now set to return humans to the lunar surface and reach further into the solar system.",
     ],
     photo: {

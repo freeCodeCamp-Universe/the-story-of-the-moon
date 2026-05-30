@@ -256,14 +256,15 @@ const assets = [
   {
     id: 'apollo-13-sm',
     file: 'ch4/apollo-13.jpg',
-    source: 'NASA, Apollo 13',
-    sourceUrl: 'https://images.nasa.gov/details/as13-59-8500',
-    originalImageUrl: 'https://images-assets.nasa.gov/image/as13-59-8500/as13-59-8500~large.jpg',
+    source: 'NASA (AS13-59-8500), via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Apollo_13_Service_Module_-_AS13-59-8500.jpg',
+    originalImageUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Apollo_13_Service_Module_-_AS13-59-8500.jpg',
     author: 'Apollo 13 crew',
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
-    attributionText: 'Damaged Service Module photographed from the Lunar Module, April 1970. NASA (AS13-59-8500).',
-    alt: 'The damaged Apollo 13 service module after jettison, with an entire panel blown away and internal equipment exposed.',
+    attributionText:
+      'Apollo 13 service module photographed from the Lunar Module/Command Module  after jettison. The image is cropped and enlarged to show the panel blown away by the apparent oxygen tank 2 explosion, April 17, 1970. NASA (AS13-59-8500).',
+    alt: "Cropped, enlarged view of Apollo 13's damaged service module after jettison, photographed from the lunar module/command module, with an outer panel blown away by the apparent oxygen tank 2 explosion.",
   },
   {
     id: 'apollo-14-shepard',
