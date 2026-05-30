@@ -10,6 +10,12 @@ type Step = { kind: 'mission'; mission: Mission } | { kind: 'interlude' };
 const INTERLUDE_BEFORE_KEY = 'artemis-2';
 const INTERLUDE_TEXT = 'Fifty-three years pass.';
 
+// Per-mission photo framing overrides. Cover-crops can clip the wrong edge of
+// a given photo; map the mission key to a CSS class that nudges object-position.
+const PHOTO_POSITION_CLASS: Partial<Record<string, string>> = {
+  'apollo-8': styles.photoTop,
+};
+
 function buildSteps(list: Mission[]): Step[] {
   const out: Step[] = [];
   for (const m of list) {
@@ -76,7 +82,7 @@ function MissionPanel({ mission }: { mission: Mission }) {
         </div>
         <figure className={styles.panelPhoto}>
           <div className={styles.photoFrame}>
-            <OptimizedImage src={mission.photo.src} alt={mission.photo.alt} loading="lazy" />
+            <OptimizedImage src={mission.photo.src} alt={mission.photo.alt} className={PHOTO_POSITION_CLASS[mission.key]} loading="lazy" />
           </div>
           {credit && (
             <figcaption className={styles.photoCaption}>
