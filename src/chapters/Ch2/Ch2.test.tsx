@@ -216,6 +216,39 @@ describe('Ch2', () => {
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
   });
 
+  it('should keep the focused basin shortcuts available when global shortcuts are disabled', async () => {
+    const user = userEvent.setup();
+
+    render(<Ch2 shortcutsEnabled={false} />);
+
+    const comparisonGroup = screen.getByRole('group', {
+      name: 'Basin image comparisons',
+    });
+    const sliders = within(comparisonGroup).getAllByRole('slider');
+
+    comparisonGroup.focus();
+    await user.keyboard('t');
+
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  it('should disable hover-triggered basin shortcuts when global shortcuts are disabled', () => {
+    render(<Ch2 shortcutsEnabled={false} />);
+
+    const comparisonGroup = screen.getByRole('group', {
+      name: 'Basin image comparisons',
+    });
+    const sliders = within(comparisonGroup).getAllByRole('slider');
+
+    fireEvent.pointerMove(sliders[0]);
+    fireEvent.keyDown(window, { key: 'o' });
+
+    expect(sliders[0]).toHaveAttribute('aria-valuenow', '50');
+    expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
+    expect(comparisonGroup).toHaveAttribute('aria-keyshortcuts', 'O T');
+  });
+
   it('should ignore modified O and T basin shortcuts', () => {
     render(<Ch2 />);
 

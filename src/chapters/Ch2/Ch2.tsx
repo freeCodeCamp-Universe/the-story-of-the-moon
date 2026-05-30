@@ -8,6 +8,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { SurfaceFeature } from '@/types/content';
 import type { MoonSceneHandle } from '@/three/moonScene';
+import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 import styles from './Ch2.module.css';
 
 const surfaceFeaturesHeadingId = 'ch2-surface-features-heading';
@@ -399,7 +400,11 @@ function VisualBelow() {
   return moonCredit ? <CreditCaption credit={moonCredit} /> : null;
 }
 
-export default function Ch2() {
+type Ch2Props = {
+  shortcutsEnabled?: boolean;
+};
+
+export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
   const reducedMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<string>(surfaceFeatures[0].id);
 
@@ -413,7 +418,7 @@ export default function Ch2() {
     return (
       <>
         <div className={styles.intro}>
-          <IntroProse />
+          <IntroProse shortcutsEnabled={shortcutsEnabled} />
         </div>
         <section aria-labelledby={surfaceFeaturesHeadingId}>
           <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
@@ -443,7 +448,7 @@ export default function Ch2() {
   return (
     <>
       <div className={styles.intro}>
-        <IntroProse />
+        <IntroProse shortcutsEnabled={shortcutsEnabled} />
       </div>
       <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
         Surface features of the Moon
@@ -472,7 +477,7 @@ export default function Ch2() {
   );
 }
 
-function IntroProse() {
+function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
   const aristarchusAsset = getAsset('ch2-aristarchus-crater');
   const orientaleAsset = getAsset('ch2-mare-orientale');
   const orientaleTopographicAsset = getAsset('ch2-mare-orientale-topographic');
@@ -540,8 +545,16 @@ function IntroProse() {
   };
 
   useEffect(() => {
+    if (!shortcutsEnabled) {
+      return;
+    }
+
     const handleWindowKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+
+      if (shouldIgnoreTextEntryShortcutTarget(event.target)) {
         return;
       }
 
@@ -578,7 +591,7 @@ function IntroProse() {
     return () => {
       window.removeEventListener('keydown', handleWindowKeyDown);
     };
-  }, [applyBasinCompareShortcut]);
+  }, [applyBasinCompareShortcut, shortcutsEnabled]);
 
   return (
     <>

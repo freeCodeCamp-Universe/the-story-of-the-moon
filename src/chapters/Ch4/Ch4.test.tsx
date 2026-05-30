@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -300,6 +300,63 @@ describe('Ch4', () => {
 
     await waitFor(() => {
       expect(apollo8Button).toHaveAttribute('aria-current', 'true');
+    });
+  });
+
+  it('should disable global bracket-key jumps when shortcuts are disabled', async () => {
+    render(<Ch4 shortcutsEnabled={false} />);
+
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
+
+    installTimelineLayout(section);
+    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
+    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+
+    await waitFor(() => {
+      expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
+    });
+
+    activeObserver?.emitForViewportCenter();
+
+    await waitFor(() => {
+      expect(apollo8Button).toHaveAttribute('aria-current', 'true');
+    });
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: ']' }));
+
+    await waitFor(() => {
+      expect(apollo8Button).toHaveAttribute('aria-current', 'true');
+      expect(artemisButton).not.toHaveAttribute('aria-current');
+    });
+  });
+
+  it('should keep focused bracket-key jumps available when global shortcuts are disabled', async () => {
+    render(<Ch4 shortcutsEnabled={false} />);
+
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
+
+    installTimelineLayout(section);
+    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
+    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+
+    await waitFor(() => {
+      expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
+    });
+
+    activeObserver?.emitForViewportCenter();
+
+    await waitFor(() => {
+      expect(apollo8Button).toHaveAttribute('aria-current', 'true');
+    });
+
+    fireEvent.keyDown(section, { key: ']' });
+
+    await waitFor(() => {
+      expect(artemisButton).toHaveAttribute('aria-current', 'true');
     });
   });
 

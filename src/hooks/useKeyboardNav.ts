@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { CHAPTER_IDS } from '@/data/chapters';
+import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 
 export function scrollToChapter(index: number) {
   const id = CHAPTER_IDS[index];
@@ -23,13 +24,14 @@ function scrollToRelativeChapter(offset: number) {
   return true;
 }
 
-export function useKeyboardNav() {
+export function useKeyboardNav(shortcutsEnabled = true) {
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      const target = e.target;
-      if (!(target instanceof HTMLElement)) return;
+    if (!shortcutsEnabled) {
+      return;
+    }
 
-      if (target.isContentEditable || target.closest('input, textarea, select')) {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (shouldIgnoreTextEntryShortcutTarget(e.target)) {
         return;
       }
 
@@ -56,5 +58,5 @@ export function useKeyboardNav() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [shortcutsEnabled]);
 }

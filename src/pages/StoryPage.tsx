@@ -5,13 +5,15 @@ import { postcards } from '@/content';
 import { CHAPTERS } from '@/data/chapters';
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';
 import { useKeyboardNav } from '@/hooks/useKeyboardNav';
+import { useKeyboardShortcutsPreference } from '@/hooks/useKeyboardShortcutsPreference';
 import styles from './StoryPage.module.css';
 
 export default function StoryPage() {
   const [activeChapterId, setActiveChapterId] = useState('chapter-1');
+  const { shortcutsEnabled, setShortcutsEnabled } = useKeyboardShortcutsPreference();
 
   useChapterFragmentSync(setActiveChapterId);
-  useKeyboardNav();
+  useKeyboardNav(shortcutsEnabled);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -44,7 +46,7 @@ export default function StoryPage() {
       <a href="#main" className="sr-only">
         Skip to main content
       </a>
-      <NavStrip activeChapterId={activeChapterId} onNavigate={handleNavigate} />
+      <NavStrip activeChapterId={activeChapterId} onNavigate={handleNavigate} shortcutsEnabled={shortcutsEnabled} onShortcutsEnabledChange={setShortcutsEnabled} />
       <main id="main" tabIndex={-1} className={styles.main}>
         <Chapter id="chapter-1" question={CHAPTERS[0].question} title={CHAPTERS[0].title}>
           <Ch1 />
@@ -53,7 +55,7 @@ export default function StoryPage() {
         {moonDiscPostcard && <Postcard postcard={moonDiscPostcard} />}
 
         <Chapter id="chapter-2" question={CHAPTERS[1].question} title={CHAPTERS[1].title}>
-          <Ch2 />
+          <Ch2 shortcutsEnabled={shortcutsEnabled} />
         </Chapter>
 
         {eclipsePostcard && <Postcard postcard={eclipsePostcard} />}
@@ -65,7 +67,7 @@ export default function StoryPage() {
         {bootprintPostcard && <Postcard postcard={bootprintPostcard} />}
 
         <Chapter id="chapter-4" question={CHAPTERS[3].question} title={CHAPTERS[3].title}>
-          <Ch4 />
+          <Ch4 shortcutsEnabled={shortcutsEnabled} />
         </Chapter>
 
         <Chapter id="chapter-5" question={CHAPTERS[4].question} title={CHAPTERS[4].title}>

@@ -2,11 +2,14 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboa
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
+import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 import styles from './NavStrip.module.css';
 
 type Props = {
   activeChapterId: string;
   onNavigate: (chapterId: string) => void;
+  shortcutsEnabled?: boolean;
+  onShortcutsEnabledChange?: (enabled: boolean) => void;
 };
 
 const GLOBAL_SHORTCUTS = [
@@ -20,14 +23,6 @@ const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([dis
 
 function getFocusableElements(container: HTMLElement) {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.getAttribute('aria-hidden') !== 'true');
-}
-
-function shouldIgnoreGlobalShortcutTarget(target: EventTarget | null) {
-  if (!(target instanceof HTMLElement)) {
-    return false;
-  }
-
-  return target.isContentEditable || Boolean(target.closest('input, textarea, select'));
 }
 
 function KeyboardIcon() {
@@ -49,7 +44,7 @@ function CloseIcon() {
   );
 }
 
-export function NavStrip({ activeChapterId, onNavigate }: Props) {
+export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true, onShortcutsEnabledChange }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const chapterButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -91,12 +86,16 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
   }, [isShortcutsOpen]);
 
   useEffect(() => {
+    if (!shortcutsEnabled) {
+      return;
+    }
+
     function handleGlobalShortcuts(event: KeyboardEvent) {
       if (event.altKey || event.ctrlKey || event.metaKey) {
         return;
       }
 
-      if (shouldIgnoreGlobalShortcutTarget(event.target)) {
+      if (shouldIgnoreTextEntryShortcutTarget(event.target)) {
         return;
       }
 
@@ -108,7 +107,7 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
 
     window.addEventListener('keydown', handleGlobalShortcuts);
     return () => window.removeEventListener('keydown', handleGlobalShortcuts);
-  }, []);
+  }, [shortcutsEnabled]);
 
   function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'Tab') return;
@@ -237,10 +236,26 @@ export function NavStrip({ activeChapterId, onNavigate }: Props) {
               </button>
             </div>
 
+            <section className={styles.shortcutSection} aria-labelledby="shortcut-settings-title">
+              <h3 id="shortcut-settings-title" className={styles.sectionTitle}>
+                Shortcut settings
+              </h3>
+              <div className={styles.preferenceCard}>
+                <label className={styles.preferenceLabel}>
+                  <input className={styles.preferenceInput} type="checkbox" role="switch" checked={shortcutsEnabled} onChange={(event) => onShortcutsEnabledChange?.(event.currentTarget.checked)} />
+                  <span className={styles.preferenceToggle} aria-hidden="true">
+                    <span className={styles.preferenceToggleThumb} />
+                  </span>
+                  <span className={styles.preferenceName}>Enable global keyboard shortcuts</span>
+                </label>
+              </div>
+            </section>
+
             <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
               <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
-                Available anywhere in the story
+                Available global shortcuts
               </h3>
+              <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story unless your cursor is inside a text field.' : 'These shortcuts are currently off.'}</p>
               <dl className={styles.shortcutList}>
                 {GLOBAL_SHORTCUTS.map((shortcut) => (
                   <div key={shortcut.keys} className={styles.shortcutRow}>

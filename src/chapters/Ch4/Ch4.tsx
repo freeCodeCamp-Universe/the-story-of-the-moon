@@ -3,6 +3,7 @@ import { missions, getAsset } from '@/content';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import type { Mission } from '@/types/content';
+import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
 import styles from './Ch4.module.css';
 
 type Step = { kind: 'mission'; mission: Mission } | { kind: 'interlude' };
@@ -142,7 +143,7 @@ function StaticTimeline({ steps }: { steps: Step[] }) {
   );
 }
 
-function PinnedTimeline({ steps }: { steps: Step[] }) {
+function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsEnabled: boolean }) {
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -258,6 +259,10 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
   );
 
   useEffect(() => {
+    if (!shortcutsEnabled) {
+      return;
+    }
+
     function handleWindowKeyDown(event: KeyboardEvent) {
       const section = sectionRef.current;
       if (!section) return;
@@ -267,9 +272,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
         const isInsideTimeline = section.contains(target);
         if (isInsideTimeline) return;
 
-        const isInteractive = target.isContentEditable || target.closest('input, textarea, select, button, a, [role="button"], [role="link"]');
-
-        if (isInteractive) return;
+        if (shouldIgnoreInteractiveShortcutTarget(target)) return;
       }
 
       const sectionRect = section.getBoundingClientRect();
@@ -283,7 +286,7 @@ function PinnedTimeline({ steps }: { steps: Step[] }) {
 
     window.addEventListener('keydown', handleWindowKeyDown);
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
-  }, [handleKey]);
+  }, [handleKey, shortcutsEnabled]);
 
   return (
     <section ref={sectionRef} className={styles.pinSection} aria-label="Apollo and Artemis missions" aria-describedby={keyboardHintId} tabIndex={0} onKeyDown={handleKey}>
@@ -383,7 +386,11 @@ function Diptych() {
   );
 }
 
-export default function Ch4() {
+type Ch4Props = {
+  shortcutsEnabled?: boolean;
+};
+
+export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
   const steps = useMemo(() => buildSteps(missions), []);
   const mode = useTimelineMode();
 
@@ -400,7 +407,7 @@ export default function Ch4() {
         </p>
       </div>
 
-      {mode === 'animated' ? <PinnedTimeline steps={steps} /> : <StaticTimeline steps={steps} />}
+      {mode === 'animated' ? <PinnedTimeline steps={steps} shortcutsEnabled={shortcutsEnabled} /> : <StaticTimeline steps={steps} />}
 
       <Diptych />
     </>
