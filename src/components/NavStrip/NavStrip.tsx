@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
@@ -49,7 +49,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const chapterButtonRef = useRef<HTMLButtonElement | null>(null);
   const shortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
-  const shortcutsDialogRef = useRef<HTMLDivElement | null>(null);
+  const shortcutsDialogRef = useRef<HTMLDialogElement | null>(null);
   const closeShortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasOpenedDropdownRef = useRef(false);
   const hasOpenedShortcutsRef = useRef(false);
@@ -72,17 +72,30 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
   useEffect(() => {
     if (!isShortcutsOpen) return;
 
-    hasOpenedShortcutsRef.current = true;
-    closeShortcutsButtonRef.current?.focus();
+    const dialog = shortcutsDialogRef.current;
+    if (!dialog) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsShortcutsOpen(false);
-      }
+    hasOpenedShortcutsRef.current = true;
+
+    function handleCancel() {
+      setIsShortcutsOpen(false);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    dialog.addEventListener('cancel', handleCancel);
+
+    if (!dialog.open) {
+      dialog.showModal();
+    }
+
+    closeShortcutsButtonRef.current?.focus();
+
+    return () => {
+      dialog.removeEventListener('cancel', handleCancel);
+
+      if (dialog.open) {
+        dialog.close();
+      }
+    };
   }, [isShortcutsOpen]);
 
   useEffect(() => {
@@ -109,7 +122,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
     return () => window.removeEventListener('keydown', handleGlobalShortcuts);
   }, [shortcutsEnabled]);
 
-  function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+  function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDialogElement>) {
     if (event.key !== 'Tab') return;
 
     const dialog = shortcutsDialogRef.current;
@@ -118,7 +131,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
     const focusableElements = getFocusableElements(dialog);
     if (focusableElements.length === 0) {
       event.preventDefault();
-      dialog.focus();
+      closeShortcutsButtonRef.current?.focus();
       return;
     }
 
@@ -138,6 +151,22 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
     if (!isFocusInsideDialog || activeElement === lastElement) {
       event.preventDefault();
       firstElement.focus();
+    }
+  }
+
+  function handleShortcutsDialogClick(event: ReactMouseEvent<HTMLDialogElement>) {
+    const dialog = shortcutsDialogRef.current;
+    if (!dialog) return;
+
+    if (event.target !== dialog) {
+      return;
+    }
+
+    const rect = dialog.getBoundingClientRect();
+    const isBackdropClick = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+
+    if (isBackdropClick) {
+      setIsShortcutsOpen(false);
     }
   }
 
@@ -224,49 +253,46 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
       <ChapterDropdown isOpen={isDropdownOpen} activeChapterId={activeChapterId} onSelect={handleSelect} onClose={() => setIsDropdownOpen(false)} triggerRef={chapterButtonRef} />
 
       {isShortcutsOpen ? (
-        <>
-          <div className={styles.modalOverlay} aria-hidden="true" onClick={() => setIsShortcutsOpen(false)} />
-          <div ref={shortcutsDialogRef} id="keyboard-shortcuts-dialog" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="keyboard-shortcuts-title" tabIndex={-1} onKeyDown={handleShortcutsDialogKeyDown}>
-            <div className={styles.modalHeader}>
-              <h2 id="keyboard-shortcuts-title" className={styles.modalTitle}>
-                Keyboard shortcuts
-              </h2>
-              <button ref={closeShortcutsButtonRef} type="button" className={styles.modalCloseButton} onClick={() => setIsShortcutsOpen(false)} aria-label="close keyboard shortcuts">
-                <CloseIcon />
-              </button>
-            </div>
-
-            <section className={styles.shortcutSection} aria-labelledby="shortcut-settings-title">
-              <h3 id="shortcut-settings-title" className={styles.sectionTitle}>
-                Shortcut settings
-              </h3>
-              <div className={styles.preferenceCard}>
-                <label className={styles.preferenceLabel}>
-                  <input className={styles.preferenceInput} type="checkbox" role="switch" checked={shortcutsEnabled} onChange={(event) => onShortcutsEnabledChange?.(event.currentTarget.checked)} />
-                  <span className={styles.preferenceToggle} aria-hidden="true">
-                    <span className={styles.preferenceToggleThumb} />
-                  </span>
-                  <span className={styles.preferenceName}>Enable global keyboard shortcuts</span>
-                </label>
-              </div>
-            </section>
-
-            <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
-              <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
-                Available global shortcuts
-              </h3>
-              <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story unless your cursor is inside a text field.' : 'These shortcuts are currently off.'}</p>
-              <dl className={styles.shortcutList}>
-                {GLOBAL_SHORTCUTS.map((shortcut) => (
-                  <div key={shortcut.keys} className={styles.shortcutRow}>
-                    <dt className={styles.shortcutKeys}>{renderShortcutKeys(shortcut.keys)}</dt>
-                    <dd className={styles.shortcutAction}>{shortcut.action}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
+        <dialog ref={shortcutsDialogRef} id="keyboard-shortcuts-dialog" className={styles.modal} aria-labelledby="keyboard-shortcuts-title" onKeyDown={handleShortcutsDialogKeyDown} onClick={handleShortcutsDialogClick}>
+          <div className={styles.modalHeader}>
+            <h2 id="keyboard-shortcuts-title" className={styles.modalTitle}>
+              Keyboard shortcuts
+            </h2>
+            <button ref={closeShortcutsButtonRef} autoFocus type="button" className={styles.modalCloseButton} onClick={() => setIsShortcutsOpen(false)} aria-label="close keyboard shortcuts">
+              <CloseIcon />
+            </button>
           </div>
-        </>
+
+          <section className={styles.shortcutSection} aria-labelledby="shortcut-settings-title">
+            <h3 id="shortcut-settings-title" className={styles.sectionTitle}>
+              Shortcut settings
+            </h3>
+            <div className={styles.preferenceCard}>
+              <label className={styles.preferenceLabel}>
+                <input className={styles.preferenceInput} type="checkbox" role="switch" checked={shortcutsEnabled} onChange={(event) => onShortcutsEnabledChange?.(event.currentTarget.checked)} />
+                <span className={styles.preferenceToggle} aria-hidden="true">
+                  <span className={styles.preferenceToggleThumb} />
+                </span>
+                <span className={styles.preferenceName}>Enable global keyboard shortcuts</span>
+              </label>
+            </div>
+          </section>
+
+          <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
+            <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
+              Available global shortcuts
+            </h3>
+            <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story unless your cursor is inside a text field.' : 'These shortcuts are currently off.'}</p>
+            <dl className={styles.shortcutList}>
+              {GLOBAL_SHORTCUTS.map((shortcut) => (
+                <div key={shortcut.keys} className={styles.shortcutRow}>
+                  <dt className={styles.shortcutKeys}>{renderShortcutKeys(shortcut.keys)}</dt>
+                  <dd className={styles.shortcutAction}>{shortcut.action}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </dialog>
       ) : null}
     </>
   );

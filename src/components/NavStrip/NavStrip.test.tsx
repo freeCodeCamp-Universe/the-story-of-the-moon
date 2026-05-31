@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { NavStrip } from '@/components/NavStrip/NavStrip';
 
 const originalNavigatorPlatform = window.navigator.platform;
+const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 function setupChapterTargets() {
   const scrollSpies = new Map<string, ReturnType<typeof vi.fn>>();
@@ -30,6 +32,49 @@ function NavStripHarness() {
 }
 
 describe('NavStrip', () => {
+  beforeAll(() => {
+    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
+      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
+        configurable: true,
+        value() {
+          this.setAttribute('open', '');
+        },
+      });
+    }
+
+    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+        configurable: true,
+        value() {
+          this.removeAttribute('open');
+          this.dispatchEvent(new Event('close'));
+        },
+      });
+    }
+  });
+
+  afterAll(() => {
+    if (globalThis.HTMLDialogElement) {
+      if (originalDialogShowModal) {
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
+          configurable: true,
+          value: originalDialogShowModal,
+        });
+      } else {
+        Reflect.deleteProperty(globalThis.HTMLDialogElement.prototype, 'showModal');
+      }
+
+      if (originalDialogClose) {
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+          configurable: true,
+          value: originalDialogClose,
+        });
+      } else {
+        Reflect.deleteProperty(globalThis.HTMLDialogElement.prototype, 'close');
+      }
+    }
+  });
+
   beforeEach(() => {
     document.body.innerHTML = '';
   });
@@ -39,6 +84,7 @@ describe('NavStrip', () => {
       configurable: true,
       value: originalNavigatorPlatform,
     });
+
     vi.restoreAllMocks();
   });
 
@@ -117,7 +163,7 @@ describe('NavStrip', () => {
 
     expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
 
-    fireEvent.keyDown(window, { key: 'Escape' });
+    fireEvent.click(screen.getByRole('button', { name: /close keyboard shortcuts/i }));
 
     const shortcutsButton = screen.getByRole('button', { name: /show keyboard shortcuts/i });
     shortcutsButton.focus();
@@ -164,10 +210,65 @@ describe('NavStrip', () => {
     await user.click(toggle);
     expect(toggle).not.toBeChecked();
 
-    fireEvent.keyDown(window, { key: 'Escape' });
+    await user.click(screen.getByRole('button', { name: /close keyboard shortcuts/i }));
     expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
 
     fireEvent.keyDown(window, { key: '?', shiftKey: true });
+    expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
+  });
+
+  it('should keep the dialog open when toggling shortcuts with the keyboard', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStripHarness />);
+
+    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+
+    const toggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
+
+    await user.tab();
+    expect(toggle).toHaveFocus();
+
+    await user.keyboard(' ');
+
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+    expect(toggle).toHaveFocus();
+  });
+
+  it('should restore focus to the trigger when the dialog is dismissed by the browser', () => {
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled onShortcutsEnabledChange={vi.fn()} />);
+
+    const shortcutsButton = screen.getByRole('button', { name: /show keyboard shortcuts/i });
+    fireEvent.click(shortcutsButton);
+
+    const dialog = screen.getByRole('dialog', { name: 'Keyboard shortcuts' });
+    fireEvent(dialog, new Event('cancel', { cancelable: true }));
+
+    expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
+    expect(shortcutsButton).toHaveFocus();
+  });
+
+  it('should close the dialog when the backdrop is clicked', () => {
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled onShortcutsEnabledChange={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Keyboard shortcuts' });
+    vi.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
+      x: 50,
+      y: 50,
+      width: 200,
+      height: 200,
+      top: 50,
+      right: 250,
+      bottom: 250,
+      left: 50,
+      toJSON: () => ({}),
+    });
+
+    fireEvent.click(dialog, { clientX: 10, clientY: 10 });
+
     expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
   });
 });
