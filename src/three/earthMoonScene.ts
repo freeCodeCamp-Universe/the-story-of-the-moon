@@ -189,7 +189,11 @@ function createEarthCanvas(): HTMLCanvasElement {
   return canvas;
 }
 
-export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneHandle {
+export function createEarthMoonScene(canvas: HTMLCanvasElement, options: { animate?: boolean } = {}): EarthMoonSceneHandle {
+  // animate=false (reduced motion): no rAF loop. The scene renders a single
+  // resting frame, repainted on step change / resize via requestRender().
+  const animate = options.animate ?? true;
+
   if (!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))) {
     return null;
   }
@@ -439,21 +443,53 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   let currentPrecession = 0;
   let currentTilt = THREE.MathUtils.degToRad(DEFAULT_TILT_DEG);
 
-  const resizeObserver = new ResizeObserver(() => {
-    const nextSize = getCanvasSize(canvas);
-    renderer.setSize(nextSize.width, nextSize.height, false);
-    camera.aspect = nextSize.width / nextSize.height;
-    camera.updateProjectionMatrix();
-    fitCamera(nextSize.width, nextSize.height);
-    sunPosition.set(currentSunX, 0, 0);
-    sun.position.copy(sunPosition);
-    halo.sprite.position.copy(sunPosition);
-    sunLight.position.copy(sunPosition);
-  });
-  resizeObserver.observe(canvas.parentElement ?? canvas);
-
   const clock = new THREE.Clock();
   clock.stop();
+
+  // Resting pose for the static (reduced-motion) frame: no spin, no orbit,
+  // no wobble. The scene snaps to this once per step change / resize.
+  const STATIC_EARTH_YAW = 0.6; // fixed spin so a landmass faces the camera
+  const STATIC_MOON_ANGLE = -Math.PI * -2.3; // clearly separated on the left of the Earth axis
+
+  // Places the moon (and the solar-eclipse umbra) for the current step flags.
+  // `angle` is only used by the default (non-aligned) steps; the aligned
+  // steps snap the moon onto fixed ±X points on the orbit ring.
+  const positionMoon = (angle: number) => {
+    if (!withMoon) return;
+    if (showEclipse) {
+      moon.position.set(-MOON_ORBIT * Math.cos(orbitTilt), -MOON_ORBIT * Math.sin(orbitTilt), 0);
+      // Cone apex sits at the moon, base UMBRA_HEIGHT toward earth along
+      // the moon→earth direction (cos t, sin t). Center is the midpoint.
+      const dirX = Math.cos(orbitTilt);
+      const dirY = Math.sin(orbitTilt);
+      umbra.position.set((UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX, (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY, 0);
+      // Default cone axis is +Y; rotating around Z by π/2 + tilt aligns
+      // the apex with the moon and the base with the earthward end.
+      umbra.rotation.set(0, 0, Math.PI / 2 + orbitTilt);
+      umbra.visible = true;
+    } else if (showFullMoon || showLunarEclipse) {
+      moon.position.set(MOON_ORBIT * Math.cos(orbitTilt), MOON_ORBIT * Math.sin(orbitTilt), 0);
+      umbra.visible = false;
+    } else {
+      moon.position.set(Math.cos(angle) * MOON_ORBIT * Math.cos(orbitTilt), Math.cos(angle) * MOON_ORBIT * Math.sin(orbitTilt), -Math.sin(angle) * MOON_ORBIT);
+      umbra.visible = false;
+    }
+  };
+
+  // Lunar eclipse is the only case that needs a material override — there's
+  // no shadow-mapping, so without this the moon would still look bright
+  // silver at the eclipse position. Dim coppery base + faint red emissive
+  // reads as a "blood moon" against the dark background while keeping the
+  // silhouette solid.
+  const applyMoonAppearance = () => {
+    if (showLunarEclipse) {
+      moonMaterial.color.copy(MOON_BLOOD_COLOR);
+      moonMaterial.emissive.copy(MOON_BLOOD_EMISSIVE);
+    } else {
+      moonMaterial.color.copy(MOON_DEFAULT_COLOR);
+      moonMaterial.emissive.copy(MOON_DEFAULT_EMISSIVE);
+    }
+  };
 
   const renderFrame = () => {
     const dt = Math.min(clock.getDelta(), 0.1);
@@ -463,7 +499,8 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
 
     // ── Earth wobble ────────────────────────────────────────────────
     // With moon: tilt locked at 23.5°, precession at 0.
-    // Without moon: tilt wanders 8°–38°, precession sweeps around.
+    // Without moon: tilt wanders 14.5°–32.5° (a ~20° band, matching the
+    // newer simulations the prose describes) and precession sweeps around.
     let targetPrecession: number;
     let targetTilt: number;
     if (withMoon) {
@@ -484,54 +521,58 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
     precessionGroup.rotation.y = currentPrecession;
     tiltGroup.rotation.z = currentTilt;
 
-    // ── Moon position ───────────────────────────────────────────────
-    // Orbit is tilted by orbitTilt around the Z axis. The alignment steps
-    // snap the moon onto the ring's ±X points (which sit slightly off the
-    // ecliptic by R · sin(tilt)); the orbiting steps animate counterclockwise
-    // as seen from above earth's north pole.
-    if (withMoon) {
-      if (showEclipse) {
-        moon.position.set(-MOON_ORBIT * Math.cos(orbitTilt), -MOON_ORBIT * Math.sin(orbitTilt), 0);
-        // Cone apex sits at the moon, base UMBRA_HEIGHT toward earth along
-        // the moon→earth direction (cos t, sin t). Center is the midpoint.
-        const dirX = Math.cos(orbitTilt);
-        const dirY = Math.sin(orbitTilt);
-        umbra.position.set((UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX, (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY, 0);
-        // Default cone axis is +Y; rotating around Z by π/2 + tilt aligns
-        // the apex with the moon and the base with the earthward end.
-        umbra.rotation.set(0, 0, Math.PI / 2 + orbitTilt);
-        umbra.visible = true;
-      } else if (showFullMoon || showLunarEclipse) {
-        moon.position.set(MOON_ORBIT * Math.cos(orbitTilt), MOON_ORBIT * Math.sin(orbitTilt), 0);
-        umbra.visible = false;
-      } else {
-        moonAngle += 0.09 * dt;
-        moon.position.set(Math.cos(moonAngle) * MOON_ORBIT * Math.cos(orbitTilt), Math.cos(moonAngle) * MOON_ORBIT * Math.sin(orbitTilt), -Math.sin(moonAngle) * MOON_ORBIT);
-        umbra.visible = false;
-      }
+    // Advance the orbit only for the default (non-aligned) steps.
+    if (withMoon && !showEclipse && !showFullMoon && !showLunarEclipse) {
+      moonAngle += 0.09 * dt;
     }
-
-    // ── Moon appearance ─────────────────────────────────────────────
-    // Lunar eclipse is the only case that needs a material override —
-    // there's no shadow-mapping, so without this the moon would still look
-    // bright silver at the eclipse position. Dim coppery base + faint red
-    // emissive reads as a "blood moon" against the dark background while
-    // keeping the silhouette solid (the original bright emissive made it
-    // look translucent).
-    if (showLunarEclipse) {
-      moonMaterial.color.copy(MOON_BLOOD_COLOR);
-      moonMaterial.emissive.copy(MOON_BLOOD_EMISSIVE);
-    } else {
-      moonMaterial.color.copy(MOON_DEFAULT_COLOR);
-      moonMaterial.emissive.copy(MOON_DEFAULT_EMISSIVE);
-    }
+    positionMoon(moonAngle);
+    applyMoonAppearance();
 
     renderer.render(scene, camera);
   };
 
+  // Single resting frame for reduced motion. Earth sits at its nominal 23.5°
+  // tilt even on the "without moon" step — the instability there is carried
+  // by the prose, not by freezing on an arbitrary mid-wobble pose.
+  const renderStatic = () => {
+    earth.rotation.y = STATIC_EARTH_YAW;
+    currentPrecession = 0;
+    currentTilt = THREE.MathUtils.degToRad(DEFAULT_TILT_DEG);
+    precessionGroup.rotation.y = currentPrecession;
+    tiltGroup.rotation.z = currentTilt;
+    positionMoon(STATIC_MOON_ANGLE);
+    applyMoonAppearance();
+    renderer.render(scene, camera);
+  };
+
+  // Setters and the resize observer call this to repaint the static frame.
+  // In animated mode the loop already repaints, so this is a no-op there.
+  const requestRender = () => {
+    if (!animate) renderStatic();
+  };
+
+  const resizeObserver = new ResizeObserver(() => {
+    const nextSize = getCanvasSize(canvas);
+    renderer.setSize(nextSize.width, nextSize.height, false);
+    camera.aspect = nextSize.width / nextSize.height;
+    camera.updateProjectionMatrix();
+    fitCamera(nextSize.width, nextSize.height);
+    sunPosition.set(currentSunX, 0, 0);
+    sun.position.copy(sunPosition);
+    halo.sprite.position.copy(sunPosition);
+    sunLight.position.copy(sunPosition);
+    requestRender();
+  });
+  resizeObserver.observe(canvas.parentElement ?? canvas);
+
   let isLoopRunning = false;
 
   const resume = () => {
+    if (!animate) {
+      // Reduced motion: no loop, just (re)paint the resting frame.
+      renderStatic();
+      return;
+    }
     if (isLoopRunning) {
       return;
     }
@@ -542,6 +583,9 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
   };
 
   const pause = () => {
+    if (!animate) {
+      return;
+    }
     if (!isLoopRunning) {
       return;
     }
@@ -560,6 +604,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
       orbitRing.line.visible = value;
       if (!value) umbra.visible = false;
       if (value) wobblePhase = 0;
+      requestRender();
     },
     setShowEclipse(value: boolean) {
       showEclipse = value;
@@ -568,6 +613,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
         showLunarEclipse = false;
       }
       if (!value) umbra.visible = false;
+      requestRender();
     },
     setShowFullMoon(value: boolean) {
       showFullMoon = value;
@@ -575,6 +621,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
         showEclipse = false;
         showLunarEclipse = false;
       }
+      requestRender();
     },
     setShowLunarEclipse(value: boolean) {
       showLunarEclipse = value;
@@ -582,6 +629,7 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement): EarthMoonSceneH
         showEclipse = false;
         showFullMoon = false;
       }
+      requestRender();
     },
     pause,
     resume,

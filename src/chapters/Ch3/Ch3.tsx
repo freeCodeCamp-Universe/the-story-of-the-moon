@@ -142,7 +142,7 @@ const STEPS: ScrollyStep[] = [
   },
 ];
 
-function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
+function Ch3Visual({ activeStepId, animate }: { activeStepId: string | null; animate: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<EarthMoonSceneHandle>(null);
   const [webglAvailable, setWebglAvailable] = useState(true);
@@ -165,7 +165,7 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
     import('@/three/earthMoonScene')
       .then(({ createEarthMoonScene }) => {
         if (disposed || !canvasRef.current) return;
-        const handle = createEarthMoonScene(canvasRef.current);
+        const handle = createEarthMoonScene(canvasRef.current, { animate });
         if (handle === null) {
           setWebglAvailable(false);
           return;
@@ -183,8 +183,9 @@ function Ch3Visual({ activeStepId }: { activeStepId: string | null }) {
       disposed = true;
       sceneRef.current?.dispose();
       sceneRef.current = null;
+      setSceneReady(false);
     };
-  }, [isVisible, shouldLoadScene]);
+  }, [animate, isVisible, shouldLoadScene]);
 
   useEffect(() => {
     if (!sceneReady || !sceneRef.current) return;
@@ -233,34 +234,12 @@ export default function Ch3() {
     setActiveStepId(id);
   }, []);
 
-  if (reducedMotion) {
-    return (
-      <>
-        <div className={styles.intro}>
-          <IntroProse />
-        </div>
-        <img className={styles.fallbackDiagram} src="/ch3/with-moon.svg" alt="Schematic showing the Sun, Earth, and Moon in alignment" />
-        <ol className={styles.fallbackList}>
-          <li>The Moon&apos;s gravity stretches Earth&apos;s oceans into two tidal bulges, producing two high and two low tides daily.</li>
-          <li>Earth&apos;s axis is tilted about 23.5 degrees relative to its orbit around the Sun. The Moon&apos;s gravity helps hold the axis close to that angle.</li>
-          <li>Without a large moon, modeling suggests Earth&apos;s tilt could wander more widely under the gravity of other planets, possibly by tens of degrees over hundreds of millions of years.</li>
-          <li>Once each orbit, the Moon sits opposite the Sun with Earth between them. Most months its orbit is tilted a few degrees off Earth&apos;s, so sunlight still reaches the Moon and we see a full moon.</li>
-          <li>
-            Two or three times a year the alignment is precise enough that the Moon passes through Earth&apos;s shadow. Earth&apos;s atmosphere bends red light into that shadow, painting the Moon a dim red-orange. This is a total lunar eclipse.
-          </li>
-          <li>A solar eclipse happens when the Moon passes directly between Earth and the Sun, casting a shadow on Earth along a narrow track.</li>
-          <li>The Moon is drifting away from Earth at about 3.8 centimeters per year, gradually slowing Earth&apos;s rotation.</li>
-        </ol>
-      </>
-    );
-  }
-
   return (
     <>
       <div className={styles.intro}>
         <IntroProse />
       </div>
-      <ScrollyChapter variant="immersive" ariaLabel="The Earth-Moon system" initialStepId={STEPS[0].id} onActiveStepChange={handleActiveStepChange} visual={<Ch3Visual activeStepId={activeStepId} />} steps={STEPS} />
+      <ScrollyChapter variant="immersive" ariaLabel="The Earth-Moon system" initialStepId={STEPS[0].id} onActiveStepChange={handleActiveStepChange} visual={<Ch3Visual activeStepId={activeStepId} animate={!reducedMotion} />} steps={STEPS} />
     </>
   );
 }

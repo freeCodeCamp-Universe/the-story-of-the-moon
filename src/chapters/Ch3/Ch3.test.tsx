@@ -8,6 +8,8 @@ let viewportState = {
   isVisible: false,
 };
 
+let reducedMotion = false;
+
 const sceneHandle = {
   setWithMoon: vi.fn(),
   setShowEclipse: vi.fn(),
@@ -18,8 +20,10 @@ const sceneHandle = {
   dispose: vi.fn(),
 };
 
+const mockCreateEarthMoonScene = vi.fn(() => sceneHandle);
+
 vi.mock('@/hooks/useReducedMotion', () => ({
-  useReducedMotion: () => false,
+  useReducedMotion: () => reducedMotion,
 }));
 
 vi.mock('@/hooks/useViewportActivity', () => ({
@@ -41,7 +45,7 @@ vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
 }));
 
 vi.mock('@/three/earthMoonScene', () => ({
-  createEarthMoonScene: () => sceneHandle,
+  createEarthMoonScene: mockCreateEarthMoonScene,
 }));
 
 describe('Ch3', () => {
@@ -50,13 +54,14 @@ describe('Ch3', () => {
       isNearViewport: false,
       isVisible: false,
     };
+    reducedMotion = false;
     vi.clearAllMocks();
   });
 
   it('should render the chapter intro and step headings with their explanatory copy', () => {
     render(<Ch3 />);
 
-    expect(screen.getByText(/We can go a whole day without looking up at the Moon and never feel its absence\./)).toBeInTheDocument();
+    expect(screen.getByText(/Most moons are small compared to the planet they orbit/)).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         level: 3,
@@ -89,6 +94,24 @@ describe('Ch3', () => {
       expect(sceneHandle.setShowEclipse).toHaveBeenCalledWith(false);
       expect(sceneHandle.setShowFullMoon).toHaveBeenCalledWith(false);
       expect(sceneHandle.setShowLunarEclipse).toHaveBeenCalledWith(false);
+    });
+
+    expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), { animate: true });
+  });
+
+  it('should keep the same stepped content under reduced motion while disabling scene animation', async () => {
+    reducedMotion = true;
+    viewportState = {
+      isNearViewport: true,
+      isVisible: true,
+    };
+
+    render(<Ch3 />);
+
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(6);
+
+    await waitFor(() => {
+      expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), { animate: false });
     });
   });
 });
