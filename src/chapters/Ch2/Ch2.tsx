@@ -622,7 +622,10 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           A basin is a massive impact structure that represents the largest and most complex class of craters, generally defined by a diameter exceeding 300 kilometers. Unlike standard craters, the immense energy required to form a basin causes the
           crust to behave like a fluid, resulting in a flat interior floor and multiple concentric rings that resemble a bullseye.
         </p>
-        <p>Over time, these giant depressions are often filled with rising subsurface lava, forming dark, smooth volcanic plains known as maria (singular: mare), which significantly alter the geological landscape of the planetary body.</p>
+        <p>
+          Over time, these giant depressions are often filled with lava rising from below, forming dark, smooth volcanic plains called maria (singular: mare). The maria are the dark areas we can see on the Moon without a telescope. They cover about a
+          sixth of the lunar surface, almost all of it on the near side that faces Earth.
+        </p>
         <div
           ref={basinCompareRef}
           className={styles.termDiptych}

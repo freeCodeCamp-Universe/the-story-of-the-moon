@@ -59,8 +59,16 @@ const STEPS: ScrollyStep[] = [
       <>
         <h3>Tides are the Moon&apos;s most visible signature</h3>
         <p>
-          The Moon's gravity pulls more strongly on the side of Earth facing it, creating a tidal bulge. On the opposite side, the combination of inertia and a weaker gravitational pull creates a second, balancing bulge. As Earth rotates through
-          these two swells of water, most coastlines experience a predictable cycle of two high tides and two low tides roughly every day.
+          The Moon's gravity pulls on the entire Earth, but it doesn't pull every part with the same strength. The ocean on the side facing the Moon is closest, so it gets the strongest tug and rushes forward, creating a deep pile of water. This
+          creates the first high tide.
+        </p>
+        <p>
+          A second high tide happens on the exact opposite side of the Earth because gravity weakens with distance. The Moon pulls the solid Earth forward more forcefully than it pulls the far-away ocean, yanking the planet out from under that water
+          and leaving it trailing behind in a second pile.
+        </p>
+        <p>
+          Because water is gathered into these two piles, the spaces in between them are left shallow. As Earth rotates, the coastlines pass through the piles and the shallow stretches. In a single day, each coast moves through one pile (high tide),
+          then a shallow stretch (low tide), then the second pile (high tide), and finally the last shallow stretch (low tide).
         </p>
       </>
     ),
@@ -71,10 +79,8 @@ const STEPS: ScrollyStep[] = [
     content: (
       <>
         <h3>The Moon steadies Earth&apos;s spin</h3>
-        <p>
-          Earth maintains a stable tilt of about 23.5 degrees relative to its path around the Sun, which is what creates seasons. The Moon's gravity prevents this angle from shifting wildly, keeping climate zones predictable over long periods of
-          time.
-        </p>
+        <p>Earth spins at a tilt, leaning about 23.5 degrees away from an upright position relative to its orbit around the Sun. That lean is what gives us seasons, since across the year each hemisphere tips toward the Sun and then away from it.</p>
+        <p>The Moon's gravity helps hold that angle steady. Today the tilt drifts only about a degree either way over tens of thousands of years, and the Moon's pull is a large part of why it stays in such a narrow band.</p>
       </>
     ),
   },
@@ -83,11 +89,16 @@ const STEPS: ScrollyStep[] = [
     marker: '03  without the moon',
     content: (
       <>
-        <h3>A moonless Earth would wobble</h3>
+        <h3>A moonless Earth would wander</h3>
         <p>
-          Without a large moon to act as an anchor, computer models suggest Earth's tilt could wander by tens of degrees over hundreds of millions of years, pulled by the gravity of other planets. This instability would cause climate zones to shift
-          drastically across the globe. Seasons as we know them would not be permanent; they would appear, disappear, or become extreme over geological time.
+          The Moon acts as a gravitational anchor on Earth's tilt, holding its drift to about 1.3 degrees. Early models suggested that without the Moon the tilt could swing chaotically, by as much as 85 degrees, wrecking the climate, and for decades
+          the Moon was treated as a precondition for a livable world.
         </p>
+        <p>
+          Newer simulations have since soften that picture. A moonless Earth's tilt would more likely wander within a band of about 20 degrees over hundreds of millions of years, enough to make the climate more variable but not enough to make it
+          uninhabitable.
+        </p>
+        <p>The Moon gives Earth an unusually steady tilt, but whether a planet actually requires a massive moon to remain habitable is an unsettled debate that astrobiologists cannot yet definitively answer.</p>
       </>
     ),
   },
@@ -96,10 +107,10 @@ const STEPS: ScrollyStep[] = [
     marker: '04  full moon',
     content: (
       <>
-        <h3>When sunlight reaches the Moon directly</h3>
+        <h3>When sunlight is reflected straight back to Earth</h3>
         <p>
-          Once a month, the Moon sits opposite the Sun with Earth between them. From Earth we see its illuminated hemisphere face us directly. However, the Moon's orbit is tilted a few degrees relative to Earth's path around the Sun, so the three
-          bodies rarely form a perfect straight line. This tilt keeps the Moon clear of Earth's shadow, creating a regular full moon.
+          Every 29.5 days, the Moon moves directly opposite the Sun with Earth positioned in the middle. While this alignment seems like it would block the sunlight, the Moon&apos;s orbit is tilted by about five degrees compared to Earth&apos;s. This
+          tilt allows the Moon to pass above or below Earth&apos;s shadow, where sunlight fully illuminates the side facing Earth to create a full moon.
         </p>
       </>
     ),
@@ -109,14 +120,11 @@ const STEPS: ScrollyStep[] = [
     marker: '05  lunar eclipse',
     content: (
       <>
-        <h3>When sunlight is filtered through the atmosphere</h3>
+        <h3>When sunlight is filtered through Earth's atmosphere</h3>
+        <p>Two to five times a year, the Moon crosses into Earth's shadow instead of passing above or below it. This is a lunar eclipse. If the Moon enters only the outer shadow, its face dims so slightly that the change is easy to miss.</p>
         <p>
-          At least twice a year, the Moon passes through Earth's shadow, an event known as a lunar eclipse. In a partial alignment, the shadowed portion of the Moon appears dark and may take on a faint red hue, though this color is often masked by
-          the brilliance of the remaining sunlight.
-        </p>
-        <p>
-          When the Sun, Earth, and Moon line up precisely, the Moon slips entirely into the darkest part of the shadow to create a total lunar eclipse. During this deeper alignment, Earth's atmosphere filters and bends sunlight into the darkness,
-          casting the Moon in shades of deep red, copper, or orange. This colorful effect is why a total eclipse is famously known as a blood moon.
+          When the Sun, Earth, and Moon line up perfectly, the Moon slides fully into the darkest inner shadow, the umbra. The only light reaching the lunar surface travels through Earth's atmosphere first. The atmosphere scatters away the blue light
+          and bends the remaining red and orange wavelengths onto the Moon. This is the same effect that reddens a sunset, which is why a total lunar eclipse is nicknamed a blood moon.
         </p>
       </>
     ),
@@ -127,8 +135,8 @@ const STEPS: ScrollyStep[] = [
     content: (
       <>
         <h3>When sunlight is blocked by the Moon</h3>
-        <p>A solar eclipse occurs when the Moon passes directly between Earth and the Sun. This alignment is possible because of a coincidence: the Moon is about 400 times smaller than the Sun but also about 400 times closer to us.</p>
-        <p>This geometry makes the Sun and Moon appear almost the same size in our sky. During an eclipse, the Moon's shadow reaches Earth along a narrow track, causing the sky to darken briefly as the Moon covers the Sun.</p>
+        <p>A solar eclipse occurs when the Moon passes directly between Earth and the Sun. This alignment is possible because of a coincidence: the Moon is about 400 times smaller than the Sun but also about 400 times closer to Earth.</p>
+        <p>This geometry makes the Sun and Moon appear almost the same size from Earth. During an eclipse, the Moon's shadow reaches Earth along a narrow track, causing the sky to darken briefly as the Moon covers the Sun.</p>
       </>
     ),
   },
@@ -260,10 +268,13 @@ export default function Ch3() {
 function IntroProse() {
   return (
     <>
-      <p>We can go a whole day without looking up at the Moon and never feel its absence. But the Moon is always watching. Its gravity stretches down to Earth, tugging our oceans in a twice-daily pulse.</p>
       <p>
-        It anchors our planet's tilt, ensuring the seasons remain predictable rather than chaotic. Occasionally, when the alignment is perfect, it even steps between us and the Sun to transform day into twilight. It has been our silent, steadying
-        partner for four and a half billion years.
+        Most moons are small compared to the planet they orbit, too small for their gravity to have much effect on it. Earth's moon is different. It's about a quarter of Earth's diameter, large enough that its gravity reaches across space and takes
+        hold of the planet itself. The clearest proof is the sea. Twice a day the ocean rises and falls along the coasts, drawn up by the Moon from an average of 384,400 kilometers away.
+      </p>
+      <p>
+        The Moon's gravity isn't its only reach. Once in a while it slips directly between Earth and the Sun, and its shadow sweeps across the surface, turning day to dusk for a few minutes. Brief as it is, that loss of sunlight is enough to change
+        conditions on the ground, a reminder that the Moon can affect Earth by where it stands, not only by how hard it pulls.
       </p>
     </>
   );

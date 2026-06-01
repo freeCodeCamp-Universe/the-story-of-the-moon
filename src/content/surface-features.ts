@@ -8,7 +8,7 @@ const surfaceFeatures = [
     lon: -15.6,
     diameterKm: 1145,
     description: [
-      'Mare Imbrium is the largest dark plain on the side of the Moon that faces Earth, about 1,145 kilometers across. A massive impactor punched out the basin around 3.9 billion years ago.',
+      'Mare Imbrium is one of the largest dark plains on the side of the Moon that faces Earth, a nearly circular basin about 1,145 kilometers across, punched out by a massive impactor around 3.9 billion years ago.',
       "Over the next several hundred million years, lava welled up from the lunar interior and flooded the basin floor, freezing into the dark basalt visible today. The basin's outer rim is preserved as a ring of mountain ranges, including the Apennines and the Alps.",
     ],
   },
@@ -42,7 +42,8 @@ const surfaceFeatures = [
     diameterKm: 40,
     description: [
       'Aristarchus is one of the brightest large craters on the Moon, about 40 kilometers across and located on the northwestern near side.',
-      "Its high-reflectance ejecta and central peak make it a prominent landmark, and the surrounding plateau is one of the Moon's most geologically interesting regions, with evidence of ancient volcanic activity and strange optical effects seen from Earth.",
+      "Its bright ejecta and central peak make it easy to spot, but the surrounding plateau is the real draw. This tilted block of crust holds the Moon's densest network of sinuous rilles (winding channels cut by ancient lava) and its largest deposit of volcanic ash.",
+      'The plateau is also the most frequent source of transient lunar phenomena: brief glows, hazes, and color changes that telescope observers have reported for centuries, possibly caused by gas escaping from below.',
     ],
   },
   {
@@ -63,8 +64,8 @@ const surfaceFeatures = [
     lon: -57.4,
     diameterKm: 2500,
     description: [
-      'Oceanus Procellarum is the largest mare on the Moon, stretching about 2,500 kilometers along the western part of the near side. Unlike the round basins, it is a sprawling patchwork of overlapping lava flows with no clean rim.',
-      "Findings from NASA's GRAIL gravity-mapping mission, published in 2014, suggest that the crust beneath Procellarum is unusually thin, which would have made it easier for lava to break through and spread across a wide area for hundreds of millions of years.",
+      "Oceanus Procellarum is the largest mare on the Moon, stretching about 2,500 kilometers along the western part of the near side. Unlike the round basins, it's a sprawling patchwork of overlapping lava flows with no clean rim.",
+      "Findings from NASA's GRAIL gravity-mapping mission, published in 2014, revealed a rectangular pattern of buried rifts around Procellarum. Their straight edges argue against an impact origin, which would have left a round basin, and point instead to a region where internal heat drove rifting and fed lava to the surface for hundreds of millions of years.",
     ],
   },
   {

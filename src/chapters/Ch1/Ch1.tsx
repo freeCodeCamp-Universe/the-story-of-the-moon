@@ -23,9 +23,11 @@ export default function Ch1() {
           The leading explanation is the giant-impact hypothesis. It proposes that about 4.5 billion years ago, while the inner solar system was still settling, a Mars-sized body struck the young Earth. Scientists call this hypothetical body Theia.
         </p>
         <p className={styles.paragraph}>
-          The hypothesis suggests that the collision was oblique rather than head-on, at a speed of tens of thousands of kilometers per hour, releasing enough energy to vaporize rock and throw a ring of molten debris into orbit around Earth. Most of
-          Theia would have merged into Earth. The rest, mixed with material torn from Earth&apos;s mantle, formed a glowing disk around the planet. Over time, the disk cooled and clumped together, and the largest clump pulled itself into a sphere.
-          That sphere became the Moon.
+          The hypothesis suggests that the collision was oblique rather than head-on, at a speed of tens of thousands of kilometers per hour, releasing enough energy to vaporize rock and throw a ring of molten debris into orbit around Earth.
+        </p>
+        <p className={styles.paragraph}>
+          Most of Theia would have merged into Earth. The rest, mixed with material torn from Earth&apos;s mantle, formed a glowing disk around the planet. Over time, the disk cooled and clumped together, and the largest clump pulled itself into a
+          sphere. That sphere became the Moon.
         </p>
       </div>
 
@@ -35,14 +37,20 @@ export default function Ch1() {
         <p className={styles.paragraph}>The giant-impact hypothesis remains the favored model because it explains anomalies that other theories cannot:</p>
         <ul>
           <li>
-            <b>Composition</b>: The Moon&apos;s bulk composition is closer to Earth&apos;s mantle than to any meteorite, which is difficult to explain if the Moon formed somewhere else and was later captured.
+            <b>Angular Momentum</b>: The Earth-Moon system has unusually large angular momentum, which is the total spin built into how Earth rotates and the Moon orbits. That much spin can't build up on its own; it had to be put in at the start, and
+            a glancing impact is the kind of event that would do it.
           </li>
           <li>
-            <b>Angular Momentum</b>: The Earth-Moon system has unusually large angular momentum, which is the total spin built into how Earth rotates and the Moon orbits. That much spin can't appear on its own; it had to be put in at the start, and a
-            glancing impact is the kind of event that would do it.
+            <b>Composition</b>: The Moon is built from much the same material as Earth's mantle. Its chemistry sits far closer to Earth's than to Mars or to any meteorite, and rock from elsewhere in the solar system carries a different signature. A
+            Moon captured from somewhere else should not match Earth this closely.
           </li>
           <li>
-            <b>Core Structure</b>: The Moon has only a small iron core, consistent with forming mostly from mantle material after the iron in both bodies had already settled toward Earth&apos;s center.
+            <b>Core Structure</b>: The Moon holds very little iron. Its core is tiny, less than a quarter of its radius, where most rocky worlds run nearer to half. That fits a Moon made mainly from mantle rock, gathered after the heavy iron in both
+            Earth and Theia had already sunk to their centers.
+          </li>
+          <li>
+            <b>Volatiles</b>: The Moon is short on volatile elements, the ones that vaporize at relatively low temperatures, such as water and zinc. Lunar rocks carry the mark of material heated until its lighter parts boiled away, which is what a
+            hot impact would do as it flung vaporized debris into orbit.
           </li>
         </ul>
 

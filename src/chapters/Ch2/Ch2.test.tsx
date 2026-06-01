@@ -293,7 +293,7 @@ describe('Ch2', () => {
 
     const descriptionParagraphs = within(mareImbriumArticle).getAllByText((_, element) => element?.tagName.toLowerCase() === 'p');
     expect(descriptionParagraphs).toHaveLength(surfaceFeatures[0].description.length);
-    expect(descriptionParagraphs[0]).toHaveTextContent('Mare Imbrium is the largest dark plain on the side of the Moon that faces Earth');
+    expect(descriptionParagraphs[0]).toHaveTextContent('Mare Imbrium is one of the largest dark plains on the side of the Moon that faces Earth');
     expect(descriptionParagraphs[1]).toHaveTextContent('Over the next several hundred million years, lava welled up from the lunar interior');
   });
 
