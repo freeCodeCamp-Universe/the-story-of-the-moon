@@ -183,7 +183,7 @@
 }
 
 .shortcutSection {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-2xl);
 }
 
 .sectionTitle {
@@ -245,7 +245,7 @@
 .preferenceLabel {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   color: var(--color-text);
   cursor: pointer;
 }
@@ -310,10 +310,6 @@
     inset-inline-end 200ms ease,
     background-color 200ms ease,
     box-shadow 200ms ease;
-}
-
-.preferenceName {
-  font-family: var(--font-mono);
 }
 
 .preferenceInput:focus-visible + .preferenceToggle {

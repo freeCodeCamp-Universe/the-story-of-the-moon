@@ -282,7 +282,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
             <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
               Available global shortcuts
             </h3>
-            <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story unless your cursor is inside a text field.' : 'These shortcuts are currently off.'}</p>
+            <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
             <dl className={styles.shortcutList}>
               {GLOBAL_SHORTCUTS.map((shortcut) => (
                 <div key={shortcut.keys} className={styles.shortcutRow}>
