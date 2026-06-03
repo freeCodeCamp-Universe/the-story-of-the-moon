@@ -46,7 +46,7 @@
 
   --text-body: 1.125rem; /* 18px — fCC floor */
   --text-body-mobile: 1.125rem; /* keep 18px — fCC floor */
-  --text-sm: 0.9375rem; /* 15px — labels, captions (never body) */
+  --text-sm: 1rem; /* 16px — labels, captions (never body) */
   --text-lg: 1.25rem; /* 20px */
   --text-xl: 1.5rem; /* 24px */
   --text-2xl: 2rem; /* 32px */
