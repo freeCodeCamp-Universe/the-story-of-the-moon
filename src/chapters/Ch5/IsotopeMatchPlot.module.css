@@ -1,0 +1,152 @@
+/* Scene A — oxygen-isotope "chemical match" three-isotope plot (static). */
+
+.figure {
+  /* Only the SVG tick numbers scale with the chart, so hold them larger on
+     mobile (where the chart is scaled down) and drop to the design size once it
+     renders near full scale. Axis titles and units are HTML, not SVG. */
+  --chart-tick: 18px;
+
+  max-width: 56rem;
+  /* Match the prose/.compare gutter so the panel never touches the edge. */
+  padding-inline: var(--space-lg);
+  margin-inline: auto;
+  margin-block: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .figure {
+    --chart-tick: 12px;
+  }
+
+  /* Roomier padding once there is width to spare. */
+  .panel {
+    padding-inline: var(--space-lg);
+    padding-block: var(--space-lg);
+  }
+}
+
+/* The framed visual: raised panel holding the chart and its legend. The
+   caption sits below this panel on the page background, matching CreditCaption. */
+.panel {
+  padding-inline: var(--space-md);
+  padding-block: var(--space-md);
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.chart {
+  flex: 1 1 22rem;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.axis {
+  stroke: var(--color-text-muted);
+  stroke-width: 1.25;
+}
+
+.tickLabel {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--chart-tick);
+}
+
+/* Axis titles + units: HTML, so they match the legend's size and keep real
+   spacing instead of scaling with the chart. δ17O sits top-left of the plot,
+   δ18O bottom-right, mirroring the axes. */
+.axisLabel {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.axisY {
+  align-self: flex-start;
+  margin-block-end: var(--space-sm);
+}
+
+.axisX {
+  align-self: flex-end;
+  text-align: end;
+  margin-block-start: var(--space-sm);
+}
+
+.axisName {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.axisName sup {
+  font-size: 0.7em;
+}
+
+.unit {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.bodyLine {
+  stroke-width: 1.5;
+  opacity: 0.65;
+}
+
+/* Side legend — fills the space beside the chart and names each body. */
+
+.legend {
+  flex: 0 0 auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.swatch {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border-radius: 50%;
+  background-color: var(--swatch);
+  flex: 0 0 auto;
+}
+
+.legendName {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* Source + transformation attribution, full width below the chart. */
+
+.caption {
+  margin-top: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}

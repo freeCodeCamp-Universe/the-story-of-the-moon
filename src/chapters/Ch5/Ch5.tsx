@@ -1,6 +1,7 @@
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { getAsset, moonSamples } from '@/content';
+import { IsotopeMatchPlot } from './IsotopeMatchPlot';
 import styles from './Ch5.module.css';
 
 export default function Ch5() {
@@ -53,13 +54,17 @@ export default function Ch5() {
       <section className={styles.section}>
         <h3 className={styles.heading}>A chemical match</h3>
         <p className={styles.paragraph}>
-          The most profound discovery took longer to emerge. When geochemists measured the oxygen isotope ratios in lunar rocks, the signatures matched Earth’s mantle almost perfectly. This was shocking because most solar system bodies carry a unique
-          isotopic fingerprint based on the specific dust cloud they formed from; Mars rocks and meteorites are easily distinguishable from Earth's. The Moon, however, shares Earth's exact chemical signature.
+          When geochemists measured the oxygen isotope ratios in lunar rocks, the signatures matched Earth's mantle almost perfectly. This was shocking because most solar system bodies carry a unique isotopic fingerprint based on the specific dust
+          cloud they formed from; Mars rocks and meteorites are easily distinguishable from Earth's. The Moon, however, carries a signature nearly identical to Earth's.
         </p>
+        <IsotopeMatchPlot />
         <p className={styles.paragraph}>
           That observation is why the giant-impact hypothesis has kept evolving rather than being abandoned. If Theia, the impactor, came from a different part of the early solar system, the Moon should look like a blend of Earth and Theia, not like
-          pure Earth. Scientists proposed high-energy variants like the "synestia", a model where the impact vaporized both objects into a massive, rapidly spinning cloud of rock gas. This turbulent mist blended the chemistries completely before the
-          Moon condensed, offering a compelling explanation for a coincidence that classical impact theories cannot solve.
+          pure Earth.
+        </p>
+        <p className={styles.paragraph}>
+          Scientists proposed high-energy variants like the "synestia", a model where the impact vaporized both objects into a massive, rapidly spinning cloud of rock gas. This turbulent mist blended the chemistries completely before the Moon
+          condensed, offering a compelling explanation for a coincidence that classical impact theories cannot solve.
         </p>
       </section>
     </>

@@ -1,13 +1,15 @@
 import missionsRaw from './missions';
 import assetsRaw from './assets';
+import isotopeBodiesRaw from './isotope-bodies';
 import moonSamplesRaw from './moon-samples';
 import postcardsRaw from './postcards';
 import surfaceFeaturesRaw from './surface-features';
 
-import type { Mission, AssetCredit, MoonSample, PostcardData, SurfaceFeature } from '@/types/content';
+import type { Mission, AssetCredit, IsotopeBody, MoonSample, PostcardData, SurfaceFeature } from '@/types/content';
 
 export const assets: readonly AssetCredit[] = assetsRaw;
 export const surfaceFeatures: readonly SurfaceFeature[] = surfaceFeaturesRaw;
+export const isotopeBodies: readonly IsotopeBody[] = isotopeBodiesRaw;
 
 // Enrich missions, moonSamples, and postcards by merging alt from the asset catalog
 // so that alt is available alongside src while asset metadata stays centralized.

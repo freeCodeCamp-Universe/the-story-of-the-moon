@@ -69,6 +69,13 @@ export type MoonSample<CreditId extends string = string> = {
 
 export type MoonSampleSource<CreditId extends string = string> = Omit<MoonSample<CreditId>, 'alt'>;
 
+export type IsotopeBody = {
+  id: string;
+  name: string;
+  /** Δ17O in per mil; sets the body's own fractionation line (vertical offset from Earth's). */
+  delta17O: number;
+};
+
 export type PostcardPlacementAfter = 'ch1' | 'ch2' | 'ch3' | 'ch5';
 
 export type PostcardData<CreditId extends string = string> = {
