@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { isotopeBodies } from '@/content';
 
@@ -9,6 +9,13 @@ import styles from './IsotopeMatchPlot.module.css';
 // slope ~0.52; the lines are offset vertically by the body's Δ17O. Mars
 // (+0.30) and Vesta (−0.24) sit on clearly separate lines; Earth and the Moon
 // (Δ17O ≈ 0) share one line, their sample marks intermixed.
+//
+// Hovering or focusing a body (legend entry or its bead cluster) emphasizes
+// that body's marks and line. Activating it opens a small info card, pinned
+// near the cluster, with the body's Δ17O value and the rocks it was measured
+// from. The card is a sighted-only enhancement: the same facts are spoken to
+// assistive tech via each legend button's accessible name, and the static
+// <desc> remains the canonical screen-reader description of the chart.
 //
 // Axis titles and units render as HTML (see the .axis* labels), not SVG text,
 // so they stay the same size as the legend instead of scaling with the chart.
@@ -46,8 +53,9 @@ const BODY: Record<string, BodyStyle> = {
   mars: { fill: '#dd9b52', rim: '#a3672c', centerD18O: 4.5, beads: 9 },
 };
 
-// Legend order, Moon first so the Earth-Moon pairing reads top of the list.
-const LEGEND_ORDER = ['moon', 'earth', 'vesta', 'mars'];
+// Legend order matches the lines top-to-bottom on the chart: Mars highest,
+// then Earth and Moon on the shared middle line, Vesta lowest.
+const LEGEND_ORDER = ['mars', 'earth', 'moon', 'vesta'];
 
 function makeRng(seed: number): () => number {
   let state = seed >>> 0;
@@ -74,12 +82,97 @@ const BEADS: Record<string, Bead[]> = (() => {
   return out;
 })();
 
+// Per-body horizontal nudge (percentage points) for the floating card. Vesta's
+// cluster hugs the left of the plot, so its centered card would sit against the
+// vertical axis; shift it left to clear it. Others stay centered on the cluster.
+const CARD_X_NUDGE: Record<string, number> = { vesta: -8 };
+
+// Desktop-only anchor for the floating card: the cluster's horizontal center
+// (xPct, clamped to stay in view) and its lowest mark (bottomPct), both as a
+// percentage of the SVG box. Because the SVG keeps its 520×308 ratio at every
+// width, a percentage maps to the same plot point at any size with no pixel
+// math. On mobile the card is an inline readout and ignores these.
+type Anchor = { xPct: number; bottomPct: number };
+const ANCHORS: Record<string, Anchor> = (() => {
+  const out: Record<string, Anchor> = {};
+  for (const id of LEGEND_ORDER) {
+    const beads = BEADS[id];
+    const cx = beads.reduce((sum, b) => sum + b.x, 0) / beads.length;
+    const bottomY = Math.max(...beads.map((b) => b.y + b.r));
+    const xPct = Math.min(Math.max((cx / VIEW_W) * 100 + (CARD_X_NUDGE[id] ?? 0), 12), 84);
+    out[id] = { xPct, bottomPct: (bottomY / VIEW_H) * 100 };
+  }
+  return out;
+})();
+
+// Spell the value for assistive tech: "≈ 0" → "approximately 0", "≡ 0" →
+// "defined as 0", "+0.30" → "plus 0.30", "−0.24" → "minus 0.24".
+const spokenValue = (label: string) => label.replace('≈', 'approximately').replace('≡', 'defined as').replace('+', 'plus ').replace('−', 'minus ');
+
 export function IsotopeMatchPlot() {
   const titleId = useId();
   const descId = useId();
 
+  // `activeId` is the one selected body (its card is open). `hoveredId` is a
+  // transient hover/focus preview. Emphasis resolves to a single body,
+  // `hoveredId ?? activeId`, so exactly one body is ever highlighted, and both
+  // its legend entry and its bead cluster light up together.
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const figureRef = useRef<HTMLElement>(null);
+
+  const emphasisId = hoveredId ?? activeId;
+  const isEmphasized = (id: string) => id === emphasisId;
+
+  const toggleActive = useCallback((id: string) => {
+    setActiveId((current) => (current === id ? null : id));
+  }, []);
+
+  const clearHover = useCallback((id: string) => {
+    setHoveredId((current) => (current === id ? null : current));
+  }, []);
+
+  // Dismiss the open card on Escape or a pointer press outside the figure.
+  useEffect(() => {
+    if (!activeId) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveId(null);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (figureRef.current && !figureRef.current.contains(event.target as Node)) {
+        setActiveId(null);
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [activeId]);
+
+  const activeBody = activeId ? (isotopeBodies.find((b) => b.id === activeId) ?? null) : null;
+  const activeAnchor = activeId ? ANCHORS[activeId] : null;
+
+  // One definition of the card's content, rendered in two places: a floating
+  // copy inside the plot (shown on wide screens) and an inline copy after the
+  // x-axis label (shown on mobile, so the axis label stays above it). A media
+  // query reveals exactly one. Both are sighted-only; the legend buttons carry
+  // the same facts for assistive tech.
+  const cardBody = activeBody ? (
+    <>
+      <span className={styles.cardName}>{activeBody.name}</span>
+      <span className={styles.cardValue}>
+        Δ<sup>17</sup>O {activeBody.valueLabel} ‰
+      </span>
+      <span className={styles.cardDetail}>{activeBody.detail}</span>
+    </>
+  ) : null;
+
   return (
-    <figure className={styles.figure}>
+    <figure ref={figureRef} className={styles.figure} aria-label="Oxygen isotope fingerprint">
       <div className={styles.panel}>
         <div className={styles.chart}>
           <p className={`${styles.axisLabel} ${styles.axisY}`} aria-hidden="true">
@@ -89,61 +182,87 @@ export function IsotopeMatchPlot() {
             <span className={styles.unit}>parts per thousand</span>
           </p>
 
-          <svg className={styles.svg} viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role="img" aria-labelledby={titleId} aria-describedby={descId}>
-            <title id={titleId}>Oxygen three-isotope plot</title>
-            <desc id={descId}>
-              A scatter plot of oxygen isotopes. The horizontal axis is δ18O and the vertical axis is δ17O, both in parts per thousand. Four clusters of sample marks, one per body, each lie along a straight line with the same gentle upward slope. At
-              any point along the axis the lines are stacked: Vesta the asteroid lowest, Earth and the Moon together on a single shared line in the middle, and Mars highest. Vesta&apos;s and Mars&apos;s lines stand clearly apart from Earth&apos;s,
-              but the Moon&apos;s marks fall directly on Earth&apos;s line and intermix with Earth&apos;s, showing that the Moon and Earth share one oxygen-isotope signature.
-            </desc>
+          <div className={styles.plotArea}>
+            <svg className={styles.svg} viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role="img" aria-labelledby={titleId} aria-describedby={descId}>
+              <title id={titleId}>Oxygen three-isotope plot</title>
+              <desc id={descId}>
+                A scatter plot of oxygen isotopes. The horizontal axis is δ18O and the vertical axis is δ17O, both in parts per thousand. Four clusters of sample marks, one per body, each lie along a straight line with the same gentle upward slope.
+                At any point along the axis the lines are stacked: Vesta the asteroid lowest, Earth and the Moon together on a single shared line in the middle, and Mars highest. Vesta&apos;s and Mars&apos;s lines stand clearly apart from
+                Earth&apos;s, but the Moon&apos;s marks fall directly on Earth&apos;s line and intermix with Earth&apos;s, showing that the Moon and Earth share one oxygen-isotope signature.
+              </desc>
 
-            <defs>
-              <clipPath id="isotope-plot-clip">
-                <rect x={PLOT_L} y={PLOT_T} width={PLOT_R - PLOT_L} height={PLOT_B - PLOT_T} />
-              </clipPath>
-            </defs>
+              <defs>
+                <clipPath id="isotope-plot-clip">
+                  <rect x={PLOT_L} y={PLOT_T} width={PLOT_R - PLOT_L} height={PLOT_B - PLOT_T} />
+                </clipPath>
+              </defs>
 
-            {/* Gridlines at ticks. */}
-            {X_TICKS.map((t) => (
-              <line key={`gx-${t}`} className={styles.grid} x1={xPix(t)} y1={PLOT_T} x2={xPix(t)} y2={PLOT_B} />
-            ))}
-            {Y_TICKS.map((t) => (
-              <line key={`gy-${t}`} className={styles.grid} x1={PLOT_L} y1={yPix(t)} x2={PLOT_R} y2={yPix(t)} />
-            ))}
-
-            {/* Axes. */}
-            <line className={styles.axis} x1={PLOT_L} y1={PLOT_T} x2={PLOT_L} y2={PLOT_B} />
-            <line className={styles.axis} x1={PLOT_L} y1={PLOT_B} x2={PLOT_R} y2={PLOT_B} />
-
-            {/* Ticks + numeric labels. dominant-baseline keeps the gap to the
-                tick mark constant regardless of the responsive font size. */}
-            {X_TICKS.map((t) => (
-              <g key={`tx-${t}`}>
-                <line className={styles.axis} x1={xPix(t)} y1={PLOT_B} x2={xPix(t)} y2={PLOT_B + 6} />
-                <text className={styles.tickLabel} x={xPix(t)} y={PLOT_B + 13} textAnchor="middle" dominantBaseline="hanging">
-                  {t}
-                </text>
-              </g>
-            ))}
-            {Y_TICKS.map((t) => (
-              <g key={`ty-${t}`}>
-                <line className={styles.axis} x1={PLOT_L - 6} y1={yPix(t)} x2={PLOT_L} y2={yPix(t)} />
-                <text className={styles.tickLabel} x={PLOT_L - 12} y={yPix(t)} textAnchor="end" dominantBaseline="central">
-                  {t}
-                </text>
-              </g>
-            ))}
-
-            {/* Fractionation lines (clipped). Earth and Moon share one. */}
-            <g clipPath="url(#isotope-plot-clip)">
-              {isotopeBodies.map((body) => (
-                <line key={`line-${body.id}`} className={styles.bodyLine} x1={xPix(X_MIN)} y1={yPix(lineDelta17O(X_MIN, body.delta17O))} x2={xPix(X_MAX)} y2={yPix(lineDelta17O(X_MAX, body.delta17O))} stroke={BODY[body.id].fill} />
+              {/* Gridlines at ticks. */}
+              {X_TICKS.map((t) => (
+                <line key={`gx-${t}`} className={styles.grid} x1={xPix(t)} y1={PLOT_T} x2={xPix(t)} y2={PLOT_B} />
               ))}
-            </g>
+              {Y_TICKS.map((t) => (
+                <line key={`gy-${t}`} className={styles.grid} x1={PLOT_L} y1={yPix(t)} x2={PLOT_R} y2={yPix(t)} />
+              ))}
 
-            {/* Flat sample marks along each line. */}
-            {LEGEND_ORDER.map((id) => BEADS[id].map((bead, index) => <circle key={`${id}-${index}`} cx={bead.x} cy={bead.y} r={bead.r} fill={BODY[id].fill} stroke={BODY[id].rim} strokeWidth="1" />))}
-          </svg>
+              {/* Axes. */}
+              <line className={styles.axis} x1={PLOT_L} y1={PLOT_T} x2={PLOT_L} y2={PLOT_B} />
+              <line className={styles.axis} x1={PLOT_L} y1={PLOT_B} x2={PLOT_R} y2={PLOT_B} />
+
+              {/* Ticks + numeric labels. dominant-baseline keeps the gap to the
+                  tick mark constant regardless of the responsive font size. */}
+              {X_TICKS.map((t) => (
+                <g key={`tx-${t}`}>
+                  <line className={styles.axis} x1={xPix(t)} y1={PLOT_B} x2={xPix(t)} y2={PLOT_B + 6} />
+                  <text className={styles.tickLabel} x={xPix(t)} y={PLOT_B + 13} textAnchor="middle" dominantBaseline="hanging">
+                    {t}
+                  </text>
+                </g>
+              ))}
+              {Y_TICKS.map((t) => (
+                <g key={`ty-${t}`}>
+                  <line className={styles.axis} x1={PLOT_L - 6} y1={yPix(t)} x2={PLOT_L} y2={yPix(t)} />
+                  <text className={styles.tickLabel} x={PLOT_L - 12} y={yPix(t)} textAnchor="end" dominantBaseline="central">
+                    {t}
+                  </text>
+                </g>
+              ))}
+
+              {/* Fractionation lines (clipped). Earth and Moon share one. */}
+              <g clipPath="url(#isotope-plot-clip)">
+                {isotopeBodies.map((body) => (
+                  <line
+                    key={`line-${body.id}`}
+                    className={styles.bodyLine}
+                    data-active={isEmphasized(body.id) ? '' : undefined}
+                    x1={xPix(X_MIN)}
+                    y1={yPix(lineDelta17O(X_MIN, body.delta17O))}
+                    x2={xPix(X_MAX)}
+                    y2={yPix(lineDelta17O(X_MAX, body.delta17O))}
+                    stroke={BODY[body.id].fill}
+                  />
+                ))}
+              </g>
+
+              {/* Flat sample marks, grouped per body. Pointer/touch enhancement
+                  only: hovering or tapping a cluster emphasizes it and opens its
+                  card. Keyboard and AT use the legend buttons, so the clusters
+                  stay out of the tab order and the accessibility tree. */}
+              {LEGEND_ORDER.map((id) => (
+                <g key={id} className={styles.beadGroup} aria-hidden="true" data-active={isEmphasized(id) ? '' : undefined} onPointerEnter={() => setHoveredId(id)} onPointerLeave={() => clearHover(id)} onClick={() => toggleActive(id)}>
+                  {BEADS[id].map((bead, index) => (
+                    <circle key={`${id}-${index}`} className={styles.bead} cx={bead.x} cy={bead.y} r={bead.r} fill={BODY[id].fill} stroke={BODY[id].rim} />
+                  ))}
+                </g>
+              ))}
+            </svg>
+
+            {cardBody && activeAnchor && (
+              <div className={`${styles.card} ${styles.cardFloat}`} role="presentation" aria-hidden="true" style={{ '--card-x': `${activeAnchor.xPct}%`, '--card-bottom': `${activeAnchor.bottomPct}%` } as React.CSSProperties}>
+                {cardBody}
+              </div>
+            )}
+          </div>
 
           <p className={`${styles.axisLabel} ${styles.axisX}`} aria-hidden="true">
             <span className={styles.axisName}>
@@ -151,6 +270,12 @@ export function IsotopeMatchPlot() {
             </span>
             <span className={styles.unit}>parts per thousand</span>
           </p>
+
+          {cardBody && (
+            <div className={`${styles.card} ${styles.cardInline}`} role="presentation" aria-hidden="true">
+              {cardBody}
+            </div>
+          )}
         </div>
 
         <ul className={styles.legend} aria-label="Bodies shown">
@@ -159,8 +284,21 @@ export function IsotopeMatchPlot() {
             if (!body) return null;
             return (
               <li key={id} className={styles.legendItem} style={{ '--swatch': BODY[id].fill } as React.CSSProperties}>
-                <span className={styles.swatch} aria-hidden="true" />
-                <span className={styles.legendName}>{body.name}</span>
+                <button
+                  type="button"
+                  className={styles.legendButton}
+                  data-active={isEmphasized(id) ? '' : undefined}
+                  aria-pressed={activeId === id}
+                  onClick={() => toggleActive(id)}
+                  onPointerEnter={() => setHoveredId(id)}
+                  onPointerLeave={() => clearHover(id)}
+                  onFocus={() => setHoveredId(id)}
+                  onBlur={() => clearHover(id)}
+                >
+                  <span className={styles.swatch} aria-hidden="true" />
+                  <span className={styles.legendName}>{body.name}</span>
+                  <span className="sr-only">{`, delta 17 O ${spokenValue(body.valueLabel)} parts per thousand. ${body.detail}`}</span>
+                </button>
               </li>
             );
           })}

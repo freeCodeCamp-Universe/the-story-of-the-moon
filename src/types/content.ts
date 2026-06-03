@@ -74,6 +74,10 @@ export type IsotopeBody = {
   name: string;
   /** Δ17O in per mil; sets the body's own fractionation line (vertical offset from Earth's). */
   delta17O: number;
+  /** Display string for Δ17O shown in the info card, e.g. "≈ 0", "≡ 0", "+0.30". */
+  valueLabel: string;
+  /** One ESL-friendly sentence shown in the info card: where the rocks come from and why they matter. No SNC/HED jargon, no chart narration. */
+  detail: string;
 };
 
 export type PostcardPlacementAfter = 'ch1' | 'ch2' | 'ch3' | 'ch5';

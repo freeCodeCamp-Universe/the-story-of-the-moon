@@ -45,6 +45,13 @@
   flex-direction: column;
 }
 
+/* Anchors the info card to the chart. The SVG keeps its 520×308 ratio at every
+   width, so a card positioned with percentage coordinates lands on the same
+   plot point at any size with no measurement. */
+.plotArea {
+  position: relative;
+}
+
 .svg {
   display: block;
   inline-size: 100%;
@@ -107,6 +114,107 @@
 .bodyLine {
   stroke-width: 1.5;
   opacity: 0.65;
+  transition:
+    stroke-width 120ms ease,
+    opacity 120ms ease;
+}
+
+.bodyLine[data-active] {
+  stroke-width: 2.75;
+  opacity: 1;
+}
+
+/* Sample marks. The whole cluster is a focusable control; hover/focus/select
+   thickens its marks (no dimming of the other bodies). */
+.beadGroup {
+  cursor: pointer;
+}
+
+.bead {
+  stroke-width: 1;
+  transition: stroke-width 120ms ease;
+}
+
+.beadGroup[data-active] .bead {
+  stroke-width: 2.5;
+}
+
+/* Info card, shared look. Sighted-only: the same facts are in each legend
+   button's accessible name. Rendered twice (.cardInline / .cardFloat); a media
+   query shows exactly one. */
+.card {
+  inline-size: 100%;
+  padding-inline: var(--space-md);
+  padding-block: var(--space-sm);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-disabled);
+  border-left: 2px solid var(--color-accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  /* Selectable so the value and detail can be copied. */
+  user-select: text;
+}
+
+/* Mobile: inline readout in normal flow beneath the chart, after the x-axis
+   label, so it never covers the chart, axes, or the legend that wraps below. */
+.cardInline {
+  margin-block-start: var(--space-sm);
+}
+
+/* The floating copy is hidden until there is room to float it (see ≥768px). */
+.cardFloat {
+  display: none;
+}
+
+.cardName {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.cardValue {
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+}
+
+.cardValue sup {
+  font-size: 0.7em;
+}
+
+.cardDetail {
+  font-size: var(--text-body);
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  /* The legend sits beside the chart, so hide the inline copy and float the
+     other just below the active cluster. Physical left aligns to the SVG's
+     fixed plot geometry, which does not mirror in RTL; block axis stays logical. */
+  .cardInline {
+    display: none;
+  }
+
+  .cardFloat {
+    display: flex;
+    position: absolute;
+    inset-block-start: var(--card-bottom);
+    left: var(--card-x);
+    z-index: 2;
+    inline-size: max-content;
+    max-inline-size: min(20rem, 80vw);
+    transform: translate(-50%, 0.4rem);
+  }
+
+  .cardName {
+    font-size: var(--text-lg);
+  }
+
+  .cardValue {
+    font-size: var(--text-body);
+  }
 }
 
 /* Side legend — fills the space beside the chart and names each body. */
@@ -123,8 +231,45 @@
 
 .legendItem {
   display: flex;
+}
+
+/* The legend entry is the keyboard control: one tab stop per body, driving the
+   same emphasis + card as its on-chart cluster. The global button:focus-visible
+   ring applies automatically. */
+.legendButton {
+  display: flex;
   align-items: center;
   gap: var(--space-sm);
+  inline-size: 100%;
+  padding-inline: var(--space-sm);
+  padding-block: var(--space-xs);
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+/* Hover/focus: a lighter surface fill than the panel behind it. */
+.legendButton:hover {
+  background-color: var(--color-bg-surface);
+}
+
+/* Selected: recess it (darker than the panel) and ring it in accent blue, so it
+   reads as selected without competing with the bodies' swatch colors. */
+.legendButton[aria-pressed='true'] {
+  background-color: var(--color-bg);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legendButton {
+    transition: none;
+  }
 }
 
 .swatch {
@@ -149,4 +294,12 @@
   font-size: var(--text-sm);
   line-height: 1.5;
   color: var(--color-text-muted);
+}
+
+/* Emphasis still applies instantly; only the easing is dropped. */
+@media (prefers-reduced-motion: reduce) {
+  .bead,
+  .bodyLine {
+    transition: none;
+  }
 }

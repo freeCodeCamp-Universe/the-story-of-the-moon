@@ -27,6 +27,7 @@
   --color-bg: #1b1b32; /* gray-85 — page body */
   --color-bg-raised: #2a2a40; /* gray-80 — cards, surfaces */
   --color-bg-surface: #3b3b4f; /* gray-75 — highest elevation */
+  --color-disabled: #858591; /* gray-45 — disabled controls, inactive states */
   --color-border: #3b3b4f; /* gray-75 */
   --color-text-muted: #939393; /* gray-40 */
   --color-text: #f5f6f7; /* gray-05 */
