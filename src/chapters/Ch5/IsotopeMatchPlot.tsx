@@ -167,7 +167,7 @@ export function IsotopeMatchPlot() {
         </ul>
       </div>
 
-      <figcaption className={styles.caption}>Oxygen isotope data: Wiechert et al. 2001; Herwartz et al. 2014; Cano et al. 2020. Sample positions are illustrative.</figcaption>
+      <figcaption className={styles.caption}>Oxygen isotope data: Wiechert et al. 2001; Herwartz et al. 2014; Cano et al. 2020. Individual marks are illustrative.</figcaption>
     </figure>
   );
 }
