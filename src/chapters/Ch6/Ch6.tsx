@@ -72,8 +72,8 @@ export default function Ch6() {
                 Once the source ran dry, the molten rock drained out, leaving an empty channel behind.
               </p>
               <p>
-                Radar readings published in 2024 traced one such channel about forty-five meters in from the Tranquillity pit&apos;s opening, into the dark. The Moon&apos;s lower gravity allows a tube like this to grow far wider than anything caves
-                on Earth can manage, in some estimates wide enough to hold a small city. Nothing has been inside one, and the floors and walls are still as the lava left them.
+                Radar readings published in 2024 confirmed that the pit opens into a cave at least forty meters wide, reaching tens of meters back into the dark. On the Moon, lower gravity lets such tubes grow far wider than any cave on Earth; the
+                largest could in theory be wide enough to hold a small city. Nothing has been inside one, and the floors and walls are still as the lava left them.
               </p>
             </div>
           </div>
@@ -91,8 +91,9 @@ export default function Ch6() {
             </div>
             <div className={styles.copyBlock}>
               <p>
-                The Moon’s rotation is perfectly synced with its orbit around Earth. Because it takes the same amount of time to turn on its axis as it does to complete one orbit, the same side always faces us, and we never see the "back" of it. This
-                hidden hemisphere remained unseen until October 1959, when the Soviet Union's Luna 3 spacecraft orbited the Moon and captured history's first photographs of the region, revealing a landscape that defied expectations.
+                The Moon&apos;s rotation is perfectly synced with its orbit around Earth. Because it takes the same amount of time to turn on its axis as it does to complete one orbit, the same side always faces us, and we never see the
+                &ldquo;back&rdquo; of it. This hidden hemisphere remained unseen until October 1959, when the Soviet Union&apos;s Luna 3 spacecraft flew around the far side and sent back the first photographs of it, showing a landscape no one
+                expected.
               </p>
               <div className={styles.figurePair}>
                 <ChapterFigure credit={moonNearSideCredit} />
@@ -102,13 +103,15 @@ export default function Ch6() {
                 The face we see from Earth is mottled with wide dark plains formed by ancient lava. The far side has almost none of them: it is rougher, paler, more crowded with craters, with a crust that runs on average tens of kilometers thicker
                 than the side facing Earth. Deep inside, the two halves are just as mismatched; the near side is strangely warmer and packed with radioactive elements that seem missing from the far side.
               </p>
-              <p>For a body so small and so close to spherical, there is no clear reason for the two halves to differ this much. Despite decades of study, scientists have yet to reach a single consensus, though several compelling theories exist:</p>
+              <p>
+                For a body so small and so close to spherical, there is no clear reason for the two halves to differ this much. Despite decades of study, scientists have yet to reach a single consensus, though several theories have been proposed:
+              </p>
               <ul>
                 <li>
-                  <b>The "Big Splat" Theory</b>: A smaller, secondary moon once coexisted with ours before eventually colliding with the far side, leaving behind a thick layer of new crust.
+                  <b>The &ldquo;Big Splat&rdquo; Theory</b>: A smaller, secondary moon once coexisted with ours before eventually colliding with the far side, leaving behind a thick layer of new crust.
                 </li>
                 <li>
-                  <b>The Earthshine Theory</b>: Earth's early heat acted like a lamp; a molten Earth baked the near side to keep it liquid, while the shielded far side cooled quickly and formed a thicker crust first.
+                  <b>The Earthshine Theory</b>: Earth&apos;s early heat acted like a lamp: a molten Earth warmed the near side and kept it liquid, while the shielded far side cooled quickly and formed a thicker crust first.
                 </li>
                 <li>
                   <b>Internal Warming Hypotheses</b>: The Moon warmed up unevenly from the inside out, trapping hot, active magma under the near side while the far side quickly went cold and rigid.

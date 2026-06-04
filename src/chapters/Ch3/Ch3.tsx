@@ -78,8 +78,11 @@ const STEPS: ScrollyStep[] = [
     marker: '02  axial stabilization',
     content: (
       <>
-        <h3>The Moon steadies Earth&apos;s spin</h3>
-        <p>Earth spins at a tilt, leaning about 23.5 degrees away from an upright position relative to its orbit around the Sun. That lean is what gives us seasons, since across the year each hemisphere tips toward the Sun and then away from it.</p>
+        <h3>The Moon steadies Earth&apos;s tilt</h3>
+        <p>
+          Earth spins at a tilt, leaning about 23.5 degrees away from an upright position relative to its orbit around the Sun. That lean is what gives the planet seasons, since across the year each hemisphere tips toward the Sun and then away from
+          it.
+        </p>
         <p>The Moon's gravity helps hold that angle steady. Today the tilt drifts only about a degree either way over tens of thousands of years, and the Moon's pull is a large part of why it stays in such a narrow band.</p>
       </>
     ),

@@ -14,7 +14,7 @@ export const CHAPTERS = [
   {
     id: 'chapter-3',
     index: 3,
-    title: 'A partner that steadies us',
+    title: 'A partner that steadies Earth',
     question: 'Why does the Moon matter to Earth?',
   },
   {
