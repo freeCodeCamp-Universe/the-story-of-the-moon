@@ -19,11 +19,6 @@
   color: var(--color-text);
 }
 
-.intro p,
-.copyBlock p {
-  margin: 0;
-}
-
 .copyBlock p + p,
 .copyBlock p + ul,
 .copyBlock ul + p,
