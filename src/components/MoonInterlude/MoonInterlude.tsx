@@ -47,10 +47,21 @@ function generateStars(): Star[] {
     return seed / 4294967296;
   };
 
+  const MIN_DISTANCE = 0.085;
+  const MAX_ATTEMPTS = 24;
+  const placed: { x: number; y: number }[] = [];
+  const farEnough = (x: number, y: number) => placed.every(({ x: px, y: py }) => (x - px) ** 2 + (y - py) ** 2 >= MIN_DISTANCE ** 2);
+
   const stars: Star[] = [];
   for (let i = 0; i < 72; i += 1) {
-    const x = 0.02 + random() * 0.96;
-    const y = 0.04 + random() * 0.9;
+    let x = 0.02 + random() * 0.96;
+    let y = 0.04 + random() * 0.9;
+    for (let attempt = 1; attempt < MAX_ATTEMPTS && !farEnough(x, y); attempt += 1) {
+      x = 0.02 + random() * 0.96;
+      y = 0.04 + random() * 0.9;
+    }
+    placed.push({ x, y });
+
     const radius = 0.65 + random() * 1.7;
     const baseAlpha = 0.38 + random() * 0.42;
     const twinkle = 0.1 + random() * 0.2;
@@ -101,7 +112,8 @@ export function MoonInterlude() {
           opacity: star.low,
           background: STAR_COLOR,
         };
-        return <span key={index} className={styles.star} style={style} aria-hidden="true" />;
+        const tierClass = index % 3 === 1 ? styles.starTablet : index % 3 === 2 ? styles.starDesktop : undefined;
+        return <span key={index} className={tierClass ? `${styles.star} ${tierClass}` : styles.star} style={style} aria-hidden="true" />;
       })}
 
       <div className={styles.moonWrapper} aria-hidden="true">

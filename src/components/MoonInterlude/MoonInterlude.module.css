@@ -24,6 +24,23 @@
   animation-delay: var(--moon-star-delay);
 }
 
+.starTablet,
+.starDesktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .starTablet {
+    display: block;
+  }
+}
+
+@media (min-width: 900px) {
+  .starDesktop {
+    display: block;
+  }
+}
+
 .moonWrapper {
   position: absolute;
   inset-inline-start: 30cqi;
