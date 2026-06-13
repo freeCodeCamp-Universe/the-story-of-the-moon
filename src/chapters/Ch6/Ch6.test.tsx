@@ -1,7 +1,25 @@
 import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import Ch6 from './Ch6';
+
+beforeEach(() => {
+  // Ch6 now renders motion-aware scenes (LunarSwirlScene, WaterOriginMap) that
+  // read prefers-reduced-motion via window.matchMedia, which jsdom does not provide.
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 describe('Ch6', () => {
   it('should render Chapter 6 as three labeled sections with imagery', () => {

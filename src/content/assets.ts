@@ -362,6 +362,30 @@ const assets = [
     attributionText: 'Apollo 17 sample 70017, a vesicular high-titanium mare basalt. NASA Lunar Sample Curator, JSC.',
     alt: 'A dark lunar basalt sample from Apollo 17 with a rough, pitted surface, visible vesicles, and a small scale block at the lower right.',
   },
+  {
+    id: 'ch6-reiner-gamma',
+    file: 'ch6/reiner-gamma.jpg',
+    source: 'NASA Science, Lunar swirl Reiner Gamma',
+    sourceUrl: 'https://science.nasa.gov/resource/lunar-swirl-reiner-gamma/',
+    originalImageUrl: 'https://assets.science.nasa.gov/content/dam/science/psd/lunar-science/2023/09/reiner_gamma.jpg',
+    author: 'NASA / GSFC / Arizona State University',
+    license: 'PD-USGov-NASA',
+    licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
+    attributionText: 'Reiner Gamma lunar swirl, Lunar Reconnaissance Orbiter Camera. NASA / GSFC / Arizona State University.',
+    alt: 'A grayscale Lunar Reconnaissance Orbiter view of Reiner Gamma: a bright, tadpole-shaped swirl of high-reflectance material winding across the darker basalt plain of Oceanus Procellarum.',
+  },
+  {
+    id: 'ch6-m3-water-map',
+    file: 'ch6/m3-water-map.jpg',
+    source: 'USGS Astrogeology, Lunar M3 Water Map PDS4 Archive (DOI 10.17189/gmce-w279)',
+    sourceUrl: 'https://astrogeology.usgs.gov/search/map/lunar_m3_water_map_pds4_archive',
+    originalImageUrl: 'https://astrogeology.usgs.gov/ckan/dataset/214133c0-41ac-4417-ba43-21c814378e52/resource/fa61c4c6-b22d-4b53-8070-2e25260c265f/download/m3_lunarwater_sample.jpg',
+    author: 'USGS Astrogeology / Shuai Li et al. 2023',
+    license: 'PD-USGov-NASA',
+    licenseUrl: 'https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits',
+    attributionText: 'Global lunar surface water map from Moon Mineralogy Mapper (M3) data. USGS Astrogeology / Li et al. 2023.',
+    alt: "A global cylindrical-projection map of the Moon's surface water content from Moon Mineralogy Mapper data, shaded from low water near the equator to higher water toward the poles.",
+  },
 ] as const satisfies readonly AssetCredit[];
 
 export type AssetCreditId = (typeof assets)[number]['id'];

@@ -4,6 +4,7 @@ import { getAsset } from '@/content';
 import { Prose } from '@/components/Prose';
 import type { AssetCredit } from '@/types/content';
 
+import { LunarSwirlScene } from './LunarSwirlScene';
 import styles from './Ch6.module.css';
 
 type ChapterFigureProps = {
@@ -79,6 +80,34 @@ export default function Ch6() {
             </Prose>
           </div>
           <ChapterFigure credit={tranquillitatisCredit} />
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="ch6-swirl-heading">
+        <div className={styles.sectionContent}>
+          <div className={styles.textColumn}>
+            <div className={styles.sectionHeader}>
+              <h3 id="ch6-swirl-heading" className={styles.sectionTitle}>
+                Bright ground over buried magnets
+              </h3>
+            </div>
+            <Prose flush className={styles.copyBlock}>
+              <p>
+                Reiner Gamma looks like a splash of bright paint across the dark plains of the Moon's Oceanus Procellarum. Early observers took it for high ground, until they realized it casts no shadow, which meant it was completely flat. It's now
+                classified as a lunar swirl: a sweeping, highly reflective loop of brighter material that stands out against the darker soil around it.
+              </p>
+              <p>
+                Modern data shows that every swirl sits atop a localized magnetic anomaly, a patch where the crust is unusually magnetized. That supports the leading theory, that the field acts like a sunscreen against the solar wind. This steady
+                stream of particles from the Sun slowly darkens bare lunar soil over millions of years, but the magnetic bubble deflects it away. By this reading, the swirl isn't new material added to the surface. It may be the Moon's original
+                brightness, preserved.
+              </p>
+              <p>
+                This solar wind hypothesis is the leading explanation, not a settled one. A passing comet's gas, or dust sorted by the magnetism, could also draw the loops. To find out, NASA's Lunar Vertex mission will land a small rover and a set of
+                instruments directly inside Reiner Gamma. Expected to launch in the second half of 2026, it will spend about 13 days making the first measurements of a lunar swirl from the ground.
+              </p>
+            </Prose>
+          </div>
+          <LunarSwirlScene />
         </div>
       </section>
 

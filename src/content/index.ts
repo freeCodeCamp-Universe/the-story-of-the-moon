@@ -5,13 +5,15 @@ import magmaOceanRaw from './magma-ocean';
 import moonSamplesRaw from './moon-samples';
 import postcardsRaw from './postcards';
 import surfaceFeaturesRaw from './surface-features';
+import waterOriginsRaw from './water-origins';
 
-import type { Mission, AssetCredit, IsotopeBody, MagmaOceanStep, MoonSample, PostcardData, SurfaceFeature } from '@/types/content';
+import type { Mission, AssetCredit, IsotopeBody, MagmaOceanStep, MoonSample, PostcardData, SurfaceFeature, WaterOrigin } from '@/types/content';
 
 export const assets: readonly AssetCredit[] = assetsRaw;
 export const surfaceFeatures: readonly SurfaceFeature[] = surfaceFeaturesRaw;
 export const isotopeBodies: readonly IsotopeBody[] = isotopeBodiesRaw;
 export const magmaOcean: readonly MagmaOceanStep[] = magmaOceanRaw;
+export const waterOrigins: readonly WaterOrigin[] = waterOriginsRaw;
 
 // Enrich missions, moonSamples, and postcards by merging alt from the asset catalog
 // so that alt is available alongside src while asset metadata stays centralized.

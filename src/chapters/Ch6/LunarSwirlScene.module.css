@@ -1,0 +1,155 @@
+/* This component is the right-column visualization of the swirl section; the
+   section shell, heading, and prose live in Ch6. Sizing mirrors Ch6's .figure
+   (capped width, centered, justified to the column end on the two-column grid)
+   so it lines up with the figures in the other sections. */
+.viz {
+  display: grid;
+  gap: var(--space-md);
+  width: min(100%, 30rem);
+  min-width: 0;
+  justify-self: center;
+}
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  font-family: var(--font-mono);
+  /* Slightly below --text-sm so all three labels fit on one line. */
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.tab:hover {
+  border-color: var(--color-accent);
+}
+
+.tab[aria-selected='true'] {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-accent);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.tabpanel {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.tabpanel:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* The per-view explanation, sitting directly above the image. */
+.caption {
+  margin: 0;
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--line-height-prose);
+  color: var(--color-text);
+}
+
+/* The viz stays wide so the tabs fit on one line, but the portrait image
+   would be far too tall at that width. Cap the image alone and center it; the
+   whole frame (and its overlay) scale together, so cropping never desyncs the
+   annotation from the photo. */
+.figure {
+  margin-block: 0;
+  margin-inline: auto;
+  width: 100%;
+  max-inline-size: 30rem;
+}
+
+.figureFrame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.figureImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.figureImage > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* SVG annotation sits on top of the image, scaled to the same box. The viewBox
+   aspect (0.8) matches the image, so preserveAspectRatio="none" aligns without
+   distortion. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Field-line blue is intentionally NOT the canonical --color-accent: that blue
+   read as glare over the photo, and a flat mid-blue vanished into the gray mare.
+   This dimmed steel-blue plus a dark halo keeps the lines legible on the image.
+   Scene-local on purpose so the global palette stays the canonical fCC set. */
+.field {
+  stroke: #7aa7de;
+  filter: drop-shadow(0 0 2.5px #0d0d18) drop-shadow(0 0 1px #0d0d18);
+}
+
+/* Each annotation group is hidden by default (the "photo" view) and revealed by
+   the active view. Crossfade on toggle; reduced motion swaps instantly. */
+.darken,
+.field,
+.arrowsDeflected,
+.arrowsStraight {
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.overlay[data-view='shielded'] .field {
+  opacity: 1;
+}
+
+.overlay[data-view='shielded'] .arrowsDeflected {
+  opacity: 0.9;
+}
+
+.overlay[data-view='unshielded'] .arrowsStraight {
+  opacity: 0.9;
+}
+
+.overlay[data-view='unshielded'] .darken {
+  opacity: 0.92;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .darken,
+  .field,
+  .arrowsDeflected,
+  .arrowsStraight {
+    transition: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .viz {
+    justify-self: end;
+  }
+}
