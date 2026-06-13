@@ -3,6 +3,7 @@ import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
 import { getAsset, moonSamples } from '@/content';
 import { IsotopeMatchPlot } from './IsotopeMatchPlot';
+import { MagmaOceanSection } from './MagmaOceanSection';
 import styles from './Ch5.module.css';
 
 export default function Ch5() {
@@ -56,6 +57,7 @@ export default function Ch5() {
           pale crust at the surface, while heavier iron- and magnesium-rich minerals sank. Radioactive decay kept the deep interior hot, long enough for basalt lavas to keep pushing through the crust for more than a billion years after the highlands
           had hardened.
         </Prose>
+        <MagmaOceanSection />
       </section>
 
       <section className={styles.section}>

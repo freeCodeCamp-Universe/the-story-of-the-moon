@@ -80,6 +80,14 @@ export type IsotopeBody = {
   detail: string;
 };
 
+export type MagmaOceanStep = {
+  id: string;
+  /** Mono marker label shown above the controls and in the static legend, e.g. "Step 2 — Olivine sinks". */
+  marker: string;
+  /** One ESL-friendly sentence describing what happens at this step. Depths are labeled "approximate". */
+  caption: string;
+};
+
 export type PostcardPlacementAfter = 'ch1' | 'ch2' | 'ch3' | 'ch5';
 
 export type PostcardData<CreditId extends string = string> = {

@@ -1,0 +1,151 @@
+.figure {
+  max-width: var(--measure-wide);
+  margin-inline: auto;
+  margin-block: var(--space-2xl);
+  padding-inline: var(--space-lg);
+}
+
+.frame {
+  padding-inline: var(--space-lg);
+  padding-block: var(--space-xl);
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  /* Top-align so the step row keeps a fixed position when the caption length
+     changes between steps, instead of re-centering and jumping. */
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    grid-template-columns: minmax(0, 18rem) 1fr;
+    gap: var(--space-2xl);
+    padding-inline: var(--space-lg);
+  }
+}
+
+.stage {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.controlsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.marker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-accent-warm);
+}
+
+.caption {
+  margin: 0;
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* Step rail: a row of pill segments that share the width, mirroring Ch4's
+ * timeline rail. Each pill's accessible name is the full step marker; the active
+ * one is blue and slightly raised. The buttons pad out to a comfortable tap
+ * target around the thin visible pill. */
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.steps li {
+  flex: 1 1 0;
+  display: flex;
+}
+
+.step {
+  flex: 1 1 auto;
+  padding-block: var(--space-sm);
+  padding-inline: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.step:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.pill {
+  display: block;
+  inline-size: 100%;
+  block-size: 0.5rem;
+  border-radius: 999px;
+  background-color: var(--color-disabled);
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.step:hover .pill {
+  background-color: var(--color-text);
+}
+
+.step[data-active] .pill {
+  background-color: var(--color-accent);
+  transform: scaleY(1.4);
+}
+
+/* Fixed readout height keeps the panel from resizing as captions change. */
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-block-size: 5.5em;
+}
+
+/* Reduced-motion static legend. */
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.legendItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.legendCaption {
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.scaleNote {
+  margin-block-start: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}

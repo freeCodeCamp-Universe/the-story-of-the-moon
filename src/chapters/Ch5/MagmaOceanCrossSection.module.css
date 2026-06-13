@@ -1,0 +1,172 @@
+/* Magma-ocean cross-section. Temperature maps to the palette honestly: the
+ * molten interior is the warm accent glow (brightest deep, where it stays hot),
+ * the solid mantle is mid gray, and the floated crust is near-white (the bright
+ * highlands). Three regions only — kept at the chapter's altitude. */
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Depth axis (surface → deeper). */
+
+.axisLine,
+.axisArrow {
+  stroke: var(--color-text-muted);
+  stroke-width: 1.5;
+}
+
+.axisArrow {
+  fill: var(--color-text-muted);
+}
+
+.axisLabel {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+
+/* Molten interior. */
+
+.moltenHot {
+  stop-color: var(--color-accent-warm);
+}
+
+.moltenCool {
+  stop-color: #8a4a1c;
+}
+
+.wedgeEdge {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1.5;
+}
+
+/* Solid mantle: grows down from the surface as the cooling front descends. */
+
+.mantle {
+  fill: #54576a;
+  transform-box: fill-box;
+  transform-origin: top;
+  transform: scaleY(var(--front-scale, 0));
+}
+
+/* Pale anorthosite crust. */
+
+.crust {
+  fill: #eef0f2;
+}
+
+.crust:not([data-visible]) {
+  opacity: 0;
+}
+
+/* Region labels and their leader lines. */
+
+.leader {
+  stroke: var(--color-text-muted);
+  stroke-width: 1;
+}
+
+.regionLabelText {
+  fill: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 17px;
+}
+
+.regionLabel:not([data-visible]) {
+  opacity: 0;
+}
+
+/* Float / sink grains at the cooling step. Light grains rise toward the crust,
+ * dense grains settle toward the deep interior. */
+
+.driftUp,
+.driftDown {
+  transform-box: fill-box;
+}
+
+.driftUp {
+  fill: #dfe3e7;
+  animation: drift-up 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.5s);
+}
+
+.driftDown {
+  fill: #34343f;
+  animation: drift-down 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.5s);
+}
+
+@keyframes drift-up {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes drift-down {
+  0% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driftUp,
+  .driftDown {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Maria tie-back: the hot interior erupts up through the crust. */
+
+.eruptionPlume {
+  fill: none;
+  stroke: var(--color-accent-warm);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.eruption:not([data-visible]) {
+  opacity: 0;
+}
+
+/* Dark basalt pooled at the surface as the maria, the dark patches on the Moon. */
+
+.mariaPatch {
+  fill: #2a2a3a;
+}
+
+.maria:not([data-visible]) {
+  opacity: 0;
+}
+
+/* Transitions run only in the animated render path; the reduced-motion path
+ * renders the final state with everything already in place. */
+
+.animated .mantle,
+.animated .crust,
+.animated .regionLabel,
+.animated .eruption,
+.animated .maria {
+  transition:
+    transform var(--transition-slow),
+    opacity var(--transition-slow);
+}
