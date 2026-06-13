@@ -45,6 +45,13 @@ export type MoonSceneOptions = {
 
 const CAMERA_RADIUS_BASE = 2.5;
 const CAMERA_FOV_DEG = 45;
+// Features within this many degrees of a pole are treated as "polar": their
+// longitude is degenerate, so the camera ignores it and keeps its current
+// longitude instead (see setCameraTarget). That removes the azimuthal swing
+// around the pole that otherwise reads as a twist. The camera still tweens to
+// the feature's true latitude, so a polar feature lands centered — at the cost
+// of resting very close to the lookAt up-vector singularity at the pole.
+const CAMERA_POLAR_THRESHOLD_DEG = 85;
 // Sphere (radius 1) plus a little breathing room. Used to pick the
 // camera distance that keeps the whole disc inside the canvas on the
 // narrower of the two axes.
@@ -226,9 +233,18 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   let tweenTargetLon = options?.initialTarget?.lon ?? 0;
 
   const setCameraTarget = (target: { lat: number; lon: number }) => {
+    // Near a pole, longitude is degenerate. Forcing the camera to travel to
+    // the feature's longitude makes it circle the pole, and azimuthal motion
+    // that close to the pole reads as roll — the visible "twist" when
+    // targeting Shackleton (-89.67°) from a feature at a very different
+    // longitude. So for polar features we keep the camera's current longitude
+    // and only change latitude: a clean pitch up the meridian it's already on.
+    // The feature's true lat/lon is used by projectFeature for the label, so
+    // the annotation stays anchored.
+    const isPolar = Math.abs(target.lat) > CAMERA_POLAR_THRESHOLD_DEG;
     tweenTargetLat = target.lat;
-    tweenTargetLon = target.lon;
-    const { x, y, z } = latLonToCameraPosition(target.lat, target.lon, cameraRadius);
+    tweenTargetLon = isPolar ? cameraPositionToLatLon(camera.position).lon : target.lon;
+    const { x, y, z } = latLonToCameraPosition(tweenTargetLat, tweenTargetLon, cameraRadius);
     tweenFrom.copy(camera.position);
     tweenTo.set(x, y, z);
     tweenStart = performance.now();
