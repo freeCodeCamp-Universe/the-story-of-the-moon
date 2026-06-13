@@ -1,15 +1,9 @@
 .intro {
-  max-width: var(--prose-width);
-  margin-inline: auto;
-  padding-inline: var(--space-lg);
+  margin-bottom: var(--space-3xl);
   font-family: var(--font-prose);
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text);
-}
-
-.intro {
-  margin-bottom: var(--space-3xl);
 }
 
 .copyBlock {
@@ -17,15 +11,6 @@
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text);
-}
-
-.copyBlock p + p,
-.copyBlock p + ul,
-.copyBlock ul + p,
-.copyBlock p + .figurePair,
-.copyBlock .figurePair + p,
-.copyBlock .figurePair + ul {
-  margin-top: var(--space-lg);
 }
 
 .copyBlock ul {
@@ -42,9 +27,10 @@
 }
 
 .section {
-  max-width: 84rem;
+  max-width: var(--measure-frame);
   margin-inline: auto;
-  padding: var(--space-xl) var(--space-lg);
+  padding-block: var(--space-xl);
+  padding-inline: var(--gutter);
 }
 
 .sectionContent {
@@ -54,6 +40,11 @@
 
 .textColumn {
   min-width: 0;
+  /* Single-column layout (below 900px): center the copy at the reading
+     measure so it aligns with the centered intro instead of hugging the
+     gutter. The ≥900px grid resets this — the cell owns the width there. */
+  max-inline-size: var(--measure-text);
+  margin-inline: auto;
 }
 
 .sectionHeader {
@@ -131,13 +122,20 @@
 
 @media (min-width: 900px) {
   .section {
-    padding: var(--space-2xl) var(--space-5xl);
+    padding-block: var(--space-2xl);
   }
 
   .sectionContent {
     grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
     align-items: start;
     gap: var(--space-xl);
+  }
+
+  /* The grid cell owns the text width here; drop the single-column
+     measure cap + centering so the copy fills its column. */
+  .textColumn {
+    max-inline-size: none;
+    margin-inline: 0;
   }
 
   /* This section keeps the standard grid (1.1fr / 0.9fr) so textColumn

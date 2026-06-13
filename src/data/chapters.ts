@@ -27,7 +27,7 @@ export const CHAPTERS = [
     id: 'chapter-5',
     index: 5,
     title: 'What the rocks told us',
-    question: 'What did the Apollo samples actually reveal?',
+    question: 'What did the Apollo samples reveal?',
   },
   {
     id: 'chapter-6',

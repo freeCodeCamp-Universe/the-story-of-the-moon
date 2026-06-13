@@ -13,10 +13,12 @@
 
 /* ── Header strip (eyebrow + heading), constrained to prose column ── */
 
+/* Mirror the <Prose> text tier exactly (measure + gutter + centering) so the
+   chapter title and body share one reading column and align edge to edge. */
 .header {
-  max-width: var(--prose-width);
+  max-inline-size: calc(var(--measure-text) + 2 * var(--gutter));
   margin-inline: auto;
-  padding-inline: var(--space-lg);
+  padding-inline: var(--gutter);
   margin-bottom: var(--space-2xl);
 }
 

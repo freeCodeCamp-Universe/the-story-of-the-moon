@@ -135,17 +135,6 @@ button:focus-visible {
   display: block;
 }
 
-/* Prose column — narrow, centered reading column */
-.prose-column {
-  max-width: var(--prose-width);
-  margin-inline: auto;
-  padding-inline: var(--space-lg);
-}
-
-.prose-column p + p {
-  margin-top: var(--space-lg);
-}
-
 /* ── Motion: honor user preference ──────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

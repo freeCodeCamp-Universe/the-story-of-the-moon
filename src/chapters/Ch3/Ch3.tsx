@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Prose } from '@/components/Prose';
 import { ScrollyChapter, type ScrollyStep } from '@/components/ScrollyChapter/ScrollyChapter';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useViewportActivity } from '@/hooks/useViewportActivity';
@@ -54,7 +55,7 @@ const STEP_STATES: Record<string, StepState> = {
 const STEPS: ScrollyStep[] = [
   {
     id: 'tidal-bulges',
-    marker: '01  tides',
+    marker: 'tides',
     content: (
       <>
         <h3>Tides are the Moon&apos;s most visible signature</h3>
@@ -75,7 +76,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'axial-stabilization',
-    marker: '02  axial stabilization',
+    marker: 'axial stabilization',
     content: (
       <>
         <h3>The Moon steadies Earth&apos;s tilt</h3>
@@ -89,7 +90,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'without-moon',
-    marker: '03  without the moon',
+    marker: 'without the moon',
     content: (
       <>
         <h3>A moonless Earth would wander</h3>
@@ -107,7 +108,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'full-moon-alignment',
-    marker: '04  full moon',
+    marker: 'full moon',
     content: (
       <>
         <h3>When sunlight is reflected straight back to Earth</h3>
@@ -120,7 +121,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'lunar-eclipse-alignment',
-    marker: '05  lunar eclipse',
+    marker: 'lunar eclipse',
     content: (
       <>
         <h3>When sunlight is filtered through Earth's atmosphere</h3>
@@ -134,7 +135,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'eclipse-alignment',
-    marker: '06  solar eclipse',
+    marker: 'solar eclipse',
     content: (
       <>
         <h3>When sunlight is blocked by the Moon</h3>
@@ -239,9 +240,9 @@ export default function Ch3() {
 
   return (
     <>
-      <div className={styles.intro}>
+      <Prose className={styles.intro}>
         <IntroProse />
-      </div>
+      </Prose>
       <ScrollyChapter variant="immersive" ariaLabel="The Earth-Moon system" initialStepId={STEPS[0].id} onActiveStepChange={handleActiveStepChange} visual={<Ch3Visual activeStepId={activeStepId} animate={!reducedMotion} />} steps={STEPS} />
     </>
   );

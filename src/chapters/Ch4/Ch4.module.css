@@ -4,18 +4,11 @@
  * prefers-reduced-motion (handled in JS by switching to <StaticTimeline>). */
 
 .intro {
-  max-width: var(--prose-width);
-  margin-inline: auto;
-  padding-inline: var(--space-lg);
   margin-bottom: var(--space-3xl);
   font-family: var(--font-prose);
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text);
-}
-
-.intro p + p {
-  margin-top: var(--space-lg);
 }
 
 .srOnly {
@@ -85,7 +78,7 @@
   height: var(--stage-height);
   display: flex;
   flex-direction: column;
-  max-width: 84rem;
+  max-width: var(--measure-frame);
   margin-inline: auto;
 }
 
@@ -413,9 +406,9 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-width: 84rem;
+  max-width: var(--measure-frame);
   margin-inline: auto;
-  padding-inline: var(--space-lg);
+  padding-inline: var(--gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
@@ -466,10 +459,10 @@
 /* ── Diptych closing ─────────────────────────────────────────────── */
 
 .diptych {
-  max-width: 80rem;
+  max-width: var(--measure-frame);
   margin-inline: auto;
   margin-top: var(--space-3xl);
-  padding-inline: var(--space-lg);
+  padding-inline: var(--gutter);
   padding-bottom: var(--space-3xl);
 }
 
@@ -538,13 +531,10 @@
 }
 
 .diptychTie {
-  max-width: var(--prose-width);
-  margin-inline: auto;
   font-family: var(--font-prose);
   font-size: var(--text-body);
   line-height: var(--line-height-prose);
   color: var(--color-text);
-  padding-inline: var(--space-lg);
 }
 
 .diptychTie + .diptychTie {

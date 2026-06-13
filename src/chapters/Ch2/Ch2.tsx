@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type Poin
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { Prose } from '@/components/Prose';
 import { ScrollyChapter } from '@/components/ScrollyChapter/ScrollyChapter';
 import { getAsset, surfaceFeatures } from '@/content';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -417,9 +418,9 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
   if (reducedMotion) {
     return (
       <>
-        <div className={styles.intro}>
+        <Prose className={styles.intro}>
           <IntroProse shortcutsEnabled={shortcutsEnabled} />
-        </div>
+        </Prose>
         <section aria-labelledby={surfaceFeaturesHeadingId}>
           <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
             Surface features of the Moon
@@ -447,9 +448,9 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
 
   return (
     <>
-      <div className={styles.intro}>
+      <Prose className={styles.intro}>
         <IntroProse shortcutsEnabled={shortcutsEnabled} />
-      </div>
+      </Prose>
       <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
         Surface features of the Moon
       </h3>

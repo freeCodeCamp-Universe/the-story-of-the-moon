@@ -6,7 +6,7 @@
      renders near full scale. Axis titles and units are HTML, not SVG. */
   --chart-tick: 18px;
 
-  max-width: 56rem;
+  max-width: var(--measure-wide);
   /* Match the prose/.compare gutter so the panel never touches the edge. */
   padding-inline: var(--space-lg);
   margin-inline: auto;

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { missions, getAsset } from '@/content';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { Prose } from '@/components/Prose';
 import type { Mission } from '@/types/content';
 import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
 import styles from './Ch4.module.css';
@@ -76,9 +77,9 @@ function MissionPanel({ mission }: { mission: Mission }) {
           </h3>
           <p className={styles.crew}>{mission.crew.join(' · ')}</p>
           {mission.prose.map((p, i) => (
-            <p key={i} className={styles.prose}>
+            <Prose as="p" width="full" key={i} className={styles.prose}>
               {p}
-            </p>
+            </Prose>
           ))}
         </div>
         <figure className={styles.panelPhoto}>
@@ -375,13 +376,13 @@ function Diptych() {
           </figure>
         )}
       </div>
-      <p className={styles.diptychTie}>
+      <Prose as="p" className={styles.diptychTie}>
         In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void. Bill Anders captured the moment spontaneously during an unplanned pause in their schedule, and said afterward
         that they had come to explore the Moon and ended up discovering Earth. The picture he brought back changed how the planet saw itself.
-      </p>
-      <p className={styles.diptychTie}>
+      </Prose>
+      <Prose as="p" className={styles.diptychTie}>
         Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up, taking Earthset as Earth slipped behind the lunar horizon. This time, looking backward was a deliberate act of self-discovery.
-      </p>
+      </Prose>
     </section>
   );
 }
@@ -396,7 +397,7 @@ export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
 
   return (
     <>
-      <div className={styles.intro}>
+      <Prose className={styles.intro}>
         <p>
           The Apollo program began in 1961 with the objective of landing humans on the Moon and returning them safely to Earth. The goal was achieved through a systematic roadmap of discovery, where each mission served as a vital prerequisite for the
           next.
@@ -405,7 +406,7 @@ export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
           This progression established the foundation for our return to deep space. From the pioneering lunar orbits of Apollo 8 to the completion of Artemis II, every mission in this sequence represents a necessary step in the ongoing evolution of
           lunar exploration.
         </p>
-      </div>
+      </Prose>
 
       {mode === 'animated' ? <PinnedTimeline steps={steps} shortcutsEnabled={shortcutsEnabled} /> : <StaticTimeline steps={steps} />}
 

@@ -1,5 +1,6 @@
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { Prose } from '@/components/Prose';
 import { getAsset } from '@/content';
 import GiantImpactDiagram from './GiantImpactDiagram';
 import styles from './Ch1.module.css';
@@ -14,7 +15,7 @@ export default function Ch1() {
         {asset && <CreditCaption credit={asset} />}
       </div>
 
-      <div className={styles.prose}>
+      <Prose className={styles.prose}>
         <p className={styles.paragraph}>
           The Moon is unusually large for the body it orbits. It's about a quarter of Earth&apos;s diameter, more like a small companion world than the tiny satellites that circle other rocky planets. Any account of where the Moon came from has to
           explain that size, alongside its unique chemical composition and orbital mechanics.
@@ -29,11 +30,11 @@ export default function Ch1() {
           Most of Theia would have merged into Earth. The rest, mixed with material torn from Earth&apos;s mantle, formed a glowing disk around the planet. Over time, the disk cooled and clumped together, and the largest clump pulled itself into a
           sphere. That sphere became the Moon.
         </p>
-      </div>
+      </Prose>
 
       <GiantImpactDiagram />
 
-      <div className={styles.prose}>
+      <Prose className={styles.prose}>
         <p className={styles.paragraph}>The giant-impact hypothesis remains the favored model because it explains anomalies that other theories cannot:</p>
         <ul>
           <li>
@@ -58,7 +59,7 @@ export default function Ch1() {
           The newborn Moon began hot. Its surface was a magma ocean, deep enough to remain liquid for millions of years. As the magma cooled, lighter minerals floated to the top and crystallized into a pale crust. That crust is the lunar highlands
           you can still see from Earth, the bright regions that frame the darker patches. Heavier iron and nickel sank inward to form the small core.
         </p>
-      </div>
+      </Prose>
     </>
   );
 }

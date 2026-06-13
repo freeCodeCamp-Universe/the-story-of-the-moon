@@ -1,8 +1,9 @@
 /* Ch5 — static chapter: prose column + paired sample photos.
  *
  * The section owns no width; each block sets its own, mirroring how
- * Chapter.body works one level up. Prose blocks stay at --prose-width,
- * while wider blocks (the isotope plot) can sit inline at their own width. */
+ * Chapter.body works one level up. Prose blocks render through <Prose>
+ * (--measure-text), while wider blocks (the isotope plot) sit inline at
+ * their own width. */
 
 .section {
   margin-block-start: var(--space-2xl);
@@ -13,10 +14,7 @@
 }
 
 .heading {
-  max-width: var(--prose-width);
-  margin-inline: auto;
   margin-block: 0 var(--space-lg);
-  padding-inline: var(--space-lg);
   font-weight: 700;
   color: var(--color-text);
   line-height: var(--line-height-heading);
@@ -24,26 +22,17 @@
 }
 
 .paragraph {
-  max-width: var(--prose-width);
-  margin-inline: auto;
   margin-block-end: var(--space-lg);
-  padding-inline: var(--space-lg);
 }
 
 .paragraph:last-child {
   margin-block-end: 0;
 }
 
-.intro {
-  max-width: var(--prose-width);
-  margin: 0 auto;
-  padding-inline: var(--space-lg);
-}
-
 /* Paired sample photos: basalt vs. anorthosite */
 
 .compare {
-  max-width: 72rem;
+  max-width: var(--measure-frame);
   margin-inline: auto;
   margin-block: var(--space-lg);
   padding-inline: var(--space-lg);
@@ -57,11 +46,18 @@
   .compare {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-2xl);
+    padding-inline: var(--gutter);
   }
 }
 
 .sample {
-  margin: 0;
+  margin-bottom: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .sample {
+    margin-bottom: 0;
+  }
 }
 
 .sampleCaption {

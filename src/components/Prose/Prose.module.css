@@ -1,0 +1,39 @@
+/* Shared reading column. Owns measure + centering + gutter + vertical rhythm.
+   The gutter sits OUTSIDE the measure (box-sizing is border-box globally), so
+   the reading width stays at --measure-text no matter how wide the gutter grows. */
+.prose {
+  max-inline-size: calc(var(--measure-text) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* `:not(:first-child)` (specificity 0,2,0) beats a chapter's single-class
+   `margin: 0` reset, so the inter-block rhythm can't be silently canceled. */
+.prose > :not(:first-child) {
+  margin-block-start: var(--space-lg);
+}
+
+/* Measure cap only — for prose nested in a cell whose parent already owns the
+   gutter. Caps the text itself at --measure-text (no added gutter). */
+.flush {
+  max-inline-size: var(--measure-text);
+  padding-inline: 0;
+  margin-inline: 0;
+}
+
+.wide {
+  max-inline-size: var(--measure-wide);
+}
+
+.frame {
+  max-inline-size: var(--measure-frame);
+}
+
+/* Fill the parent: no measure cap, no centering, no gutter. For prose
+   inside a cell that already owns its width (e.g. a card column), where
+   capping to the reading measure would leave the text short of the edge. */
+.full {
+  max-inline-size: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}

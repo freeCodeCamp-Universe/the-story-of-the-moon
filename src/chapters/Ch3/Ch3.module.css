@@ -1,9 +1,6 @@
 /* Ch3 — Chapter 3: sticky Sun/Earth/Moon + stepped beats. */
 
 .intro {
-  max-width: var(--prose-width);
-  margin-inline: auto;
-  padding-inline: var(--space-lg);
   margin-bottom: var(--space-3xl);
   font-family: var(--font-prose);
   font-size: var(--text-body-mobile);
@@ -15,10 +12,6 @@
   .intro {
     font-size: var(--text-body);
   }
-}
-
-.intro p + p {
-  margin-top: var(--space-lg);
 }
 
 /* ── Visual slot ─────────────────────────────────────────────────── */

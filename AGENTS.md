@@ -17,6 +17,8 @@ These instructions apply to the whole repository unless a more specific instruct
 - Use CSS modules for component and chapter styling.
 - Keep styles colocated with the component or chapter that owns them.
 - Reuse existing tokens and global styles before introducing new one-off values.
+- For content width, use the `--measure-*` ladder in `src/styles/tokens.css` (`--measure-text` for reading columns, `--measure-wide` for charts beside a legend, `--measure-frame` for multi-column framed sections, `--measure-stage` for full-bleed interactive stages) and `--gutter` for the side safe-zone. Do not reintroduce one-off `max-width` rem values for content.
+- For running prose, render the shared `<Prose>` component (`src/components/Prose/`) rather than re-declaring per-chapter measure + centering + gutter + `p + p` rhythm. Use `width="text|wide|frame"` for the tier and `flush` when a parent layout cell already owns the gutter.
 - Do not introduce inline styles unless there is a clear technical need that matches an existing repo pattern.
 
 ## Breakpoints

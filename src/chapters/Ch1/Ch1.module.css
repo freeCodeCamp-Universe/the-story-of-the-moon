@@ -25,7 +25,7 @@
 /* Constrain the full-bleed feel on very wide screens so the image
  * doesn't dominate ultrawide monitors. */
 .imageWrapper {
-  max-width: 120rem;
+  max-width: var(--measure-stage);
   margin-inline: auto;
   padding-inline: var(--space-lg);
 }
@@ -39,9 +39,6 @@
 /* ── Prose column ────────────────────────────────────────────────── */
 
 .prose {
-  max-width: var(--prose-width);
-  margin-inline: auto;
-  padding-inline: var(--space-lg);
   padding-top: var(--space-xl);
   padding-bottom: var(--space-2xl);
   font-family: var(--font-prose);
@@ -60,12 +57,6 @@
 
 .paragraph {
   margin: 0;
-}
-
-.paragraph + .paragraph,
-.paragraph + ul,
-.prose ul + .paragraph {
-  margin-top: var(--space-lg);
 }
 
 .prose ul {
