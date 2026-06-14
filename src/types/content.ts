@@ -88,6 +88,14 @@ export type MagmaOceanStep = {
   caption: string;
 };
 
+export type WaterOrigin = {
+  id: string;
+  /** Short suspect name shown as the prose subheading, e.g. "Solar wind". */
+  name: string;
+  /** One ESL-friendly paragraph: the claim, the support for it, and the doubt against it. */
+  prose: string;
+};
+
 export type PostcardPlacementAfter = 'ch1' | 'ch2' | 'ch3' | 'ch5';
 
 export type PostcardData<CreditId extends string = string> = {

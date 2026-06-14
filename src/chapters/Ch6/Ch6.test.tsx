@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Ch6 from './Ch6';
 
 beforeEach(() => {
-  // Ch6 now renders motion-aware scenes (LunarSwirlScene, WaterOriginMap) that
+  // Ch6 now renders motion-aware scenes (LunarSwirlScene, PolarIceFigure) that
   // read prefers-reduced-motion via window.matchMedia, which jsdom does not provide.
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -46,6 +46,17 @@ describe('Ch6', () => {
       "Near side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, with broad dark maria spread across the face.",
       "Far side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, showing a brighter, densely cratered surface with almost no dark maria.",
     ]);
+  });
+
+  it('should render the water-origin section with the three suspects and standoff as prose', () => {
+    render(<Ch6 />);
+
+    const waterSection = screen.getByRole('region', { name: /Water on the Moon/i });
+
+    for (const name of ['Solar wind', 'Comets and asteroids', 'Primordial']) {
+      expect(within(waterSection).getByText(name, { selector: 'b' })).toBeInTheDocument();
+    }
+    expect(within(waterSection).getByText(/No single theory has won/)).toBeInTheDocument();
   });
 
   it('should no longer render article cards for the chapter content', () => {

@@ -1,0 +1,265 @@
+/* Right-column figure for the water-origin section. Sizing mirrors Ch6's
+   .figure / LunarSwirlScene's .viz (capped width, centered in the grid cell)
+   so it lines up with the figures in the other sections. The section shell,
+   heading, and prose live in Ch6. */
+.figure {
+  display: grid;
+  gap: var(--space-md);
+  width: min(100%, 28rem);
+  min-width: 0;
+  margin: 0;
+  justify-self: center;
+}
+
+/* Controls above the image: the primary pole selector, then the smaller,
+   secondary highlight toggle beneath it. */
+.controls {
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+  margin-bottom: var(--space-md);
+}
+
+.poleGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: start;
+}
+
+.option {
+  display: inline-flex;
+}
+
+/* Real radio inputs, visually hidden but focusable. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shared control look, matching the "Bright ground over buried magnets"
+   section's tabs: rectangular (not pill), mono, accent text, bordered, with a
+   surface fill when active. Used for both the pole selector and the highlight
+   toggle so they read as the same control family. */
+.button {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.button:hover {
+  border-color: var(--color-accent);
+}
+
+.input:checked + .button {
+  border-color: var(--color-accent);
+  background-color: var(--color-bg-surface);
+}
+
+.input:focus-visible + .button {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Secondary highlight control, a switch rather than a button so it reads as a
+   different kind of control (an on/off layer) rather than a peer of the pole
+   selector. Shape and size mirror the NavStrip keyboard-shortcut toggle, but in
+   the neutral gray/white scheme rather than accent. End-aligned. */
+.switch {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.switchLabel {
+  color: var(--color-text);
+}
+
+.switchInput {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.switchInput:focus-visible + .switchTrack {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.switchTrack {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  inline-size: 4rem;
+  block-size: 2rem;
+  padding-inline: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.35rem;
+  background-color: var(--color-bg);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.switchTrack::after {
+  content: 'OFF';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.55rem;
+  inset-inline-start: auto;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1;
+  text-align: end;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.switchThumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.25rem;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: 999px;
+  background-color: var(--color-text-muted);
+  transform: translateY(-50%);
+  transition:
+    inset-inline-start var(--transition-fast),
+    inset-inline-end var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.switchInput:checked + .switchTrack {
+  border-color: var(--color-text);
+  background-color: var(--color-bg-surface);
+}
+
+.switchInput:checked + .switchTrack::after {
+  content: 'ON';
+  inset-inline-start: 0.55rem;
+  inset-inline-end: auto;
+  text-align: start;
+  color: var(--color-text);
+}
+
+.switchInput:checked + .switchTrack .switchThumb {
+  inset-inline-start: auto;
+  inset-inline-end: 0.25rem;
+  background-color: var(--color-text);
+}
+
+/* Circular viewport: the polar disc is inscribed in the square source image,
+   so a 50% radius clips exactly to the disc edge. */
+.viewport {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+}
+
+.baseLayer {
+  position: absolute;
+  inset: 0;
+  block-size: 100%;
+  object-fit: cover;
+  transition: filter var(--transition-slow);
+}
+
+/* Precomputed ice overlay: the cyan detections keyed out of the composite and
+   brightened, so the highlight lifts them clear of the dimmed relief. */
+.iceLayer {
+  position: absolute;
+  inset: 0;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-slow);
+}
+
+.isHighlighting .baseLayer {
+  filter: grayscale(1) brightness(0.32);
+}
+
+.isHighlighting .iceLayer {
+  opacity: 1;
+}
+
+/* Reduced-motion / no-pointer fallback: both poles, static, side by side so the
+   asymmetry reads without interaction. */
+.staticPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.staticItem {
+  display: grid;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.staticImage {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.staticLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.figcaption {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .baseLayer,
+  .iceLayer,
+  .button,
+  .switchTrack,
+  .switchThumb {
+    transition: none;
+  }
+}

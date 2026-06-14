@@ -5,6 +5,7 @@ import { Prose } from '@/components/Prose';
 import type { AssetCredit } from '@/types/content';
 
 import { LunarSwirlScene } from './LunarSwirlScene';
+import { PolarIceFigure } from './PolarIceFigure';
 import styles from './Ch6.module.css';
 
 type ChapterFigureProps = {
@@ -50,12 +51,46 @@ export default function Ch6() {
               <p>Near the Moon&apos;s poles, the floors of some craters have stayed in darkness for around two billion years, because the Sun never quite lifts above the rim.</p>
               <p>
                 With no sunlight to warm them, the deepest of these floors sit close to minus 240 degrees Celsius, among the coldest places measured anywhere in the solar system. Anything that has fallen into them, whether comet fragments, asteroid
-                dust, or particles carried in by the solar wind, has had nowhere to go and is still there.
+                dust, or particles carried in by the solar wind, has had nowhere to go and is still there. Water ice is part of what accumulated, frozen into the soil.
               </p>
-              <p>From orbit, instruments have detected water ice on the surface and measured the rough shape and temperature. But nothing has reached the floor of one.</p>
+              <p>From orbit, instruments have detected it by mapping hydrogen and measuring temperature. But nothing has reached the floor of these craters to sample it.</p>
             </Prose>
           </div>
           <ChapterFigure credit={erlangerCredit} />
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="ch6-water-heading">
+        <div className={styles.sectionContent}>
+          <div className={styles.textColumn}>
+            <div className={styles.sectionHeader}>
+              <h3 id="ch6-water-heading" className={styles.sectionTitle}>
+                Water on the Moon
+              </h3>
+            </div>
+            <Prose flush className={styles.copyBlock}>
+              <p>
+                Despite looking completely bone-dry, the Moon hides water in several places. Satellites can detect trace water molecules scattered across the sunlit surface, tiny glass beads formed by asteroid impacts lock water deep inside the soil,
+                and massive reserves of ice sit frozen inside permanently shadowed craters at the lunar poles. How all this water got there is a major scientific debate centered on three competing possibilities:
+              </p>
+              <ul>
+                <li>
+                  <b>The Sun</b>: The solar wind constantly streams hydrogen onto the Moon, where it bonds with oxygen in the soil to create water. Soil samples brought back by China&apos;s Chang&apos;e-6 mission show evidence of this process, but it
+                  only explains the water found on the very top layer, leaving deeper deposits a mystery.
+                </li>
+                <li>
+                  <b>Comets and asteroids</b>: Icy comets and asteroids heavily bombarded the early Moon, leaving water behind when they crashed. While some Apollo samples chemically match these space rocks, scientists question how that water could
+                  have survived the extreme heat of the Moon&apos;s early, molten magma ocean.
+                </li>
+                <li>
+                  <b>Ancient Earth</b>: The Moon might have inherited water directly from the original planetary material that built it. Deep interior signatures in certain Apollo rocks match Earth&apos;s own chemistry, but the violent collision that
+                  originally broke the Moon away from Earth should have vaporized those volatiles.
+                </li>
+              </ul>
+              <p>A single conclusion remains out of reach because different rocks offer contradictory histories, and no spacecraft has yet sampled the polar ice to settle the question. The water is real, but its origin remains a mystery.</p>
+            </Prose>
+          </div>
+          <PolarIceFigure />
         </div>
       </section>
 
@@ -102,8 +137,8 @@ export default function Ch6() {
                 brightness, preserved.
               </p>
               <p>
-                This solar wind hypothesis is the leading explanation, not a settled one. A passing comet's gas, or dust sorted by the magnetism, could also draw the loops. To find out, NASA's Lunar Vertex mission will land a small rover and a set of
-                instruments directly inside Reiner Gamma. Expected to launch in the second half of 2026, it will spend about 13 days making the first measurements of a lunar swirl from the ground.
+                This solar wind hypothesis is the leading explanation, not a settled one. A passing comet's gas, or dust sorted by the magnetism, could also draw the loops. NASA's Lunar Vertex mission is planned to land instruments directly inside
+                Reiner Gamma, which would be the first measurements of a lunar swirl taken from the ground.
               </p>
             </Prose>
           </div>
