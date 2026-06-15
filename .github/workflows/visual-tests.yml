@@ -10,15 +10,13 @@ jobs:
   visual:
     name: Visual regression
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.61.0-noble
-      options: --user 1001
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 24 }
       - uses: pnpm/action-setup@v3
         with: { run_install: true }
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:visual
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

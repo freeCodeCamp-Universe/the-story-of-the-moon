@@ -35,19 +35,16 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    container:
-      image: mcr.microsoft.com/playwright:v1.61.0-noble
-      options: --user 1001
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ needs.resolve.outputs.ref }}
           fetch-depth: 0
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 24 }
       - uses: pnpm/action-setup@v3
         with: { run_install: true }
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:visual:update
       - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7
         with:
