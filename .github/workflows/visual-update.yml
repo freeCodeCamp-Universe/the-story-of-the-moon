@@ -1,10 +1,6 @@
 name: Visual Update
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: Branch to (re)generate baselines on
-        required: true
   issue_comment:
     types: [created]
 jobs:
@@ -25,7 +21,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "ref=${{ github.event.inputs.ref }}" >> "$GITHUB_OUTPUT"
+            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
           else
             ref=$(gh pr view "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --json headRefName -q .headRefName)
             echo "ref=$ref" >> "$GITHUB_OUTPUT"
