@@ -265,10 +265,21 @@ describe('Ch2', () => {
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
   });
 
-  it('should preserve the same heading hierarchy in the reduced-motion fallback', () => {
+  it('should render the interactive sphere with reduced motion enabled instead of a static per-feature fallback', async () => {
     reducedMotion = true;
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+
     render(<Ch2 />);
 
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+    expect(createMoonScene).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ reducedMotion: true }));
+
+    // Same heading hierarchy as the motion path: one h3 plus one h4 per feature.
     expect(
       screen.getByRole('heading', {
         level: 3,
@@ -276,6 +287,10 @@ describe('Ch2', () => {
       })
     ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(surfaceFeatures.length);
+
+    // The old fallback shipped one static globe image per feature; the
+    // unified sphere path renders none of those.
+    expect(screen.queryByRole('img', { name: /is located at/i })).not.toBeInTheDocument();
   });
 
   it('should render each surface-feature description as separate paragraphs', () => {

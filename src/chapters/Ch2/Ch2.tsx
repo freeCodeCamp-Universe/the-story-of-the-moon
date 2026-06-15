@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
 import { Kbd } from '@/components/Kbd/Kbd';
@@ -35,7 +35,10 @@ function getFeatureLabelText(feature: Pick<SurfaceFeature, 'name' | 'lat' | 'lon
   };
 }
 
-function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
+function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFeature; reducedMotion: boolean }) {
+  // Reduced motion: the camera snaps to each feature with no tween, so the
+  // annotation can appear immediately rather than waiting for a tween to land.
+  const labelRevealDelay = reducedMotion ? 0 : 950;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<MoonSceneHandle>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -110,9 +113,9 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       hideTimer.current = window.setTimeout(() => {
         setLabelText(getFeatureLabelText(feature));
         setAnnotationVisibility(true);
-      }, 950);
+      }, labelRevealDelay);
     }, 1200);
-  }, [clearRotationAnnouncement, setAnnotationVisibility]);
+  }, [clearRotationAnnouncement, labelRevealDelay, setAnnotationVisibility]);
 
   useEffect(() => {
     if (!sceneReady || isInteractingRef.current) {
@@ -144,6 +147,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
           // Controls are enabled so the reader can free-rotate the Moon
           // by dragging. Scroll-step re-targeting is handled below.
           enableOrbitControls: true,
+          reducedMotion,
           initialTarget: {
             lat: activeFeatureRef.current.lat,
             lon: activeFeatureRef.current.lon,
@@ -168,7 +172,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, [clearRotationAnnouncement, isVisible, shouldLoadScene]);
+  }, [clearRotationAnnouncement, isVisible, reducedMotion, shouldLoadScene]);
 
   useEffect(() => {
     if (!sceneReady || !sceneRef.current) {
@@ -277,7 +281,15 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
   // reader to scroll away and back. Skip if the reader is currently
   // dragging — the idle timer in the interaction effect will re-center
   // when they let go.
-  useEffect(() => {
+  //
+  // Runs in a layout effect (before paint) so the camera is retargeted
+  // before the next animation frame. activeFeatureRef updates during
+  // render, but the RAF loop projects the label from the live camera; if
+  // the snap waited for a passive effect (after paint), the loop would
+  // project the new feature through the old camera for one frame and
+  // flash the label off to the side. Snapping pre-paint keeps the camera
+  // and the projected label in sync.
+  useLayoutEffect(() => {
     if (!sceneReady || !sceneRef.current) return;
     if (isInteractingRef.current) return;
 
@@ -285,6 +297,20 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       lat: activeFeature.lat,
       lon: activeFeature.lon,
     });
+
+    // Reduced motion: the camera snaps to the new feature this frame, so
+    // there's no tween to wait out. Don't force the label visible here:
+    // its on-screen position is set by the RAF loop, which sets position
+    // and visibility together in one tick. Revealing it from the effect
+    // would paint it for a frame at its previous (or initial 0,0) spot —
+    // off the sphere — before the loop repositions it. So just arm
+    // showAnnotationRef and disable the opacity transition (no fade), and
+    // let the loop reveal the label once it has a valid position.
+    if (reducedMotion) {
+      showAnnotationRef.current = true;
+      annotationRef.current?.classList.add(styles.annotationInstant);
+      return;
+    }
 
     // Snap to hidden instantly (annotationInstant disables the opacity
     // transition): the label's text and projected position swap to the
@@ -303,12 +329,12 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
         annotationRef.current.classList.remove(styles.annotationInstant);
         annotationRef.current.classList.add(styles.annotationVisible);
       }
-    }, 950);
+    }, labelRevealDelay);
 
     return () => {
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon]);
+  }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon, labelRevealDelay, reducedMotion]);
 
   useEffect(() => {
     return () => {
@@ -402,6 +428,17 @@ function VisualBelow() {
   return moonCredit ? <CreditCaption credit={moonCredit} /> : null;
 }
 
+function FeatureBody({ feature }: { feature: SurfaceFeature }) {
+  return (
+    <>
+      <h4>{feature.name}</h4>
+      {feature.description.map((paragraph, index) => (
+        <p key={`${feature.id}-${index}`}>{paragraph}</p>
+      ))}
+    </>
+  );
+}
+
 type Ch2Props = {
   shortcutsEnabled?: boolean;
 };
@@ -416,37 +453,6 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
 
   const activeFeature = surfaceFeatures.find((f) => f.id === activeId) ?? surfaceFeatures[0];
 
-  if (reducedMotion) {
-    return (
-      <>
-        <Prose className={styles.intro}>
-          <IntroProse shortcutsEnabled={shortcutsEnabled} />
-        </Prose>
-        <section aria-labelledby={surfaceFeaturesHeadingId}>
-          <h3 id={surfaceFeaturesHeadingId} className={styles.surfaceFeaturesTitle}>
-            Surface features of the Moon
-          </h3>
-          <ol className={styles.fallbackList} aria-label="Notable surface features">
-            {surfaceFeatures.map((feature) => (
-              <li key={feature.id} className={styles.fallbackItem}>
-                <OptimizedImage className={styles.fallbackImage} src="/moon/moon-2k.jpg" alt={`The Moon's near side; ${feature.name} is located at ${formatLatLon(feature.lat, feature.lon)}.`} loading="lazy" />
-                <p className={styles.fallbackMarker}>
-                  <span aria-hidden="true">&gt;</span> {formatLatLon(feature.lat, feature.lon)}
-                </p>
-                <h4 className={styles.fallbackName}>{feature.name}</h4>
-                {feature.description.map((paragraph, index) => (
-                  <p key={`${feature.id}-fallback-${index}`} className={styles.fallbackDescription}>
-                    {paragraph}
-                  </p>
-                ))}
-              </li>
-            ))}
-          </ol>
-        </section>
-      </>
-    );
-  }
-
   return (
     <>
       <Prose className={styles.intro}>
@@ -460,19 +466,12 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
         initialStepId={surfaceFeatures[0].id}
         onActiveStepChange={handleActiveStepChange}
         visualAriaHidden={false}
-        visual={<Ch2Visual activeFeature={activeFeature} />}
+        visual={<Ch2Visual activeFeature={activeFeature} reducedMotion={reducedMotion} />}
         visualBelow={<VisualBelow />}
         steps={surfaceFeatures.map((feature) => ({
           id: feature.id,
           marker: formatLatLon(feature.lat, feature.lon),
-          content: (
-            <>
-              <h4>{feature.name}</h4>
-              {feature.description.map((paragraph, index) => (
-                <p key={`${feature.id}-${index}`}>{paragraph}</p>
-              ))}
-            </>
-          ),
+          content: <FeatureBody feature={feature} />,
         }))}
       />
     </>

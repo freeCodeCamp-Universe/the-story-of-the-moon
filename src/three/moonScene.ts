@@ -41,6 +41,10 @@ export type MoonSceneOptions = {
   enableOrbitControls?: boolean;
   autoRotate?: boolean;
   initialTarget?: { lat: number; lon: number };
+  /** Honor prefers-reduced-motion: camera target changes snap instantly
+   * instead of tweening, and drag has no damping glide. The reader can
+   * still rotate the sphere by hand; only automatic motion is removed. */
+  reducedMotion?: boolean;
 };
 
 const CAMERA_RADIUS_BASE = 2.5;
@@ -217,7 +221,8 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   const controls = new OrbitControls(camera, canvas);
   controls.enablePan = false;
   controls.enableZoom = false;
-  controls.enableDamping = true;
+  const reducedMotion = options?.reducedMotion ?? false;
+  controls.enableDamping = !reducedMotion;
   controls.dampingFactor = 0.05;
   controls.autoRotate = options?.autoRotate ?? true;
   controls.autoRotateSpeed = 0.3;
@@ -245,8 +250,18 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
     tweenTargetLat = target.lat;
     tweenTargetLon = isPolar ? cameraPositionToLatLon(camera.position).lon : target.lon;
     const { x, y, z } = latLonToCameraPosition(tweenTargetLat, tweenTargetLon, cameraRadius);
-    tweenFrom.copy(camera.position);
     tweenTo.set(x, y, z);
+
+    // Reduced motion: snap straight to the target. No tween for the
+    // render loop to drive, so cancel any in-flight one.
+    if (reducedMotion) {
+      tweenDuration = 0;
+      camera.position.copy(tweenTo);
+      camera.lookAt(0, 0, 0);
+      return;
+    }
+
+    tweenFrom.copy(camera.position);
     tweenStart = performance.now();
     tweenDuration = 900;
   };
