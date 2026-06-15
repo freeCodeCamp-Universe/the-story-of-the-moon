@@ -17,6 +17,7 @@ export default defineConfig({
       maxDiffPixels: 100,
       threshold: 0.2,
       stylePath: './tests/visual/screenshot.css',
+      timeout: 15000,
     },
   },
   use: { baseURL: `http://localhost:${PORT}` },

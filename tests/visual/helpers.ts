@@ -10,12 +10,51 @@ export const VIEWPORTS: Viewport[] = [
   { label: '1800', width: 1800, height: 1000 },
 ];
 
+// Drive the page into a static, fully-painted state before any capture.
+// OptimizedImage marks images loading="lazy" + decoding="async", so photos
+// paint in *after* a screenshot starts; document.fonts.ready does not wait for
+// them. Without forcing them to load, screenshots never stabilize. Steps: force
+// every image eager + sync-decode, scroll through the page to trigger lazy loads
+// and viewport-gated mounts, then wait for fonts and for all images to finish
+// loading and decoding.
+async function settlePage(page: Page) {
+  await page.evaluate(async () => {
+    for (const img of Array.from(document.images)) {
+      img.loading = 'eager';
+      img.decoding = 'sync';
+    }
+    const step = window.innerHeight;
+    for (let y = 0; y <= document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+    }
+    window.scrollTo(0, 0);
+  });
+
+  await page.evaluate(() => document.fonts.ready);
+
+  await page.evaluate(async () => {
+    await Promise.all(
+      Array.from(document.images).map((img) =>
+        img.complete
+          ? Promise.resolve()
+          : new Promise<void>((resolve) => {
+              img.addEventListener('load', () => resolve(), { once: true });
+              img.addEventListener('error', () => resolve(), { once: true });
+            })
+      )
+    );
+    await Promise.allSettled(Array.from(document.images).map((img) => img.decode()));
+  });
+}
+
 export async function gotoStable(page: Page, path = '/') {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(path);
-  await page.evaluate(() => document.fonts.ready);
+  await settlePage(page);
 }
 
+// Mask all canvas/WebGL regions; their pixels are not deterministic.
 export function maskCanvas(page: Page) {
   return [page.locator('canvas')];
 }
@@ -27,6 +66,5 @@ export async function captureViewport(page: Page, name: string) {
 export async function captureSection(page: Page, id: string, name: string) {
   const section = page.locator(`#${id}`);
   await section.scrollIntoViewIfNeeded();
-  await page.evaluate(() => document.fonts.ready);
   await expect(section).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
