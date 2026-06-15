@@ -82,9 +82,9 @@ export type IsotopeBody = {
 
 export type MagmaOceanStep = {
   id: string;
-  /** Mono marker label shown above the controls and in the static legend, e.g. "Step 2 — Olivine sinks". */
+  /** Mono marker label shown above the controls and in the static legend, e.g. "Crust over mantle". */
   marker: string;
-  /** One ESL-friendly sentence describing what happens at this step. Depths are labeled "approximate". */
+  /** One ESL-friendly sentence describing what happens at this stage. Depths are labeled "approximate". */
   caption: string;
 };
 

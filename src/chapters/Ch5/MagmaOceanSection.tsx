@@ -58,7 +58,7 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
             <div className={styles.stage}>
               <MagmaOceanCrossSection step={steps.length - 1} animate={false} titleId={titleId} descId={descId} />
             </div>
-            <ol className={styles.legend} aria-label="Crystallization steps">
+            <ol className={styles.legend} aria-label="Crystallization sequence">
               {steps.map((s) => (
                 <li key={s.id} className={styles.legendItem}>
                   <span className={styles.marker}>
@@ -76,7 +76,7 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
             </div>
 
             <div className={styles.controlsColumn}>
-              <ol className={styles.steps} aria-label="Crystallization steps" onKeyDown={handleKey}>
+              <ol className={styles.steps} aria-label="Crystallization sequence" onKeyDown={handleKey}>
                 {steps.map((s, index) => {
                   const isActive = index === step;
                   return (

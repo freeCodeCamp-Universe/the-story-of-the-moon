@@ -625,8 +625,8 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           crust to behave like a fluid, resulting in a flat interior floor and multiple concentric rings that resemble a bullseye.
         </p>
         <p>
-          Over time, these giant depressions are often filled with lava rising from below, forming dark, smooth volcanic plains called maria (singular: mare). The maria are the dark areas we can see on the Moon without a telescope. They cover about a
-          sixth of the lunar surface, almost all of it on the near side that faces Earth.
+          Over time, these giant depressions are often filled with lava rising from below, forming dark, smooth volcanic plains called maria (singular: mare). The maria are the dark areas that can be seen on the Moon without a telescope. They cover
+          about a sixth of the lunar surface, with almost all of the maria located on the near side facing Earth.
         </p>
         <div
           ref={basinCompareRef}
