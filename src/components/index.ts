@@ -2,6 +2,7 @@ export { Chapter } from './Chapter/Chapter';
 export { ChapterDropdown } from './ChapterDropdown/ChapterDropdown';
 export { CreditCaption } from './CreditCaption/CreditCaption';
 export { ImageCompareSlider } from './ImageCompareSlider/ImageCompareSlider';
+export { Kbd } from './Kbd/Kbd';
 export { LoadingState } from './LoadingState/LoadingState';
 export { MoonInterlude } from './MoonInterlude/MoonInterlude';
 export { NavStrip } from './NavStrip/NavStrip';

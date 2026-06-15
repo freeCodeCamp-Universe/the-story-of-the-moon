@@ -1,0 +1,27 @@
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.4em;
+  min-block-size: 1.6rem;
+  padding-inline: var(--space-sm);
+  padding-block: 0.3rem;
+  border: 1px solid rgba(223, 223, 226, 0.5);
+  border-radius: 0.35rem;
+  background: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.arrowIcon {
+  display: block;
+  width: 0.9em;
+  height: 0.9em;
+  fill: currentColor;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}

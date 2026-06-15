@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { missions, getAsset } from '@/content';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
+import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
 import type { Mission } from '@/types/content';
@@ -318,7 +319,7 @@ function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsE
             })}
           </ol>
           <p id={keyboardHintId} className={styles.keyboardHint}>
-            Scroll up / down or use <kbd>←</kbd> / <kbd>→</kbd> to move through the timeline. Use <kbd>[</kbd> / <kbd>]</kbd> to jump to first / last.
+            Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use <Kbd tone="muted">[</Kbd> / <Kbd tone="muted">]</Kbd> to jump to first / last.
           </p>
         </div>
 

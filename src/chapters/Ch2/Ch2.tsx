@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
+import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
 import { ScrollyChapter } from '@/components/ScrollyChapter/ScrollyChapter';
@@ -373,7 +374,7 @@ function Ch2Visual({ activeFeature }: { activeFeature: SurfaceFeature }) {
       <p className={styles.hint} aria-hidden="true">
         <span className={styles.sceneHintMobile}>Drag to rotate</span>
         <span className={styles.sceneHintDesktop}>
-          Drag, or press <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to rotate
+          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
         </span>
       </p>
       <div className={styles.sceneStage}>
@@ -640,9 +641,9 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           onPointerLeave={handleBasinComparePointerLeave}
         >
           <p id={basinCompareHintId} className={`${styles.hint} ${styles.basinCompareHint}`}>
-            Drag, or press <kbd>←</kbd> <kbd>→</kbd> to slide.
+            Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> to slide.
             <br />
-            Press <kbd>O</kbd> for original or <kbd>T</kbd> for topographic.
+            Press <Kbd tone="muted">O</Kbd> for original or <Kbd tone="muted">T</Kbd> for topographic.
           </p>
           <p id={basinCompareLiveId} className="sr-only" aria-live="polite">
             {basinCompareStatus}

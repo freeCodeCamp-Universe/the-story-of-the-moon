@@ -147,7 +147,6 @@
 }
 
 .sectionNote {
-  margin-top: var(--space-sm);
   color: var(--color-text-muted);
   font-family: var(--font-mono);
   font-size: 0.9rem;
@@ -171,21 +170,6 @@
 }
 
 .shortcutSeparator {
-  color: var(--color-text);
-}
-
-.shortcutKeys kbd,
-.keyboardHint kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-xs) var(--space-sm);
-  border: 1px solid rgba(223, 223, 226, 0.5);
-  border-radius: 0.35rem;
-  background: var(--color-bg);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1;
   color: var(--color-text);
 }
 

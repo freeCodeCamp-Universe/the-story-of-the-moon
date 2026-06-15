@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
 import { Dialog } from '@/components/Dialog/Dialog';
+import { Kbd } from '@/components/Kbd/Kbd';
 import { Switch } from '@/components/Switch/Switch';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
@@ -99,11 +100,11 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
               {' '}
               +{' '}
             </span>,
-            <kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</kbd>,
+            <Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>,
           ];
         }
 
-        return [<kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</kbd>];
+        return [<Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>];
       });
 
       if (shortcutIndex > 0) {
