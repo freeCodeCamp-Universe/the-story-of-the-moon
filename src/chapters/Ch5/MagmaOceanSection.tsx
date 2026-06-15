@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
-import { magmaOcean } from '@/content';
+import type { MagmaOceanStep } from '@/types/content';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 import { MagmaOceanCrossSection } from './MagmaOceanCrossSection';
 import styles from './MagmaOceanSection.module.css';
 
-const LAST = magmaOcean.length - 1;
+type MagmaOceanSectionProps = {
+  steps: readonly MagmaOceanStep[];
+};
 
-export function MagmaOceanSection() {
+export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
   const reducedMotion = useReducedMotion();
   const titleId = useId();
   const descId = useId();
@@ -17,17 +19,22 @@ export function MagmaOceanSection() {
 
   const [step, setStep] = useState(0);
 
+  const LAST = steps.length - 1;
+
   // Announce the active step.
   useEffect(() => {
     if (reducedMotion || !liveRef.current) return;
-    liveRef.current.textContent = `${magmaOcean[step].marker}. ${magmaOcean[step].caption}`;
-  }, [step, reducedMotion]);
+    liveRef.current.textContent = `${steps[step].marker}. ${steps[step].caption}`;
+  }, [step, reducedMotion, steps]);
 
-  const goTo = useCallback((index: number, moveFocus = false) => {
-    const clamped = Math.min(LAST, Math.max(0, index));
-    setStep(clamped);
-    if (moveFocus) stepRefs.current[clamped]?.focus();
-  }, []);
+  const goTo = useCallback(
+    (index: number, moveFocus = false) => {
+      const clamped = Math.min(LAST, Math.max(0, index));
+      setStep(clamped);
+      if (moveFocus) stepRefs.current[clamped]?.focus();
+    },
+    [LAST]
+  );
 
   const handleKey = useCallback(
     (event: React.KeyboardEvent<HTMLOListElement>) => {
@@ -41,7 +48,7 @@ export function MagmaOceanSection() {
     [step, goTo]
   );
 
-  const active = magmaOcean[step];
+  const active = steps[step];
 
   return (
     <figure className={styles.figure}>
@@ -49,10 +56,10 @@ export function MagmaOceanSection() {
         {reducedMotion ? (
           <div className={styles.layout}>
             <div className={styles.stage}>
-              <MagmaOceanCrossSection step={magmaOcean.length - 1} animate={false} titleId={titleId} descId={descId} />
+              <MagmaOceanCrossSection step={steps.length - 1} animate={false} titleId={titleId} descId={descId} />
             </div>
             <ol className={styles.legend} aria-label="Crystallization steps">
-              {magmaOcean.map((s) => (
+              {steps.map((s) => (
                 <li key={s.id} className={styles.legendItem}>
                   <span className={styles.marker}>
                     <span aria-hidden="true">&gt;</span> {s.marker}
@@ -70,7 +77,7 @@ export function MagmaOceanSection() {
 
             <div className={styles.controlsColumn}>
               <ol className={styles.steps} aria-label="Crystallization steps" onKeyDown={handleKey}>
-                {magmaOcean.map((s, index) => {
+                {steps.map((s, index) => {
                   const isActive = index === step;
                   return (
                     <li key={s.id}>

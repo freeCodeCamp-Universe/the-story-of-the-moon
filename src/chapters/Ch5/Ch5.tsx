@@ -57,7 +57,30 @@ export default function Ch5() {
           pale crust at the surface, while heavier iron- and magnesium-rich minerals sank. Radioactive decay kept the deep interior hot, long enough for basalt lavas to keep pushing through the crust for more than a billion years after the highlands
           had hardened.
         </Prose>
-        <MagmaOceanSection />
+        <MagmaOceanSection
+          steps={[
+            {
+              id: 'molten',
+              marker: 'Step 1: Molten ocean',
+              caption: 'The young Moon is molten from the surface down, a global ocean of magma hundreds of kilometers deep.',
+            },
+            {
+              id: 'cooling',
+              marker: 'Step 2: Cooling from the surface',
+              caption: 'Heat escapes at the surface, so the Moon cools from the outside in. Light minerals float upward while heavy ones sink.',
+            },
+            {
+              id: 'crust',
+              marker: 'Step 3: Crust over mantle',
+              caption: 'The floated minerals harden into a pale crust above a darker, denser mantle. Deep down, the interior is still hot.',
+            },
+            {
+              id: 'maria',
+              marker: 'Step 4: Maria erupt later',
+              caption: 'For a billion years more, basalt from the hot interior pushes up through the crust and floods the lowlands as the dark maria.',
+            },
+          ]}
+        />
       </section>
 
       <section className={styles.section}>
