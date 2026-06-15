@@ -41,7 +41,6 @@
   justify-self: center;
 }
 
-.modalCloseButton,
 .settingsButton,
 .shortcutsButton,
 .chapterButton {
@@ -58,17 +57,9 @@
 
 .settingsButton,
 .shortcutsButton,
-.chapterButton,
-.modalCloseButton {
+.chapterButton {
   border: 1px solid transparent;
   background: transparent;
-}
-
-.modalCloseButton {
-  height: calc(var(--nav-height) - var(--space-sm));
-  min-width: calc(var(--nav-height) - var(--space-sm));
-  padding-inline: var(--space-sm);
-  border-radius: 4px;
 }
 
 .endControls {
@@ -87,8 +78,7 @@
 }
 
 .iconButton:hover,
-.chapterButton:hover,
-.modalCloseButton:hover {
+.chapterButton:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
@@ -96,7 +86,6 @@
 .settingsButton:hover,
 .shortcutsButton:hover,
 .chapterButton:hover,
-.modalCloseButton:hover,
 .settingsButtonActive,
 .shortcutsButtonActive,
 .chapterButtonActive {
@@ -104,8 +93,7 @@
 }
 
 .settingsButton svg,
-.shortcutsButton svg,
-.modalCloseButton svg {
+.shortcutsButton svg {
   fill: currentColor;
 }
 
@@ -113,11 +101,6 @@
 .shortcutsButton svg {
   width: 1.375rem;
   height: 1.375rem;
-}
-
-.modalCloseButton svg {
-  width: 1.25rem;
-  height: 1.25rem;
 }
 
 .chapterButton {
@@ -152,46 +135,6 @@
 
 .chapterMobileText {
   display: none;
-}
-
-.modal {
-  position: fixed;
-  inset: calc(var(--nav-height) + var(--space-md)) var(--space-md) auto auto;
-  z-index: 150;
-  margin: 0;
-  width: min(36rem, calc(100vw - (2 * var(--space-md))));
-  max-height: calc(100dvh - var(--nav-height) - (2 * var(--space-md)));
-  overflow-y: auto;
-  padding: var(--space-lg);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-bg-raised);
-  color: var(--color-text);
-  outline: none;
-}
-
-.modal::backdrop {
-  background: rgba(10, 10, 35, 0.85);
-}
-
-.modal[open] {
-  display: block;
-}
-
-.modalHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-md);
-}
-
-.modalTitle {
-  font-size: var(--text-xl);
-  line-height: 1.2;
-}
-
-.modalCloseButton {
-  flex-shrink: 0;
 }
 
 .shortcutSection {
@@ -286,16 +229,6 @@
 
   .endControls {
     display: none;
-  }
-
-  .modal {
-    top: var(--nav-height);
-    right: 0;
-    width: 100vw;
-    max-height: calc(100dvh - var(--nav-height));
-    border-right: none;
-    border-left: none;
-    border-radius: 0;
   }
 
   .shortcutRow {

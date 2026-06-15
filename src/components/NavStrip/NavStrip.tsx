@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
+import { Dialog } from '@/components/Dialog/Dialog';
 import { Switch } from '@/components/Switch/Switch';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
@@ -22,12 +23,6 @@ const GLOBAL_SHORTCUTS = [
   { keys: 'Shift + P', action: 'Go to the previous chapter' },
 ];
 
-const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(', ');
-
-function getFocusableElements(container: HTMLElement) {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.getAttribute('aria-hidden') !== 'true');
-}
-
 function KeyboardIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -47,29 +42,14 @@ function SettingsIcon() {
   );
 }
 
-function CloseIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" aria-hidden="true" focusable="false">
-      {/* !Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */}
-      <path d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
-    </svg>
-  );
-}
-
 export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true, onShortcutsEnabledChange, animationsEnabled = true, onAnimationsEnabledChange }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const chapterButtonRef = useRef<HTMLButtonElement | null>(null);
   const shortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
-  const shortcutsDialogRef = useRef<HTMLDialogElement | null>(null);
-  const closeShortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
-  const settingsDialogRef = useRef<HTMLDialogElement | null>(null);
-  const closeSettingsButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasOpenedDropdownRef = useRef(false);
-  const hasOpenedShortcutsRef = useRef(false);
-  const hasOpenedSettingsRef = useRef(false);
 
   const activeChapterIndex = useMemo(() => CHAPTERS.findIndex((chapter) => chapter.id === activeChapterId), [activeChapterId]);
   const currentIndex = activeChapterIndex === -1 ? 0 : activeChapterIndex;
@@ -85,64 +65,6 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
       chapterButtonRef.current?.focus();
     }
   }, [isDropdownOpen]);
-
-  useEffect(() => {
-    if (!isShortcutsOpen) return;
-
-    const dialog = shortcutsDialogRef.current;
-    if (!dialog) return;
-
-    hasOpenedShortcutsRef.current = true;
-
-    function handleCancel() {
-      setIsShortcutsOpen(false);
-    }
-
-    dialog.addEventListener('cancel', handleCancel);
-
-    if (!dialog.open) {
-      dialog.showModal();
-    }
-
-    closeShortcutsButtonRef.current?.focus();
-
-    return () => {
-      dialog.removeEventListener('cancel', handleCancel);
-
-      if (dialog.open) {
-        dialog.close();
-      }
-    };
-  }, [isShortcutsOpen]);
-
-  useEffect(() => {
-    if (!isSettingsOpen) return;
-
-    const dialog = settingsDialogRef.current;
-    if (!dialog) return;
-
-    hasOpenedSettingsRef.current = true;
-
-    function handleCancel() {
-      setIsSettingsOpen(false);
-    }
-
-    dialog.addEventListener('cancel', handleCancel);
-
-    if (!dialog.open) {
-      dialog.showModal();
-    }
-
-    closeSettingsButtonRef.current?.focus();
-
-    return () => {
-      dialog.removeEventListener('cancel', handleCancel);
-
-      if (dialog.open) {
-        dialog.close();
-      }
-    };
-  }, [isSettingsOpen]);
 
   useEffect(() => {
     if (!shortcutsEnabled) {
@@ -167,114 +89,6 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
     window.addEventListener('keydown', handleGlobalShortcuts);
     return () => window.removeEventListener('keydown', handleGlobalShortcuts);
   }, [shortcutsEnabled]);
-
-  function handleShortcutsDialogKeyDown(event: ReactKeyboardEvent<HTMLDialogElement>) {
-    if (event.key !== 'Tab') return;
-
-    const dialog = shortcutsDialogRef.current;
-    if (!dialog) return;
-
-    const focusableElements = getFocusableElements(dialog);
-    if (focusableElements.length === 0) {
-      event.preventDefault();
-      closeShortcutsButtonRef.current?.focus();
-      return;
-    }
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-    const activeElement = document.activeElement;
-    const isFocusInsideDialog = activeElement instanceof HTMLElement && dialog.contains(activeElement);
-
-    if (event.shiftKey) {
-      if (!isFocusInsideDialog || activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      }
-      return;
-    }
-
-    if (!isFocusInsideDialog || activeElement === lastElement) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  }
-
-  function handleShortcutsDialogClick(event: ReactMouseEvent<HTMLDialogElement>) {
-    const dialog = shortcutsDialogRef.current;
-    if (!dialog) return;
-
-    if (event.target !== dialog) {
-      return;
-    }
-
-    const rect = dialog.getBoundingClientRect();
-    const isBackdropClick = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
-
-    if (isBackdropClick) {
-      setIsShortcutsOpen(false);
-    }
-  }
-
-  useEffect(() => {
-    if (!isShortcutsOpen && hasOpenedShortcutsRef.current) {
-      shortcutsButtonRef.current?.focus();
-    }
-  }, [isShortcutsOpen]);
-
-  function handleSettingsDialogKeyDown(event: ReactKeyboardEvent<HTMLDialogElement>) {
-    if (event.key !== 'Tab') return;
-
-    const dialog = settingsDialogRef.current;
-    if (!dialog) return;
-
-    const focusableElements = getFocusableElements(dialog);
-    if (focusableElements.length === 0) {
-      event.preventDefault();
-      closeSettingsButtonRef.current?.focus();
-      return;
-    }
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-    const activeElement = document.activeElement;
-    const isFocusInsideDialog = activeElement instanceof HTMLElement && dialog.contains(activeElement);
-
-    if (event.shiftKey) {
-      if (!isFocusInsideDialog || activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      }
-      return;
-    }
-
-    if (!isFocusInsideDialog || activeElement === lastElement) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  }
-
-  function handleSettingsDialogClick(event: ReactMouseEvent<HTMLDialogElement>) {
-    const dialog = settingsDialogRef.current;
-    if (!dialog) return;
-
-    if (event.target !== dialog) {
-      return;
-    }
-
-    const rect = dialog.getBoundingClientRect();
-    const isBackdropClick = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
-
-    if (isBackdropClick) {
-      setIsSettingsOpen(false);
-    }
-  }
-
-  useEffect(() => {
-    if (!isSettingsOpen && hasOpenedSettingsRef.current) {
-      settingsButtonRef.current?.focus();
-    }
-  }, [isSettingsOpen]);
 
   function renderShortcutKeys(keys: string) {
     return keys.split(' / ').flatMap((shortcut, shortcutIndex) => {
@@ -367,60 +181,38 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
 
       <ChapterDropdown isOpen={isDropdownOpen} activeChapterId={activeChapterId} onSelect={handleSelect} onClose={() => setIsDropdownOpen(false)} triggerRef={chapterButtonRef} />
 
-      {isShortcutsOpen ? (
-        <dialog ref={shortcutsDialogRef} id="keyboard-shortcuts-dialog" className={styles.modal} aria-labelledby="keyboard-shortcuts-title" onKeyDown={handleShortcutsDialogKeyDown} onClick={handleShortcutsDialogClick}>
-          <div className={styles.modalHeader}>
-            <h2 id="keyboard-shortcuts-title" className={styles.modalTitle}>
-              Keyboard shortcuts
-            </h2>
-            <button ref={closeShortcutsButtonRef} autoFocus type="button" className={styles.modalCloseButton} onClick={() => setIsShortcutsOpen(false)} aria-label="close keyboard shortcuts">
-              <CloseIcon />
-            </button>
-          </div>
+      <Dialog isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} triggerRef={shortcutsButtonRef} id="keyboard-shortcuts-dialog" titleId="keyboard-shortcuts-title" title="Keyboard shortcuts" closeLabel="close keyboard shortcuts">
+        <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
+          <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
+            Available global shortcuts
+          </h3>
+          <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
+          <dl className={styles.shortcutList}>
+            {GLOBAL_SHORTCUTS.map((shortcut) => (
+              <div key={shortcut.keys} className={styles.shortcutRow}>
+                <dt className={styles.shortcutKeys}>{renderShortcutKeys(shortcut.keys)}</dt>
+                <dd className={styles.shortcutAction}>{shortcut.action}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </Dialog>
 
-          <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
-            <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
-              Available global shortcuts
-            </h3>
-            <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
-            <dl className={styles.shortcutList}>
-              {GLOBAL_SHORTCUTS.map((shortcut) => (
-                <div key={shortcut.keys} className={styles.shortcutRow}>
-                  <dt className={styles.shortcutKeys}>{renderShortcutKeys(shortcut.keys)}</dt>
-                  <dd className={styles.shortcutAction}>{shortcut.action}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        </dialog>
-      ) : null}
+      <Dialog isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} triggerRef={settingsButtonRef} id="settings-dialog" titleId="settings-title" title="Settings" closeLabel="close settings">
+        <div className={styles.preferenceCard}>
+          <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
+          <p id="settings-shortcuts-note" className={styles.sectionNote}>
+            When on, you can use keyboard shortcuts anywhere in the story.
+          </p>
+        </div>
 
-      {isSettingsOpen ? (
-        <dialog ref={settingsDialogRef} id="settings-dialog" className={styles.modal} aria-labelledby="settings-title" onKeyDown={handleSettingsDialogKeyDown} onClick={handleSettingsDialogClick}>
-          <div className={styles.modalHeader}>
-            <h2 id="settings-title" className={styles.modalTitle}>
-              Settings
-            </h2>
-            <button ref={closeSettingsButtonRef} autoFocus type="button" className={styles.modalCloseButton} onClick={() => setIsSettingsOpen(false)} aria-label="close settings">
-              <CloseIcon />
-            </button>
-          </div>
-
-          <div className={styles.preferenceCard}>
-            <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
-            <p id="settings-shortcuts-note" className={styles.sectionNote}>
-              When on, you can use keyboard shortcuts anywhere in the story.
-            </p>
-          </div>
-
-          <div className={styles.preferenceCard}>
-            <Switch label="Enable animations" checked={animationsEnabled} onChange={(checked) => onAnimationsEnabledChange?.(checked)} describedBy="settings-animations-note" />
-            <p id="settings-animations-note" className={styles.sectionNote}>
-              When on, motion and transitions play as you move through the story.
-            </p>
-          </div>
-        </dialog>
-      ) : null}
+        <div className={styles.preferenceCard}>
+          <Switch label="Enable animations" checked={animationsEnabled} onChange={(checked) => onAnimationsEnabledChange?.(checked)} describedBy="settings-animations-note" />
+          <p id="settings-animations-note" className={styles.sectionNote}>
+            When on, motion and transitions play as you move through the story.
+          </p>
+        </div>
+      </Dialog>
     </>
   );
 }
