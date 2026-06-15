@@ -41,5 +41,9 @@ export default tseslint.config(
         ...globals.vitest,
       },
     },
+  },
+  {
+    files: ['tests/**/*.{ts,tsx}', 'playwright.config.ts'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
   }
 );

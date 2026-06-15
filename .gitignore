@@ -43,3 +43,13 @@ Thumbs.db
 .cache/
 *.local
 *.bak
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/.last-run.json
+
+# Visual snapshots are Linux-only; never commit host-generated ones
+tests/visual/**/*-darwin.png
+tests/visual/**/*-win32.png
