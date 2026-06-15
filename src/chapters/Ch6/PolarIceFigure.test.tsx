@@ -64,13 +64,19 @@ describe('PolarIceFigure', () => {
       mockMatchMedia(true);
     });
 
-    it('should render both poles statically without the pole or highlight controls', () => {
+    it('should keep the pole and highlight controls (reduced motion only suppresses the transitions via CSS)', async () => {
+      const user = userEvent.setup();
       render(<PolarIceFigure />);
 
-      expect(screen.queryByRole('radio')).not.toBeInTheDocument();
-      expect(screen.queryByRole('switch')).not.toBeInTheDocument();
-      expect(screen.getByRole('img', { name: /south pole/i })).toBeInTheDocument();
+      expect(screen.getByRole('radio', { name: /south pole/i })).toBeChecked();
+      const highlight = screen.getByRole('switch', { name: /highlight ice/i });
+      expect(highlight).not.toBeChecked();
+
+      await user.click(screen.getByRole('radio', { name: /north pole/i }));
       expect(screen.getByRole('img', { name: /north pole/i })).toBeInTheDocument();
+
+      await user.click(highlight);
+      expect(highlight).toBeChecked();
     });
   });
 });

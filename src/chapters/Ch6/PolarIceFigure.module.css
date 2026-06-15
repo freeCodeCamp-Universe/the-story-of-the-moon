@@ -128,36 +128,6 @@
   opacity: 1;
 }
 
-/* Reduced-motion / no-pointer fallback: both poles, static, side by side so the
-   asymmetry reads without interaction. */
-.staticPair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
-}
-
-.staticItem {
-  display: grid;
-  gap: var(--space-xs);
-  min-width: 0;
-}
-
-.staticImage {
-  display: block;
-  inline-size: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.staticLabel {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  text-align: center;
-  color: var(--color-text-muted);
-}
-
 .figcaption {
   display: grid;
   gap: var(--space-xs);

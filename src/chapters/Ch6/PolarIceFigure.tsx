@@ -4,7 +4,6 @@ import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Switch } from '@/components/Switch/Switch';
 import { getAsset } from '@/content';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 import styles from './PolarIceFigure.module.css';
 
@@ -16,7 +15,6 @@ const POLES = [
 ] as const satisfies readonly { id: PoleId; label: string; mask: string }[];
 
 export function PolarIceFigure() {
-  const reducedMotion = useReducedMotion();
   const south = getAsset('ch6-south-pole-ice');
   const north = getAsset('ch6-north-pole-ice');
 
@@ -31,38 +29,22 @@ export function PolarIceFigure() {
 
   return (
     <figure className={styles.figure}>
-      {reducedMotion ? (
-        <div className={styles.staticPair}>
-          {POLES.map((option) => {
-            const asset = option.id === 'south' ? south : north;
-            return (
-              <div key={option.id} className={styles.staticItem}>
-                <OptimizedImage className={styles.staticImage} src={`/${asset.file}`} alt={asset.alt} loading="lazy" />
-                <p className={styles.staticLabel}>{option.label}</p>
-              </div>
-            );
-          })}
+      <div className={styles.controls}>
+        <div className={styles.poleGroup} role="radiogroup" aria-label="Choose pole">
+          {POLES.map((option) => (
+            <label key={option.id} className={styles.option}>
+              <input className={styles.input} type="radio" name="ch6-pole" value={option.id} checked={pole === option.id} onChange={() => setPole(option.id)} />
+              <span className={styles.button}>{option.label}</span>
+            </label>
+          ))}
         </div>
-      ) : (
-        <>
-          <div className={styles.controls}>
-            <div className={styles.poleGroup} role="radiogroup" aria-label="Choose pole">
-              {POLES.map((option) => (
-                <label key={option.id} className={styles.option}>
-                  <input className={styles.input} type="radio" name="ch6-pole" value={option.id} checked={pole === option.id} onChange={() => setPole(option.id)} />
-                  <span className={styles.button}>{option.label}</span>
-                </label>
-              ))}
-            </div>
-            <Switch className={styles.highlightSwitch} label="Highlight ice" labelPosition="start" checked={highlight} onChange={setHighlight} />
-          </div>
+        <Switch className={styles.highlightSwitch} label="Highlight ice" labelPosition="start" checked={highlight} onChange={setHighlight} />
+      </div>
 
-          <div className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}>
-            <OptimizedImage className={styles.baseLayer} src={`/${current.file}`} alt={current.alt} draggable={false} loading="lazy" />
-            <OptimizedImage className={styles.iceLayer} src={current.mask} alt="" aria-hidden="true" draggable={false} loading="lazy" />
-          </div>
-        </>
-      )}
+      <div className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}>
+        <OptimizedImage className={styles.baseLayer} src={`/${current.file}`} alt={current.alt} draggable={false} loading="lazy" />
+        <OptimizedImage className={styles.iceLayer} src={current.mask} alt="" aria-hidden="true" draggable={false} loading="lazy" />
+      </div>
 
       <figcaption className={styles.figcaption}>
         <CreditCaption credit={south} />
