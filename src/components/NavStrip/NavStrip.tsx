@@ -11,6 +11,8 @@ type Props = {
   onNavigate: (chapterId: string) => void;
   shortcutsEnabled?: boolean;
   onShortcutsEnabledChange?: (enabled: boolean) => void;
+  animationsEnabled?: boolean;
+  onAnimationsEnabledChange?: (enabled: boolean) => void;
 };
 
 const GLOBAL_SHORTCUTS = [
@@ -54,7 +56,7 @@ function CloseIcon() {
   );
 }
 
-export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true, onShortcutsEnabledChange }: Props) {
+export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true, onShortcutsEnabledChange, animationsEnabled = true, onAnimationsEnabledChange }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -404,14 +406,19 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
             </button>
           </div>
 
-          <section className={styles.shortcutSection} aria-labelledby="settings-shortcuts-title">
-            <h3 id="settings-shortcuts-title" className={styles.sectionTitle}>
-              Keyboard shortcuts
-            </h3>
-            <div className={styles.preferenceCard}>
-              <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} />
-            </div>
-          </section>
+          <div className={styles.preferenceCard}>
+            <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
+            <p id="settings-shortcuts-note" className={styles.sectionNote}>
+              When on, you can use keyboard shortcuts anywhere in the story.
+            </p>
+          </div>
+
+          <div className={styles.preferenceCard}>
+            <Switch label="Enable animations" checked={animationsEnabled} onChange={(checked) => onAnimationsEnabledChange?.(checked)} describedBy="settings-animations-note" />
+            <p id="settings-animations-note" className={styles.sectionNote}>
+              When on, motion and transitions play as you move through the story.
+            </p>
+          </div>
         </dialog>
       ) : null}
     </>

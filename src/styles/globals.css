@@ -146,3 +146,14 @@ button:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* In-page opt-in: the settings toggle sets data-reduced-motion on <html>,
+   independent of (and in addition to) the OS prefers-reduced-motion setting. */
+:root[data-reduced-motion] *,
+:root[data-reduced-motion] *::before,
+:root[data-reduced-motion] *::after {
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}

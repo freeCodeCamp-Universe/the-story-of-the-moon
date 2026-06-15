@@ -3,6 +3,7 @@ import { Ch1, Ch2, Ch3, Ch4, Ch5, Ch6, Ch7 } from '@/chapters';
 import { Chapter, MoonInterlude, NavStrip, Postcard } from '@/components';
 import { postcards } from '@/content';
 import { CHAPTERS } from '@/data/chapters';
+import { useAnimationsPreference } from '@/hooks/useAnimationsPreference';
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';
 import { useKeyboardNav } from '@/hooks/useKeyboardNav';
 import { useKeyboardShortcutsPreference } from '@/hooks/useKeyboardShortcutsPreference';
@@ -11,6 +12,7 @@ import styles from './StoryPage.module.css';
 export default function StoryPage() {
   const [activeChapterId, setActiveChapterId] = useState('chapter-1');
   const { shortcutsEnabled, setShortcutsEnabled } = useKeyboardShortcutsPreference();
+  const { animationsEnabled, setAnimationsEnabled } = useAnimationsPreference();
 
   useChapterFragmentSync(setActiveChapterId);
   useKeyboardNav(shortcutsEnabled);
@@ -46,7 +48,7 @@ export default function StoryPage() {
       <a href="#main" className="sr-only">
         Skip to main content
       </a>
-      <NavStrip activeChapterId={activeChapterId} onNavigate={handleNavigate} shortcutsEnabled={shortcutsEnabled} onShortcutsEnabledChange={setShortcutsEnabled} />
+      <NavStrip activeChapterId={activeChapterId} onNavigate={handleNavigate} shortcutsEnabled={shortcutsEnabled} onShortcutsEnabledChange={setShortcutsEnabled} animationsEnabled={animationsEnabled} onAnimationsEnabledChange={setAnimationsEnabled} />
       <main id="main" tabIndex={-1} className={styles.main}>
         <Chapter id="chapter-1" question={CHAPTERS[0].question} title={CHAPTERS[0].title}>
           <Ch1 />

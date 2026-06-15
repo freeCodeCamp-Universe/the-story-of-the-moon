@@ -27,8 +27,9 @@ function setupChapterTargets() {
 
 function NavStripHarness() {
   const [shortcutsEnabled, setShortcutsEnabled] = useState(true);
+  const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
-  return <NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled={shortcutsEnabled} onShortcutsEnabledChange={setShortcutsEnabled} />;
+  return <NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled={shortcutsEnabled} onShortcutsEnabledChange={setShortcutsEnabled} animationsEnabled={animationsEnabled} onAnimationsEnabledChange={setAnimationsEnabled} />;
 }
 
 describe('NavStrip', () => {
@@ -106,7 +107,7 @@ describe('NavStrip', () => {
     render(<NavStrip activeChapterId="chapter-2" onNavigate={onNavigate} shortcutsEnabled onShortcutsEnabledChange={vi.fn()} />);
 
     await user.click(screen.getByRole('button', { name: /open chapter list/i }));
-    await user.click(screen.getByRole('button', { name: '3. A partner that steadies us' }));
+    await user.click(screen.getByRole('button', { name: '3. A partner that steadies Earth' }));
 
     expect(onNavigate).toHaveBeenCalledWith('chapter-3');
     expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
@@ -120,11 +121,11 @@ describe('NavStrip', () => {
     render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled onShortcutsEnabledChange={vi.fn()} />);
 
     await user.click(screen.getByRole('button', { name: /open chapter list/i }));
-    expect(screen.getByRole('button', { name: '3. A partner that steadies us' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '3. A partner that steadies Earth' })).toBeInTheDocument();
 
     await user.click(screen.getByText('The Story of the Moon'));
 
-    expect(screen.queryByRole('button', { name: '3. A partner that steadies us' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '3. A partner that steadies Earth' })).not.toBeInTheDocument();
   });
 
   it('should show next, previous, and direct chapter keyboard shortcuts', async () => {
@@ -209,7 +210,8 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
-    expect(screen.getByRole('switch', { name: /enable global keyboard shortcuts/i })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: /enable global keyboard shortcuts/i })).toHaveAccessibleDescription(/keyboard shortcuts anywhere in the story/i);
+    expect(screen.getByRole('switch', { name: /enable animations/i })).toHaveAccessibleDescription(/motion and transitions play/i);
   });
 
   it('should keep focus trapped inside the settings dialog', async () => {
@@ -220,21 +222,44 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     const closeButton = screen.getByRole('button', { name: /close settings/i });
-    const toggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
+    const shortcutsToggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
+    const animationsToggle = screen.getByRole('switch', { name: /enable animations/i });
 
     expect(closeButton).toHaveFocus();
 
     await user.tab();
-    expect(toggle).toHaveFocus();
+    expect(shortcutsToggle).toHaveFocus();
+
+    await user.tab();
+    expect(animationsToggle).toHaveFocus();
 
     await user.tab();
     expect(closeButton).toHaveFocus();
 
     await user.tab({ shift: true });
-    expect(toggle).toHaveFocus();
+    expect(animationsToggle).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(shortcutsToggle).toHaveFocus();
 
     await user.tab({ shift: true });
     expect(closeButton).toHaveFocus();
+  });
+
+  it('should let the user disable animations from the settings dialog', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStripHarness />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+
+    const toggle = screen.getByRole('switch', { name: /enable animations/i });
+    expect(toggle).toBeChecked();
+
+    await user.click(toggle);
+
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
   });
 
   it('should let the user disable global keyboard shortcuts from the settings dialog', async () => {

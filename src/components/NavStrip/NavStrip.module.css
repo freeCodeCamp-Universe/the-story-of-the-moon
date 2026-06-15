@@ -136,7 +136,6 @@
   border-color: var(--color-accent);
 }
 
-.sectionTitle,
 .shortcutKeys {
   font-family: var(--font-mono);
 }
@@ -200,13 +199,15 @@
 }
 
 .sectionTitle {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: var(--color-text);
 }
 
 .sectionNote {
   margin-top: var(--space-sm);
   color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
 }
 
 .shortcutList {
@@ -250,9 +251,7 @@
 }
 
 .preferenceCard {
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px solid rgba(223, 223, 226, 0.08);
+  margin-top: var(--space-2xl);
 }
 
 /* Mobile + tablet: no physical keyboard expected, so the end controls

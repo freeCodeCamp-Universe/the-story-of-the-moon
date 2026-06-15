@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { ANIMATIONS_PREFERENCE_EVENT, ANIMATIONS_STORAGE_KEY } from '@/hooks/useAnimationsPreference';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 describe('useReducedMotion', () => {
@@ -12,6 +13,7 @@ describe('useReducedMotion', () => {
   beforeEach(() => {
     matches = false;
     listeners = new Set();
+    window.localStorage.clear();
     addEventListener = vi.fn((event, listener) => {
       if (event === 'change') {
         listeners.add(listener as (event: MediaQueryListEvent) => void);
@@ -43,6 +45,7 @@ describe('useReducedMotion', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    window.localStorage.clear();
   });
 
   it('should read the current reduced-motion preference on the initial render', () => {
@@ -75,6 +78,34 @@ describe('useReducedMotion', () => {
       for (const listener of listeners) {
         listener({ matches: false } as MediaQueryListEvent);
       }
+    });
+
+    expect(result.current).toBe(false);
+  });
+
+  it('should report reduced motion when the user disables animations', () => {
+    window.localStorage.setItem(ANIMATIONS_STORAGE_KEY, 'false');
+
+    const { result } = renderHook(() => useReducedMotion());
+
+    expect(result.current).toBe(true);
+  });
+
+  it('should update when the animations preference changes at runtime', () => {
+    const { result } = renderHook(() => useReducedMotion());
+
+    expect(result.current).toBe(false);
+
+    act(() => {
+      window.localStorage.setItem(ANIMATIONS_STORAGE_KEY, 'false');
+      window.dispatchEvent(new Event(ANIMATIONS_PREFERENCE_EVENT));
+    });
+
+    expect(result.current).toBe(true);
+
+    act(() => {
+      window.localStorage.setItem(ANIMATIONS_STORAGE_KEY, 'true');
+      window.dispatchEvent(new Event(ANIMATIONS_PREFERENCE_EVENT));
     });
 
     expect(result.current).toBe(false);
