@@ -1,0 +1,114 @@
+/* Accessible on/off switch: a visually-hidden checkbox drives an OFF/ON track
+   whose label text and thumb slide between the inline edges. Gray/white scheme. */
+.switch {
+  --switch-width: 4rem;
+  --switch-track-bg: var(--color-bg);
+  --switch-track-border: var(--color-border);
+  --switch-track-text-color: var(--color-text-muted);
+  --switch-track-checked-bg: var(--color-bg-surface);
+  --switch-track-checked-border: var(--color-text);
+  --switch-track-checked-text-color: var(--color-text);
+  --switch-thumb-color: var(--color-text-muted);
+  --switch-thumb-checked-color: var(--color-text);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+}
+
+.label {
+  font-family: var(--font-prose);
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  inline-size: var(--switch-width);
+  block-size: 2rem;
+  padding-inline: 0.5rem;
+  border: 1px solid var(--switch-track-border);
+  border-radius: 0.35rem;
+  background-color: var(--switch-track-bg);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.track::after {
+  content: 'OFF';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.55rem;
+  inset-inline-start: auto;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1;
+  text-align: end;
+  color: var(--switch-track-text-color);
+  pointer-events: none;
+}
+
+.thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.25rem;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: 999px;
+  background-color: var(--switch-thumb-color);
+  transform: translateY(-50%);
+  transition:
+    inset-inline-start var(--transition-fast),
+    inset-inline-end var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.input:focus-visible + .track {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.input:checked + .track {
+  border-color: var(--switch-track-checked-border);
+  background-color: var(--switch-track-checked-bg);
+}
+
+.input:checked + .track::after {
+  content: 'ON';
+  inset-inline-start: 0.55rem;
+  inset-inline-end: auto;
+  text-align: start;
+  color: var(--switch-track-checked-text-color);
+}
+
+.input:checked + .track .thumb {
+  inset-inline-start: auto;
+  inset-inline-end: 0.25rem;
+  background-color: var(--switch-thumb-checked-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .thumb {
+    transition: none;
+  }
+}

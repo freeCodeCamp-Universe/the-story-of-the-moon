@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { Switch } from '@/components/Switch/Switch';
 import { getAsset } from '@/content';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
@@ -53,13 +54,7 @@ export function PolarIceFigure() {
                 </label>
               ))}
             </div>
-            <label className={styles.switch}>
-              <span className={styles.switchLabel}>Highlight ice</span>
-              <input className={styles.switchInput} type="checkbox" role="switch" checked={highlight} onChange={(event) => setHighlight(event.currentTarget.checked)} />
-              <span className={styles.switchTrack} aria-hidden="true">
-                <span className={styles.switchThumb} />
-              </span>
-            </label>
+            <Switch className={styles.highlightSwitch} label="Highlight ice" labelPosition="start" checked={highlight} onChange={setHighlight} />
           </div>
 
           <div className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}>

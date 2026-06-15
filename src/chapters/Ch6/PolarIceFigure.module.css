@@ -78,106 +78,11 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-/* Secondary highlight control, a switch rather than a button so it reads as a
-   different kind of control (an on/off layer) rather than a peer of the pole
-   selector. Shape and size mirror the NavStrip keyboard-shortcut toggle, but in
-   the neutral gray/white scheme rather than accent. End-aligned. */
-.switch {
+/* Secondary highlight control, a switch (neutral variant) rather than a button
+   so it reads as a different kind of control (an on/off layer) rather than a
+   peer of the pole selector. End-aligned within the controls row. */
+.highlightSwitch {
   justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  cursor: pointer;
-}
-
-.switchLabel {
-  color: var(--color-text);
-}
-
-.switchInput {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.switchInput:focus-visible + .switchTrack {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
-}
-
-.switchTrack {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  inline-size: 4rem;
-  block-size: 2rem;
-  padding-inline: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.35rem;
-  background-color: var(--color-bg);
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.switchTrack::after {
-  content: 'OFF';
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-end: 0.55rem;
-  inset-inline-start: auto;
-  transform: translateY(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1;
-  text-align: end;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.switchThumb {
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 0.25rem;
-  inline-size: 1.25rem;
-  block-size: 1.25rem;
-  border-radius: 999px;
-  background-color: var(--color-text-muted);
-  transform: translateY(-50%);
-  transition:
-    inset-inline-start var(--transition-fast),
-    inset-inline-end var(--transition-fast),
-    background-color var(--transition-fast);
-}
-
-.switchInput:checked + .switchTrack {
-  border-color: var(--color-text);
-  background-color: var(--color-bg-surface);
-}
-
-.switchInput:checked + .switchTrack::after {
-  content: 'ON';
-  inset-inline-start: 0.55rem;
-  inset-inline-end: auto;
-  text-align: start;
-  color: var(--color-text);
-}
-
-.switchInput:checked + .switchTrack .switchThumb {
-  inset-inline-start: auto;
-  inset-inline-end: 0.25rem;
-  background-color: var(--color-text);
 }
 
 /* Circular viewport: the polar disc is inscribed in the square source image,
@@ -257,9 +162,7 @@
 @media (prefers-reduced-motion: reduce) {
   .baseLayer,
   .iceLayer,
-  .button,
-  .switchTrack,
-  .switchThumb {
+  .button {
     transition: none;
   }
 }

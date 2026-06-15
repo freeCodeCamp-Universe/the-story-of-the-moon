@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
+import { Switch } from '@/components/Switch/Switch';
 import { CHAPTERS } from '@/data/chapters';
 import { scrollToChapter } from '@/hooks/useKeyboardNav';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
@@ -268,13 +269,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
               Shortcut settings
             </h3>
             <div className={styles.preferenceCard}>
-              <label className={styles.preferenceLabel}>
-                <input className={styles.preferenceInput} type="checkbox" role="switch" checked={shortcutsEnabled} onChange={(event) => onShortcutsEnabledChange?.(event.currentTarget.checked)} />
-                <span className={styles.preferenceToggle} aria-hidden="true">
-                  <span className={styles.preferenceToggleThumb} />
-                </span>
-                <span className={styles.preferenceName}>Enable global keyboard shortcuts</span>
-              </label>
+              <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} />
             </div>
           </section>
 
