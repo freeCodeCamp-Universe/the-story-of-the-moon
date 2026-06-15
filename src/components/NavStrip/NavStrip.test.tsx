@@ -180,6 +180,46 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
 
     const closeButton = screen.getByRole('button', { name: /close keyboard shortcuts/i });
+
+    expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(closeButton).toHaveFocus();
+  });
+
+  it('should not expose the shortcuts toggle from the keyboard shortcuts dialog', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStrip activeChapterId="chapter-2" onNavigate={vi.fn()} shortcutsEnabled onShortcutsEnabledChange={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: /enable global keyboard shortcuts/i })).not.toBeInTheDocument();
+  });
+
+  it('should open the settings dialog from the settings button', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStripHarness />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+
+    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: /enable global keyboard shortcuts/i })).toBeInTheDocument();
+  });
+
+  it('should keep focus trapped inside the settings dialog', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStripHarness />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+
+    const closeButton = screen.getByRole('button', { name: /close settings/i });
     const toggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
 
     expect(closeButton).toHaveFocus();
@@ -197,12 +237,12 @@ describe('NavStrip', () => {
     expect(closeButton).toHaveFocus();
   });
 
-  it('should let the user disable global keyboard shortcuts from the dialog', async () => {
+  it('should let the user disable global keyboard shortcuts from the settings dialog', async () => {
     const user = userEvent.setup();
 
     render(<NavStripHarness />);
 
-    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     const toggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
     expect(toggle).toBeChecked();
@@ -210,19 +250,19 @@ describe('NavStrip', () => {
     await user.click(toggle);
     expect(toggle).not.toBeChecked();
 
-    await user.click(screen.getByRole('button', { name: /close keyboard shortcuts/i }));
-    expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /close settings/i }));
+    expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument();
 
     fireEvent.keyDown(window, { key: '?', shiftKey: true });
     expect(screen.queryByRole('dialog', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
   });
 
-  it('should keep the dialog open when toggling shortcuts with the keyboard', async () => {
+  it('should keep the settings dialog open when toggling shortcuts with the keyboard', async () => {
     const user = userEvent.setup();
 
     render(<NavStripHarness />);
 
-    await user.click(screen.getByRole('button', { name: /show keyboard shortcuts/i }));
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     const toggle = screen.getByRole('switch', { name: /enable global keyboard shortcuts/i });
 
@@ -232,7 +272,7 @@ describe('NavStrip', () => {
     await user.keyboard(' ');
 
     expect(toggle).not.toBeChecked();
-    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
     expect(toggle).toHaveFocus();
   });
 

@@ -42,6 +42,7 @@
 }
 
 .modalCloseButton,
+.settingsButton,
 .shortcutsButton,
 .chapterButton {
   display: flex;
@@ -55,6 +56,7 @@
     background-color var(--transition-base);
 }
 
+.settingsButton,
 .shortcutsButton,
 .chapterButton,
 .modalCloseButton {
@@ -69,12 +71,19 @@
   border-radius: 4px;
 }
 
+.endControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  justify-self: end;
+}
+
+.settingsButton,
 .shortcutsButton {
   height: calc(var(--nav-height) - var(--space-sm));
   min-width: calc(var(--nav-height) - var(--space-sm));
   padding-inline: var(--space-sm);
   border-radius: 4px;
-  justify-self: end;
 }
 
 .iconButton:hover,
@@ -84,19 +93,23 @@
   border-color: var(--color-accent);
 }
 
+.settingsButton:hover,
 .shortcutsButton:hover,
 .chapterButton:hover,
 .modalCloseButton:hover,
+.settingsButtonActive,
 .shortcutsButtonActive,
 .chapterButtonActive {
   background: rgba(153, 201, 255, 0.08);
 }
 
+.settingsButton svg,
 .shortcutsButton svg,
 .modalCloseButton svg {
   fill: currentColor;
 }
 
+.settingsButton svg,
 .shortcutsButton svg {
   width: 1.375rem;
   height: 1.375rem;
@@ -242,8 +255,9 @@
   border-top: 1px solid rgba(223, 223, 226, 0.08);
 }
 
-/* Mobile + tablet: no physical keyboard expected, so the shortcuts
-   button is hidden and the chapter button moves to the inline-end.
+/* Mobile + tablet: no physical keyboard expected, so the end controls
+   (settings + shortcuts buttons) are hidden and the chapter button moves
+   to the inline-end. Revisit this when a mobile-relevant setting is added.
    Boundary matches the codebase-wide 900px tablet/desktop split
    (ScrollyChapter, earthMoonScene's IMMERSIVE_MIN_WIDTH, etc.). */
 @media (max-width: 899px) {
@@ -271,7 +285,7 @@
     display: block;
   }
 
-  .shortcutsButton {
+  .endControls {
     display: none;
   }
 
