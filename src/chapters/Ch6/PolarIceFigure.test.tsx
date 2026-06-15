@@ -31,7 +31,7 @@ describe('PolarIceFigure', () => {
 
       expect(screen.getByRole('radio', { name: /south pole/i })).toBeChecked();
       expect(screen.getByRole('img', { name: /south pole/i })).toBeInTheDocument();
-      expect(screen.getByText(/Moon Mineralogy Mapper \(M3\), Li et al\. 2018/i)).toBeInTheDocument();
+      expect(screen.getByText(/Moon Mineralogy Mapper \(M3\)\. NASA \/ JPL-Caltech, Li et al\. 2018/i)).toBeInTheDocument();
     });
 
     it('should switch the map to the north pole when its radio is chosen', async () => {

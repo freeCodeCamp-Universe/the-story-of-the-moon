@@ -53,10 +53,10 @@ describe('Ch6', () => {
 
     const waterSection = screen.getByRole('region', { name: /Water on the Moon/i });
 
-    for (const name of ['Solar wind', 'Comets and asteroids', 'Primordial']) {
+    for (const name of ['The Sun', 'Comets and asteroids', 'Ancient Earth']) {
       expect(within(waterSection).getByText(name, { selector: 'b' })).toBeInTheDocument();
     }
-    expect(within(waterSection).getByText(/No single theory has won/)).toBeInTheDocument();
+    expect(within(waterSection).getByText(/A single conclusion remains out of reach/)).toBeInTheDocument();
   });
 
   it('should no longer render article cards for the chapter content', () => {

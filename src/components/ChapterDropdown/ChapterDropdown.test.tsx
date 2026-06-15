@@ -47,7 +47,7 @@ describe('ChapterDropdown', () => {
     renderDropdown({ activeChapterId: 'chapter-3' });
 
     expect(screen.getAllByRole('button')).toHaveLength(7);
-    expect(screen.getByRole('button', { name: '3. A partner that steadies us' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: '3. A partner that steadies Earth' })).toHaveFocus();
   });
 
   it('should call onSelect with the clicked chapter id', async () => {
@@ -72,7 +72,7 @@ describe('ChapterDropdown', () => {
     const user = userEvent.setup();
     const { onClose, triggerRef } = renderDropdown();
     const activeChapter = screen.getByRole('button', {
-      name: '3. A partner that steadies us',
+      name: '3. A partner that steadies Earth',
     });
 
     await user.pointer({ target: activeChapter, keys: '[MouseLeft]' });
