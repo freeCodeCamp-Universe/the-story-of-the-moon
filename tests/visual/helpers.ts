@@ -68,3 +68,13 @@ export async function captureSection(page: Page, id: string, name: string) {
   await section.scrollIntoViewIfNeeded();
   await expect(section).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
+
+// For scroll-driven chapters whose tall section churns its sticky stage when
+// scrolled (e.g. Ch4), capture the sticky stage in its initial state instead of
+// the whole scroll track. Aligning the section top keeps the stage on its first
+// step; the stage fits the viewport, so capturing it does not re-scroll.
+export async function captureSectionStage(page: Page, id: string, stageSelector: string, name: string) {
+  const section = page.locator(`#${id}`);
+  await section.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+  await expect(section.locator(stageSelector)).toHaveScreenshot(name, { mask: maskCanvas(page) });
+}
