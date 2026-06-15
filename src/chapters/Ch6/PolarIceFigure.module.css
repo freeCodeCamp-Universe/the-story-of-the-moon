@@ -23,12 +23,12 @@
 .poleGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-sm);
-  justify-content: start;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .option {
-  display: inline-flex;
+  display: flex;
 }
 
 /* Real radio inputs, visually hidden but focusable. */
@@ -45,31 +45,35 @@
   border: 0;
 }
 
-/* Shared control look, matching the "Bright ground over buried magnets"
-   section's tabs: rectangular (not pill), mono, accent text, bordered, with a
-   surface fill when active. Used for both the pole selector and the highlight
-   toggle so they read as the same control family. */
+/* Connected segmented strip matching the "Bright ground over buried magnets"
+   section's tabs: segments share a collapsed hairline (no gaps), and the active
+   segment lifts above its neighbors with a white border plus surface fill. The
+   segments read as a single selector rather than separate buttons. */
 .button {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--color-accent);
+  position: relative;
+  color: var(--color-text);
   padding-block: var(--space-sm);
   padding-inline: var(--space-md);
   border: 1px solid var(--color-border);
   background-color: transparent;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
     border-color var(--transition-fast);
 }
 
-.button:hover {
-  border-color: var(--color-accent);
+.option + .option .button {
+  margin-inline-start: -1px;
+}
+
+.option:hover .button {
+  background-color: var(--color-bg-surface);
 }
 
 .input:checked + .button {
-  border-color: var(--color-accent);
+  z-index: 1;
+  border-color: var(--color-text);
   background-color: var(--color-bg-surface);
 }
 
