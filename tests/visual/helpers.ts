@@ -70,11 +70,13 @@ export async function captureSection(page: Page, id: string, name: string) {
 }
 
 // For scroll-driven chapters whose tall section churns its sticky stage when
-// scrolled (e.g. Ch4), capture the sticky stage in its initial state instead of
-// the whole scroll track. Aligning the section top keeps the stage on its first
-// step; the stage fits the viewport, so capturing it does not re-scroll.
+// scrolled (e.g. Ch4), capture the sticky stage in a fixed, initial state
+// instead of the whole scroll track. The stage sits after the tall sentinel
+// track in the DOM, so it is only pinned/visible once the section is scrolled
+// into. Centering the first step's sentinel fixes the active step on 0 (its
+// preloaded state) and pins the stage in view; then the stage box is stable.
 export async function captureSectionStage(page: Page, id: string, stageSelector: string, name: string) {
   const section = page.locator(`#${id}`);
-  await section.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+  await section.locator('[data-step="0"]').evaluate((el) => el.scrollIntoView({ block: 'center' }));
   await expect(section.locator(stageSelector)).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
