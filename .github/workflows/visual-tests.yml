@@ -1,11 +1,15 @@
 name: Visual Tests
+
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
 concurrency:
   group: visual-tests-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   visual:
     name: Visual regression

@@ -1,11 +1,14 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint
@@ -17,6 +20,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with: { run_install: true }
       - run: pnpm lint
+
   typecheck:
     name: Typecheck
     needs: lint
@@ -28,6 +32,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with: { run_install: true }
       - run: pnpm typecheck
+
   test:
     name: Test
     needs: lint
@@ -39,6 +44,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with: { run_install: true }
       - run: pnpm test:run
+
   build:
     name: Build
     needs: [lint, typecheck, test]
