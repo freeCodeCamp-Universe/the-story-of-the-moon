@@ -181,14 +181,15 @@
   margin-top: var(--space-2xl);
 }
 
-/* Mobile + tablet: no physical keyboard expected, so the end controls
-   (settings + shortcuts buttons) are hidden and the chapter button moves
-   to the inline-end. Revisit this when a mobile-relevant setting is added.
+/* Settings stays visible at all widths. Below 900px, no physical keyboard is
+  expected, so the keyboard-shortcuts button and keyboard-shortcuts settings
+  toggle are hidden, the title absorbs all slack (inline-start), and the
+  chapter button + settings sit together at the inline-end.
    Boundary matches the codebase-wide 900px tablet/desktop split
    (ScrollyChapter, earthMoonScene's IMMERSIVE_MIN_WIDTH, etc.). */
 @media (max-width: 899px) {
   .header {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: var(--space-sm);
     padding-inline: var(--space-sm);
   }
@@ -211,7 +212,11 @@
     display: block;
   }
 
-  .endControls {
+  .shortcutsButton {
+    display: none;
+  }
+
+  .shortcutsPreference {
     display: none;
   }
 

@@ -200,7 +200,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
       </Dialog>
 
       <Dialog isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} triggerRef={settingsButtonRef} id="settings-dialog" titleId="settings-title" title="Settings" closeLabel="close settings">
-        <div className={styles.preferenceCard}>
+        <div className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}>
           <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
           <p id="settings-shortcuts-note" className={styles.sectionNote}>
             When on, you can use keyboard shortcuts anywhere in the story.
