@@ -1,10 +1,10 @@
-name: Unit Tests
+name: CI
 on:
   push:
     branches: [main]
   pull_request:
 concurrency:
-  group: unit-tests-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   lint:
