@@ -40,10 +40,18 @@ These instructions apply to the whole repository unless a more specific instruct
 ### Visual Regression
 
 - Visual regression tests use Playwright and live in `tests/visual/`. They capture the home page and all chapters across the `320`, `768`, `900`, and `1800` viewport widths defined in `tests/visual/helpers.ts`.
-- Baselines are committed PNGs under `tests/visual/**-snapshots/`, generated in the pinned Playwright Linux container so they stay consistent. `tests/visual/globalSetup.ts` throws if `pnpm test:visual` runs on a non-Linux host, so do not run or update baselines locally on macOS or Windows.
+- Baselines are committed PNGs under `tests/visual/**-snapshots/`, generated in the pinned Playwright Linux container so they stay consistent. The `visual-setup` project (`tests/setup/linuxGuard.setup.ts`), which the visual `chromium` project depends on, throws if `pnpm test:visual` runs on a non-Linux host, so do not run or update baselines locally on macOS or Windows.
 - Keep captures deterministic: mask WebGL canvases (`maskCanvas`) and freeze scenes via reduced motion (`gotoStable`). Follow the existing helpers when adding a capture rather than calling `toHaveScreenshot` directly.
 - When a change alters visual layout, expect baseline diffs. Regenerate them through CI by triggering the **Visual Update** workflow (`workflow_dispatch`, or a `/update-snapshots` comment on the PR), which commits refreshed PNGs back to the branch. Do not hand-commit locally generated screenshots.
 - The **Visual Tests** workflow runs on every push and pull request; check its uploaded HTML report artifact to inspect failing diffs.
+
+### Behavior (End-to-End)
+
+- Behavior end-to-end tests use Playwright and live in `tests/e2e/`. They are the `e2e` project in the shared `playwright.config.ts`; run them with `pnpm test:e2e` (`playwright test --project=e2e`).
+- These tests assert DOM structure, roles, and visibility, not pixels. They have no committed baselines and run on any host, including macOS, because the `e2e` project declares no dependency on the `visual-setup` Linux gate that the visual `chromium` project opts into.
+- Use this layer for user-observable behavior that jsdom cannot evaluate, most commonly responsive show/hide driven by CSS `@media` queries. Vitest runs in jsdom, which does no layout and does not apply media queries, so a unit test cannot see a CSS-only `display: none`. Prefer a unit test whenever the behavior is observable in jsdom; reach for an e2e behavior test only when it is not.
+- Query with `getByRole` and accessible names, the same convention as the unit tests. `toBeHidden()` passes whether the element is hidden or absent from the accessibility tree, so it correctly covers elements removed by `display: none`.
+- Both projects share the single preview server (`webServer` in `playwright.config.ts`, port `4173`). CI runs these on every push to `main`, pull request, and `workflow_dispatch` via `.github/workflows/e2e-tests.yml`.
 
 ## Accessibility
 

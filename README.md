@@ -43,9 +43,18 @@ pnpm test:visual:update
 
 Visual tests live in `tests/visual/` and capture the home page plus all seven chapters across the `320`, `768`, `900`, and `1800` viewport widths. WebGL canvases are masked and scenes are frozen so screenshots stay deterministic.
 
-Baselines are committed PNGs generated in the pinned Playwright Linux container, so they only match on Linux. `tests/visual/globalSetup.ts` intentionally throws if you run `pnpm test:visual` on macOS or Windows, since locally generated screenshots would never match the committed baselines.
+Baselines are committed PNGs generated in the pinned Playwright Linux container, so they only match on Linux. Running `pnpm test:visual` on macOS or Windows intentionally fails, since locally generated screenshots would never match the committed baselines.
 
-To (re)generate baselines, trigger the **Visual Update** GitHub Actions workflow, either by dispatching it manually (`workflow_dispatch`) or by commenting `/update-snapshots` on a pull request (OWNER, MEMBER, or COLLABORATOR only). The workflow runs `pnpm test:visual:update` in the Linux container and commits the refreshed PNGs back to the branch. The **Visual Tests** workflow runs on every push to `main` and every pull request, uploading an HTML report artifact when screenshots differ.
+To regenerate baselines, trigger the **Visual Update** GitHub Actions workflow (dispatch it manually or comment `/update-snapshots` on a pull request); it commits refreshed PNGs back to the branch.
+
+## End-to-end behavior testing
+
+```bash
+# Run the Playwright behavior tests (builds, then asserts DOM behavior)
+pnpm test:e2e
+```
+
+These tests live in `tests/e2e/` and assert DOM behavior (roles, visibility) rather than pixels, so there are no baselines and they run on any host. Use them for behavior the jsdom-based unit tests can't observe, such as responsive show/hide driven by CSS media queries. CI runs them on every push and pull request.
 
 ## Images
 

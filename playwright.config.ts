@@ -3,8 +3,6 @@ import { defineConfig, devices } from '@playwright/test';
 const PORT = 4173;
 
 export default defineConfig({
-  testDir: './tests/visual',
-  globalSetup: './tests/visual/globalSetup.ts',
   // settlePage scrolls the whole page, mounting every Three.js scene; under
   // parallel load that can exceed the 30s default, so give each test headroom.
   timeout: 60_000,
@@ -24,7 +22,24 @@ export default defineConfig({
     },
   },
   use: { baseURL: `http://localhost:${PORT}` },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'visual-setup',
+      testDir: './tests/setup',
+      testMatch: /linuxGuard\.setup\.ts/,
+    },
+    {
+      name: 'chromium',
+      testDir: './tests/visual',
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['visual-setup'],
+    },
+    {
+      name: 'e2e',
+      testDir: './tests/e2e',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
   webServer: {
     command: `pnpm build && pnpm preview --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,

@@ -1,4 +1,6 @@
-export default function globalSetup() {
+import { test } from '@playwright/test';
+
+test('visual regression tests must run on Linux', () => {
   if (process.platform !== 'linux') {
     throw new Error(
       [
@@ -11,4 +13,4 @@ export default function globalSetup() {
       ].join('\n')
     );
   }
-}
+});

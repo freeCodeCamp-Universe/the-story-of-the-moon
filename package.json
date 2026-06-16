@@ -16,8 +16,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
-    "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual": "playwright test --project=chromium",
+    "test:e2e": "playwright test --project=e2e",
+    "test:visual:update": "playwright test --project=chromium --update-snapshots",
     "optimize:images": "node scripts/optimize-images.mjs",
     "prepare": "husky"
   },
