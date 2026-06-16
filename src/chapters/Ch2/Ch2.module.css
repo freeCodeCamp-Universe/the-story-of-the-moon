@@ -215,6 +215,51 @@
   letter-spacing: 0.04em;
 }
 
+/* Matches the segmented controls in PolarIceFigure: transparent fill, a
+   hairline border, white glyph, and a surface fill on hover. */
+.expandButton {
+  position: absolute;
+  inset-block-end: var(--space-sm);
+  inset-inline-end: var(--space-sm);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.expandButton svg {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  fill: currentcolor;
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.expandButton:hover {
+  background-color: var(--color-bg-surface);
+}
+
+.expandButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expandButton {
+    transition: none;
+  }
+}
+
 /* Mobile: short moon scene hint without keyboard glyphs. Desktop/tablet show the full hint with arrow keys. */
 .sceneHintMobile {
   display: inline;

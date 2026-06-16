@@ -11,6 +11,7 @@ import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { SurfaceFeature } from '@/types/content';
 import type { MoonSceneHandle } from '@/three/moonScene';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
+import { MoonExpandOverlay } from './MoonExpandOverlay';
 import styles from './Ch2.module.css';
 
 const surfaceFeaturesHeadingId = 'ch2-surface-features-heading';
@@ -53,11 +54,14 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
   const [shouldLoadScene, setShouldLoadScene] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [initialTarget, setInitialTarget] = useState({ lat: activeFeature.lat, lon: activeFeature.lon });
   const [labelText, setLabelText] = useState<{
     name: string;
     coords: string;
   } | null>(null);
   const [rotationAnnouncement, setRotationAnnouncement] = useState('');
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
   const { targetRef, isNearViewport, isVisible } = useViewportActivity<HTMLDivElement>({
     rootMargin: '320px 0px',
   });
@@ -179,13 +183,34 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       return;
     }
 
+    if (expanded) {
+      sceneRef.current.pause();
+      return;
+    }
+
     if (isVisible) {
       sceneRef.current.resume();
       return;
     }
 
     sceneRef.current.pause();
-  }, [isVisible, sceneReady]);
+  }, [expanded, isVisible, sceneReady]);
+
+  const handleExpand = useCallback(() => {
+    const cameraLatLon = sceneRef.current?.getCameraLatLon();
+    const nextTarget = cameraLatLon ?? { lat: activeFeature.lat, lon: activeFeature.lon };
+    setInitialTarget(nextTarget);
+    sceneRef.current?.pause();
+    setExpanded(true);
+  }, [activeFeature.lat, activeFeature.lon]);
+
+  const handleCollapse = useCallback(() => {
+    setExpanded(false);
+    expandButtonRef.current?.focus();
+    if (isVisible) {
+      sceneRef.current?.resume();
+    }
+  }, [isVisible]);
 
   // Free-rotate interaction.
   //
@@ -405,6 +430,12 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       </p>
       <div className={styles.sceneStage}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
+        <button ref={expandButtonRef} type="button" className={styles.expandButton} aria-haspopup="dialog" aria-controls="ch2-moon-expand-dialog" aria-label="Expand the Moon to full screen" onClick={handleExpand}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
+            {/* !Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */}
+            <path d="M128 96C110.3 96 96 110.3 96 128L96 224C96 241.7 110.3 256 128 256C145.7 256 160 241.7 160 224L160 160L224 160C241.7 160 256 145.7 256 128C256 110.3 241.7 96 224 96L128 96zM160 416C160 398.3 145.7 384 128 384C110.3 384 96 398.3 96 416L96 512C96 529.7 110.3 544 128 544L224 544C241.7 544 256 529.7 256 512C256 494.3 241.7 480 224 480L160 480L160 416zM416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160L480 160L480 224C480 241.7 494.3 256 512 256C529.7 256 544 241.7 544 224L544 128C544 110.3 529.7 96 512 96L416 96zM544 416C544 398.3 529.7 384 512 384C494.3 384 480 398.3 480 416L480 480L416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L512 544C529.7 544 544 529.7 544 512L544 416z" />
+          </svg>
+        </button>
         <div ref={annotationRef} className={styles.annotation} aria-live="polite" aria-atomic="true">
           <div ref={labelRef} className={styles.label}>
             {labelText ? (
@@ -419,6 +450,7 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {rotationAnnouncement}
       </p>
+      {expanded ? <MoonExpandOverlay isOpen={expanded} onClose={handleCollapse} triggerRef={expandButtonRef} initialTarget={initialTarget} reducedMotion={reducedMotion} /> : null}
     </div>
   );
 }

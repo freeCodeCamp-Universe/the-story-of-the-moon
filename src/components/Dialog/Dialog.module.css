@@ -80,3 +80,57 @@
     border-radius: 0;
   }
 }
+
+/* Fluid variant: below 900px, a large panel that fills most of the space below
+  the nav and is centered horizontally, rather than the corner-anchored sheet.
+  At 900px and up it switches to a centered card (no full-height stretch).
+  Declared after the sheet media query so its sizing wins at every width. Top
+  and bottom insets with `height: auto` stretch it to fill the gap below the
+  nav; `margin-inline: auto` centers it within the capped width. A flex column
+  lets the content (e.g. a canvas) grow to fill. The panel itself is flush
+  (`padding: 0`) so content reaches the edges; chrome supplies its own padding.
+  The background matches the page so a canvas child blends into the panel
+  rather than reading as a distinct box. */
+.dialogFluid {
+  inset: calc(var(--nav-height) + var(--space-lg)) 0 var(--space-lg);
+  margin-inline: auto;
+  flex-direction: column;
+  gap: 0;
+  width: min(64rem, calc(100vw - (2 * var(--space-md))));
+  height: auto;
+  max-height: none;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+}
+
+/* Qualified with [open] so it beats `.dialog[open] { display: block }`, which
+   would otherwise out-specify a plain `.dialogFluid` and kill the flex column
+   (collapsing the scene to its content height). */
+.dialogFluid[open] {
+  display: flex;
+}
+
+/* Fluid header: the title is hidden, so only the close button remains. Keep it
+   at the inline-end edge (space-between would otherwise pull the lone button to
+   the start) and give it its own padding since the panel is flush. */
+.headerFluid {
+  justify-content: flex-end;
+  padding: var(--space-sm);
+}
+
+@media (min-width: 900px) {
+  .dialogFluid {
+    inset-block: var(--nav-height);
+    inset-inline: 0;
+    margin-block: auto;
+    width: min(58rem, calc(100vw - (2 * var(--space-md))));
+    block-size: min(56rem, calc(100dvh - (2 * var(--nav-height))));
+  }
+
+  .headerFluid {
+    padding: var(--space-md);
+  }
+}

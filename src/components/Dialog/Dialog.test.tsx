@@ -8,7 +8,11 @@ import { Dialog } from '@/components/Dialog/Dialog';
 const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
-function DialogHarness() {
+type DialogHarnessProps = {
+  variant?: 'default' | 'fluid';
+};
+
+function DialogHarness({ variant }: DialogHarnessProps) {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
@@ -17,7 +21,7 @@ function DialogHarness() {
       <button ref={triggerRef} type="button" onClick={() => setIsOpen(true)}>
         open dialog
       </button>
-      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} triggerRef={triggerRef} id="test-dialog" titleId="test-dialog-title" title="Test dialog" closeLabel="close test dialog">
+      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} triggerRef={triggerRef} id="test-dialog" titleId="test-dialog-title" title="Test dialog" closeLabel="close test dialog" variant={variant}>
         <button type="button">first action</button>
         <button type="button">second action</button>
       </Dialog>
@@ -149,6 +153,21 @@ describe('Dialog', () => {
     });
 
     fireEvent.click(dialog, { clientX: 10, clientY: 10 });
+
+    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+  });
+
+  it('should keep an accessible name while visually hiding the title in the fluid variant', async () => {
+    const user = userEvent.setup();
+
+    render(<DialogHarness variant="fluid" />);
+
+    await user.click(screen.getByRole('button', { name: 'open dialog' }));
+
+    expect(screen.getByRole('dialog', { name: 'Test dialog' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Test dialog' })).toHaveClass('sr-only');
+
+    await user.click(screen.getByRole('button', { name: /close test dialog/i }));
 
     expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
   });

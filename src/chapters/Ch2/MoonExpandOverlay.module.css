@@ -1,0 +1,66 @@
+/* The shared <Dialog> owns the modal shell (below-nav placement, backdrop,
+   and the close button). This file only sizes the scene that sits inside it. */
+
+.sceneGroup {
+  position: relative;
+  /* Grow to fill the large Dialog's flex column so the Moon is as big as the
+     panel allows. min-block-size:0 lets it shrink past content height. */
+  flex: 1 1 auto;
+  min-block-size: 0;
+  inline-size: 100%;
+  overflow: hidden;
+  outline: none;
+}
+
+.sceneGroup:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(-1 * var(--focus-ring-offset));
+}
+
+.canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  cursor: grab;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+/* The fluid Dialog panel is flush, so the hint supplies its own inset and the
+   spacing before the scene below it. */
+.hint {
+  margin: 0;
+  padding-inline: var(--space-sm);
+  padding-block-end: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.sceneHintMobile {
+  display: inline;
+}
+
+.sceneHintDesktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .sceneHintMobile {
+    display: none;
+  }
+
+  .sceneHintDesktop {
+    display: inline;
+  }
+}
+
+@media (min-width: 900px) {
+  .hint {
+    padding-inline: var(--space-md);
+    padding-block-end: var(--space-md);
+  }
+}

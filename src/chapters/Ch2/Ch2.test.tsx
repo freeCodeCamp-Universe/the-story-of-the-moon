@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { surfaceFeatures } from '@/content';
 import Ch2 from '@/chapters/Ch2/Ch2';
@@ -25,7 +25,9 @@ const sceneHandle = {
   setCameraTarget: vi.fn(),
 };
 
-const createMoonScene = vi.fn(() => sceneHandle);
+const createMoonScene = vi.fn<(canvas: HTMLCanvasElement, options?: Record<string, unknown>) => typeof sceneHandle>(() => sceneHandle);
+const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: () => reducedMotion,
@@ -55,6 +57,45 @@ vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
 }));
 
 describe('Ch2', () => {
+  beforeAll(() => {
+    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
+      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
+        configurable: true,
+        value() {
+          this.setAttribute('open', '');
+        },
+      });
+    }
+
+    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+        configurable: true,
+        value() {
+          this.removeAttribute('open');
+          this.dispatchEvent(new Event('close'));
+        },
+      });
+    }
+  });
+
+  afterAll(() => {
+    if (globalThis.HTMLDialogElement) {
+      if (originalDialogShowModal) {
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
+          configurable: true,
+          value: originalDialogShowModal,
+        });
+      }
+
+      if (originalDialogClose) {
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+          configurable: true,
+          value: originalDialogClose,
+        });
+      }
+    }
+  });
+
   beforeEach(() => {
     reducedMotion = false;
     viewportState = {
@@ -421,5 +462,183 @@ describe('Ch2', () => {
 
     expect(sceneHandle.getCameraLatLon).toHaveBeenCalledTimes(1);
     expect(rotationRegion.textContent).toContain('Viewing 8.4°S 22.1°E');
+  });
+
+  it('should render the expand button with an accessible name and keep it keyboard reachable', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    const expandButton = screen.getByRole('button', {
+      name: 'Expand the Moon to full screen',
+    });
+
+    await user.tab();
+    await user.tab();
+    await user.tab();
+    await user.tab();
+    await user.tab();
+
+    expect(expandButton).toBeInTheDocument();
+    expect(expandButton).toHaveFocus();
+  });
+
+  it('should open a dialog when the expand button is activated', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Expand the Moon to full screen',
+      })
+    );
+
+    expect(await screen.findByRole('dialog', { name: 'Explore the Moon' })).toBeInTheDocument();
+  });
+
+  it('should seed the overlay scene with the inline camera position', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: false,
+    };
+    sceneHandle.getCameraLatLon.mockReturnValue({ lat: 12.3, lon: -45.6 });
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Expand the Moon to full screen',
+      })
+    );
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(2);
+    });
+
+    const lastCall = createMoonScene.mock.calls[createMoonScene.mock.calls.length - 1];
+    expect(lastCall).toBeDefined();
+    const [, options] = lastCall;
+    expect(options).toEqual(
+      expect.objectContaining({
+        enableOrbitControls: true,
+        autoRotate: false,
+        initialTarget: { lat: 12.3, lon: -45.6 },
+      })
+    );
+  });
+
+  it('should pause the inline scene on open and resume it on close when visible', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: true,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+    sceneHandle.pause.mockClear();
+    sceneHandle.resume.mockClear();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Expand the Moon to full screen',
+      })
+    );
+
+    expect(sceneHandle.pause).toHaveBeenCalled();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Close expanded view',
+      })
+    );
+
+    expect(sceneHandle.resume).toHaveBeenCalled();
+  });
+
+  it('should close on Escape and return focus to the expand button', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: true,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    const expandButton = screen.getByRole('button', {
+      name: 'Expand the Moon to full screen',
+    });
+    await user.click(expandButton);
+
+    const dialog = await screen.findByRole('dialog', {
+      name: 'Explore the Moon',
+    });
+
+    fireEvent.keyDown(dialog, { key: 'Escape' });
+    fireEvent(dialog, new Event('cancel', { cancelable: true }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'Explore the Moon' })).not.toBeInTheDocument();
+    });
+    expect(expandButton).toHaveFocus();
+  });
+
+  it('should close on close-button click and return focus to the expand button', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: true,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    const expandButton = screen.getByRole('button', {
+      name: 'Expand the Moon to full screen',
+    });
+
+    await user.click(expandButton);
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Close expanded view',
+      })
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'Explore the Moon' })).not.toBeInTheDocument();
+    });
+    expect(expandButton).toHaveFocus();
   });
 });

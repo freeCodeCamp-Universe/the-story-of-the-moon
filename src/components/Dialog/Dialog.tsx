@@ -23,18 +23,34 @@ type Props = {
   title: string;
   /** Accessible label for the close button. */
   closeLabel: string;
+  /**
+   * Visual treatment.
+   * - `default`: the compact panel anchored below the nav, padded all around,
+   *   with a visible title (shortcuts/settings dialogs).
+   * - `fluid`: a large panel centered below the nav for immersive content. The
+   *   content area is flush (edge-to-edge) to maximize a visual, the panel
+   *   background matches the page so a canvas child blends in, and the title is
+   *   hidden visually (kept for assistive tech). Only the close button stays as
+   *   chrome.
+   */
+  variant?: 'default' | 'fluid';
   children: ReactNode;
 };
 
-export function Dialog({ isOpen, onClose, triggerRef, id, titleId, title, closeLabel, children }: Props) {
+export function Dialog({ isOpen, onClose, triggerRef, id, titleId, title, closeLabel, variant = 'default', children }: Props) {
   const { dialogRef, closeButtonRef, dialogProps } = useModalDialog({ isOpen, onClose, triggerRef });
 
   if (!isOpen) return null;
 
+  const isFluid = variant === 'fluid';
+  const className = isFluid ? `${styles.dialog} ${styles.dialogFluid}` : styles.dialog;
+  const headerClassName = isFluid ? `${styles.header} ${styles.headerFluid}` : styles.header;
+  const titleClassName = isFluid ? `${styles.title} sr-only` : styles.title;
+
   return (
-    <dialog ref={dialogRef} id={id} className={styles.dialog} aria-labelledby={titleId} {...dialogProps}>
-      <div className={styles.header}>
-        <h2 id={titleId} className={styles.title}>
+    <dialog ref={dialogRef} id={id} className={className} aria-labelledby={titleId} {...dialogProps}>
+      <div className={headerClassName}>
+        <h2 id={titleId} className={titleClassName}>
           {title}
         </h2>
         <button ref={closeButtonRef} autoFocus type="button" className={styles.closeButton} onClick={onClose} aria-label={closeLabel}>
