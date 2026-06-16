@@ -1,13 +1,11 @@
 import { test } from '@playwright/test';
-import { VIEWPORTS, gotoStable, captureSection, captureSectionStage } from './helpers';
+import { VIEWPORTS, gotoStable, captureSection, captureSectionTop } from './helpers';
 
 const CHAPTER_IDS = ['chapter-1', 'chapter-2', 'chapter-3', 'chapter-4', 'chapter-5', 'chapter-6', 'chapter-7'];
 
-// Ch4 is a bespoke scroll-driven chapter: capturing the whole tall section
-// churns its sticky stage. Capture the stage in its initial state instead.
-const STAGE_ONLY: Record<string, string> = {
-  'chapter-4': '[data-visual-stage]',
-};
+// Ch4's reduced-motion layout stacks every mission full-size (~15k px tall), too
+// large for a reliable full-section screenshot. Capture its opening viewport.
+const TOP_ONLY = new Set(['chapter-4']);
 
 for (const viewport of VIEWPORTS) {
   for (const id of CHAPTER_IDS) {
@@ -15,9 +13,8 @@ for (const viewport of VIEWPORTS) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await gotoStable(page, '/');
       const name = `${id}-${viewport.label}.png`;
-      const stageSelector = STAGE_ONLY[id];
-      if (stageSelector) {
-        await captureSectionStage(page, id, stageSelector, name);
+      if (TOP_ONLY.has(id)) {
+        await captureSectionTop(page, id, name);
       } else {
         await captureSection(page, id, name);
       }

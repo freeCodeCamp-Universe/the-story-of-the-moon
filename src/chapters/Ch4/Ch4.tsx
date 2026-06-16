@@ -305,7 +305,7 @@ function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsE
         ))}
       </div>
 
-      <div ref={stageRef} className={styles.stage} data-visual-stage>
+      <div ref={stageRef} className={styles.stage}>
         <div className={styles.rail}>
           <ol className={styles.railTicks} aria-label="Timeline progress">
             {steps.map((step, i) => {

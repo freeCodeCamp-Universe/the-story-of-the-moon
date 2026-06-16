@@ -13,10 +13,9 @@ export const VIEWPORTS: Viewport[] = [
 // Drive the page into a static, fully-painted state before any capture.
 // OptimizedImage marks images loading="lazy" + decoding="async", so photos
 // paint in *after* a screenshot starts; document.fonts.ready does not wait for
-// them. Without forcing them to load, screenshots never stabilize. Steps: force
-// every image eager + sync-decode, scroll through the page to trigger lazy loads
-// and viewport-gated mounts, then wait for fonts and for all images to finish
-// loading and decoding.
+// them, and setting loading="eager" alone does not fetch already-deferred
+// off-screen images. Scroll the whole page once to trigger every lazy image,
+// then wait for fonts and for all images to finish loading and decoding.
 async function settlePage(page: Page) {
   await page.evaluate(async () => {
     for (const img of Array.from(document.images)) {
@@ -69,14 +68,11 @@ export async function captureSection(page: Page, id: string, name: string) {
   await expect(section).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
 
-// For scroll-driven chapters whose tall section churns its sticky stage when
-// scrolled (e.g. Ch4), capture the sticky stage in a fixed, initial state
-// instead of the whole scroll track. The stage sits after the tall sentinel
-// track in the DOM, so it is only pinned/visible once the section is scrolled
-// into. Centering the first step's sentinel fixes the active step on 0 (its
-// preloaded state) and pins the stage in view; then the stage box is stable.
-export async function captureSectionStage(page: Page, id: string, stageSelector: string, name: string) {
-  const section = page.locator(`#${id}`);
-  await section.locator('[data-step="0"]').evaluate((el) => el.scrollIntoView({ block: 'center' }));
-  await expect(section.locator(stageSelector)).toHaveScreenshot(name, { mask: maskCanvas(page) });
+// For chapters whose section is extremely tall (e.g. Ch4's reduced-motion
+// stacked layout is ~15k px), an element screenshot of the whole section is too
+// large to capture reliably. Align the section top to the viewport and capture a
+// bounded viewport screenshot of its opening instead.
+export async function captureSectionTop(page: Page, id: string, name: string) {
+  await page.locator(`#${id}`).evaluate((el) => el.scrollIntoView({ block: 'start' }));
+  await expect(page).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
