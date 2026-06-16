@@ -37,6 +37,14 @@ These instructions apply to the whole repository unless a more specific instruct
 - Use `userEvent` for interaction flows instead of lower-level event helpers when practical.
 - Cover keyboard behavior when a feature is interactive or navigable.
 
+### Visual Regression
+
+- Visual regression tests use Playwright and live in `tests/visual/`. They capture the home page and all chapters across the `320`, `768`, `900`, and `1800` viewport widths defined in `tests/visual/helpers.ts`.
+- Baselines are committed PNGs under `tests/visual/**-snapshots/`, generated in the pinned Playwright Linux container so they stay consistent. `tests/visual/globalSetup.ts` throws if `pnpm test:visual` runs on a non-Linux host, so do not run or update baselines locally on macOS or Windows.
+- Keep captures deterministic: mask WebGL canvases (`maskCanvas`) and freeze scenes via reduced motion (`gotoStable`). Follow the existing helpers when adding a capture rather than calling `toHaveScreenshot` directly.
+- When a change alters visual layout, expect baseline diffs. Regenerate them through CI by triggering the **Visual Update** workflow (`workflow_dispatch`, or a `/update-snapshots` comment on the PR), which commits refreshed PNGs back to the branch. Do not hand-commit locally generated screenshots.
+- The **Visual Tests** workflow runs on every push and pull request; check its uploaded HTML report artifact to inspect failing diffs.
+
 ## Accessibility
 
 - Use semantic HTML first, then add ARIA only where semantics are not enough.
