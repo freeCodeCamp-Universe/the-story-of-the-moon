@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
 import { Dialog } from '@/components/Dialog/Dialog';
+import { IconButton } from '@/components/IconButton/IconButton';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { Switch } from '@/components/Switch/Switch';
 import { CHAPTERS } from '@/data/chapters';
@@ -151,10 +152,10 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
           </div>
 
           <div className={styles.endControls}>
-            <button
+            <IconButton
               ref={shortcutsButtonRef}
-              type="button"
-              className={`${styles.shortcutsButton}${isShortcutsOpen ? ` ${styles.shortcutsButtonActive}` : ''}`}
+              className={styles.shortcutsButton}
+              active={isShortcutsOpen}
               onClick={() => setIsShortcutsOpen(true)}
               aria-label="show keyboard shortcuts"
               aria-haspopup="dialog"
@@ -162,20 +163,11 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
               aria-controls="keyboard-shortcuts-dialog"
             >
               <KeyboardIcon />
-            </button>
+            </IconButton>
 
-            <button
-              ref={settingsButtonRef}
-              type="button"
-              className={`${styles.settingsButton}${isSettingsOpen ? ` ${styles.settingsButtonActive}` : ''}`}
-              onClick={() => setIsSettingsOpen(true)}
-              aria-label="open settings"
-              aria-haspopup="dialog"
-              aria-expanded={isSettingsOpen}
-              aria-controls="settings-dialog"
-            >
+            <IconButton ref={settingsButtonRef} active={isSettingsOpen} onClick={() => setIsSettingsOpen(true)} aria-label="open settings" aria-haspopup="dialog" aria-expanded={isSettingsOpen} aria-controls="settings-dialog">
               <SettingsIcon />
-            </button>
+            </IconButton>
           </div>
         </nav>
       </header>

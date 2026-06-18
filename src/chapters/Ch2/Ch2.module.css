@@ -233,8 +233,9 @@
   color: var(--color-text);
   cursor: pointer;
   transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-base),
+    color var(--transition-base),
+    background-color var(--transition-base);
 }
 
 .expandButton svg {
@@ -246,12 +247,9 @@
 }
 
 .expandButton:hover {
-  background-color: var(--color-bg-surface);
-}
-
-.expandButton:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background-color: rgba(153, 201, 255, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {

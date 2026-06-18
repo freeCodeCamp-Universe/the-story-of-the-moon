@@ -41,8 +41,6 @@
   justify-self: center;
 }
 
-.settingsButton,
-.shortcutsButton,
 .chapterButton {
   display: flex;
   align-items: center;
@@ -55,8 +53,6 @@
     background-color var(--transition-base);
 }
 
-.settingsButton,
-.shortcutsButton,
 .chapterButton {
   border: 1px solid transparent;
   background: transparent;
@@ -69,38 +65,14 @@
   justify-self: end;
 }
 
-.settingsButton,
-.shortcutsButton {
-  height: calc(var(--nav-height) - var(--space-sm));
-  min-width: calc(var(--nav-height) - var(--space-sm));
-  padding-inline: var(--space-sm);
-  border-radius: 4px;
-}
-
-.iconButton:hover,
 .chapterButton:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
 
-.settingsButton:hover,
-.shortcutsButton:hover,
 .chapterButton:hover,
-.settingsButtonActive,
-.shortcutsButtonActive,
 .chapterButtonActive {
   background: rgba(153, 201, 255, 0.08);
-}
-
-.settingsButton svg,
-.shortcutsButton svg {
-  fill: currentColor;
-}
-
-.settingsButton svg,
-.shortcutsButton svg {
-  width: 1.375rem;
-  height: 1.375rem;
 }
 
 .chapterButton {
@@ -213,10 +185,6 @@
   }
 
   .shortcutsButton {
-    display: none;
-  }
-
-  .shortcutsPreference {
     display: none;
   }
 

@@ -1,4 +1,5 @@
 import { type ReactNode, type RefObject } from 'react';
+import { IconButton } from '@/components/IconButton/IconButton';
 import { useModalDialog } from '@/hooks/useModalDialog';
 import styles from './Dialog.module.css';
 
@@ -53,9 +54,9 @@ export function Dialog({ isOpen, onClose, triggerRef, id, titleId, title, closeL
         <h2 id={titleId} className={titleClassName}>
           {title}
         </h2>
-        <button ref={closeButtonRef} autoFocus type="button" className={styles.closeButton} onClick={onClose} aria-label={closeLabel}>
+        <IconButton ref={closeButtonRef} autoFocus aria-label={closeLabel} onClick={onClose}>
           <CloseIcon />
-        </button>
+        </IconButton>
       </div>
       {children}
     </dialog>
