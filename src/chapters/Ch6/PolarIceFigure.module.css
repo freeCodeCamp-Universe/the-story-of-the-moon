@@ -67,6 +67,18 @@
   margin-inline-start: -1px;
 }
 
+/* Round only the strip's outer corners; inner joins stay square so the
+   segments read as one connected selector. */
+.option:first-child .button {
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+}
+
+.option:last-child .button {
+  border-start-end-radius: var(--radius);
+  border-end-end-radius: var(--radius);
+}
+
 .option:hover .button {
   z-index: 2;
   color: var(--color-accent);

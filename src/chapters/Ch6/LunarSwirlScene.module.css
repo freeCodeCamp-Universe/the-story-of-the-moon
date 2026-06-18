@@ -38,6 +38,18 @@
   margin-inline-start: -1px;
 }
 
+/* Round only the strip's outer corners; inner joins stay square so the
+   segments read as one connected selector. */
+.tab:first-child {
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+}
+
+.tab:last-child {
+  border-start-end-radius: var(--radius);
+  border-end-end-radius: var(--radius);
+}
+
 .tab:not([aria-selected='true']):hover {
   z-index: 2;
   color: var(--color-accent);

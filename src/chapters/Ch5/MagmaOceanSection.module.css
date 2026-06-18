@@ -10,6 +10,7 @@
   padding-block: var(--space-xl);
   background-color: var(--color-bg-raised);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius);
 }
 
 .layout {
@@ -93,7 +94,7 @@
   display: block;
   inline-size: 100%;
   block-size: 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background-color: var(--color-disabled);
   transition:
     background-color var(--transition-fast),

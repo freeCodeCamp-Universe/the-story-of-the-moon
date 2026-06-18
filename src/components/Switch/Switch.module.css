@@ -45,7 +45,7 @@
   block-size: 2rem;
   padding-inline: 0.5rem;
   border: 1px solid var(--switch-track-border);
-  border-radius: 0.35rem;
+  border-radius: var(--radius);
   background-color: var(--switch-track-bg);
   transition:
     background-color var(--transition-fast),
@@ -73,7 +73,7 @@
   inset-inline-start: 0.25rem;
   inline-size: 1.25rem;
   block-size: 1.25rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background-color: var(--switch-thumb-color);
   transform: translateY(-50%);
   transition:

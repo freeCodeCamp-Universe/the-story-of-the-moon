@@ -77,6 +77,11 @@
   --gutter: clamp(1.5rem, 5vw, 5rem); /* continuous side safe-zone, no per-chapter steps */
   --nav-height: 3.25rem;
 
+  /* ── Radius ───────────────────────────────────────────────────── */
+  --radius: 4px; /* every rounded corner across the app */
+  --radius-pill: 999px; /* fully rounded pills (sliders, toggles) */
+  /* Circles use 50% inline; square resets use 0. */
+
   /* ── Transitions ──────────────────────────────────────────────── */
   --transition-fast: 80ms ease-out;
   --transition-base: 200ms ease-out;
