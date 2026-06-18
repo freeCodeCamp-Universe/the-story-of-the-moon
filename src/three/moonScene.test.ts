@@ -24,11 +24,12 @@ vi.mock('three', () => {
   const MockSphereGeometry = vi.fn(function MockSphereGeometry() {
     return { dispose: vi.fn() };
   });
-  const MockMeshBasicMaterial = vi.fn(function MockMeshBasicMaterial() {
+  const MockMeshBasicMaterial = vi.fn(function MockMeshBasicMaterial(params?: Record<string, unknown>) {
     return {
       map: null,
       needsUpdate: false,
       dispose: vi.fn(),
+      ...params,
     };
   });
   const MockMesh = vi.fn(function MockMesh() {
@@ -160,7 +161,9 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    expect(THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({ map: null });
+    // Starts transparent at opacity 0 and fades in once the texture lands, so
+    // the un-textured (solid white) sphere never flashes on screen.
+    expect(THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({ map: null, transparent: true, opacity: 0 });
   });
 
   it('should load the 2k moon texture', () => {
@@ -175,6 +178,64 @@ describe('createMoonScene', () => {
       load: ReturnType<typeof vi.fn>;
     };
     expect(textureLoaderInstance.load).toHaveBeenCalledWith('/moon/moon-2k.avif', expect.any(Function), undefined, expect.any(Function));
+  });
+
+  it('should hold the moon transparent until the texture reveal animates it in', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas);
+
+    // The mocked loader resolves synchronously, so the reveal is armed but the
+    // (no-op) animation loop has not advanced the fade: the moon is still
+    // transparent rather than snapped to opaque.
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
+    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+    expect(materialInstance.opacity).toBe(0);
+    expect(materialInstance.transparent).toBe(true);
+  });
+
+  it('should snap the moon fully opaque on texture load under reduced motion', () => {
+    const canvas = makeMockCanvas(true);
+
+    createMoonScene(canvas, { reducedMotion: true });
+
+    // No fade under reduced motion: the synchronous texture load reveals the
+    // moon immediately at full opacity.
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
+    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+    expect(materialInstance.opacity).toBe(1);
+    expect(materialInstance.transparent).toBe(false);
+  });
+
+  it('should ease the moon to fully opaque across the reveal window', () => {
+    const nowSpy = vi.spyOn(performance, 'now');
+    // Captured as the reveal start when the (synchronous) texture load arms it.
+    nowSpy.mockReturnValue(1000);
+
+    const canvas = makeMockCanvas(true);
+    createMoonScene(canvas);
+
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
+    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as { setAnimationLoop: ReturnType<typeof vi.fn> };
+    const renderFrame = rendererInstance.setAnimationLoop.mock.calls[0]?.[0] as () => void;
+    expect(renderFrame).toBeTypeOf('function');
+
+    // Halfway through the 600ms window: eased (easeOutCubic), still animating.
+    nowSpy.mockReturnValue(1300);
+    renderFrame();
+    expect(materialInstance.opacity).toBeCloseTo(1 - Math.pow(1 - 0.5, 3), 5);
+    expect(materialInstance.transparent).toBe(true);
+
+    // Past the end of the window: snapped to fully opaque, opaque rendering restored.
+    nowSpy.mockReturnValue(1700);
+    renderFrame();
+    expect(materialInstance.opacity).toBe(1);
+    expect(materialInstance.transparent).toBe(false);
+
+    nowSpy.mockRestore();
   });
 
   it('should dispose renderer and geometry on dispose()', () => {

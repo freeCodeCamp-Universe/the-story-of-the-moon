@@ -175,10 +175,25 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   let texture8k: THREE.Texture | null = null;
   let disposed = false;
 
+  // Declared up front so the texture loader's reveal branch (below) can read it
+  // even when a texture resolves synchronously (e.g. a cached image or a test
+  // stub), before the controls block that also consumes it runs.
+  const reducedMotion = options?.reducedMotion ?? false;
+
+  // Fade-in state. The Moon starts transparent and fades in once its surface
+  // texture is applied (see the 2k loader and renderFrame). Without a map the
+  // unlit material renders solid white, which flashed in the moment between
+  // the canvas mounting and the texture landing, most visibly when the expand
+  // dialog opened. Holding opacity at 0 until the texture is ready means the
+  // reader only ever sees the real surface emerge from the dark canvas.
+  const MOON_REVEAL_MS = 600;
+  let moonRevealing = false;
+  let moonRevealStart = 0;
+
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   // The Moon texture already includes its own tonal shading, so render it
   // unlit to preserve the authored brightness and avoid scene-light shifts.
-  const material = new THREE.MeshBasicMaterial({ map: texture2k });
+  const material = new THREE.MeshBasicMaterial({ map: texture2k, transparent: true, opacity: 0 });
   const moon = new THREE.Mesh(geometry, material);
   moon.position.set(0, 0, 0);
   scene.add(moon);
@@ -208,6 +223,20 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
     material.map = loadedTexture;
     material.needsUpdate = true;
 
+    // Reveal the now-textured Moon. Snap straight to visible under reduced
+    // motion; otherwise arm the fade driven by renderFrame. If the loop is
+    // paused when the texture lands, the elapsed time will already exceed
+    // MOON_REVEAL_MS by the time it resumes, so the fade snaps to full on the
+    // first frame rather than replaying when the reader scrolls it into view.
+    if (reducedMotion) {
+      material.opacity = 1;
+      material.transparent = false;
+      material.needsUpdate = true;
+    } else {
+      moonRevealStart = performance.now();
+      moonRevealing = true;
+    }
+
     if (window.matchMedia(`(min-width: ${BP_DESKTOP}px) and (min-resolution: 2dppx)`).matches) {
       loadTexture('/moon/moon-8k.avif', '/moon/moon-8k.jpg', (hiResTexture) => {
         hiResTexture.colorSpace = THREE.SRGBColorSpace;
@@ -221,7 +250,6 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   const controls = new OrbitControls(camera, canvas);
   controls.enablePan = false;
   controls.enableZoom = false;
-  const reducedMotion = options?.reducedMotion ?? false;
   controls.enableDamping = !reducedMotion;
   controls.dampingFactor = 0.05;
   controls.autoRotate = options?.autoRotate ?? true;
@@ -320,6 +348,17 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
       slerpOnSphere(camera.position, tweenFrom, tweenTo, eased);
       camera.lookAt(0, 0, 0);
       if (t >= 1) tweenDuration = 0;
+    }
+    if (moonRevealing) {
+      const t = Math.min((performance.now() - moonRevealStart) / MOON_REVEAL_MS, 1);
+      // easeOutCubic, matching the camera tween's easing.
+      material.opacity = 1 - Math.pow(1 - t, 3);
+      if (t >= 1) {
+        material.opacity = 1;
+        material.transparent = false;
+        material.needsUpdate = true;
+        moonRevealing = false;
+      }
     }
     controls.update();
     renderer.render(scene, camera);
