@@ -96,9 +96,7 @@ export function LunarSwirlScene() {
       </div>
 
       <div id={panelId} role="tabpanel" aria-labelledby={tabId(active)} tabIndex={0} className={styles.tabpanel}>
-        <p className={styles.caption} aria-live="polite" aria-atomic="true">
-          {view.caption}
-        </p>
+        <p className={styles.caption}>{view.caption}</p>
 
         {credit && (
           <figure className={styles.figure}>
