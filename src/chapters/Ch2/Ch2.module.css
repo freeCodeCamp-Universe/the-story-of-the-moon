@@ -249,7 +249,10 @@
 .expandButton:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
-  background-color: rgba(153, 201, 255, 0.08);
+}
+
+.expandButton:active {
+  background-color: var(--active-bg);
 }
 
 @media (prefers-reduced-motion: reduce) {

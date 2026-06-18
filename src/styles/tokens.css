@@ -85,6 +85,9 @@
   /* ── Focus ────────────────────────────────────────────────────── */
   --focus-ring: 2px solid var(--color-focus);
   --focus-ring-offset: 2px;
+
+  /* ── Active ────────────────────────────────────────────────────── */
+  --active-bg: rgba(153, 201, 255, 0.08);
 }
 
 /* Reading column widens once there's room for the two-column layout.

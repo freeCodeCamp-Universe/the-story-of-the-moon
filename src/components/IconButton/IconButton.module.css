@@ -20,11 +20,10 @@
 .iconButton:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
-  background: rgba(153, 201, 255, 0.08);
 }
 
 .active {
-  background: rgba(153, 201, 255, 0.08);
+  background: var(--active-bg);
 }
 
 .iconButton svg {
