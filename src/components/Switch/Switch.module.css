@@ -5,11 +5,11 @@
   --switch-track-bg: var(--color-bg);
   --switch-track-border: var(--color-border);
   --switch-track-text-color: var(--color-text-muted);
-  --switch-track-checked-bg: var(--color-bg-surface);
-  --switch-track-checked-border: var(--color-text);
-  --switch-track-checked-text-color: var(--color-text);
+  --switch-track-checked-bg: var(--active-bg);
+  --switch-track-checked-border: var(--color-accent);
+  --switch-track-checked-text-color: var(--color-accent);
   --switch-thumb-color: var(--color-text-muted);
-  --switch-thumb-checked-color: var(--color-text);
+  --switch-thumb-checked-color: var(--color-accent);
 
   display: inline-flex;
   align-items: center;
