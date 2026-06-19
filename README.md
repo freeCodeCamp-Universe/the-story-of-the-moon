@@ -45,7 +45,7 @@ Visual tests live in `tests/visual/` and capture the home page plus all seven ch
 
 Baselines are committed PNGs generated in the pinned Playwright Linux container, so they only match on Linux. Running `pnpm test:visual` on macOS or Windows intentionally fails, since locally generated screenshots would never match the committed baselines.
 
-To regenerate baselines, trigger the **Visual Update** GitHub Actions workflow (dispatch it manually or comment `/update-snapshots` on a pull request); it commits refreshed PNGs back to the branch.
+To regenerate baselines, dispatch the **Visual Update** GitHub Actions workflow on the branch that holds the change; it commits refreshed PNGs back to that branch. Run it once you have intentionally changed layout and Visual Tests is failing on diffs you have reviewed.
 
 ## End-to-end behavior testing
 

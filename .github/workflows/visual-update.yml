@@ -2,41 +2,16 @@ name: Visual Update
 
 on:
   workflow_dispatch:
-  issue_comment:
-    types: [created]
 
 jobs:
-  resolve:
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.issue.pull_request != null &&
-       contains(github.event.comment.body, '/update-snapshots') &&
-       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
-       github.event.comment.author_association))
-    runs-on: ubuntu-latest
-    outputs:
-      ref: ${{ steps.pick.outputs.ref }}
-    steps:
-      - name: Resolve target ref
-        id: pick
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          else
-            ref=$(gh pr view "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --json headRefName -q .headRefName)
-            echo "ref=$ref" >> "$GITHUB_OUTPUT"
-          fi
   update:
-    needs: resolve
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ needs.resolve.outputs.ref }}
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 24 }
@@ -48,4 +23,4 @@ jobs:
         with:
           commit_message: 'test: update visual baselines'
           file_pattern: 'tests/visual/**/*.png'
-          branch: ${{ needs.resolve.outputs.ref }}
+          branch: ${{ github.ref_name }}
