@@ -87,6 +87,14 @@ export async function gotoStable(page: Page, path = '/', opts: { reducedMotion?:
   const { reducedMotion = true } = opts;
   await page.emulateMedia({ reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
   await page.goto(path);
+  // StoryPage is lazy-loaded behind a Suspense fallback (the LoadingState
+  // spinner, see src/App.tsx), and page.goto resolves on `load` — before that
+  // chunk renders. Without this wait, settlePage can measure and screenshot the
+  // static spinner: it has no images and a stable height, so every settle check
+  // passes trivially and the capture flakes against the real content. #main
+  // exists only inside StoryPage (after Suspense resolves), so waiting for it
+  // guarantees the story has mounted before we settle the page.
+  await page.locator('#main').waitFor({ state: 'attached' });
   await settlePage(page);
 }
 
