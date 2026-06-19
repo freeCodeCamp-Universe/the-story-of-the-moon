@@ -113,6 +113,22 @@ export async function captureSection(page: Page, id: string, name: string) {
   await expect(section).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
 
+// ScrollyChapter (Ch2, Ch3) pins its visual with position: sticky. A
+// full-element screenshot of the tall section stitches that sticky visual at a
+// nondeterministic vertical offset run-to-run, and because the visual is a
+// masked canvas the misaligned mask becomes the entire diff (a flaky failure).
+// Capture a bounded viewport with the stage scrolled to start instead, so the
+// sticky visual is anchored at its `top` and no stitching happens, the same way
+// captureChapter4Stage handles Ch4's pinned deck. The ScrollyChapter container
+// is a role="group" whose accessible name comes from its aria-label or the
+// heading it is labelled by.
+export async function captureScrollyStage(page: Page, stageName: string, name: string) {
+  const stage = page.getByRole('group', { name: stageName });
+  await stage.scrollIntoViewIfNeeded();
+  await stage.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+  await expect(page).toHaveScreenshot(name, { mask: maskCanvas(page) });
+}
+
 // For chapters whose section is extremely tall (e.g. Ch4's reduced-motion
 // stacked layout is ~15k px), an element screenshot of the whole section is too
 // large to capture reliably. Align the section top to the viewport and capture a
