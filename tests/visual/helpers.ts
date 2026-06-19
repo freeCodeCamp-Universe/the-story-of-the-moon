@@ -11,55 +11,73 @@ export const VIEWPORTS: Viewport[] = [
 ];
 
 // Drive the page into a static, fully-painted state before any capture.
-// OptimizedImage marks images loading="lazy" + decoding="async", so photos
-// paint in *after* a screenshot starts; document.fonts.ready does not wait for
-// them, and setting loading="eager" alone does not fetch already-deferred
-// off-screen images. Scroll the whole page once to trigger every lazy image,
-// then wait for fonts and for all images to finish loading and decoding.
+// OptimizedImage marks content images loading="lazy" + decoding="async", so they
+// paint in *after* a screenshot starts and document.fonts.ready does not wait for
+// them. A best-effort scroll plus a per-image timeout used to let a slow image
+// (e.g. a 278 KB AVIF under parallel CI load) be captured half-loaded, collapsing
+// its box and shifting the section height run-to-run. Instead we mount every
+// viewport-gated scene, force every image eager, then *block* until all started
+// images finish loading and the document height stops changing. There is no silent
+// timeout escape hatch: a genuinely stuck image fails the wait loudly.
 async function settlePage(page: Page) {
+  // 1. Scroll the whole page so intersection-gated scenes mount and every lazy
+  //    image is rendered, then flip all images eager so none stay deferred. Pause
+  //    a couple frames per step so the mounts can fire before we scroll past.
   await page.evaluate(async () => {
+    const waitFrames = (n: number) =>
+      new Promise<void>((resolve) => {
+        let remaining = n;
+        const tick = () => (remaining-- <= 0 ? resolve() : requestAnimationFrame(tick));
+        requestAnimationFrame(tick);
+      });
+    const step = Math.max(1, Math.floor(window.innerHeight * 0.8));
+    for (let y = 0; y <= document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await waitFrames(2);
+    }
+    window.scrollTo(0, 0);
     for (const img of Array.from(document.images)) {
       img.loading = 'eager';
       img.decoding = 'sync';
     }
-    const step = window.innerHeight;
-    for (let y = 0; y <= document.body.scrollHeight; y += step) {
-      window.scrollTo(0, y);
-      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
-    }
-    window.scrollTo(0, 0);
+    await waitFrames(2);
   });
 
   await page.evaluate(() => document.fonts.ready);
 
+  // 2. Block until every image that began loading has finished. `complete` is
+  //    true after both load and error, so a broken src cannot hang the wait;
+  //    images that never select a source (currentSrc === '', e.g. a stacked,
+  //    never-revealed Ch4 deck slot) are intentionally skipped.
+  await page.waitForFunction(() => Array.from(document.images).every((img) => !img.currentSrc || img.complete), undefined, { timeout: 20_000 });
+
+  // 3. Decode the images whose bytes arrived so the first painted frame is final.
   await page.evaluate(async () => {
-    // A lazy image that scrolled off-screen may never fetch even after we flip
-    // it to eager, so its load/error events never fire. Bound each wait so one
-    // stuck image can't hang the whole capture; in practice every image
-    // resolves well under the cap, so this only guards the pathological case.
-    const withTimeout = (p: Promise<unknown>, ms: number) => Promise.race([p, new Promise<void>((resolve) => setTimeout(resolve, ms))]);
-    await Promise.all(
-      Array.from(document.images).map((img) =>
-        img.complete
-          ? Promise.resolve()
-          : withTimeout(
-              new Promise<void>((resolve) => {
-                img.addEventListener('load', () => resolve(), { once: true });
-                img.addEventListener('error', () => resolve(), { once: true });
-              }),
-              10_000
-            )
-      )
-    );
-    // Decode only images whose bytes actually arrived. img.decode() on an
-    // image that never fetched (e.g. a stacked, never-revealed Ch4 deck slot)
-    // stays pending forever and would hang the settle.
     await Promise.allSettled(
       Array.from(document.images)
         .filter((img) => img.complete && img.naturalWidth > 0)
         .map((img) => img.decode())
     );
   });
+
+  // 4. Hold until the document height is unchanged across several frames, so a
+  //    late reflow (image box expanding, scene mount, font swap) cannot land
+  //    after we return and be captured mid-shift.
+  await page.waitForFunction(
+    () => {
+      const store = window as unknown as { __vrHeight?: number; __vrStable?: number };
+      const height = document.documentElement.scrollHeight;
+      if (store.__vrHeight === height) {
+        store.__vrStable = (store.__vrStable ?? 0) + 1;
+      } else {
+        store.__vrHeight = height;
+        store.__vrStable = 0;
+      }
+      return (store.__vrStable ?? 0) >= 3;
+    },
+    undefined,
+    { polling: 'raf', timeout: 10_000 }
+  );
 }
 
 // reducedMotion defaults to 'reduce' so scroll-driven scenes freeze into a
