@@ -87,7 +87,7 @@ export default function Ch6() {
                   originally broke the Moon away from Earth should have vaporized those volatiles.
                 </li>
               </ul>
-              <p>A single conclusion remains out of reach because different rocks offer contradictory histories, and no spacecraft has yet sampled the polar ice to settle the question. The water is real, but its origin remains a mystery.</p>
+              <p>A single conclusion remains out of reach because different rocks offer contradictory histories, and no spacecraft has yet sampled the polar ice to settle the question.</p>
             </Prose>
           </div>
           <PolarIceFigure />
