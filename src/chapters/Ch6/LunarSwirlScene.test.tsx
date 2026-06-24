@@ -5,9 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { LunarSwirlScene } from './LunarSwirlScene';
 
 // Reduced motion is handled entirely in CSS (the overlay crossfade transitions
-// are removed under prefers-reduced-motion). The DOM and the tablist behavior
-// are identical either way, so there is no separate reduced-motion branch to
-// test here; the control below is operable regardless of motion preference.
+// are removed under prefers-reduced-motion). The DOM and the control behavior
+// are identical either way, so there is no separate reduced-motion branch here.
 //
 // The section heading and prose (including the Lunar Vertex line) live in Ch6,
 // not in this interactive, so they are covered by Ch6's tests.
@@ -20,39 +19,48 @@ describe('LunarSwirlScene', () => {
     expect(screen.getByText(/NASA \/ GSFC \/ Arizona State University/i)).toBeInTheDocument();
   });
 
-  it('should expose a tablist of three views with the original photo selected by default', () => {
+  it('should show the original photo by default, with no caption or field switch', () => {
     render(<LunarSwirlScene />);
 
-    expect(screen.getByRole('tablist', { name: /Reiner Gamma views/i })).toBeInTheDocument();
-
-    const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(3);
-    expect(screen.getByRole('tab', { name: 'Original' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByText(/bright loops lying flat/i)).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: /Reiner Gamma view/i })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Original' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Annotated' })).not.toBeChecked();
+    expect(screen.queryByRole('switch', { name: /magnetic field/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
   });
 
-  it('should select a view with the pointer and update the caption', async () => {
+  it('should reveal the shielded explanation with the field on when Annotated is chosen', async () => {
     const user = userEvent.setup();
     render(<LunarSwirlScene />);
 
-    await user.click(screen.getByRole('tab', { name: 'With the shield' }));
+    await user.click(screen.getByRole('radio', { name: 'Annotated' }));
 
-    expect(screen.getByRole('tab', { name: 'With the shield' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('switch', { name: /magnetic field/i })).toBeChecked();
     expect(screen.getByText(/turns the solar wind aside/i)).toBeInTheDocument();
+    expect(screen.getByText(/turns the solar wind aside/i)).toHaveAttribute('aria-live', 'polite');
   });
 
-  it('should move and select views with arrow keys, wrapping at the ends', async () => {
+  it('should switch to the unshielded explanation when the magnetic field is turned off', async () => {
     const user = userEvent.setup();
     render(<LunarSwirlScene />);
 
-    screen.getByRole('tab', { name: 'Original' }).focus();
+    await user.click(screen.getByRole('radio', { name: 'Annotated' }));
+    await user.click(screen.getByRole('switch', { name: /magnetic field/i }));
 
-    await user.keyboard('{ArrowRight}');
-    expect(screen.getByRole('tab', { name: 'With the shield' })).toHaveAttribute('aria-selected', 'true');
-
-    // From index 1: left -> 0, left -> wraps to the last view.
-    await user.keyboard('{ArrowLeft}{ArrowLeft}');
-    expect(screen.getByRole('tab', { name: 'Without the shield' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('switch', { name: /magnetic field/i })).not.toBeChecked();
     expect(screen.getByText(/Research suggests/i)).toBeInTheDocument();
+    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
+  });
+
+  it('should return to the bare photo when Original is reselected', async () => {
+    const user = userEvent.setup();
+    render(<LunarSwirlScene />);
+
+    await user.click(screen.getByRole('radio', { name: 'Annotated' }));
+    await user.click(screen.getByRole('radio', { name: 'Original' }));
+
+    expect(screen.queryByRole('switch', { name: /magnetic field/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Research suggests/i)).not.toBeInTheDocument();
   });
 });

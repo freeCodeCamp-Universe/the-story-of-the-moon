@@ -5,80 +5,19 @@
 .viz {
   display: grid;
   gap: var(--space-md);
-  width: min(100%, 30rem);
+  width: min(100%, 28rem);
   min-width: 0;
   justify-self: center;
 }
 
-/* One connected segmented strip rather than separate buttons: the segments
-   share a collapsed hairline (no gaps), and the active segment lifts above its
-   neighbors with a white border plus surface fill. Reads as tabs. */
-.tablist {
-  display: flex;
-  flex-wrap: wrap;
-  width: fit-content;
-  max-width: 100%;
-}
-
-.tab {
-  position: relative;
-  color: var(--color-text);
-  padding-block: var(--space-sm);
-  padding-inline: var(--space-md);
-  border: 1px solid var(--color-border);
-  background-color: transparent;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.tab + .tab {
-  margin-inline-start: -1px;
-}
-
-/* Round only the strip's outer corners; inner joins stay square so the
-   segments read as one connected selector. */
-.tab:first-child {
-  border-start-start-radius: var(--radius);
-  border-end-start-radius: var(--radius);
-}
-
-.tab:last-child {
-  border-start-end-radius: var(--radius);
-  border-end-end-radius: var(--radius);
-}
-
-.tab:not([aria-selected='true']):hover {
-  z-index: 2;
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.tab[aria-selected='true'] {
-  z-index: 1;
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  background-color: var(--active-bg);
-  /* Weight cue independent of color: the inset ring reads as a 2px accent frame
-     so the selected tab stays distinct from the 1px hover border. */
-  box-shadow: inset 0 0 0 1px var(--color-accent);
-}
-
-.tab:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
-}
-
-.tabpanel {
+.controls {
   display: grid;
-  gap: var(--space-lg);
+  gap: var(--space-sm);
+  justify-items: start;
 }
 
-.tabpanel:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
+.fieldSwitch {
+  justify-self: end;
 }
 
 /* The per-view explanation, sitting directly above the image. */
@@ -90,20 +29,23 @@
   color: var(--color-text);
 }
 
-/* The viz stays wide so the tabs fit on one line, but the portrait image
-   would be far too tall at that width. Cap the image alone and center it; the
-   whole frame (and its overlay) scale together, so cropping never desyncs the
-   annotation from the photo. */
+/* Cap the image to the viz width and center it. */
 .figure {
   margin-block: 0;
   margin-inline: auto;
   width: 100%;
-  max-inline-size: 30rem;
+  max-inline-size: 28rem;
 }
 
+/* The source photo is portrait (800x1000), but the bottom third is empty plain
+   and a scale bar with no annotation over it. Crop it to 800x700 (the part the
+   overlay annotates) with a fixed aspect-ratio frame and a top-anchored cover
+   image. The overlay's viewBox is the matching 0 0 800 700, so frame, photo,
+   and annotation scale together and stay registered. */
 .figureFrame {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 800 / 700;
   border: 1px solid var(--color-border);
   background-color: var(--color-bg);
 }
@@ -111,13 +53,15 @@
 .figureImage {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .figureImage > img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 /* SVG annotation sits on top of the image, scaled to the same box. The viewBox

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { SegmentedControl } from '@/components/SegmentedControl/SegmentedControl';
 import { Switch } from '@/components/Switch/Switch';
 import { getAsset } from '@/content';
 
@@ -30,14 +31,7 @@ export function PolarIceFigure() {
   return (
     <figure className={styles.figure}>
       <div className={styles.controls}>
-        <div className={styles.poleGroup} role="radiogroup" aria-label="Choose pole">
-          {POLES.map((option) => (
-            <label key={option.id} className={styles.option}>
-              <input className={styles.input} type="radio" name="ch6-pole" value={option.id} checked={pole === option.id} onChange={() => setPole(option.id)} />
-              <span className={styles.button}>{option.label}</span>
-            </label>
-          ))}
-        </div>
+        <SegmentedControl name="ch6-pole" label="Choose pole" options={POLES.map((option) => ({ value: option.id, label: option.label }))} value={pole} onChange={setPole} />
         <Switch className={styles.highlightSwitch} label="Highlight ice" labelPosition="start" checked={highlight} onChange={setHighlight} />
       </div>
 
