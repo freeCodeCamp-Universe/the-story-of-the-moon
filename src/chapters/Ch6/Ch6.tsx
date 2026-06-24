@@ -154,14 +154,14 @@ export default function Ch6() {
               </h3>
             </div>
             <Prose flush className={styles.copyBlock}>
-              <div className={styles.figurePair}>
-                <ChapterFigure credit={moonNearSideCredit} />
-                <ChapterFigure credit={moonFarSideCredit} />
-              </div>
               <p>
                 The Moon is tidally locked to Earth: it takes exactly as long to spin once on its axis as it does to orbit Earth, so the same side always faces us and we never see the "back" of it. This hidden hemisphere stayed unseen until October
                 1959, when the Soviet Luna 3 spacecraft photographed the far side and revealed a landscape no one expected.
               </p>
+              <div className={styles.figurePair}>
+                <ChapterFigure credit={moonNearSideCredit} />
+                <ChapterFigure credit={moonFarSideCredit} />
+              </div>
               <p>The near side features wide, dark plains of ancient lava, warmer internal temperatures, and abundant radioactive elements. The far side is rougher, paler, heavily cratered, and carries a crust tens of kilometers thicker.</p>
               <p>
                 For a body so small and so close to spherical, there is no clear reason for the two halves to differ this much. Despite decades of study, scientists have yet to reach a single consensus, though several theories have been proposed:

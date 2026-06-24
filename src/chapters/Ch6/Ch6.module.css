@@ -157,13 +157,13 @@
     gap: var(--space-md);
     float: inline-end;
     /* Numbers come from the grid split: figureColumn width ≈ 81.8% of
-       textColumn width (0.9 / 1.1). Width = 30% of textColumn (the
+       textColumn width (0.9 / 1.1). Width = 23.2% of textColumn (the
        wrap-overlap inside textColumn) + 81.8% (overflow into the empty
        figureColumn) + gap. Margin-inline-end pushes the float past
        textColumn's right edge by 81.8% + gap so the float's right edge
-       lines up with figureColumn's right edge. Paragraph 3 and the list
-       wrap at ~70% of textColumn width while sitting next to the float. */
-    width: calc(111.8% + var(--space-xl));
+       lines up with figureColumn's right edge. The wrapping copy fills
+       ~76.8% of textColumn width while sitting next to the float. */
+    width: calc(105% + var(--space-xl));
     margin-inline-end: calc(-81.8% - var(--space-xl));
     margin-inline-start: var(--space-xl);
     margin-block-end: var(--space-lg);
