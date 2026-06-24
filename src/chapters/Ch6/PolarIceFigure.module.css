@@ -151,6 +151,15 @@
   gap: var(--space-xs);
 }
 
+/* Match the static ChapterFigures: at the immersive layout they right-align to
+   the grid column edge. Ch6's identical rule is scoped to its own .figure, so
+   this file needs its own copy to keep the polar figure aligned with them. */
+@media (min-width: 900px) {
+  .figure {
+    justify-self: end;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .baseLayer,
   .iceLayer,
