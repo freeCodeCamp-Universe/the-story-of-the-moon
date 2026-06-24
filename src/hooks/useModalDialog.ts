@@ -38,6 +38,18 @@ export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
       onCloseRef.current();
     }
 
+    const root = document.documentElement;
+    // html is the viewport scroll container in this app because globals.css sets
+    // overflow-x: clip on html. Locking body would not prevent viewport scroll here.
+    const previousOverflowY = root.style.overflowY;
+    const previousPaddingInlineEnd = root.style.paddingInlineEnd;
+    const scrollbarWidth = window.innerWidth - root.clientWidth;
+
+    root.style.overflowY = 'hidden';
+    if (scrollbarWidth > 0) {
+      root.style.paddingInlineEnd = `${scrollbarWidth}px`;
+    }
+
     dialog.addEventListener('cancel', handleCancel);
 
     if (!dialog.open) {
@@ -52,6 +64,9 @@ export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
       if (dialog.open) {
         dialog.close();
       }
+
+      root.style.overflowY = previousOverflowY;
+      root.style.paddingInlineEnd = previousPaddingInlineEnd;
     };
   }, [isOpen]);
 
