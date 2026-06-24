@@ -210,7 +210,7 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
-    expect(screen.getByRole('switch', { name: /enable global keyboard shortcuts/i })).toHaveAccessibleDescription(/keyboard shortcuts anywhere in the story/i);
+    expect(screen.getByRole('switch', { name: /enable global keyboard shortcuts/i })).toHaveAccessibleDescription(/the global keyboard shortcuts are active/i);
     expect(screen.getByRole('switch', { name: /enable animations/i })).toHaveAccessibleDescription(/motion and transitions play/i);
   });
 

@@ -176,10 +176,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
 
       <Dialog isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} triggerRef={shortcutsButtonRef} id="keyboard-shortcuts-dialog" titleId="keyboard-shortcuts-title" title="Keyboard shortcuts" closeLabel="close keyboard shortcuts">
         <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
-          <h3 id="global-shortcuts-title" className={styles.sectionTitle}>
-            Available global shortcuts
-          </h3>
-          <p className={styles.sectionNote}>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
+          <p>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
           <dl className={styles.shortcutList}>
             {GLOBAL_SHORTCUTS.map((shortcut) => (
               <div key={shortcut.keys} className={styles.shortcutRow}>
@@ -195,7 +192,7 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
         <div className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}>
           <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
           <p id="settings-shortcuts-note" className={styles.sectionNote}>
-            When on, you can use keyboard shortcuts anywhere in the story.
+            When on, the global keyboard shortcuts are active. Chapter shortcuts are unaffected.
           </p>
         </div>
 
