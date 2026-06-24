@@ -7,6 +7,7 @@ const MOON_SHADE = '#b8aea2';
 const CRATER_FLOOR = '#cfc5b9';
 const CRATER_DEPTH = '#9f958a';
 const STAR_COLOR = '#f5f6f7';
+const STAR_COUNT = 36;
 
 const MOON_VIEW = 100;
 const MOON_CENTER = MOON_VIEW / 2;
@@ -30,7 +31,10 @@ const LIT_FACE_CX = MOON_CENTER - MOON_R * 0.28;
 const LIT_FACE_CY = MOON_CENTER - MOON_R * 0.03;
 const LIT_FACE_ROTATION_DEG = (-0.16 * 180) / Math.PI;
 
+type StarTier = 'base' | 'tablet' | 'desktop';
+
 type Star = {
+  tier: StarTier;
   xPct: number;
   yPct: number;
   diameterPx: number;
@@ -40,6 +44,32 @@ type Star = {
   delay: string;
 };
 
+// Stars are revealed progressively: mobile shows `base`, tablet adds `tablet`,
+// desktop adds `desktop`. Each tier is placed as its own blue-noise pass with a
+// min-distance sized for how many stars are visible at that breakpoint, so every
+// viewport's visible set is spread on its own instead of being a strided slice of
+// the dense field (which clumped on smaller screens). Counts are weighted toward
+// the base tier so mobile is not too sparse; distance shrinks as the visible
+// count grows.
+const STAR_TIERS: { tier: StarTier; count: number; minDistance: number }[] = [
+  { tier: 'base', count: 18, minDistance: 0.15 },
+  { tier: 'tablet', count: 10, minDistance: 0.105 },
+  { tier: 'desktop', count: STAR_COUNT - 28, minDistance: 0.075 },
+];
+
+const FIELD_X0 = 0.02;
+const FIELD_W = 0.96;
+const FIELD_Y0 = 0.04;
+const FIELD_H = 0.9;
+
+// Moon center in field coordinates (mirrors `.moonWrapper` inset in the CSS).
+// The disc scales with container aspect, so this keep-out ellipse is a tuned
+// approximation: sized to clear the moon on desktop, with extra halo on mobile.
+const MOON_CX = 0.3;
+const MOON_CY = 0.34;
+const MOON_KEEPOUT_RX = 0.17;
+const MOON_KEEPOUT_RY = 0.24;
+
 function generateStars(): Star[] {
   let seed = 1701;
   const random = () => {
@@ -47,37 +77,54 @@ function generateStars(): Star[] {
     return seed / 4294967296;
   };
 
-  const MIN_DISTANCE = 0.085;
-  const MAX_ATTEMPTS = 24;
+  const MAX_ATTEMPTS = 60;
   const placed: { x: number; y: number }[] = [];
-  const farEnough = (x: number, y: number) => placed.every(({ x: px, y: py }) => (x - px) ** 2 + (y - py) ** 2 >= MIN_DISTANCE ** 2);
+  const clearOfMoon = (x: number, y: number) => ((x - MOON_CX) / MOON_KEEPOUT_RX) ** 2 + ((y - MOON_CY) / MOON_KEEPOUT_RY) ** 2 >= 1;
 
   const stars: Star[] = [];
-  for (let i = 0; i < 72; i += 1) {
-    let x = 0.02 + random() * 0.96;
-    let y = 0.04 + random() * 0.9;
-    for (let attempt = 1; attempt < MAX_ATTEMPTS && !farEnough(x, y); attempt += 1) {
-      x = 0.02 + random() * 0.96;
-      y = 0.04 + random() * 0.9;
+  for (const { tier, count, minDistance } of STAR_TIERS) {
+    const farEnough = (x: number, y: number) => placed.every(({ x: px, y: py }) => (x - px) ** 2 + (y - py) ** 2 >= minDistance ** 2);
+    for (let i = 0; i < count; i += 1) {
+      // Always require moon clearance; keep the best moon-clear sample as a
+      // fallback if the spacing constraint can't also be met within the budget.
+      let x = FIELD_X0 + random() * FIELD_W;
+      let y = FIELD_Y0 + random() * FIELD_H;
+      let fallbackX = x;
+      let fallbackY = y;
+      let haveFallback = clearOfMoon(x, y);
+      for (let attempt = 1; attempt < MAX_ATTEMPTS && !(clearOfMoon(x, y) && farEnough(x, y)); attempt += 1) {
+        x = FIELD_X0 + random() * FIELD_W;
+        y = FIELD_Y0 + random() * FIELD_H;
+        if (clearOfMoon(x, y) && !haveFallback) {
+          fallbackX = x;
+          fallbackY = y;
+          haveFallback = true;
+        }
+      }
+      if (!clearOfMoon(x, y) && haveFallback) {
+        x = fallbackX;
+        y = fallbackY;
+      }
+      placed.push({ x, y });
+
+      const radius = 0.65 + random() * 1.7;
+      const baseAlpha = 0.38 + random() * 0.42;
+      const twinkle = 0.1 + random() * 0.2;
+      const periodMs = 2000 + random() * 2800;
+      const phase = random() * Math.PI * 2;
+      const periodSeconds = periodMs / 1000;
+
+      stars.push({
+        tier,
+        xPct: x * 100,
+        yPct: y * 100,
+        diameterPx: radius * 2,
+        low: Math.max(0.14, baseAlpha - twinkle),
+        high: Math.min(1, baseAlpha + twinkle),
+        duration: `${periodSeconds.toFixed(3)}s`,
+        delay: `${(-(phase / (Math.PI * 2)) * periodSeconds).toFixed(3)}s`,
+      });
     }
-    placed.push({ x, y });
-
-    const radius = 0.65 + random() * 1.7;
-    const baseAlpha = 0.38 + random() * 0.42;
-    const twinkle = 0.1 + random() * 0.2;
-    const periodMs = 2000 + random() * 2800;
-    const phase = random() * Math.PI * 2;
-    const periodSeconds = periodMs / 1000;
-
-    stars.push({
-      xPct: x * 100,
-      yPct: y * 100,
-      diameterPx: radius * 2,
-      low: Math.max(0.14, baseAlpha - twinkle),
-      high: Math.min(1, baseAlpha + twinkle),
-      duration: `${periodSeconds.toFixed(3)}s`,
-      delay: `${(-(phase / (Math.PI * 2)) * periodSeconds).toFixed(3)}s`,
-    });
   }
   return stars;
 }
@@ -112,7 +159,7 @@ export function MoonInterlude() {
           opacity: star.low,
           background: STAR_COLOR,
         };
-        const tierClass = index % 3 === 1 ? styles.starTablet : index % 3 === 2 ? styles.starDesktop : undefined;
+        const tierClass = star.tier === 'tablet' ? styles.starTablet : star.tier === 'desktop' ? styles.starDesktop : undefined;
         return <span key={index} className={tierClass ? `${styles.star} ${tierClass}` : styles.star} style={style} aria-hidden="true" />;
       })}
 
