@@ -70,8 +70,8 @@ export default function Ch6() {
             </div>
             <Prose flush className={styles.copyBlock}>
               <p>
-                Despite looking completely bone-dry, the Moon hides water in several places. Satellites can detect trace water molecules scattered across the sunlit surface, tiny glass beads formed by asteroid impacts lock water deep inside the soil,
-                and massive reserves of ice sit frozen inside permanently shadowed craters at the lunar poles. How all this water got there is a major scientific debate centered on three competing possibilities:
+                Despite looking bone-dry, the Moon hides water in three places: trace molecules across the sunlit surface, water locked inside impact glass beads in the soil, and ice frozen in permanently shadowed polar craters. How it got there is a
+                major scientific debate with three main theories:
               </p>
               <ul>
                 <li>
@@ -83,11 +83,11 @@ export default function Ch6() {
                   have survived the extreme heat of the Moon&apos;s early, molten magma ocean.
                 </li>
                 <li>
-                  <b>Ancient Earth</b>: The Moon might have inherited water directly from the original planetary material that built it. Deep interior signatures in certain Apollo rocks match Earth&apos;s own chemistry, but the violent collision that
-                  originally broke the Moon away from Earth should have vaporized those volatiles.
+                  <b>Ancient Earth</b>: As the giant impact formed the Moon, the new Moon may have inherited some of Earth's water. Water deep inside certain Apollo rocks carries the same hydrogen signature as Earth's, supporting this idea, yet the
+                  extreme heat of that impact should have vaporized it all.
                 </li>
               </ul>
-              <p>A single conclusion remains out of reach because different rocks offer contradictory histories, and no spacecraft has yet sampled the polar ice to settle the question.</p>
+              <p>A single conclusion remains out of reach because different rocks tell contradictory stories, and no spacecraft has yet sampled the polar ice to help settle the question.</p>
             </Prose>
           </div>
           <PolarIceFigure />
@@ -128,17 +128,16 @@ export default function Ch6() {
             </div>
             <Prose flush className={styles.copyBlock}>
               <p>
-                Reiner Gamma looks like a splash of bright paint across the dark plains of the Moon's Oceanus Procellarum. Early observers took it for high ground, until they realized it casts no shadow, which meant it was completely flat. It's now
-                classified as a lunar swirl: a sweeping, highly reflective loop of brighter material that stands out against the darker soil around it.
+                Scattered across the Moon's dark plains are bright, looping patterns called lunar swirls. One prominent swirl, Reiner Gamma, looks like a splash of pale paint across Oceanus Procellarum. Early observers thought it was high ground, but
+                it casts no shadow, proving it is a completely flat, highly reflective marking.
               </p>
               <p>
-                Modern data shows that every swirl sits atop a localized magnetic anomaly, a patch where the crust is unusually magnetized. That supports the leading theory, that the field acts like a sunscreen against the solar wind. This steady
-                stream of particles from the Sun slowly darkens bare lunar soil over millions of years, but the magnetic bubble deflects it away. By this reading, the swirl isn't new material added to the surface. It may be the Moon's original
-                brightness, preserved.
+                Every swirl sits atop a localized magnetic anomaly where the crust is unusually magnetized. This supports the leading hypothesis that these magnetic fields act like a sunscreen against the solar wind. While this steady stream of solar
+                particles darkens bare lunar soil over millions of years, the magnetic bubble deflects much of it. This suggests a swirl is not new material, but the Moon's original surface brightness kept from fading.
               </p>
               <p>
-                This solar wind hypothesis is the leading explanation, not a settled one. A passing comet's gas, or dust sorted by the magnetism, could also draw the loops. NASA's Lunar Vertex mission is planned to land instruments directly inside
-                Reiner Gamma, which would be the first measurements of a lunar swirl taken from the ground.
+                However, this solar wind hypothesis is not yet settled. A passing comet's gas or magnetically sorted dust could also create these loops. To find answers, NASA's Lunar Vertex mission is set to land instruments directly inside Reiner
+                Gamma to collect the first-ever ground measurements of a lunar swirl.
               </p>
             </Prose>
           </div>
@@ -155,19 +154,15 @@ export default function Ch6() {
               </h3>
             </div>
             <Prose flush className={styles.copyBlock}>
-              <p>
-                The Moon&apos;s rotation is perfectly synced with its orbit around Earth. Because it takes the same amount of time to turn on its axis as it does to complete one orbit, the same side always faces us, and we never see the
-                &ldquo;back&rdquo; of it. This hidden hemisphere remained unseen until October 1959, when the Soviet Union&apos;s Luna 3 spacecraft flew around the far side and sent back the first photographs of it, showing a landscape no one
-                expected.
-              </p>
               <div className={styles.figurePair}>
                 <ChapterFigure credit={moonNearSideCredit} />
                 <ChapterFigure credit={moonFarSideCredit} />
               </div>
               <p>
-                The face we see from Earth is mottled with wide dark plains formed by ancient lava. The far side has almost none of them: it is rougher, paler, more crowded with craters, with a crust that runs on average tens of kilometers thicker
-                than the side facing Earth. Deep inside, the two halves are just as mismatched; the near side is strangely warmer and packed with radioactive elements that seem missing from the far side.
+                The Moon is tidally locked to Earth: it takes exactly as long to spin once on its axis as it does to orbit Earth, so the same side always faces us and we never see the "back" of it. This hidden hemisphere stayed unseen until October
+                1959, when the Soviet Luna 3 spacecraft photographed the far side and revealed a landscape no one expected.
               </p>
+              <p>The near side features wide, dark plains of ancient lava, warmer internal temperatures, and abundant radioactive elements. The far side is rougher, paler, heavily cratered, and carries a crust tens of kilometers thicker.</p>
               <p>
                 For a body so small and so close to spherical, there is no clear reason for the two halves to differ this much. Despite decades of study, scientists have yet to reach a single consensus, though several theories have been proposed:
               </p>
@@ -176,7 +171,7 @@ export default function Ch6() {
                   <b>The &ldquo;Big Splat&rdquo; Theory</b>: A smaller, secondary moon once coexisted with ours before eventually colliding with the far side, leaving behind a thick layer of new crust.
                 </li>
                 <li>
-                  <b>The Earthshine Theory</b>: Earth&apos;s early heat acted like a lamp: a molten Earth warmed the near side and kept it liquid, while the shielded far side cooled quickly and formed a thicker crust first.
+                  <b>The Earthshine Theory</b>: Earth's early heat acted like a lamp. A molten Earth warmed the Moon's near side and kept it liquid, while the shielded far side cooled quickly and formed a thicker crust first.
                 </li>
                 <li>
                   <b>Internal Warming Hypotheses</b>: The Moon warmed up unevenly from the inside out, trapping hot, active magma under the near side while the far side quickly went cold and rigid.

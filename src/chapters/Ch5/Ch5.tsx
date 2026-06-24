@@ -49,13 +49,15 @@ export default function Ch5() {
           An ocean of molten rock
         </Prose>
         <Prose as="p" className={styles.paragraph}>
-          Those two families imply something the Apollo geologists were not expecting. If the lighter anorthosite floated to the top of the young Moon while the heavier basalt erupted from below later, the whole Moon must once have been molten. This
-          was not a localized phenomenon, but a global ocean of magma hundreds of kilometers deep.
+          These two distinct rock families revealed a twist that took Apollo geologists completely by surprise: the entire Moon must have once been a molten ball. This was no localized volcanic eruption, but a global ocean of white-hot magma hundreds
+          of kilometers deep.
         </Prose>
         <Prose as="p" className={styles.paragraph}>
-          This idea, the lunar magma ocean, was proposed soon after the first samples were dated, and the broad outline has held up. A small, hot world cooled from the outside inward. Aluminum-rich minerals were buoyant enough to float, forming a
-          pale crust at the surface, while heavier iron- and magnesium-rich minerals sank. Radioactive decay kept the deep interior hot, long enough for basalt lavas to keep pushing through the crust for more than a billion years after the highlands
-          had hardened.
+          As the small world slowly cooled from the outside inward, it behaved like a giant pot of soup. Light, aluminum-rich minerals floated to the top like foam, cooling into the pale, bright crust. Meanwhile, heavy iron and magnesium sank into
+          the depths. Deep underground, trapped heat kept the interior molten for another billion years. Liquid rock repeatedly burst through the crust, flooding low areas to form the dark patches visible today.
+        </Prose>
+        <Prose as="p" className={styles.paragraph}>
+          This "lunar magma ocean" theory was proposed shortly after the first moon rocks were dated, and it remains the leading explanation.
         </Prose>
         <MagmaOceanSection
           steps={[
@@ -88,17 +90,21 @@ export default function Ch5() {
           A chemical match
         </Prose>
         <Prose as="p" className={styles.paragraph}>
-          When geochemists measured the oxygen isotope ratios in lunar rocks, the signatures matched Earth's mantle almost perfectly. This was shocking because most solar system bodies carry a unique isotopic fingerprint based on the specific dust
-          cloud they formed from; Mars rocks and meteorites are easily distinguishable from Earth's. The Moon, however, carries a signature nearly identical to Earth's.
+          Most solar system bodies carry a unique isotopic fingerprint based on the specific dust cloud they formed from. These isotopes are atomic variants of an element that act as a birthplace signature. This allows scientists to easily
+          distinguish meteorites, including those from Mars, from Earth's own rocks.
+        </Prose>
+        <Prose as="p" className={styles.paragraph}>
+          However, when geochemists analyzed the Moon's oxygen isotopes, they found a very different story. The lunar signatures matched Earth's almost perfectly.
         </Prose>
         <IsotopeMatchPlot />
         <Prose as="p" className={styles.paragraph}>
-          That observation is why the giant-impact hypothesis has kept evolving rather than being abandoned. If Theia, the impactor, came from a different part of the early solar system, the Moon should look like a blend of Earth and Theia, not like
-          pure Earth.
+          This observation directly challenges the giant-impact hypothesis. The impactor, Theia, is believed to have formed in a different part of the early solar system, meaning it carried its own distinct chemical signature. Therefore, the Moon
+          should look like a blend of Earth and Theia, not like pure Earth.
         </Prose>
         <Prose as="p" className={styles.paragraph}>
-          Scientists proposed high-energy variants like the "synestia", a model where the impact vaporized both objects into a massive, rapidly spinning cloud of rock gas. This turbulent mist blended the chemistries completely before the Moon
-          condensed, offering a compelling explanation for a coincidence that classical impact theories cannot solve.
+          Rather than discard the hypothesis, scientists proposed high-energy variants like the "synestia", a model where the impact churned most of Earth and Theia into a single, spinning cloud of liquid rock and vapor. Within this cloud, the two
+          worlds blended completely, erasing the fingerprint that set them apart. As the cloud cooled, the outer part formed the Moon, while the rest settled back down into the Earth. This explanation offers one possible way to reconcile a violent
+          collision with the nearly identical chemistry, but it's far from settled.
         </Prose>
       </section>
     </>

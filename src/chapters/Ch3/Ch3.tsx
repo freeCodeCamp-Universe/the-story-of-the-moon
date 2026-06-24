@@ -60,17 +60,10 @@ const STEPS: ScrollyStep[] = [
       <>
         <h3>Tides are the Moon&apos;s most visible signature</h3>
         <p>
-          The Moon's gravity pulls on the entire Earth, but it doesn't pull every part with the same strength. The ocean on the side facing the Moon is closest, so it gets the strongest tug and rushes forward, creating a deep pile of water. This
-          creates the first high tide.
+          The Moon's gravity pulls Earth unevenly. The side facing the Moon receives the strongest tug, pulling ocean water into a high-tide bulge. On the far side, gravity weakens enough that the Moon pulls the solid Earth away faster than the
+          distant water, leaving a second bulge trailing behind.
         </p>
-        <p>
-          A second high tide happens on the exact opposite side of the Earth because gravity weakens with distance. The Moon pulls the solid Earth forward more forcefully than it pulls the far-away ocean, yanking the planet out from under that water
-          and leaving it trailing behind in a second pile.
-        </p>
-        <p>
-          Because water is gathered into these two piles, the spaces in between them are left shallow. As Earth rotates, the coastlines pass through the piles and the shallow stretches. In a single day, each coast moves through one pile (high tide),
-          then a shallow stretch (low tide), then the second pile (high tide), and finally the last shallow stretch (low tide).
-        </p>
+        <p>Between these two bulges, the sea becomes shallow. As Earth rotates, coastlines pass through these deep and shallow stretches, experiencing two high tides and two low tides each day.</p>
       </>
     ),
   },
@@ -94,15 +87,8 @@ const STEPS: ScrollyStep[] = [
     content: (
       <>
         <h3>A moonless Earth would wander</h3>
-        <p>
-          The Moon acts as a gravitational anchor on Earth's tilt, holding its drift to about 1.3 degrees. Early models suggested that without the Moon the tilt could swing chaotically, by as much as 85 degrees, wrecking the climate, and for decades
-          the Moon was treated as a precondition for a livable world.
-        </p>
-        <p>
-          Newer simulations have since soften that picture. A moonless Earth's tilt would more likely wander within a band of about 20 degrees over hundreds of millions of years, enough to make the climate more variable but not enough to make it
-          uninhabitable.
-        </p>
-        <p>The Moon gives Earth an unusually steady tilt, but whether a planet actually requires a massive moon to remain habitable is an unsettled debate that astrobiologists cannot yet definitively answer.</p>
+        <p>Early models predicted that without the Moon, Earth's tilt could swing chaotically by as much as 85 degrees, and for decades a massive moon was treated as a requirement for life.</p>
+        <p>Newer simulations have since revised that figure down to about 20 degrees, enough to make the climate more variable but not uninhabitable. Whether a large moon is strictly necessary for a livable world remains an open question.</p>
       </>
     ),
   },
@@ -125,10 +111,12 @@ const STEPS: ScrollyStep[] = [
     content: (
       <>
         <h3>When sunlight is filtered through Earth's atmosphere</h3>
-        <p>Two to five times a year, the Moon crosses into Earth's shadow instead of passing above or below it. This is a lunar eclipse. If the Moon enters only the outer shadow, its face dims so slightly that the change is easy to miss.</p>
         <p>
-          When the Sun, Earth, and Moon line up perfectly, the Moon slides fully into the darkest inner shadow, the umbra. The only light reaching the lunar surface travels through Earth's atmosphere first. The atmosphere scatters away the blue light
-          and bends the remaining red and orange wavelengths onto the Moon. This is the same effect that reddens a sunset, which is why a total lunar eclipse is nicknamed a blood moon.
+          Two to five times a year, the Moon crosses into Earth's shadow instead of passing above or below it. This creates a lunar eclipse. If the Moon enters only the faint outer shadow, its face dims so slightly that the change is easy to miss.
+        </p>
+        <p>
+          But when the Sun, Earth, and Moon align perfectly, the Moon slides fully into the darkest inner shadow: the umbra. The only light reaching the lunar surface travels through Earth's atmosphere first. The atmosphere scatters away the shorter
+          blue wavelengths, bending the remaining red and orange light onto the Moon. This is the same effect that reddens a sunset, which is why a total lunar eclipse is nicknamed a blood moon.
         </p>
       </>
     ),
@@ -253,7 +241,7 @@ function IntroProse() {
     <>
       <p>
         Most moons are small compared to the planet they orbit, too small for their gravity to have much effect on it. Earth's moon is different. It's about a quarter of Earth's diameter, large enough that its gravity reaches across space and takes
-        hold of the planet itself. The clearest proof is the sea. Twice a day the ocean rises and falls along the coasts, drawn up by the Moon from an average of 384,400 kilometers away.
+        hold of the planet itself. The clearest proof is the sea. Twice a day the ocean rises and falls along the coasts, drawn up by the Moon from 384,400 kilometers away.
       </p>
       <p>
         The Moon's gravity isn't its only reach. Once in a while it slips directly between Earth and the Sun, and its shadow sweeps across the surface, turning day to dusk for a few minutes. Brief as it is, that loss of sunlight is enough to change

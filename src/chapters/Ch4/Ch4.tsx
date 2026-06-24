@@ -400,12 +400,12 @@ export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
     <>
       <Prose className={styles.intro}>
         <p>
-          The Apollo program began in 1961 with the objective of landing humans on the Moon and returning them safely to Earth. The goal was achieved through a systematic roadmap of discovery, where each mission served as a vital prerequisite for the
-          next.
+          For thousands of years, reaching the Moon lived only in the human imagination. As early as the second century, the satirist Lucian of Samosata wrote of sailing ships lifted into the sky by a whirlwind, a whimsical dream that 17th-century
+          astronomy began translating into mathematics and 19th-century science fiction kept alive.
         </p>
         <p>
-          This progression established the foundation for our return to deep space. From the pioneering lunar orbits of Apollo 8 to the completion of Artemis II, every mission in this sequence represents a necessary step in the ongoing evolution of
-          lunar exploration.
+          By the mid-20th century, this dream finally shifted from fantasy to physics. To conquer a journey so vast, exploration had to become a step-by-step blueprint. This methodical strategy defined NASA's Apollo program, and it remains the
+          approach driving the modern Artemis missions today.
         </p>
       </Prose>
 

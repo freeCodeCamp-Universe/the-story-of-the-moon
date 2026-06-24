@@ -42,7 +42,7 @@ const surfaceFeatures = [
     diameterKm: 40,
     description: [
       'Aristarchus is one of the brightest large craters on the Moon, about 40 kilometers across and located on the northwestern near side.',
-      "Its bright ejecta and central peak make it easy to spot, but the surrounding plateau is the real draw. This tilted block of crust holds the Moon's densest network of sinuous rilles (winding channels cut by ancient lava) and its largest deposit of volcanic ash.",
+      "Its bright debris streaks and central peak make it easy to spot, but the surrounding plateau is the focal point. This tilted block of crust holds the Moon's densest network of winding lava channels and its largest deposit of volcanic ash.",
       'The plateau is also the most frequent source of transient lunar phenomena: brief glows, hazes, and color changes that telescope observers have reported for centuries, possibly caused by gas escaping from below.',
     ],
   },

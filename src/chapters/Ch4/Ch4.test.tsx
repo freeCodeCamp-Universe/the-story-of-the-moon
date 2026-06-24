@@ -187,7 +187,7 @@ describe('Ch4', () => {
   it('should render the chapter intro and the closing diptych heading with its narrative copy', () => {
     render(<Ch4 />);
 
-    expect(screen.getByText(/The Apollo program began in 1961 with the objective of landing humans on the Moon and returning them safely to Earth\./)).toBeInTheDocument();
+    expect(screen.getByText(/For thousands of years, reaching the Moon lived only in the human imagination\./)).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         level: 3,

@@ -335,7 +335,7 @@ const assets = [
     author: 'NASA',
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
-    attributionText: 'Solar eclipse captured from a camera mounted on the Orion spacecraft. Venus can be spotted on the left, and Saturn on the right of the Moon. NASA (art002e016318).',
+    attributionText: 'Solar eclipse captured from a camera mounted on the Orion spacecraft. In the image, Venus can be spotted on the left, and Saturn on the right of the Moon. NASA (art002e016318).',
     alt: 'A solar eclipse seen from Orion during Artemis II, with a glow around the Moon and Venus to the left and Saturn to the right.',
   },
   {
