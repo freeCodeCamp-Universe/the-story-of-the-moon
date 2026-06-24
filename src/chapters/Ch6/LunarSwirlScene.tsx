@@ -90,7 +90,7 @@ export function LunarSwirlScene() {
                 <path d="M180,70 Q180,300 90,470" markerEnd="url(#swirl-arrowhead)" />
                 <path d="M300,70 Q300,260 150,440" markerEnd="url(#swirl-arrowhead)" />
                 <path d="M420,70 Q420,250 560,440" markerEnd="url(#swirl-arrowhead)" />
-                <path d="M540,70 Q540,300 650,470" markerEnd="url(#swirl-arrowhead)" />
+                <path d="M540,70 Q540,290 625,395" markerEnd="url(#swirl-arrowhead)" />
               </g>
 
               {/* Solar wind, straight (unshielded view): reaches the surface. */}
