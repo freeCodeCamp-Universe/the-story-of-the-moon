@@ -69,6 +69,17 @@ const surfaceFeatures = [
     ],
   },
   {
+    id: 'mare-orientale',
+    name: 'Mare Orientale',
+    lat: -19.87,
+    lon: -94.67,
+    diameterKm: 930,
+    description: [
+      "Mare Orientale is a massive impact basin near the Moon's western limb, straddling the boundary between the near and far side. It formed roughly 3.8 billion years ago when an asteroid struck the surface, and from above it resembles a giant bullseye. The collision threw up three concentric rings of mountains, with the outermost spanning about 930 kilometers across.",
+      "On most lunar plains, lava completely flooded the landscape, freezing into flat, dark rock. Mare Orientale, however, was barely flooded; the lava reached only its center, leaving its massive mountain rings intact. The basin stands as the Moon's clearest example of how giant impacts shaped a surface early in the solar system's history.",
+    ],
+  },
+  {
     id: 'south-pole-aitken',
     name: 'South Pole-Aitken basin',
     lat: -53,

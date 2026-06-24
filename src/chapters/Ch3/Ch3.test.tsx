@@ -61,7 +61,7 @@ describe('Ch3', () => {
   it('should render the chapter intro and step headings with their explanatory copy', () => {
     render(<Ch3 />);
 
-    expect(screen.getByText(/Most moons are small compared to the planet they orbit/)).toBeInTheDocument();
+    expect(screen.getByText(/Most moons are too small for their gravity to influence the planets they orbit/)).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         level: 3,
