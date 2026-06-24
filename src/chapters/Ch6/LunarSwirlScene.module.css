@@ -12,7 +12,7 @@
 
 .controls {
   display: grid;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   justify-items: start;
 }
 
@@ -121,5 +121,10 @@
 @media (min-width: 900px) {
   .viz {
     justify-self: end;
+  }
+
+  .controls {
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
   }
 }

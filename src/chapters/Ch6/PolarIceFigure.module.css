@@ -15,7 +15,7 @@
    secondary highlight toggle beneath it. */
 .controls {
   display: grid;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   justify-items: start;
   margin-bottom: var(--space-md);
 }
@@ -77,6 +77,10 @@
 @media (min-width: 900px) {
   .figure {
     justify-self: end;
+  }
+
+  .controls {
+    gap: var(--space-sm);
   }
 }
 
