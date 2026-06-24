@@ -672,9 +672,12 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           onPointerLeave={handleBasinComparePointerLeave}
         >
           <p id={basinCompareHintId} className={`${styles.hint} ${styles.basinCompareHint}`}>
-            Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> to slide.
-            <br />
-            Press <Kbd tone="muted">O</Kbd> for original or <Kbd tone="muted">T</Kbd> for topographic.
+            <span>
+              Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> to slide.
+            </span>
+            <span>
+              Press <Kbd tone="muted">O</Kbd> for original or <Kbd tone="muted">T</Kbd> for topographic.
+            </span>
           </p>
           <p id={basinCompareLiveId} className="sr-only" aria-live="polite">
             {basinCompareStatus}
