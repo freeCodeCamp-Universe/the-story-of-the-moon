@@ -11,7 +11,7 @@ import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { SurfaceFeature } from '@/types/content';
 import type { MoonSceneHandle } from '@/three/moonScene';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
-import { MoonExpandOverlay } from './MoonExpandOverlay';
+import { MoonExpandDialog } from './MoonExpandDialog';
 import styles from './Ch2.module.css';
 
 const surfaceFeaturesHeadingId = 'ch2-surface-features-heading';
@@ -450,7 +450,7 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {rotationAnnouncement}
       </p>
-      {expanded ? <MoonExpandOverlay isOpen={expanded} onClose={handleCollapse} triggerRef={expandButtonRef} initialTarget={initialTarget} reducedMotion={reducedMotion} /> : null}
+      {expanded ? <MoonExpandDialog isOpen={expanded} onClose={handleCollapse} triggerRef={expandButtonRef} initialTarget={initialTarget} reducedMotion={reducedMotion} /> : null}
     </div>
   );
 }

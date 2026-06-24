@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, type KeyboardEvent, type RefObject } fr
 import { Dialog } from '@/components/Dialog/Dialog';
 import { Kbd } from '@/components/Kbd/Kbd';
 import type { MoonSceneHandle } from '@/three/moonScene';
-import styles from './MoonExpandOverlay.module.css';
+import styles from './MoonExpandDialog.module.css';
 
 type Props = {
   isOpen: boolean;
@@ -12,7 +12,7 @@ type Props = {
   reducedMotion: boolean;
 };
 
-export function MoonExpandOverlay({ isOpen, onClose, triggerRef, initialTarget, reducedMotion }: Props) {
+export function MoonExpandDialog({ isOpen, onClose, triggerRef, initialTarget, reducedMotion }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<MoonSceneHandle>(null);
 

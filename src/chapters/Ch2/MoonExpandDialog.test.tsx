@@ -2,7 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { MoonExpandOverlay } from '@/chapters/Ch2/MoonExpandOverlay';
+import { MoonExpandDialog } from '@/chapters/Ch2/MoonExpandDialog';
 
 const handle = {
   rotateBy: vi.fn(),
@@ -27,7 +27,7 @@ type OverlayHarnessProps = {
   onClose?: () => void;
 };
 
-function OverlayHarness({ isOpen = true, onClose = vi.fn() }: OverlayHarnessProps) {
+function DialogHarness({ isOpen = true, onClose = vi.fn() }: OverlayHarnessProps) {
   const triggerRef = createRef<HTMLButtonElement>();
 
   return (
@@ -35,12 +35,12 @@ function OverlayHarness({ isOpen = true, onClose = vi.fn() }: OverlayHarnessProp
       <button ref={triggerRef} type="button">
         open expanded moon view
       </button>
-      <MoonExpandOverlay isOpen={isOpen} onClose={onClose} triggerRef={triggerRef} initialTarget={{ lat: 0, lon: 0 }} reducedMotion={false} />
+      <MoonExpandDialog isOpen={isOpen} onClose={onClose} triggerRef={triggerRef} initialTarget={{ lat: 0, lon: 0 }} reducedMotion={false} />
     </>
   );
 }
 
-describe('MoonExpandOverlay', () => {
+describe('MoonExpandDialog', () => {
   beforeAll(() => {
     if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
       Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
@@ -87,7 +87,7 @@ describe('MoonExpandOverlay', () => {
   it('should rotate the overlay scene with the arrow keys', async () => {
     const STEP = (8 * Math.PI) / 180;
 
-    render(<OverlayHarness />);
+    render(<DialogHarness />);
 
     await waitFor(() => {
       expect(createMoonScene).toHaveBeenCalled();
@@ -123,7 +123,7 @@ describe('MoonExpandOverlay', () => {
   });
 
   it('should ignore non-arrow keys', async () => {
-    render(<OverlayHarness />);
+    render(<DialogHarness />);
 
     await waitFor(() => {
       expect(createMoonScene).toHaveBeenCalled();
@@ -140,13 +140,13 @@ describe('MoonExpandOverlay', () => {
   });
 
   it('should dispose the overlay scene when it closes', async () => {
-    const { rerender } = render(<OverlayHarness isOpen />);
+    const { rerender } = render(<DialogHarness isOpen />);
 
     await waitFor(() => {
       expect(createMoonScene).toHaveBeenCalled();
     });
 
-    rerender(<OverlayHarness isOpen={false} />);
+    rerender(<DialogHarness isOpen={false} />);
 
     expect(handle.dispose).toHaveBeenCalled();
   });
