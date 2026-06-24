@@ -629,8 +629,8 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
   return (
     <>
       <p>
-        For four billion years, space objects have been hitting the Moon. Asteroids, comets, and pieces of other worlds all leave a mark when they strike. The Moon has no rain, no wind, no oceans to wash those marks away. Earth was struck just as
-        often, but it buried its own wounds under oceans and shifting continents. The Moon we see today is the record of every collision the inner solar system could throw at it.
+        For four billion years, asteroids, comets, and fragments from other worlds have bombarded both the Moon and Earth. Earth buried its wounds beneath shifting continents and deep oceans. The Moon, on the other hand, lacks the wind, rain, or seas
+        to wash the scars away. Its surface today is the record of every collision the inner solar system could throw at it.
       </p>
 
       <section className={styles.term} aria-labelledby="ch2-crater-heading">

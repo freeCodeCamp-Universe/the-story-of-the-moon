@@ -240,12 +240,12 @@ function IntroProse() {
   return (
     <>
       <p>
-        Most moons are small compared to the planet they orbit, too small for their gravity to have much effect on it. Earth's moon is different. It's about a quarter of Earth's diameter, large enough that its gravity reaches across space and takes
-        hold of the planet itself. The clearest proof is the sea. Twice a day the ocean rises and falls along the coasts, drawn up by the Moon from 384,400 kilometers away.
+        Most moons are too small for their gravity to influence the planets they orbit. Earth's moon is different: at a quarter of Earth's diameter, its gravity reaches across space to pull on Earth. The clearest proof is the sea, where the ocean
+        rises and falls twice daily, drawn up from 384,400 kilometers away.
       </p>
       <p>
-        The Moon's gravity isn't its only reach. Once in a while it slips directly between Earth and the Sun, and its shadow sweeps across the surface, turning day to dusk for a few minutes. Brief as it is, that loss of sunlight is enough to change
-        conditions on the ground, a reminder that the Moon can affect Earth by where it stands, not only by how hard it pulls.
+        The Moon's gravity isn't its only reach. Once in a while, it slips between Earth and the Sun, casting its shadow over the planet and turning day to dusk for a few minutes. This brief loss of sunlight is enough to change conditions on the
+        ground, a reminder that the Moon can affect Earth by where it stands, not just by how hard it pulls.
       </p>
     </>
   );

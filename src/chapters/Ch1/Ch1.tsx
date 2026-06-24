@@ -56,8 +56,8 @@ export default function Ch1() {
         </ul>
 
         <p className={styles.paragraph}>
-          The newborn Moon began hot. Its surface was a magma ocean, deep enough to remain liquid for millions of years. As the magma cooled, lighter minerals floated to the top and crystallized into a pale crust. That crust is the lunar highlands
-          you can still see from Earth, the bright regions that frame the darker patches. Heavier iron and nickel sank inward to form the small core.
+          The newborn Moon began hot. Its surface was a deep magma ocean that stayed liquid for about a hundred million years. As this molten surface cooled, the heaviest iron sank to form the core, while lighter rocks floated to the top and hardened
+          into a pale crust. That ancient crust forms the bright lunar highlands, framing the Moon's darker patches.
         </p>
       </Prose>
     </>
