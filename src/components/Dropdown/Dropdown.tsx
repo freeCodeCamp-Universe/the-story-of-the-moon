@@ -14,18 +14,10 @@ export type DropdownProps = {
 
 const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-export function Dropdown({
-  isOpen,
-  onClose,
-  triggerRef,
-  id,
-  className,
-  overlayClassName,
-  initialFocusRef,
-  ariaLabel,
-  children,
-}: DropdownProps) {
+export function Dropdown({ isOpen, onClose, triggerRef, id, className, overlayClassName, initialFocusRef, ariaLabel, children }: DropdownProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -39,7 +31,7 @@ export function Dropdown({
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     }
 
@@ -50,7 +42,7 @@ export function Dropdown({
       if (panelRef.current?.contains(target)) return;
       if (triggerRef.current?.contains(target)) return;
 
-      onClose();
+      onCloseRef.current();
     }
 
     window.addEventListener('keydown', handleKeyDown);
@@ -59,7 +51,7 @@ export function Dropdown({
       window.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('pointerdown', handlePointerDown);
     };
-  }, [isOpen, onClose, triggerRef, initialFocusRef]);
+  }, [isOpen, triggerRef, initialFocusRef]);
 
   if (!isOpen) {
     return null;
