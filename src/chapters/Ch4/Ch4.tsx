@@ -285,6 +285,19 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [handleKey, shortcutsEnabled]);
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const applyStepLength = () => {
+      section.style.setProperty('--step-length', `${Math.round(window.innerHeight * 0.5)}px`);
+    };
+
+    applyStepLength();
+    window.addEventListener('resize', applyStepLength);
+    return () => window.removeEventListener('resize', applyStepLength);
+  }, []);
+
   return (
     <section ref={sectionRef} className={styles.pinSection} aria-label="Apollo and Artemis missions" aria-describedby={keyboardHintId} tabIndex={0} onKeyDown={handleKey}>
       <div className={styles.sentinelTrack} aria-hidden="true">

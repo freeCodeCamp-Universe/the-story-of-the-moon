@@ -570,4 +570,14 @@ describe('Ch4', () => {
     const lastCall = scrollSpy.mock.calls[scrollSpy.mock.calls.length - 1];
     expect(lastCall?.[0]).toMatchObject({ behavior: 'auto' });
   });
+
+  it('should size each scroll step from window.innerHeight in pixels', async () => {
+    render(<Ch4 />);
+
+    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+
+    await waitFor(() => {
+      expect(section.style.getPropertyValue('--step-length')).toBe('500px');
+    });
+  });
 });
