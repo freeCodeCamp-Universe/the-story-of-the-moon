@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Dropdown } from '@/components/Dropdown/Dropdown';
+import dropdownStyles from '@/components/Dropdown/Dropdown.module.css';
 import { CHAPTERS } from '@/data/chapters';
 import styles from './ChapterDropdown.module.css';
 
@@ -22,7 +23,7 @@ export function ChapterDropdown({ isOpen, activeChapterId, onSelect, onClose, tr
 
           return (
             <li key={chapter.id}>
-              <button ref={isActive ? activeItemRef : undefined} className={`${styles.item}${isActive ? ` ${styles.itemActive}` : ''}`} onClick={() => onSelect(chapter.id)}>
+              <button ref={isActive ? activeItemRef : undefined} className={`${dropdownStyles.item} ${styles.item}${isActive ? ` ${dropdownStyles.itemActive}` : ''}`} onClick={() => onSelect(chapter.id)}>
                 {chapter.index}. {chapter.title}
               </button>
             </li>

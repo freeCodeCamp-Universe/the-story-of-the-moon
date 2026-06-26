@@ -8,7 +8,7 @@ import { MissionDropdown, type JumpItem } from '@/chapters/Ch4/MissionDropdown';
 const items: JumpItem[] = [
   { label: 'Apollo 8 · Dec 21–27, 1968', isInterlude: false },
   { label: 'Apollo 9 · Mar 3–13, 1969', isInterlude: false },
-  { label: 'Fifty-three years pass.', isInterlude: true },
+  { label: 'Interlude', isInterlude: true },
   { label: 'Artemis II · Apr 1–10, 2026', isInterlude: false },
 ];
 
@@ -40,15 +40,18 @@ describe('MissionDropdown', () => {
     expect(screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toBeInTheDocument();
   });
 
-  it('should render one button row per item with its label when open', async () => {
+  it('should render one button row per item with interlude exposed as a neutral row name', async () => {
     const user = userEvent.setup();
 
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: 'open menu' }));
 
-    for (const item of items) {
-      expect(screen.getByRole('button', { name: item.label })).toBeInTheDocument();
-    }
+    expect(screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Artemis II · Apr 1–10, 2026' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
+    expect(screen.getByText('···')).toBeInTheDocument();
   });
 
   it('should mark the active row with aria-current="step" and focus it', async () => {
@@ -63,14 +66,14 @@ describe('MissionDropdown', () => {
     expect(screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toHaveAttribute('aria-current');
   });
 
-  it('should call onSelect with the row index when a row is clicked', async () => {
+  it('should call onSelect with the interlude row index when that row is clicked', async () => {
     const user = userEvent.setup();
 
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: 'open menu' }));
-    await user.click(screen.getByRole('button', { name: 'Artemis II · Apr 1–10, 2026' }));
+    await user.click(screen.getByRole('button', { name: 'Interlude' }));
 
-    expect(screen.getByTestId('selected')).toHaveTextContent('3');
+    expect(screen.getByTestId('selected')).toHaveTextContent('2');
   });
 
   it('should close on Escape', async () => {

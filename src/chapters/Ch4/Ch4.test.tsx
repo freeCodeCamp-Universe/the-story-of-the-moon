@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -491,20 +491,46 @@ describe('Ch4', () => {
     render(<Ch4 />);
 
     const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
-    installTimelineLayout(section);
+    const sentinels = installTimelineLayout(section);
 
     const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
     expect(trigger).toHaveAttribute('aria-haspopup', 'true');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
     expect(trigger).toHaveAttribute('aria-controls', 'ch4-mission-dropdown');
+    expect(trigger).toHaveAccessibleName(/Jump to a mission\. Step 1 of 11: Apollo 8/i);
+    expect(trigger).not.toHaveAccessibleName(/Fifty-three years pass/i);
 
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
+    const list = screen.getByRole('list');
+    expect(within(list).getAllByRole('button')).toHaveLength(sentinels.length);
     expect(screen.getByRole('button', { name: /Apollo 11/i })).toBeInTheDocument();
   });
 
-  it('should jump to the picked mission and close the dropdown on mobile', async () => {
+  it('should close the jump dropdown when the rail trigger is clicked again', async () => {
+    const user = userEvent.setup();
+    setViewport({ desktop: false });
+
+    render(<Ch4 />);
+
+    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    installTimelineLayout(section);
+
+    const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('button', { name: 'Interlude' })).not.toBeInTheDocument();
+  });
+
+  it('should jump to the interlude row and close the dropdown on mobile', async () => {
     const user = userEvent.setup();
     setViewport({ desktop: false });
 
@@ -514,13 +540,15 @@ describe('Ch4', () => {
     installTimelineLayout(section);
 
     await user.click(await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i }));
-    await user.click(screen.getByRole('button', { name: /Apollo 11/i }));
+    await user.click(screen.getByRole('button', { name: 'Interlude' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: /Apollo 11 ·/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Interlude' })).not.toBeInTheDocument();
     });
 
-    expect(await screen.findByRole('button', { name: /Jump to a mission\. Step 4 of 11: Apollo 11/i })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Jump to a mission.' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
+    expect(screen.getByText('Fifty-three years pass.')).toBeInTheDocument();
   });
 
   it('should not render individual mission tick buttons on mobile', async () => {
@@ -529,6 +557,13 @@ describe('Ch4', () => {
     render(<Ch4 />);
 
     await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const trigger = screen.getByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+    const decorativeTicks = trigger.querySelector('[aria-hidden="true"]');
+    expect(decorativeTicks).not.toBeNull();
+    if (decorativeTicks) {
+      expect(within(decorativeTicks as HTMLElement).queryAllByRole('button')).toHaveLength(0);
+    }
     expect(screen.queryByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i })).not.toBeInTheDocument();
   });
 

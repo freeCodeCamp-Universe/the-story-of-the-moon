@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { missions, getAsset } from '@/content';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
+import { IconButton } from '@/components/IconButton/IconButton';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
@@ -112,6 +113,14 @@ function StepContent({ step }: { step: Step }) {
   return step.kind === 'mission' ? <MissionPanel mission={step.mission} /> : <InterludePanel />;
 }
 
+function ChevronDownIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
+      <path d="M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z" />
+    </svg>
+  );
+}
+
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -145,12 +154,11 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
   const keyboardHintId = useId();
 
   const missionCount = useMemo(() => steps.filter((s) => s.kind === 'mission').length, [steps]);
-  const items = useMemo<JumpItem[]>(() => steps.map((step) => (step.kind === 'mission' ? { label: `${step.mission.label} · ${formatMissionDateRange(step.mission)}`, isInterlude: false } : { label: INTERLUDE_TEXT, isInterlude: true })), [steps]);
+  const items = useMemo<JumpItem[]>(() => steps.map((step) => (step.kind === 'mission' ? { label: `${step.mission.label} · ${formatMissionDateRange(step.mission)}`, isInterlude: false } : { label: 'Interlude', isInterlude: true })), [steps]);
 
   const activeMissionNumber = useMemo(() => steps.slice(0, active + 1).filter((s) => s.kind === 'mission').length, [steps, active]);
   const activeStep = steps[active];
-  const activeLabel = activeStep?.kind === 'mission' ? activeStep.mission.label : INTERLUDE_TEXT;
-  const triggerLabel = `Jump to a mission. Step ${activeMissionNumber} of ${missionCount}: ${activeLabel}`;
+  const triggerLabel = activeStep?.kind === 'mission' ? `Jump to a mission. Step ${activeMissionNumber} of ${missionCount}: ${activeStep.mission.label}` : 'Jump to a mission.';
 
   const clearPendingJump = useCallback(() => {
     pendingJumpRef.current = null;
@@ -328,13 +336,25 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
               })}
             </ol>
           ) : (
-            <button ref={triggerRef} type="button" className={styles.railTrigger} aria-haspopup="true" aria-expanded={dropdownOpen} aria-controls="ch4-mission-dropdown" aria-label={triggerLabel} onClick={() => setDropdownOpen(true)}>
-              <span className={styles.railTriggerTicks} aria-hidden="true">
+            <div className={styles.railMobile}>
+              <div className={styles.railTriggerTicks} aria-hidden="true">
                 {steps.map((step, i) => (
                   <span key={i} className={`${styles.triggerTick} ${i === active ? styles.triggerTickActive : ''} ${step.kind === 'interlude' ? styles.triggerTickInterlude : ''}`} />
                 ))}
-              </span>
-            </button>
+              </div>
+              <IconButton
+                ref={triggerRef}
+                className={styles.railTrigger}
+                active={dropdownOpen}
+                aria-haspopup="true"
+                aria-expanded={dropdownOpen}
+                aria-controls="ch4-mission-dropdown"
+                aria-label={triggerLabel}
+                onClick={() => setDropdownOpen((open) => !open)}
+              >
+                <ChevronDownIcon />
+              </IconButton>
+            </div>
           )}
           <p id={keyboardHintId} className={styles.keyboardHint}>
             Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use <Kbd tone="muted">[</Kbd> / <Kbd tone="muted">]</Kbd> to jump to first / last.

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+import styles from './Dropdown.module.css';
+
 export type DropdownProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -60,7 +62,7 @@ export function Dropdown({ isOpen, onClose, triggerRef, id, className, overlayCl
   return (
     <>
       <div className={overlayClassName} aria-hidden="true" onClick={onClose} />
-      <div ref={panelRef} id={id} className={className} aria-label={ariaLabel}>
+      <div ref={panelRef} id={id} className={[styles.panel, className].filter(Boolean).join(' ')} aria-label={ariaLabel}>
         {children}
       </div>
     </>
