@@ -25,7 +25,18 @@ export function MissionDropdown({ isOpen, onClose, triggerRef, items, activeInde
       <ol className={styles.list}>
         {items.map((item, index) => {
           const isActive = index === activeIndex;
-          const className = `${dropdownStyles.item} ${styles.row}${isActive ? ` ${dropdownStyles.itemActive}` : ''}${item.isInterlude ? ` ${styles.rowInterlude}` : ''}${isActive && item.isInterlude ? ` ${styles.rowInterludeActive}` : ''}`;
+          const className = [
+            dropdownStyles.item,
+            styles.row,
+            // Accent + "> " marker for the current step (normal rows).
+            isActive && dropdownStyles.itemActive,
+            // Centered, muted treatment that suppresses the "> " marker.
+            item.isInterlude && styles.rowInterlude,
+            // Accent the "···" marker when the interlude itself is the current step.
+            isActive && item.isInterlude && styles.rowInterludeActive,
+          ]
+            .filter(Boolean)
+            .join(' ');
 
           return (
             <li key={index}>
