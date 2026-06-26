@@ -1,7 +1,5 @@
 /* Ch4 — Going to the Moon. Pinned single-card timeline with cross-fade
- * transitions and a 53-year interlude beat between Apollo 17 and Artemis II.
- * Falls back to a plain vertical list on narrow viewports and under
- * prefers-reduced-motion (handled in JS by switching to <StaticTimeline>). */
+ * transitions and a 53-year interlude beat between Apollo 17 and Artemis II. */
 
 .intro {
   margin-bottom: var(--space-3xl);
@@ -85,11 +83,56 @@
 /* ── Progress rail ───────────────────────────────────────────────── */
 
 .rail {
+  position: relative;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
   margin-bottom: var(--space-lg);
+}
+
+.railTrigger {
+  inline-size: 100%;
+  min-block-size: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.railTrigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.railTriggerTicks {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  inline-size: 100%;
+}
+
+.triggerTick {
+  flex: 1 1 0;
+  block-size: 10px;
+  background-color: var(--color-border);
+  border-radius: var(--radius);
+}
+
+.triggerTickActive {
+  background-color: var(--color-accent);
+  transform: scaleY(1.5);
+}
+
+.triggerTickInterlude {
+  flex: 0 0 16px;
+  block-size: 16px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px dashed var(--color-text-muted);
 }
 
 .railTicks {
@@ -193,17 +236,36 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  transform: translate3d(calc(var(--offset, 0) * 24px), 0, 0);
-  transition:
-    opacity 360ms ease,
-    transform 360ms ease;
+  transform: none;
+  transition: opacity 240ms ease;
   pointer-events: none;
 }
 
 .deckSlotActive {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: none;
   pointer-events: auto;
+}
+
+.deckInstant .deckSlot {
+  transition: none;
+}
+
+@media (min-width: 900px) {
+  .deckSlot {
+    transform: translate3d(calc(var(--offset, 0) * 24px), 0, 0);
+    transition:
+      opacity 360ms ease,
+      transform 360ms ease;
+  }
+
+  .deckSlotActive {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .deckInstant .deckSlot {
+    transition: none;
+  }
 }
 
 /* ── Mission panel ───────────────────────────────────────────────── */
@@ -384,62 +446,6 @@
 @media (min-width: 900px) {
   .interludeText {
     font-size: var(--text-2xl);
-  }
-}
-
-/* ── Static fallback (mobile, reduced-motion) ────────────────────── */
-
-.staticList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-width: var(--measure-frame);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
-}
-
-.staticItem {
-  display: block;
-}
-
-.staticItem .panel,
-.staticItem .interlude {
-  height: auto;
-  min-height: 14rem;
-}
-
-.staticItem .panelBody {
-  overflow: visible;
-}
-
-.staticItem .panelText {
-  overflow: visible;
-  max-height: none;
-}
-
-.staticItem .photoFrame > picture {
-  height: auto;
-}
-
-.staticItem .photoFrame img {
-  height: auto;
-  object-fit: fill;
-}
-
-.staticItem .interlude {
-  padding: var(--space-2xl) var(--space-lg);
-}
-
-@media (max-width: 767px) {
-  .staticItem .interlude {
-    padding: var(--space-xl) var(--space-md);
-  }
-  .staticItem .panel,
-  .staticItem .interlude {
-    box-shadow: none;
   }
 }
 

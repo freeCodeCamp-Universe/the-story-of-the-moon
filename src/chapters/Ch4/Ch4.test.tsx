@@ -43,6 +43,14 @@ function createMatchMedia(matches: boolean): MediaQueryList {
   };
 }
 
+function setViewport({ desktop, reducedMotion = false }: { desktop: boolean; reducedMotion?: boolean }) {
+  (window.matchMedia as unknown as ReturnType<typeof vi.fn>).mockImplementation((query: string) => {
+    if (query === '(prefers-reduced-motion: reduce)') return createMatchMedia(reducedMotion);
+    if (query === '(min-width: 900px)') return createMatchMedia(desktop);
+    return createMatchMedia(false);
+  });
+}
+
 class MockIntersectionObserver {
   readonly observed = new Set<Element>();
   readonly root = null;
@@ -148,12 +156,9 @@ describe('Ch4', () => {
     Object.defineProperty(window, 'matchMedia', {
       configurable: true,
       writable: true,
-      value: vi.fn((query: string) => {
-        if (query === '(prefers-reduced-motion: reduce)') return createMatchMedia(false);
-        if (query === '(min-width: 900px)') return createMatchMedia(true);
-        return createMatchMedia(false);
-      }),
+      value: vi.fn(),
     });
+    setViewport({ desktop: true, reducedMotion: false });
 
     Object.defineProperty(window, 'IntersectionObserver', {
       configurable: true,
@@ -196,6 +201,19 @@ describe('Ch4', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void\./)).toBeInTheDocument();
     expect(screen.getByText(/Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up/i)).toBeInTheDocument();
+  });
+
+  it('should always render the pinned timeline region regardless of viewport', async () => {
+    render(<Ch4 />);
+
+    expect(
+      await screen.findByRole('region', {
+        name: 'Apollo and Artemis missions',
+      })
+    ).toBeInTheDocument();
+
+    const lists = screen.queryAllByRole('list');
+    expect(lists.some((list) => list.getAttribute('aria-label') === 'Timeline progress')).toBe(true);
   });
 
   it('should keep the clicked mission active instead of snapping to the previous one', async () => {
@@ -464,5 +482,92 @@ describe('Ch4', () => {
       expect(apollo9Button).toHaveAttribute('aria-current', 'true');
       expect(apollo8Button).not.toHaveAttribute('aria-current');
     });
+  });
+
+  it('should open the jump dropdown from the mobile rail trigger and reflect the active step in its name', async () => {
+    const user = userEvent.setup();
+    setViewport({ desktop: false });
+
+    render(<Ch4 />);
+
+    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    installTimelineLayout(section);
+
+    const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+    expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger).toHaveAttribute('aria-controls', 'ch4-mission-dropdown');
+
+    await user.click(trigger);
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: /Apollo 11/i })).toBeInTheDocument();
+  });
+
+  it('should jump to the picked mission and close the dropdown on mobile', async () => {
+    const user = userEvent.setup();
+    setViewport({ desktop: false });
+
+    render(<Ch4 />);
+
+    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    installTimelineLayout(section);
+
+    await user.click(await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i }));
+    await user.click(screen.getByRole('button', { name: /Apollo 11/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /Apollo 11 ·/i })).not.toBeInTheDocument();
+    });
+
+    expect(await screen.findByRole('button', { name: /Jump to a mission\. Step 4 of 11: Apollo 11/i })).toBeInTheDocument();
+  });
+
+  it('should not render individual mission tick buttons on mobile', async () => {
+    setViewport({ desktop: false });
+
+    render(<Ch4 />);
+
+    await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    expect(screen.queryByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i })).not.toBeInTheDocument();
+  });
+
+  it('should apply the instant-cut deck class under reduced motion', async () => {
+    setViewport({ desktop: false, reducedMotion: true });
+
+    const { container } = render(<Ch4 />);
+    await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+
+    const deck = container.querySelector('[data-deck]');
+    expect(deck).not.toBeNull();
+    expect(deck?.className).toContain('deckInstant');
+  });
+
+  it('should not apply the instant-cut deck class when motion is allowed', async () => {
+    setViewport({ desktop: true, reducedMotion: false });
+
+    const { container } = render(<Ch4 />);
+    await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+
+    const deck = container.querySelector('[data-deck]');
+    expect(deck).not.toBeNull();
+    expect(deck?.className).not.toContain('deckInstant');
+  });
+
+  it('should scroll without smooth behavior under reduced motion when jumping', async () => {
+    const user = userEvent.setup();
+    setViewport({ desktop: true, reducedMotion: true });
+
+    render(<Ch4 />);
+    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    installTimelineLayout(section);
+
+    const scrollSpy = window.scrollTo as unknown as ReturnType<typeof vi.fn>;
+    scrollSpy.mockClear();
+
+    await user.click(screen.getByRole('button', { name: /Apollo 11, Jul 16–24, 1969/i }));
+
+    const lastCall = scrollSpy.mock.calls[scrollSpy.mock.calls.length - 1];
+    expect(lastCall?.[0]).toMatchObject({ behavior: 'auto' });
   });
 });

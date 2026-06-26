@@ -4,8 +4,10 @@ import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { Mission } from '@/types/content';
 import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
+import { MissionDropdown, type JumpItem } from './MissionDropdown';
 import styles from './Ch4.module.css';
 
 type Step = { kind: 'mission'; mission: Mission } | { kind: 'interlude' };
@@ -110,45 +112,32 @@ function StepContent({ step }: { step: Step }) {
   return step.kind === 'mission' ? <MissionPanel mission={step.mission} /> : <InterludePanel />;
 }
 
-function useTimelineMode() {
-  const [mode, setMode] = useState<'static' | 'animated'>('static');
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const wide = window.matchMedia('(min-width: 900px)');
 
-    const update = () => {
-      setMode(!motion.matches && wide.matches ? 'animated' : 'static');
-    };
+    const update = () => setIsDesktop(wide.matches);
     update();
-    motion.addEventListener('change', update);
     wide.addEventListener('change', update);
+
     return () => {
-      motion.removeEventListener('change', update);
       wide.removeEventListener('change', update);
     };
   }, []);
 
-  return mode;
+  return isDesktop;
 }
 
-function StaticTimeline({ steps }: { steps: Step[] }) {
-  return (
-    <ol className={styles.staticList}>
-      {steps.map((step, i) => (
-        <li key={i} className={styles.staticItem}>
-          <StepContent step={step} />
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsEnabled: boolean }) {
+function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Step[]; shortcutsEnabled: boolean; reducedMotion: boolean }) {
   const [active, setActive] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const isDesktop = useIsDesktop();
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const liveRef = useRef<HTMLDivElement | null>(null);
   const pendingJumpRef = useRef<{ index: number; scrollTop: number } | null>(null);
@@ -156,6 +145,12 @@ function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsE
   const keyboardHintId = useId();
 
   const missionCount = useMemo(() => steps.filter((s) => s.kind === 'mission').length, [steps]);
+  const items = useMemo<JumpItem[]>(() => steps.map((step) => (step.kind === 'mission' ? { label: `${step.mission.label} · ${formatMissionDateRange(step.mission)}`, isInterlude: false } : { label: INTERLUDE_TEXT, isInterlude: true })), [steps]);
+
+  const activeMissionNumber = useMemo(() => steps.slice(0, active + 1).filter((s) => s.kind === 'mission').length, [steps, active]);
+  const activeStep = steps[active];
+  const activeLabel = activeStep?.kind === 'mission' ? activeStep.mission.label : INTERLUDE_TEXT;
+  const triggerLabel = `Jump to a mission. Step ${activeMissionNumber} of ${missionCount}: ${activeLabel}`;
 
   const clearPendingJump = useCallback(() => {
     pendingJumpRef.current = null;
@@ -241,9 +236,9 @@ function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsE
       }, 1000);
 
       setActive(index);
-      window.scrollTo({ top: clamped, behavior: 'smooth' });
+      window.scrollTo({ top: clamped, behavior: reducedMotion ? 'auto' : 'smooth' });
     },
-    [clearPendingJump]
+    [clearPendingJump, reducedMotion]
   );
 
   const handleKey = useCallback(
@@ -307,23 +302,46 @@ function PinnedTimeline({ steps, shortcutsEnabled }: { steps: Step[]; shortcutsE
 
       <div ref={stageRef} className={styles.stage}>
         <div className={styles.rail}>
-          <ol className={styles.railTicks} aria-label="Timeline progress">
-            {steps.map((step, i) => {
-              const isActive = i === active;
-              const label = step.kind === 'mission' ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}` : 'Interlude';
-              return (
-                <li key={i} className={`${styles.tickItem} ${step.kind === 'interlude' ? styles.tickItemInterlude : ''}`}>
-                  <button type="button" className={`${styles.tick} ${isActive ? styles.tickActive : ''}`} aria-label={label} aria-current={isActive ? 'true' : undefined} onClick={() => jumpTo(i)} />
-                </li>
-              );
-            })}
-          </ol>
+          {isDesktop ? (
+            <ol className={styles.railTicks} aria-label="Timeline progress">
+              {steps.map((step, i) => {
+                const isActive = i === active;
+                const label = step.kind === 'mission' ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}` : 'Interlude';
+                return (
+                  <li key={i} className={`${styles.tickItem} ${step.kind === 'interlude' ? styles.tickItemInterlude : ''}`}>
+                    <button type="button" className={`${styles.tick} ${isActive ? styles.tickActive : ''}`} aria-label={label} aria-current={isActive ? 'true' : undefined} onClick={() => jumpTo(i)} />
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <button ref={triggerRef} type="button" className={styles.railTrigger} aria-haspopup="menu" aria-expanded={dropdownOpen} aria-controls="ch4-mission-dropdown" aria-label={triggerLabel} onClick={() => setDropdownOpen(true)}>
+              <span className={styles.railTriggerTicks} aria-hidden="true">
+                {steps.map((step, i) => (
+                  <span key={i} className={`${styles.triggerTick} ${i === active ? styles.triggerTickActive : ''} ${step.kind === 'interlude' ? styles.triggerTickInterlude : ''}`} />
+                ))}
+              </span>
+            </button>
+          )}
           <p id={keyboardHintId} className={styles.keyboardHint}>
             Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use <Kbd tone="muted">[</Kbd> / <Kbd tone="muted">]</Kbd> to jump to first / last.
           </p>
+          {!isDesktop && (
+            <MissionDropdown
+              isOpen={dropdownOpen}
+              onClose={() => setDropdownOpen(false)}
+              triggerRef={triggerRef}
+              items={items}
+              activeIndex={active}
+              onSelect={(i) => {
+                jumpTo(i);
+                setDropdownOpen(false);
+              }}
+            />
+          )}
         </div>
 
-        <div className={styles.deck}>
+        <div data-deck className={`${styles.deck} ${reducedMotion ? styles.deckInstant : ''}`}>
           {steps.map((step, i) => {
             const isActive = i === active;
             const offset = i - active;
@@ -394,7 +412,7 @@ type Ch4Props = {
 
 export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
   const steps = useMemo(() => buildSteps(missions), []);
-  const mode = useTimelineMode();
+  const reducedMotion = useReducedMotion();
 
   return (
     <>
@@ -409,7 +427,7 @@ export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
         </p>
       </Prose>
 
-      {mode === 'animated' ? <PinnedTimeline steps={steps} shortcutsEnabled={shortcutsEnabled} /> : <StaticTimeline steps={steps} />}
+      <PinnedTimeline steps={steps} shortcutsEnabled={shortcutsEnabled} reducedMotion={reducedMotion} />
 
       <Diptych />
     </>
