@@ -264,7 +264,8 @@
   }
 }
 
-/* Mobile: short moon scene hint without keyboard glyphs. Desktop/tablet show the full hint with arrow keys. */
+/* Below the desktop tier, show the touch-only hint. Keyboard glyphs appear only
+ * from 900px up, matching where the NavStrip surfaces keyboard affordances. */
 .sceneHintMobile {
   display: inline;
 }
@@ -273,7 +274,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .sceneHintMobile {
     display: none;
   }

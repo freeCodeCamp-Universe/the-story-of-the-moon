@@ -136,7 +136,7 @@
 }
 
 .triggerTickInterlude {
-  flex: 0 0 var(--space-xs);
+  flex: 0 0 var(--space-sm);
   background-color: transparent;
   border-inline-end: none;
 }
@@ -158,7 +158,11 @@
   text-align: end;
 }
 
-@media (max-width: 767px) {
+/* Keyboard hints are a desktop-tier affordance. The NavStrip shortcuts button
+ * and the "Enable global keyboard shortcuts" toggle are hidden below 900px, so
+ * this hint matches that boundary rather than advertising keys on touch/tablet
+ * viewports where the ticks are tapped, not keyed. */
+@media (max-width: 899px) {
   .keyboardHint {
     display: none;
   }
@@ -186,7 +190,9 @@
 
 .tick {
   flex: 1 1 auto;
-  height: 10px;
+  /* Ticks only render from the tablet tier up (JS-gated), so this height is
+   * the touch-tier size. The desktop query below slims it for mouse use. */
+  height: 16px;
   padding: 0;
   border: none;
   background-color: var(--color-border);
@@ -209,6 +215,14 @@
 .tickActive {
   background-color: var(--color-accent);
   transform: scaleY(1.5);
+}
+
+/* Desktop is mouse-driven, so the slim bar reads better there. The taller
+ * touch target only matters on the tablet tier (768–899). */
+@media (min-width: 900px) {
+  .tick {
+    height: 10px;
+  }
 }
 
 .tickItemInterlude .tick {
@@ -429,6 +443,21 @@
 
 .photoFrame .photoTop > img {
   object-position: center top;
+}
+
+/* Below the desktop row layout (900px) the panel body is a scrolling column.
+ * The prose column won't shrink, so without this the photo gets squeezed to
+ * zero height by flex shrink + max-height: 100%. Let the photo size to its
+ * own 4/3 frame and let the body scroll. */
+@media (max-width: 899px) {
+  .panelPhoto {
+    flex: 0 0 auto;
+    max-height: none;
+  }
+
+  .photoFrame {
+    max-height: none;
+  }
 }
 
 /* ── Interlude (53-year gap) ─────────────────────────────────────── */

@@ -46,7 +46,7 @@ function createMatchMedia(matches: boolean): MediaQueryList {
 function setViewport({ desktop, reducedMotion = false }: { desktop: boolean; reducedMotion?: boolean }) {
   (window.matchMedia as unknown as ReturnType<typeof vi.fn>).mockImplementation((query: string) => {
     if (query === '(prefers-reduced-motion: reduce)') return createMatchMedia(reducedMotion);
-    if (query === '(min-width: 900px)') return createMatchMedia(desktop);
+    if (query === '(min-width: 768px)') return createMatchMedia(desktop);
     return createMatchMedia(false);
   });
 }

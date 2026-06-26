@@ -8,6 +8,7 @@ import { Prose } from '@/components/Prose';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { Mission } from '@/types/content';
 import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
+import { BP_TABLET } from '@/utils/breakpoints';
 import { MissionDropdown, type JumpItem } from './MissionDropdown';
 import styles from './Ch4.module.css';
 
@@ -121,29 +122,32 @@ function ChevronDownIcon() {
   );
 }
 
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(false);
+// The inline tick rail replaces the dropdown from the tablet tier up. iPad
+// portrait widths (810–1024) land here; the ticks pass WCAG 2.5.8 via the
+// spacing exception, and the touch-tier height bump keeps them comfortable.
+function useShowTicks() {
+  const [showTicks, setShowTicks] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
-    const wide = window.matchMedia('(min-width: 900px)');
+    const tabletUp = window.matchMedia(`(min-width: ${BP_TABLET}px)`);
 
-    const update = () => setIsDesktop(wide.matches);
+    const update = () => setShowTicks(tabletUp.matches);
     update();
-    wide.addEventListener('change', update);
+    tabletUp.addEventListener('change', update);
 
     return () => {
-      wide.removeEventListener('change', update);
+      tabletUp.removeEventListener('change', update);
     };
   }, []);
 
-  return isDesktop;
+  return showTicks;
 }
 
 function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Step[]; shortcutsEnabled: boolean; reducedMotion: boolean }) {
   const [active, setActive] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const isDesktop = useIsDesktop();
+  const showTicks = useShowTicks();
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -323,7 +327,7 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
 
       <div ref={stageRef} className={styles.stage}>
         <div className={styles.rail}>
-          {isDesktop ? (
+          {showTicks ? (
             <ol className={styles.railTicks} aria-label="Timeline progress">
               {steps.map((step, i) => {
                 const isActive = i === active;
@@ -359,7 +363,7 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
           <p id={keyboardHintId} className={styles.keyboardHint}>
             Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use <Kbd tone="muted">[</Kbd> / <Kbd tone="muted">]</Kbd> to jump to first / last.
           </p>
-          {!isDesktop && (
+          {!showTicks && (
             <MissionDropdown
               isOpen={dropdownOpen}
               onClose={() => setDropdownOpen(false)}
