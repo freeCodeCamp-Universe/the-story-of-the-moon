@@ -315,7 +315,7 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
               })}
             </ol>
           ) : (
-            <button ref={triggerRef} type="button" className={styles.railTrigger} aria-haspopup="menu" aria-expanded={dropdownOpen} aria-controls="ch4-mission-dropdown" aria-label={triggerLabel} onClick={() => setDropdownOpen(true)}>
+            <button ref={triggerRef} type="button" className={styles.railTrigger} aria-haspopup="true" aria-expanded={dropdownOpen} aria-controls="ch4-mission-dropdown" aria-label={triggerLabel} onClick={() => setDropdownOpen(true)}>
               <span className={styles.railTriggerTicks} aria-hidden="true">
                 {steps.map((step, i) => (
                   <span key={i} className={`${styles.triggerTick} ${i === active ? styles.triggerTickActive : ''} ${step.kind === 'interlude' ? styles.triggerTickInterlude : ''}`} />

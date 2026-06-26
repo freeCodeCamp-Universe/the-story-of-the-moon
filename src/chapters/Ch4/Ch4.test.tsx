@@ -494,7 +494,7 @@ describe('Ch4', () => {
     installTimelineLayout(section);
 
     const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
-    expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    expect(trigger).toHaveAttribute('aria-haspopup', 'true');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
     expect(trigger).toHaveAttribute('aria-controls', 'ch4-mission-dropdown');
 
