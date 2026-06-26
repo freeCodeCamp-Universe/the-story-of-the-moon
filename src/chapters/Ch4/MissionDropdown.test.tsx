@@ -66,6 +66,18 @@ describe('MissionDropdown', () => {
     expect(screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toHaveAttribute('aria-current');
   });
 
+  it('should mark the interlude row as the active step when it is the active index', async () => {
+    const user = userEvent.setup();
+
+    render(<Harness activeIndex={2} />);
+    await user.click(screen.getByRole('button', { name: 'open menu' }));
+
+    const interludeRow = screen.getByRole('button', { name: 'Interlude' });
+    expect(interludeRow).toHaveAttribute('aria-current', 'step');
+    expect(interludeRow).toHaveFocus();
+    expect(screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })).not.toHaveAttribute('aria-current');
+  });
+
   it('should call onSelect with the interlude row index when that row is clicked', async () => {
     const user = userEvent.setup();
 

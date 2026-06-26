@@ -54,6 +54,10 @@
   content: none;
 }
 
+.rowInterludeActive .interludeMarker {
+  color: var(--color-accent);
+}
+
 .interludeMarker {
   display: inline-block;
   font-family: var(--font-mono);

@@ -25,7 +25,7 @@ export function MissionDropdown({ isOpen, onClose, triggerRef, items, activeInde
       <ol className={styles.list}>
         {items.map((item, index) => {
           const isActive = index === activeIndex;
-          const className = `${dropdownStyles.item} ${styles.row}${isActive ? ` ${dropdownStyles.itemActive}` : ''}${item.isInterlude ? ` ${styles.rowInterlude}` : ''}`;
+          const className = `${dropdownStyles.item} ${styles.row}${isActive ? ` ${dropdownStyles.itemActive}` : ''}${item.isInterlude ? ` ${styles.rowInterlude}` : ''}${isActive && item.isInterlude ? ` ${styles.rowInterludeActive}` : ''}`;
 
           return (
             <li key={index}>
