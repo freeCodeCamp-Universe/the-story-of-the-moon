@@ -93,7 +93,7 @@
 .pill {
   display: block;
   inline-size: 100%;
-  block-size: 0.5rem;
+  height: 10px;
   border-radius: var(--radius);
   background-color: var(--color-disabled);
   transition:
@@ -107,7 +107,7 @@
 
 .step[data-active] .pill {
   background-color: var(--color-accent);
-  transform: scaleY(1.4);
+  transform: scaleY(1.5);
 }
 
 /* Fixed readout height keeps the panel from resizing as captions change. */

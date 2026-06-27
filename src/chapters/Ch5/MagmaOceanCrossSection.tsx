@@ -11,17 +11,17 @@ import styles from './MagmaOceanCrossSection.module.css';
 // equivalent is the step legend / live caption rendered by MagmaOceanSection.
 
 const VIEW_W = 386;
-const VIEW_H = 380;
+const VIEW_H = 430;
 
 // Wedge outline (a flat-topped slice of the shell, wider at the surface and
 // tapering with depth). Offset to the right so it clears the depth labels. The
 // solid mantle and the molten glow are clipped to this shape.
-const WEDGE = 'M86,44 L226,44 L196,344 L116,344 Z';
+const WEDGE = 'M86,44 L226,44 L191,394 L121,394 Z';
 
 const SURFACE_Y = 44;
-const BASE_Y = 344;
+const BASE_Y = 394;
 const SHELL_H = BASE_Y - SURFACE_Y;
-const CRUST_H = 30;
+const CRUST_H = 42;
 
 // How far the solidification front has descended from the surface, as a
 // fraction of the shell, at each step (molten → cooling → crust → maria).
@@ -40,9 +40,9 @@ const DRIFT_UP = [
   { cx: 182, cy: 138 },
 ];
 const DRIFT_DOWN = [
-  { cx: 136, cy: 206 },
-  { cx: 170, cy: 216 },
-  { cx: 192, cy: 198 },
+  { cx: 136, cy: 234 },
+  { cx: 170, cy: 244 },
+  { cx: 192, cy: 226 },
 ];
 
 // Dark basalt pooled at the surface once the eruptions break through, shown at
@@ -59,9 +59,9 @@ const WEDGE_RIGHT = 230;
 // Static labels for the three regions, placed where each region sits once the
 // crust and mantle exist (from the cooling step onward).
 const LABELS = [
-  { id: 'crust', text: 'crust', y: 70 },
-  { id: 'mantle', text: 'mantle', y: 150 },
-  { id: 'hot', text: 'hot interior', y: 318 },
+  { id: 'crust', text: 'crust', y: 78 },
+  { id: 'mantle', text: 'mantle', y: 175 },
+  { id: 'hot', text: 'hot interior', y: 368 },
 ];
 
 type Props = {
@@ -123,9 +123,9 @@ export function MagmaOceanCrossSection({
         <text className={styles.axisLabel} x="36" y="40" textAnchor="middle">
           surface
         </text>
-        <line className={styles.axisLine} x1="36" y1="50" x2="36" y2="334" />
-        <path className={styles.axisArrow} d="M31,328 L36,338 L41,328 Z" />
-        <text className={styles.axisLabel} x="36" y="356" textAnchor="middle">
+        <line className={styles.axisLine} x1="36" y1="50" x2="36" y2="384" />
+        <path className={styles.axisArrow} d="M31,378 L36,388 L41,378 Z" />
+        <text className={styles.axisLabel} x="36" y="406" textAnchor="middle">
           deeper
         </text>
       </g>
@@ -193,8 +193,8 @@ export function MagmaOceanCrossSection({
           className={styles.eruption}
           data-visible={isErupting ? '' : undefined}
         >
-          <path className={styles.eruptionPlume} d="M138,330 Q134,150 142,44" />
-          <path className={styles.eruptionPlume} d="M180,330 Q186,150 178,44" />
+          <path className={styles.eruptionPlume} d="M138,380 Q134,175 142,44" />
+          <path className={styles.eruptionPlume} d="M180,380 Q186,175 178,44" />
         </g>
 
         {/* Dark maria: basalt pooled at the surface where the plumes break through. */}
