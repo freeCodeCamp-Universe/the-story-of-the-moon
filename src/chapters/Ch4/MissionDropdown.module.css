@@ -54,8 +54,15 @@
   content: none;
 }
 
-.rowInterludeActive .interludeMarker {
+.rowInterludeActive {
   color: var(--color-accent);
+}
+
+/* Restore the caret killed by .rowInterlude::before; position + inset come
+ * from .itemActive::before, so the caret stays in the start gutter while the
+ * "···" remains centered by justify-content. */
+.rowInterludeActive::before {
+  content: '>';
 }
 
 .interludeMarker {
