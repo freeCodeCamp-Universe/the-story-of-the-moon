@@ -65,6 +65,7 @@
   text-align: end;
   color: var(--switch-track-text-color);
   pointer-events: none;
+  transition: color var(--transition-fast);
 }
 
 .thumb {
@@ -78,7 +79,6 @@
   transform: translateY(-50%);
   transition:
     inset-inline-start var(--transition-fast),
-    inset-inline-end var(--transition-fast),
     background-color var(--transition-fast);
 }
 
@@ -101,13 +101,13 @@
 }
 
 .input:checked + .track .thumb {
-  inset-inline-start: auto;
-  inset-inline-end: 0.25rem;
+  inset-inline-start: calc(100% - 1.25rem - 0.25rem);
   background-color: var(--switch-thumb-checked-color);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .track,
+  .track::after,
   .thumb {
     transition: none;
   }
