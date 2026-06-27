@@ -65,12 +65,11 @@ export default function Ch6() {
               </p>
               <p>
                 With no sunlight to warm them, the deepest of these floors sit
-                close to minus 240 degrees Celsius, among the coldest places
-                measured anywhere in the solar system. Anything that has fallen
-                into them, whether comet fragments, asteroid dust, or particles
-                carried in by the solar wind, has had nowhere to go and is still
-                there. Water ice is part of what accumulated, frozen into the
-                soil.
+                close to −240 °C, among the coldest places measured anywhere in
+                the solar system. Anything that has fallen into them, whether
+                comet fragments, asteroid dust, or particles carried in by the
+                solar wind, has had nowhere to go and is still there. Water ice
+                is part of what accumulated, frozen into the soil.
               </p>
               <p>
                 From orbit, instruments have detected it by mapping hydrogen and
