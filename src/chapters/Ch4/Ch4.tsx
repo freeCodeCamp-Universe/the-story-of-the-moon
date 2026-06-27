@@ -361,7 +361,15 @@ function PinnedTimeline({ steps, shortcutsEnabled, reducedMotion }: { steps: Ste
             </div>
           )}
           <p id={keyboardHintId} className={styles.keyboardHint}>
-            Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use <Kbd tone="muted">[</Kbd> / <Kbd tone="muted">]</Kbd> to jump to first / last.
+            Scroll up / down or use <Kbd tone="muted">←</Kbd> / <Kbd tone="muted">→</Kbd> to move through the timeline. Use{' '}
+            <Kbd tone="muted" label="left bracket">
+              [
+            </Kbd>{' '}
+            /{' '}
+            <Kbd tone="muted" label="right bracket">
+              ]
+            </Kbd>{' '}
+            to jump to first / last.
           </p>
           {!showTicks && (
             <MissionDropdown

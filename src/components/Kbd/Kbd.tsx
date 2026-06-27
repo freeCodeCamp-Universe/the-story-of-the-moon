@@ -5,6 +5,13 @@ import styles from './Kbd.module.css';
 type Props = {
   children: ReactNode;
   tone?: 'default' | 'muted';
+  /**
+   * Spoken label for keys whose glyph a screen reader would skip or mispronounce
+   * (e.g. punctuation like `[` and `]`). The visible glyph is hidden from the
+   * accessibility tree and this text is announced in its place. Ignored for the
+   * arrow glyphs, which carry their own labels.
+   */
+  label?: string;
 };
 
 const arrowIconData = {
@@ -51,20 +58,27 @@ function ArrowIcon({ glyph }: { glyph: ArrowGlyph }) {
   );
 }
 
-export function Kbd({ children, tone = 'default' }: Props) {
+export function Kbd({ children, tone = 'default', label }: Props) {
   const className = tone === 'muted' ? `${styles.kbd} ${styles.muted}` : styles.kbd;
   const arrowGlyph = typeof children === 'string' && children in arrowIconData ? (children as ArrowGlyph) : null;
 
-  return (
-    <kbd className={className}>
-      {arrowGlyph ? (
-        <>
-          <ArrowIcon glyph={arrowGlyph} />
-          <span className="sr-only">{arrowGlyph}</span>
-        </>
-      ) : (
-        children
-      )}
-    </kbd>
-  );
+  if (arrowGlyph) {
+    return (
+      <kbd className={className}>
+        <ArrowIcon glyph={arrowGlyph} />
+        <span className="sr-only">{arrowIconData[arrowGlyph].label}</span>
+      </kbd>
+    );
+  }
+
+  if (label) {
+    return (
+      <kbd className={className}>
+        <span aria-hidden="true">{children}</span>
+        <span className="sr-only">{label}</span>
+      </kbd>
+    );
+  }
+
+  return <kbd className={className}>{children}</kbd>;
 }
