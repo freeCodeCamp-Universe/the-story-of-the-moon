@@ -26,7 +26,9 @@ describe('Prose', () => {
       </Prose>
     );
 
-    expect(screen.getByRole('region', { name: 'story' }).tagName).toBe('SECTION');
+    expect(screen.getByRole('region', { name: 'story' }).tagName).toBe(
+      'SECTION'
+    );
   });
 
   it('should forward arbitrary attributes to the rendered element', () => {
@@ -53,7 +55,8 @@ describe('Prose', () => {
     const { container: frame } = render(<Prose width="frame">copy</Prose>);
     const { container: full } = render(<Prose width="full">copy</Prose>);
 
-    const classOf = (c: HTMLElement) => (c.firstElementChild as HTMLElement).className;
+    const classOf = (c: HTMLElement) =>
+      (c.firstElementChild as HTMLElement).className;
     expect(classOf(wide)).not.toBe(classOf(text));
     expect(classOf(frame)).not.toBe(classOf(text));
     expect(classOf(frame)).not.toBe(classOf(wide));
@@ -65,7 +68,8 @@ describe('Prose', () => {
     const { container: normal } = render(<Prose>copy</Prose>);
     const { container: flush } = render(<Prose flush>copy</Prose>);
 
-    const classOf = (c: HTMLElement) => (c.firstElementChild as HTMLElement).className;
+    const classOf = (c: HTMLElement) =>
+      (c.firstElementChild as HTMLElement).className;
     expect(classOf(flush)).not.toBe(classOf(normal));
   });
 });

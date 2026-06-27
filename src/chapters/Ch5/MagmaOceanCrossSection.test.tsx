@@ -3,8 +3,18 @@ import { describe, expect, it } from 'vitest';
 
 import { MagmaOceanCrossSection } from './MagmaOceanCrossSection';
 
-function renderCrossSection(props: Partial<React.ComponentProps<typeof MagmaOceanCrossSection>> = {}) {
-  return render(<MagmaOceanCrossSection step={0} animate titleId="magma-title" descId="magma-desc" {...props} />);
+function renderCrossSection(
+  props: Partial<React.ComponentProps<typeof MagmaOceanCrossSection>> = {}
+) {
+  return render(
+    <MagmaOceanCrossSection
+      step={0}
+      animate
+      titleId="magma-title"
+      descId="magma-desc"
+      {...props}
+    />
+  );
 }
 
 function getCrossSection() {
@@ -27,7 +37,8 @@ describe('MagmaOceanCrossSection', () => {
 
     const svg = screen.getByRole('img', {
       name: 'Lunar magma ocean cross-section',
-      description: /vertical slice of the young Moon.+cools from the outside in.+erupts up through the crust/i,
+      description:
+        /vertical slice of the young Moon.+cools from the outside in.+erupts up through the crust/i,
     });
 
     expect(svg).toBeInTheDocument();
@@ -41,11 +52,17 @@ describe('MagmaOceanCrossSection', () => {
 
     // animate=false pins activeStep to the last step, so the crust, region
     // labels, eruption, and maria are all revealed even though step is 0.
-    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute('data-visible');
-    expect(screen.getByText('crust').closest('g')).toHaveAttribute('data-visible');
+    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('crust').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
     expect(group(svg, 'eruption')).toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).toHaveAttribute('data-visible');
-    expect(screen.getByText('maria').closest('g')).toHaveAttribute('data-visible');
+    expect(screen.getByText('maria').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
 
     // The mantle has cooled all the way down to the final front.
     const mantle = container.querySelector('rect[class*="mantle"]');
@@ -56,8 +73,12 @@ describe('MagmaOceanCrossSection', () => {
     const { container } = renderCrossSection({ step: 0, animate: true });
     const svg = getCrossSection();
 
-    expect(svg.querySelector('rect[class*="crust"]')).not.toHaveAttribute('data-visible');
-    expect(screen.getByText('crust').closest('g')).not.toHaveAttribute('data-visible');
+    expect(svg.querySelector('rect[class*="crust"]')).not.toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('crust').closest('g')).not.toHaveAttribute(
+      'data-visible'
+    );
     expect(group(svg, 'eruption')).not.toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).not.toHaveAttribute('data-visible');
     expect(driftCircles(container.querySelector('svg')!)).toHaveLength(0);
@@ -67,10 +88,18 @@ describe('MagmaOceanCrossSection', () => {
     const { container } = renderCrossSection({ step: 1, animate: true });
     const svg = getCrossSection();
 
-    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute('data-visible');
-    expect(screen.getByText('crust').closest('g')).toHaveAttribute('data-visible');
-    expect(screen.getByText('mantle').closest('g')).toHaveAttribute('data-visible');
-    expect(screen.getByText('hot interior').closest('g')).toHaveAttribute('data-visible');
+    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('crust').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('mantle').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('hot interior').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
 
     // Three grains float up and three sink down only while cooling.
     expect(driftCircles(container.querySelector('svg')!)).toHaveLength(6);
@@ -79,15 +108,21 @@ describe('MagmaOceanCrossSection', () => {
     expect(group(svg, 'eruption')).not.toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).not.toHaveAttribute('data-visible');
     expect(screen.queryByText('maria')).toBeInTheDocument();
-    expect(screen.getByText('maria').closest('g')).not.toHaveAttribute('data-visible');
+    expect(screen.getByText('maria').closest('g')).not.toHaveAttribute(
+      'data-visible'
+    );
   });
 
   it('should keep the crust and labels but stop the drift once the crust has formed', () => {
     const { container } = renderCrossSection({ step: 2, animate: true });
     const svg = getCrossSection();
 
-    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute('data-visible');
-    expect(screen.getByText('crust').closest('g')).toHaveAttribute('data-visible');
+    expect(svg.querySelector('rect[class*="crust"]')).toHaveAttribute(
+      'data-visible'
+    );
+    expect(screen.getByText('crust').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
     expect(driftCircles(container.querySelector('svg')!)).toHaveLength(0);
     expect(group(svg, 'eruption')).not.toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).not.toHaveAttribute('data-visible');
@@ -99,7 +134,9 @@ describe('MagmaOceanCrossSection', () => {
 
     expect(group(svg, 'eruption')).toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).toHaveAttribute('data-visible');
-    expect(screen.getByText('maria').closest('g')).toHaveAttribute('data-visible');
+    expect(screen.getByText('maria').closest('g')).toHaveAttribute(
+      'data-visible'
+    );
   });
 
   it('should hide the purely decorative drift and maria layers from assistive tech', () => {

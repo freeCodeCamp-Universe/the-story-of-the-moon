@@ -16,25 +16,29 @@ describe('GiantImpactDiagram', () => {
     expect(
       within(figure).getByRole('img', {
         name: 'Approach stage of the giant-impact hypothesis.',
-        description: 'Theia approaches the young Earth from the upper left on an angled path.',
+        description:
+          'Theia approaches the young Earth from the upper left on an angled path.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
         name: 'Impact stage of the giant-impact hypothesis.',
-        description: 'Theia is partly swallowed by Earth during the impact, while bright fragments spray outward.',
+        description:
+          'Theia is partly swallowed by Earth during the impact, while bright fragments spray outward.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
         name: 'Debris-ring stage of the giant-impact hypothesis.',
-        description: 'Earth sits inside a tilted debris ring, with the back half hidden behind the planet and the front half passing in front.',
+        description:
+          'Earth sits inside a tilted debris ring, with the back half hidden behind the planet and the front half passing in front.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
         name: 'Coalescence stage of the giant-impact hypothesis.',
-        description: 'A small moon now orbits Earth after the debris ring gathers into one body.',
+        description:
+          'A small moon now orbits Earth after the debris ring gathers into one body.',
       })
     ).toBeInTheDocument();
   });

@@ -1,6 +1,22 @@
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { surfaceFeatures } from '@/content';
 import Ch2 from '@/chapters/Ch2/Ch2';
@@ -25,8 +41,14 @@ const sceneHandle = {
   setCameraTarget: vi.fn(),
 };
 
-const createMoonScene = vi.fn<(canvas: HTMLCanvasElement, options?: Record<string, unknown>) => typeof sceneHandle>(() => sceneHandle);
-const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const createMoonScene = vi.fn<
+  (
+    canvas: HTMLCanvasElement,
+    options?: Record<string, unknown>
+  ) => typeof sceneHandle
+>(() => sceneHandle);
+const originalDialogShowModal =
+  globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 vi.mock('@/hooks/useReducedMotion', () => ({
@@ -45,8 +67,24 @@ vi.mock('@/three/moonScene', () => ({
 }));
 
 vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
-  ScrollyChapter: ({ steps, visual, visualBelow, ariaLabel, ariaLabelledBy }: { steps: Array<{ id: string; content: React.ReactNode }>; visual?: React.ReactNode; visualBelow?: React.ReactNode; ariaLabel?: string; ariaLabelledBy?: string }) => (
-    <section role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
+  ScrollyChapter: ({
+    steps,
+    visual,
+    visualBelow,
+    ariaLabel,
+    ariaLabelledBy,
+  }: {
+    steps: Array<{ id: string; content: React.ReactNode }>;
+    visual?: React.ReactNode;
+    visualBelow?: React.ReactNode;
+    ariaLabel?: string;
+    ariaLabelledBy?: string;
+  }) => (
+    <section
+      role="group"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       {visual}
       {steps.map((step) => (
         <article key={step.id}>{step.content}</article>
@@ -58,16 +96,26 @@ vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
 
 describe('Ch2', () => {
   beforeAll(() => {
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
-      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-        configurable: true,
-        value() {
-          this.setAttribute('open', '');
-        },
-      });
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function'
+    ) {
+      Object.defineProperty(
+        globalThis.HTMLDialogElement.prototype,
+        'showModal',
+        {
+          configurable: true,
+          value() {
+            this.setAttribute('open', '');
+          },
+        }
+      );
     }
 
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.close !== 'function'
+    ) {
       Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
         configurable: true,
         value() {
@@ -81,10 +129,14 @@ describe('Ch2', () => {
   afterAll(() => {
     if (globalThis.HTMLDialogElement) {
       if (originalDialogShowModal) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-          configurable: true,
-          value: originalDialogShowModal,
-        });
+        Object.defineProperty(
+          globalThis.HTMLDialogElement.prototype,
+          'showModal',
+          {
+            configurable: true,
+            value: originalDialogShowModal,
+          }
+        );
       }
 
       if (originalDialogClose) {
@@ -122,17 +174,26 @@ describe('Ch2', () => {
     const scrollyGroup = screen.getByRole('group', {
       name: 'Surface features of the Moon',
     });
-    expect(within(scrollyGroup).getAllByRole('heading', { level: 4 })).toHaveLength(surfaceFeatures.length);
+    expect(
+      within(scrollyGroup).getAllByRole('heading', { level: 4 })
+    ).toHaveLength(surfaceFeatures.length);
 
     const craterSection = screen.getByRole('region', { name: 'Crater' });
-    const craterParagraph = within(craterSection).getByText(/A crater is a bowl-shaped depression/);
+    const craterParagraph = within(craterSection).getByText(
+      /A crater is a bowl-shaped depression/
+    );
     const craterImage = within(craterSection).getByRole('img', {
       name: /terraced walls and peaks in its center/i,
     });
-    expect(craterParagraph.compareDocumentPosition(craterImage) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
+    expect(
+      craterParagraph.compareDocumentPosition(craterImage) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).not.toBe(0);
 
     const basinSection = screen.getByRole('region', { name: 'Basin' });
-    const basinParagraph = within(basinSection).getByText(/Over time, these giant depressions are often filled/);
+    const basinParagraph = within(basinSection).getByText(
+      /Over time, these giant depressions are often filled/
+    );
     const basinImages = within(basinSection).getAllByRole('img');
     expect(basinImages).toHaveLength(2);
     expect(basinSection.querySelectorAll('img')).toHaveLength(4);
@@ -146,7 +207,10 @@ describe('Ch2', () => {
         name: 'Compare Mare Orientale original and topographic views',
       })
     ).toBeInTheDocument();
-    expect(basinParagraph.compareDocumentPosition(basinImages[0]) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
+    expect(
+      basinParagraph.compareDocumentPosition(basinImages[0]) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).not.toBe(0);
   });
 
   it('should let the basin comparison group toggle both images when the group itself has focus', async () => {
@@ -163,20 +227,26 @@ describe('Ch2', () => {
     expect(comparisonGroup).toHaveAttribute('aria-keyshortcuts', 'O T');
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '50');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
-    expect(basinStatus).toHaveTextContent('Hertzsprung: 50% original, 50% topographic. Mare Orientale: 50% original, 50% topographic.');
+    expect(basinStatus).toHaveTextContent(
+      'Hertzsprung: 50% original, 50% topographic. Mare Orientale: 50% original, 50% topographic.'
+    );
 
     comparisonGroup.focus();
     await user.keyboard('t');
 
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '0');
-    expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: Full topographic view.');
+    expect(basinStatus).toHaveTextContent(
+      'Hertzsprung: Full topographic view. Mare Orientale: Full topographic view.'
+    );
 
     await user.keyboard('o');
 
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '100');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '100');
-    expect(basinStatus).toHaveTextContent('Hertzsprung: Full original view. Mare Orientale: Full original view.');
+    expect(basinStatus).toHaveTextContent(
+      'Hertzsprung: Full original view. Mare Orientale: Full original view.'
+    );
   });
 
   it('should let O and T update only the focused basin comparison slider', async () => {
@@ -195,14 +265,18 @@ describe('Ch2', () => {
 
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '50');
-    expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: 50% original, 50% topographic.');
+    expect(basinStatus).toHaveTextContent(
+      'Hertzsprung: Full topographic view. Mare Orientale: 50% original, 50% topographic.'
+    );
 
     sliders[1].focus();
     await user.keyboard('o');
 
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '100');
-    expect(basinStatus).toHaveTextContent('Hertzsprung: Full topographic view. Mare Orientale: Full original view.');
+    expect(basinStatus).toHaveTextContent(
+      'Hertzsprung: Full topographic view. Mare Orientale: Full original view.'
+    );
   });
 
   it('should let each basin slider move independently with the keyboard', async () => {
@@ -318,7 +392,10 @@ describe('Ch2', () => {
     await waitFor(() => {
       expect(createMoonScene).toHaveBeenCalledTimes(1);
     });
-    expect(createMoonScene).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ reducedMotion: true }));
+    expect(createMoonScene).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ reducedMotion: true })
+    );
 
     // Same heading hierarchy as the motion path: one h3 plus one h4 per feature.
     expect(
@@ -327,11 +404,15 @@ describe('Ch2', () => {
         name: 'Surface features of the Moon',
       })
     ).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(surfaceFeatures.length);
+    expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(
+      surfaceFeatures.length
+    );
 
     // The old fallback shipped one static globe image per feature; the
     // unified sphere path renders none of those.
-    expect(screen.queryByRole('img', { name: /is located at/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', { name: /is located at/i })
+    ).not.toBeInTheDocument();
   });
 
   it('should render each surface-feature description as separate paragraphs', () => {
@@ -347,10 +428,18 @@ describe('Ch2', () => {
       throw new Error('Expected Mare Imbrium to render inside an article.');
     }
 
-    const descriptionParagraphs = within(mareImbriumArticle).getAllByText((_, element) => element?.tagName.toLowerCase() === 'p');
-    expect(descriptionParagraphs).toHaveLength(surfaceFeatures[0].description.length);
-    expect(descriptionParagraphs[0]).toHaveTextContent('Mare Imbrium is one of the largest dark plains on the side of the Moon that faces Earth');
-    expect(descriptionParagraphs[1]).toHaveTextContent('Over the next several hundred million years, lava welled up from the lunar interior');
+    const descriptionParagraphs = within(mareImbriumArticle).getAllByText(
+      (_, element) => element?.tagName.toLowerCase() === 'p'
+    );
+    expect(descriptionParagraphs).toHaveLength(
+      surfaceFeatures[0].description.length
+    );
+    expect(descriptionParagraphs[0]).toHaveTextContent(
+      'Mare Imbrium is one of the largest dark plains on the side of the Moon that faces Earth'
+    );
+    expect(descriptionParagraphs[1]).toHaveTextContent(
+      'Over the next several hundred million years, lava welled up from the lunar interior'
+    );
   });
 
   it('should expose the active moon feature label as a polite live region', () => {
@@ -360,8 +449,12 @@ describe('Ch2', () => {
       name: 'Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.',
     });
     const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
-    const annotationLiveRegion = Array.from(liveRegions).find((region) => !region.classList.contains('sr-only'));
-    const rotationLiveRegion = Array.from(liveRegions).find((region) => region.classList.contains('sr-only'));
+    const annotationLiveRegion = Array.from(liveRegions).find(
+      (region) => !region.classList.contains('sr-only')
+    );
+    const rotationLiveRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains('sr-only')
+    );
 
     expect(liveRegions).toHaveLength(2);
     expect(annotationLiveRegion).not.toBeNull();
@@ -393,7 +486,9 @@ describe('Ch2', () => {
       name: 'Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.',
     });
     const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
-    const rotationRegion = Array.from(liveRegions).find((region) => region.classList.contains('sr-only'));
+    const rotationRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains('sr-only')
+    );
 
     if (!rotationRegion) {
       throw new Error('Expected a hidden rotation live region.');
@@ -445,7 +540,9 @@ describe('Ch2', () => {
       name: 'Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature.',
     });
     const liveRegions = visualGroup.querySelectorAll('[aria-live="polite"]');
-    const rotationRegion = Array.from(liveRegions).find((region) => region.classList.contains('sr-only'));
+    const rotationRegion = Array.from(liveRegions).find((region) =>
+      region.classList.contains('sr-only')
+    );
     const canvas = visualGroup.querySelector('canvas');
 
     if (!rotationRegion || !canvas) {
@@ -510,7 +607,9 @@ describe('Ch2', () => {
       })
     );
 
-    expect(await screen.findByRole('dialog', { name: 'Explore the Moon' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('dialog', { name: 'Explore the Moon' })
+    ).toBeInTheDocument();
   });
 
   it('should seed the overlay scene with the inline camera position', async () => {
@@ -537,7 +636,8 @@ describe('Ch2', () => {
       expect(createMoonScene).toHaveBeenCalledTimes(2);
     });
 
-    const lastCall = createMoonScene.mock.calls[createMoonScene.mock.calls.length - 1];
+    const lastCall =
+      createMoonScene.mock.calls[createMoonScene.mock.calls.length - 1];
     expect(lastCall).toBeDefined();
     const [, options] = lastCall;
     expect(options).toEqual(
@@ -607,7 +707,9 @@ describe('Ch2', () => {
     fireEvent(dialog, new Event('cancel', { cancelable: true }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Explore the Moon' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('dialog', { name: 'Explore the Moon' })
+      ).not.toBeInTheDocument();
     });
     expect(expandButton).toHaveFocus();
   });
@@ -637,7 +739,9 @@ describe('Ch2', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Explore the Moon' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('dialog', { name: 'Explore the Moon' })
+      ).not.toBeInTheDocument();
     });
     expect(expandButton).toHaveFocus();
   });

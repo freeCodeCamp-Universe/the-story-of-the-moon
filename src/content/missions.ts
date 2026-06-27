@@ -153,7 +153,8 @@ const missions = [
     date: 'Dec 7, 1972',
     splashdownDate: 'Dec 19, 1972',
     crew: ['Eugene Cernan', 'Ronald Evans', 'Harrison Schmitt'],
-    oneLiner: 'Final Apollo landing, and the only one with a professional geologist',
+    oneLiner:
+      'Final Apollo landing, and the only one with a professional geologist',
     prose: [
       'Apollo 17 launched on December 7, 1972, and was the first mission to include a professional scientist, geologist Harrison Schmitt. Schmitt and Eugene Cernan landed the lunar module in the Taurus-Littrow valley, a site chosen for its mountainous terrain and potential volcanic activity. Using the lunar rover, the crew traveled nearly 36 kilometers, the greatest distance of any mission, and collected 110.5 kilograms of material.',
       'The mission focused on deep geological surveying, highlighted by the discovery of "orange soil" at Shorty Crater, which provided evidence of the moon\'s volcanic history. The crew established long-term scientific stations and successfully demonstrated the maximum operational range of the lunar module and rover.',
@@ -169,7 +170,8 @@ const missions = [
     date: 'Apr 1, 2026',
     splashdownDate: 'Apr 10, 2026',
     crew: ['Reid Wiseman', 'Victor Glover', 'Christina Koch', 'Jeremy Hansen'],
-    oneLiner: 'First crewed Artemis flight, and the farthest from Earth humans have flown',
+    oneLiner:
+      'First crewed Artemis flight, and the farthest from Earth humans have flown',
     prose: [
       'Artemis II launched on April 1, 2026, as the first crewed mission of the Artemis program, and the first to carry humans toward the Moon since Apollo 17. The four-person crew flew a free-return trajectory that swung around the far side of the Moon, passing 6,545 kilometers from the lunar surface and reaching 406,773 kilometers from Earth, farther than any crewed vehicle has flown.',
       "The crew conducted manual piloting tests to verify how the Orion spacecraft handles in deep space and photographed Earth from far beyond the Moon. They also evaluated the life support, navigation, communications, and heat shield systems that future crews will rely on. With Orion's performance verified, the program is now set to return humans to the lunar surface and reach further into the solar system.",

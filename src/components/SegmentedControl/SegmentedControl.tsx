@@ -21,14 +21,28 @@ type Props<T extends string> = {
 // selected, segments share a collapsed hairline, and the active segment lifts
 // with an accent border plus surface fill. Used wherever a chapter figure needs
 // a single-select view switcher (see PolarIceFigure, LunarSwirlScene).
-export function SegmentedControl<T extends string>({ name, label, options, value, onChange, className }: Props<T>) {
+export function SegmentedControl<T extends string>({
+  name,
+  label,
+  options,
+  value,
+  onChange,
+  className,
+}: Props<T>) {
   const classNames = [styles.group, className].filter(Boolean).join(' ');
 
   return (
     <div className={classNames} role="radiogroup" aria-label={label}>
       {options.map((option) => (
         <label key={option.value} className={styles.option}>
-          <input className={styles.input} type="radio" name={name} value={option.value} checked={value === option.value} onChange={() => onChange(option.value)} />
+          <input
+            className={styles.input}
+            type="radio"
+            name={name}
+            value={option.value}
+            checked={value === option.value}
+            onChange={() => onChange(option.value)}
+          />
           <span className={styles.button}>{option.label}</span>
         </label>
       ))}

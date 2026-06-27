@@ -22,7 +22,13 @@ function DropdownHarness({
       <button ref={triggerRef} type="button">
         Open chapter list
       </button>
-      <Dropdown isOpen={isOpen} onClose={onClose} triggerRef={triggerRef as RefObject<HTMLElement | null>} id="dropdown-panel" initialFocusRef={initialFocusRef as RefObject<HTMLElement | null>}>
+      <Dropdown
+        isOpen={isOpen}
+        onClose={onClose}
+        triggerRef={triggerRef as RefObject<HTMLElement | null>}
+        id="dropdown-panel"
+        initialFocusRef={initialFocusRef as RefObject<HTMLElement | null>}
+      >
         <button ref={initialFocusRef} type="button" onClick={onChildClick}>
           Active chapter
         </button>
@@ -40,14 +46,20 @@ describe('Dropdown', () => {
   it('should render nothing when closed', () => {
     render(<DropdownHarness isOpen={false} />);
 
-    expect(screen.queryByRole('button', { name: 'Active chapter' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Active chapter' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render children and focus the initial focus ref when open', () => {
     render(<DropdownHarness isOpen />);
 
-    expect(screen.getByRole('button', { name: 'Active chapter' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Active chapter' })).toHaveFocus();
+    expect(
+      screen.getByRole('button', { name: 'Active chapter' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Active chapter' })
+    ).toHaveFocus();
   });
 
   it('should call the child button handler when clicked', async () => {

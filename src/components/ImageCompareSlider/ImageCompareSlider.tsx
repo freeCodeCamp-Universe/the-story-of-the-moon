@@ -29,7 +29,11 @@ function clampValue(value: number) {
   return Math.min(MAX_VALUE, Math.max(MIN_VALUE, value));
 }
 
-function getValueText(value: number, originalLabel: string, topographicLabel: string) {
+function getValueText(
+  value: number,
+  originalLabel: string,
+  topographicLabel: string
+) {
   if (value <= MIN_VALUE) {
     return `Full ${topographicLabel.toLowerCase()} view`;
   }
@@ -41,7 +45,20 @@ function getValueText(value: number, originalLabel: string, topographicLabel: st
   return `${value}% ${originalLabel.toLowerCase()}, ${MAX_VALUE - value}% ${topographicLabel.toLowerCase()}`;
 }
 
-export function ImageCompareSlider({ label, originalSrc, originalAvifSrcSet, originalAlt, originalLabel, topographicSrc, topographicAvifSrcSet, topographicLabel, describedBy, sizes, value, onValueChange }: Props) {
+export function ImageCompareSlider({
+  label,
+  originalSrc,
+  originalAvifSrcSet,
+  originalAlt,
+  originalLabel,
+  topographicSrc,
+  topographicAvifSrcSet,
+  topographicLabel,
+  describedBy,
+  sizes,
+  value,
+  onValueChange,
+}: Props) {
   const valueText = getValueText(value, originalLabel, topographicLabel);
   const frameRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<HTMLDivElement | null>(null);
@@ -99,7 +116,10 @@ export function ImageCompareSlider({ label, originalSrc, originalAvifSrcSet, ori
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     activePointerRef.current = event.pointerId;
-    handleRef.current?.focus({ preventScroll: true, focusVisible: false } as FocusOptions & { focusVisible?: boolean });
+    handleRef.current?.focus({
+      preventScroll: true,
+      focusVisible: false,
+    } as FocusOptions & { focusVisible?: boolean });
     updateFromPointer(event.clientX);
   };
 
@@ -146,12 +166,37 @@ export function ImageCompareSlider({ label, originalSrc, originalAvifSrcSet, ori
   };
 
   return (
-    <div className={styles.root} style={{ '--split-position': `${value}%` } as CSSProperties}>
-      <div ref={frameRef} className={styles.frame} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerEnd} onPointerCancel={handlePointerEnd}>
+    <div
+      className={styles.root}
+      style={{ '--split-position': `${value}%` } as CSSProperties}
+    >
+      <div
+        ref={frameRef}
+        className={styles.frame}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+      >
         <div className={styles.scene}>
-          <OptimizedImage className={styles.baseImage} src={topographicSrc} avifSrcSet={topographicAvifSrcSet} sizes={sizes} alt="" aria-hidden="true" loading="lazy" />
+          <OptimizedImage
+            className={styles.baseImage}
+            src={topographicSrc}
+            avifSrcSet={topographicAvifSrcSet}
+            sizes={sizes}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+          />
           <div className={styles.overlayLayer}>
-            <OptimizedImage className={styles.overlayImage} src={originalSrc} avifSrcSet={originalAvifSrcSet} sizes={sizes} alt={originalAlt} loading="lazy" />
+            <OptimizedImage
+              className={styles.overlayImage}
+              src={originalSrc}
+              avifSrcSet={originalAvifSrcSet}
+              sizes={sizes}
+              alt={originalAlt}
+              loading="lazy"
+            />
           </div>
           <div className={styles.divider}>
             <div

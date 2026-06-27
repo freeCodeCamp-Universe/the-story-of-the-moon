@@ -16,11 +16,26 @@ type Props = {
   onSelect: (index: number) => void;
 };
 
-export function MissionDropdown({ isOpen, onClose, triggerRef, items, activeIndex, onSelect }: Props) {
+export function MissionDropdown({
+  isOpen,
+  onClose,
+  triggerRef,
+  items,
+  activeIndex,
+  onSelect,
+}: Props) {
   const activeItemRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <Dropdown isOpen={isOpen} onClose={onClose} triggerRef={triggerRef} id="ch4-mission-dropdown" className={styles.panel} overlayClassName={styles.overlay} initialFocusRef={activeItemRef}>
+    <Dropdown
+      isOpen={isOpen}
+      onClose={onClose}
+      triggerRef={triggerRef}
+      id="ch4-mission-dropdown"
+      className={styles.panel}
+      overlayClassName={styles.overlay}
+      initialFocusRef={activeItemRef}
+    >
       {/* No ariaLabel: the panel is role-less so aria-label is inert; the rail trigger names the control. */}
       <ol className={styles.list}>
         {items.map((item, index) => {
@@ -40,7 +55,14 @@ export function MissionDropdown({ isOpen, onClose, triggerRef, items, activeInde
 
           return (
             <li key={index}>
-              <button ref={isActive ? activeItemRef : undefined} type="button" className={className} aria-label={item.isInterlude ? 'Interlude' : undefined} aria-current={isActive ? 'step' : undefined} onClick={() => onSelect(index)}>
+              <button
+                ref={isActive ? activeItemRef : undefined}
+                type="button"
+                className={className}
+                aria-label={item.isInterlude ? 'Interlude' : undefined}
+                aria-current={isActive ? 'step' : undefined}
+                onClick={() => onSelect(index)}
+              >
                 {item.isInterlude ? (
                   <span className={styles.interludeMarker} aria-hidden="true">
                     ···

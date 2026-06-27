@@ -4,7 +4,19 @@ import { useRef } from 'react';
 
 import { useScrollySteps } from '@/hooks/useScrollySteps';
 
-function createIntersectionEntry({ isIntersecting, target, rootBoundsHeight = 1000, top = 0, height = 0 }: { isIntersecting: boolean; target: Element; rootBoundsHeight?: number; top?: number; height?: number }): IntersectionObserverEntry {
+function createIntersectionEntry({
+  isIntersecting,
+  target,
+  rootBoundsHeight = 1000,
+  top = 0,
+  height = 0,
+}: {
+  isIntersecting: boolean;
+  target: Element;
+  rootBoundsHeight?: number;
+  top?: number;
+  height?: number;
+}): IntersectionObserverEntry {
   return {
     time: 0,
     target,
@@ -16,7 +28,13 @@ function createIntersectionEntry({ isIntersecting, target, rootBoundsHeight = 10
   };
 }
 
-function HookHarness({ initialStepId, stepIds = ['step-1', 'step-2', 'step-3'] }: { initialStepId?: string; stepIds?: string[] }) {
+function HookHarness({
+  initialStepId,
+  stepIds = ['step-1', 'step-2', 'step-3'],
+}: {
+  initialStepId?: string;
+  stepIds?: string[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeStepId = useScrollySteps(containerRef, stepIds, initialStepId);
 
@@ -53,7 +71,10 @@ describe('useScrollySteps', () => {
       rootMargin = '';
       thresholds: ReadonlyArray<number> = [];
 
-      constructor(cb: IntersectionObserverCallback, options: IntersectionObserverInit = {}) {
+      constructor(
+        cb: IntersectionObserverCallback,
+        options: IntersectionObserverInit = {}
+      ) {
         callback = cb;
         observerOptions = options;
       }
@@ -64,7 +85,10 @@ describe('useScrollySteps', () => {
       takeRecords = takeRecords;
     }
 
-    vi.stubGlobal('IntersectionObserver', IntersectionObserverMock as unknown as typeof IntersectionObserver);
+    vi.stubGlobal(
+      'IntersectionObserver',
+      IntersectionObserverMock as unknown as typeof IntersectionObserver
+    );
   });
 
   afterEach(() => {
@@ -85,7 +109,9 @@ describe('useScrollySteps', () => {
 
   it('should activate the intersecting step closest to the viewport midpoint', () => {
     const { container, unmount } = render(<HookHarness />);
-    const [step1, step2, step3] = Array.from(container.querySelectorAll<HTMLElement>('[data-step-id]'));
+    const [step1, step2, step3] = Array.from(
+      container.querySelectorAll<HTMLElement>('[data-step-id]')
+    );
 
     act(() => {
       callback?.(

@@ -7,14 +7,21 @@ function readKeyboardShortcutsPreference() {
     return true;
   }
 
-  return window.localStorage.getItem(KEYBOARD_SHORTCUTS_STORAGE_KEY) !== 'false';
+  return (
+    window.localStorage.getItem(KEYBOARD_SHORTCUTS_STORAGE_KEY) !== 'false'
+  );
 }
 
 export function useKeyboardShortcutsPreference() {
-  const [shortcutsEnabled, setShortcutsEnabled] = useState(readKeyboardShortcutsPreference);
+  const [shortcutsEnabled, setShortcutsEnabled] = useState(
+    readKeyboardShortcutsPreference
+  );
 
   useEffect(() => {
-    window.localStorage.setItem(KEYBOARD_SHORTCUTS_STORAGE_KEY, String(shortcutsEnabled));
+    window.localStorage.setItem(
+      KEYBOARD_SHORTCUTS_STORAGE_KEY,
+      String(shortcutsEnabled)
+    );
   }, [shortcutsEnabled]);
 
   return {

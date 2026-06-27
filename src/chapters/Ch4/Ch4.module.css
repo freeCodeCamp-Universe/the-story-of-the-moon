@@ -27,8 +27,17 @@
   --step-count: 13;
   --step-length: 50svh;
   --stage-gutter: clamp(var(--space-md), 3svh, var(--space-xl));
-  --stage-height: min(58rem, calc(100svh - var(--nav-height) - (2 * var(--stage-gutter))));
-  --stage-top: calc(var(--nav-height) + max(var(--space-md), (100svh - var(--nav-height) - var(--stage-height)) / 2));
+  --stage-height: min(
+    58rem,
+    calc(100svh - var(--nav-height) - (2 * var(--stage-gutter)))
+  );
+  --stage-top: calc(
+    var(--nav-height) +
+      max(
+        var(--space-md),
+        (100svh - var(--nav-height) - var(--stage-height)) / 2
+      )
+  );
   position: relative;
   min-height: calc(var(--step-count) * var(--step-length));
   outline: none;

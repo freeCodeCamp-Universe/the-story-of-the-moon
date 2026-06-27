@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -16,7 +22,13 @@ let activeObserver: MockIntersectionObserver | null = null;
 let scrollYValue = 0;
 let customScrollObserver: (() => void) | null = null;
 
-function createRect({ top, bottom, left = 0, right = 100, width = 100 }: RectInit): DOMRect {
+function createRect({
+  top,
+  bottom,
+  left = 0,
+  right = 100,
+  width = 100,
+}: RectInit): DOMRect {
   return {
     x: left,
     y: top,
@@ -43,12 +55,21 @@ function createMatchMedia(matches: boolean): MediaQueryList {
   };
 }
 
-function setViewport({ desktop, reducedMotion = false }: { desktop: boolean; reducedMotion?: boolean }) {
-  (window.matchMedia as unknown as ReturnType<typeof vi.fn>).mockImplementation((query: string) => {
-    if (query === '(prefers-reduced-motion: reduce)') return createMatchMedia(reducedMotion);
-    if (query === '(min-width: 768px)') return createMatchMedia(desktop);
-    return createMatchMedia(false);
-  });
+function setViewport({
+  desktop,
+  reducedMotion = false,
+}: {
+  desktop: boolean;
+  reducedMotion?: boolean;
+}) {
+  (window.matchMedia as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+    (query: string) => {
+      if (query === '(prefers-reduced-motion: reduce)')
+        return createMatchMedia(reducedMotion);
+      if (query === '(min-width: 768px)') return createMatchMedia(desktop);
+      return createMatchMedia(false);
+    }
+  );
 }
 
 class MockIntersectionObserver {
@@ -73,8 +94,13 @@ class MockIntersectionObserver {
 
   takeRecords = (): IntersectionObserverEntry[] => [];
 
-  emit(entries: Array<Pick<IntersectionObserverEntry, 'target' | 'isIntersecting'>>) {
-    this.callback(entries as IntersectionObserverEntry[], this as unknown as IntersectionObserver);
+  emit(
+    entries: Array<Pick<IntersectionObserverEntry, 'target' | 'isIntersecting'>>
+  ) {
+    this.callback(
+      entries as IntersectionObserverEntry[],
+      this as unknown as IntersectionObserver
+    );
   }
 
   emitForViewportCenter() {
@@ -86,7 +112,8 @@ class MockIntersectionObserver {
         const absoluteBottom = rect.bottom + scrollYValue;
         return {
           target,
-          isIntersecting: viewportCenter > absoluteTop && viewportCenter <= absoluteBottom,
+          isIntersecting:
+            viewportCenter > absoluteTop && viewportCenter <= absoluteBottom,
         };
       })
       .filter((entry) => entry.isIntersecting);
@@ -163,7 +190,10 @@ describe('Ch4', () => {
     Object.defineProperty(window, 'IntersectionObserver', {
       configurable: true,
       writable: true,
-      value: function (this: IntersectionObserver, callback: IntersectionObserverCallback) {
+      value: function (
+        this: IntersectionObserver,
+        callback: IntersectionObserverCallback
+      ) {
         const observer = new MockIntersectionObserver(callback);
         activeObserver = observer;
         return observer;
@@ -172,8 +202,14 @@ describe('Ch4', () => {
 
     document.documentElement.style.setProperty('--nav-height', '100px');
 
-    vi.spyOn(window, 'scrollTo').mockImplementation(((optionsOrX?: number | ScrollToOptions, y?: number) => {
-      const top = typeof optionsOrX === 'object' && optionsOrX !== null ? optionsOrX.top : y;
+    vi.spyOn(window, 'scrollTo').mockImplementation(((
+      optionsOrX?: number | ScrollToOptions,
+      y?: number
+    ) => {
+      const top =
+        typeof optionsOrX === 'object' && optionsOrX !== null
+          ? optionsOrX.top
+          : y;
 
       scrollYValue = typeof top === 'number' ? top : 0;
       if (customScrollObserver) {
@@ -192,15 +228,27 @@ describe('Ch4', () => {
   it('should render the chapter intro and the closing diptych heading with its narrative copy', () => {
     render(<Ch4 />);
 
-    expect(screen.getByText(/For thousands of years, reaching the Moon lived only in the human imagination\./)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /For thousands of years, reaching the Moon lived only in the human imagination\./
+      )
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         level: 3,
         name: 'The same horizon',
       })
     ).toBeInTheDocument();
-    expect(screen.getByText(/In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void\./)).toBeInTheDocument();
-    expect(screen.getByText(/Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /In 1968, the Apollo 8 crew was caught off guard by a striking sight: Earth rising as a fragile blue marble against the dark void\./
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Fifty-eight years later, the Artemis II crew headed for the same vantage with cameras already set up/i
+      )
+    ).toBeInTheDocument();
   });
 
   it('should always render the pinned timeline region regardless of viewport', async () => {
@@ -213,7 +261,11 @@ describe('Ch4', () => {
     ).toBeInTheDocument();
 
     const lists = screen.queryAllByRole('list');
-    expect(lists.some((list) => list.getAttribute('aria-label') === 'Timeline progress')).toBe(true);
+    expect(
+      lists.some(
+        (list) => list.getAttribute('aria-label') === 'Timeline progress'
+      )
+    ).toBe(true);
   });
 
   it('should keep the clicked mission active instead of snapping to the previous one', async () => {
@@ -227,16 +279,24 @@ describe('Ch4', () => {
 
     const sentinels = installTimelineLayout(section);
     const buttons = screen.getAllByRole('button');
-    const apollo14Button = screen.getByRole('button', { name: /Apollo 14, Jan 31–Feb 9, 1971/i });
-    const apollo15Button = screen.getByRole('button', { name: /Apollo 15, Jul 26–Aug 7, 1971/i });
-    const apollo16Button = screen.getByRole('button', { name: /Apollo 16, Apr 16–27, 1972/i });
+    const apollo14Button = screen.getByRole('button', {
+      name: /Apollo 14, Jan 31–Feb 9, 1971/i,
+    });
+    const apollo15Button = screen.getByRole('button', {
+      name: /Apollo 15, Jul 26–Aug 7, 1971/i,
+    });
+    const apollo16Button = screen.getByRole('button', {
+      name: /Apollo 16, Apr 16–27, 1972/i,
+    });
     const apollo16Index = buttons.indexOf(apollo16Button);
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
     });
 
-    activeObserver?.emit([{ target: sentinels[apollo16Index], isIntersecting: true }]);
+    activeObserver?.emit([
+      { target: sentinels[apollo16Index], isIntersecting: true },
+    ]);
 
     await waitFor(() => {
       expect(apollo16Button).toHaveAttribute('aria-current', 'true');
@@ -253,8 +313,19 @@ describe('Ch4', () => {
   it('renders the keyboard hint for animated timeline mode', async () => {
     render(<Ch4 />);
 
-    expect(await screen.findByText((content) => content.includes('Use') && content.includes('move through the timeline'))).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes('Use') && content.includes('jump to first'))).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        (content) =>
+          content.includes('Use') &&
+          content.includes('move through the timeline')
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (content) =>
+          content.includes('Use') && content.includes('jump to first')
+      )
+    ).toBeInTheDocument();
   });
 
   it('activates arrow-key navigation while the timeline is in view', async () => {
@@ -267,8 +338,12 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const apollo9Button = screen.getByRole('button', { name: /Apollo 9, Mar 3–13, 1969/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const apollo9Button = screen.getByRole('button', {
+      name: /Apollo 9, Mar 3–13, 1969/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -295,8 +370,12 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const artemisButton = screen.getByRole('button', {
+      name: /Artemis II, Apr 1–10, 2026/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -329,8 +408,12 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const artemisButton = screen.getByRole('button', {
+      name: /Artemis II, Apr 1–10, 2026/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -358,8 +441,12 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const artemisButton = screen.getByRole('button', {
+      name: /Artemis II, Apr 1–10, 2026/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -388,9 +475,15 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const apollo9Button = screen.getByRole('button', { name: /Apollo 9, Mar 3–13, 1969/i });
-    const apollo10Button = screen.getByRole('button', { name: /Apollo 10, May 18–26, 1969/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const apollo9Button = screen.getByRole('button', {
+      name: /Apollo 9, Mar 3–13, 1969/i,
+    });
+    const apollo10Button = screen.getByRole('button', {
+      name: /Apollo 10, May 18–26, 1969/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -427,16 +520,24 @@ describe('Ch4', () => {
 
     const sentinels = installTimelineLayout(section);
     const buttons = screen.getAllByRole('button');
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const apollo9Button = screen.getByRole('button', { name: /Apollo 9, Mar 3–13, 1969/i });
-    const artemisButton = screen.getByRole('button', { name: /Artemis II, Apr 1–10, 2026/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const apollo9Button = screen.getByRole('button', {
+      name: /Apollo 9, Mar 3–13, 1969/i,
+    });
+    const artemisButton = screen.getByRole('button', {
+      name: /Artemis II, Apr 1–10, 2026/i,
+    });
     const artemisIndex = buttons.indexOf(artemisButton);
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
     });
 
-    activeObserver?.emit([{ target: sentinels[artemisIndex], isIntersecting: true }]);
+    activeObserver?.emit([
+      { target: sentinels[artemisIndex], isIntersecting: true },
+    ]);
 
     await waitFor(() => {
       expect(artemisButton).toHaveAttribute('aria-current', 'true');
@@ -462,8 +563,12 @@ describe('Ch4', () => {
     });
 
     installTimelineLayout(section);
-    const apollo8Button = screen.getByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i });
-    const apollo9Button = screen.getByRole('button', { name: /Apollo 9, Mar 3–13, 1969/i });
+    const apollo8Button = screen.getByRole('button', {
+      name: /Apollo 8, Dec 21–27, 1968/i,
+    });
+    const apollo9Button = screen.getByRole('button', {
+      name: /Apollo 9, Mar 3–13, 1969/i,
+    });
 
     await waitFor(() => {
       expect(activeObserver?.observed.size ?? 0).toBeGreaterThan(0);
@@ -490,24 +595,36 @@ describe('Ch4', () => {
 
     render(<Ch4 />);
 
-    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
     const sentinels = installTimelineLayout(section);
 
-    const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+    const trigger = await screen.findByRole('button', {
+      name: /Jump to a mission\. Step 1 of 11/i,
+    });
     expect(trigger).toHaveAttribute('aria-haspopup', 'true');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
     expect(trigger).toHaveAttribute('aria-controls', 'ch4-mission-dropdown');
-    expect(trigger).toHaveAccessibleName(/Jump to a mission\. Step 1 of 11: Apollo 8/i);
+    expect(trigger).toHaveAccessibleName(
+      /Jump to a mission\. Step 1 of 11: Apollo 8/i
+    );
     expect(trigger).not.toHaveAccessibleName(/Fifty-three years pass/i);
 
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Fifty-three years pass/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Interlude' })
+    ).toBeInTheDocument();
     const list = screen.getByRole('list');
     expect(within(list).getAllByRole('button')).toHaveLength(sentinels.length);
-    expect(screen.getByRole('button', { name: /Apollo 11/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Apollo 11/i })
+    ).toBeInTheDocument();
   });
 
   it('should close the jump dropdown when the rail trigger is clicked again', async () => {
@@ -516,18 +633,26 @@ describe('Ch4', () => {
 
     render(<Ch4 />);
 
-    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
     installTimelineLayout(section);
 
-    const trigger = await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+    const trigger = await screen.findByRole('button', {
+      name: /Jump to a mission\. Step 1 of 11/i,
+    });
 
     await user.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Interlude' })
+    ).toBeInTheDocument();
 
     await user.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByRole('button', { name: 'Interlude' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Interlude' })
+    ).not.toBeInTheDocument();
   });
 
   it('should jump to the interlude row and close the dropdown on mobile', async () => {
@@ -536,18 +661,30 @@ describe('Ch4', () => {
 
     render(<Ch4 />);
 
-    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
     installTimelineLayout(section);
 
-    await user.click(await screen.findByRole('button', { name: /Jump to a mission\. Step 1 of 11/i }));
+    await user.click(
+      await screen.findByRole('button', {
+        name: /Jump to a mission\. Step 1 of 11/i,
+      })
+    );
     await user.click(screen.getByRole('button', { name: 'Interlude' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Interlude' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Interlude' })
+      ).not.toBeInTheDocument();
     });
 
-    expect(await screen.findByRole('button', { name: 'Jump to a mission.' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'Jump to a mission.' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Fifty-three years pass/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Fifty-three years pass.')).toBeInTheDocument();
   });
 
@@ -557,14 +694,20 @@ describe('Ch4', () => {
     render(<Ch4 />);
 
     await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
-    const trigger = screen.getByRole('button', { name: /Jump to a mission\. Step 1 of 11/i });
+    const trigger = screen.getByRole('button', {
+      name: /Jump to a mission\. Step 1 of 11/i,
+    });
     expect(screen.getAllByRole('button')).toHaveLength(1);
     const decorativeTicks = trigger.querySelector('[aria-hidden="true"]');
     expect(decorativeTicks).not.toBeNull();
     if (decorativeTicks) {
-      expect(within(decorativeTicks as HTMLElement).queryAllByRole('button')).toHaveLength(0);
+      expect(
+        within(decorativeTicks as HTMLElement).queryAllByRole('button')
+      ).toHaveLength(0);
     }
-    expect(screen.queryByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i })
+    ).not.toBeInTheDocument();
   });
 
   it('should apply the instant-cut deck class under reduced motion', async () => {
@@ -594,13 +737,17 @@ describe('Ch4', () => {
     setViewport({ desktop: true, reducedMotion: true });
 
     render(<Ch4 />);
-    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
     installTimelineLayout(section);
 
     const scrollSpy = window.scrollTo as unknown as ReturnType<typeof vi.fn>;
     scrollSpy.mockClear();
 
-    await user.click(screen.getByRole('button', { name: /Apollo 11, Jul 16–24, 1969/i }));
+    await user.click(
+      screen.getByRole('button', { name: /Apollo 11, Jul 16–24, 1969/i })
+    );
 
     const lastCall = scrollSpy.mock.calls[scrollSpy.mock.calls.length - 1];
     expect(lastCall?.[0]).toMatchObject({ behavior: 'auto' });
@@ -609,7 +756,9 @@ describe('Ch4', () => {
   it('should size each scroll step from window.innerHeight in pixels', async () => {
     render(<Ch4 />);
 
-    const section = await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
+    const section = await screen.findByRole('region', {
+      name: 'Apollo and Artemis missions',
+    });
 
     await waitFor(() => {
       expect(section.style.getPropertyValue('--step-length')).toBe('500px');

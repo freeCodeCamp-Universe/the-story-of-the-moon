@@ -1,7 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ANIMATIONS_PREFERENCE_EVENT, ANIMATIONS_STORAGE_KEY } from '@/hooks/useAnimationsPreference';
+import {
+  ANIMATIONS_PREFERENCE_EVENT,
+  ANIMATIONS_STORAGE_KEY,
+} from '@/hooks/useAnimationsPreference';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 describe('useReducedMotion', () => {
@@ -53,7 +56,9 @@ describe('useReducedMotion', () => {
 
     const { result } = renderHook(() => useReducedMotion());
 
-    expect(window.matchMedia).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)');
+    expect(window.matchMedia).toHaveBeenCalledWith(
+      '(prefers-reduced-motion: reduce)'
+    );
     expect(result.current).toBe(true);
   });
 
@@ -114,7 +119,10 @@ describe('useReducedMotion', () => {
   it('should remove the media query listener when the hook unmounts', () => {
     const { unmount } = renderHook(() => useReducedMotion());
 
-    expect(addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    expect(addEventListener).toHaveBeenCalledWith(
+      'change',
+      expect.any(Function)
+    );
 
     const handler = addEventListener.mock.calls[0]?.[1];
 

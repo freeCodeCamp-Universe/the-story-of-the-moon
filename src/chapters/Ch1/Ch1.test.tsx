@@ -13,14 +13,22 @@ describe('Ch1', () => {
     const diagram = screen.getByRole('figure', {
       name: 'The giant-impact hypothesis in four stages.',
     });
-    const fourthParagraph = screen.getByText(/The giant-impact hypothesis remains the favored model because it explains anomalies/i);
+    const fourthParagraph = screen.getByText(
+      /The giant-impact hypothesis remains the favored model because it explains anomalies/i
+    );
 
     expect(heroImage).toBeInTheDocument();
     expect(diagram).toBeInTheDocument();
     expect(fourthParagraph).toBeInTheDocument();
 
-    expect(heroImage.compareDocumentPosition(diagram) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
-    expect(diagram.compareDocumentPosition(fourthParagraph) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
+    expect(
+      heroImage.compareDocumentPosition(diagram) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).not.toBe(0);
+    expect(
+      diagram.compareDocumentPosition(fourthParagraph) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).not.toBe(0);
   });
 
   it('should eagerly prioritize the opening giant-impact image', () => {
@@ -68,6 +76,8 @@ describe('Ch1', () => {
     expect(within(diagram).getByText('Impact')).toBeInTheDocument();
     expect(within(diagram).getByText('Debris ring')).toBeInTheDocument();
     expect(within(diagram).getByText('Coalesce')).toBeInTheDocument();
-    expect(within(diagram).queryByText(/A Mars-sized body, Theia, approaches/i)).not.toBeInTheDocument();
+    expect(
+      within(diagram).queryByText(/A Mars-sized body, Theia, approaches/i)
+    ).not.toBeInTheDocument();
   });
 });

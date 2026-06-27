@@ -48,7 +48,8 @@ export function useKeyboardNav(shortcutsEnabled = true) {
       }
 
       if (e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
-        const chapterOffset = normalizedKey === 'n' ? 1 : normalizedKey === 'p' ? -1 : 0;
+        const chapterOffset =
+          normalizedKey === 'n' ? 1 : normalizedKey === 'p' ? -1 : 0;
 
         if (chapterOffset !== 0 && scrollToRelativeChapter(chapterOffset)) {
           e.preventDefault();

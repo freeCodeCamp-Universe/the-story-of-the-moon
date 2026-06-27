@@ -10,7 +10,11 @@ type Props = {
 
 export function Chapter({ id, question, title, children }: Props) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className={styles.section}>
+    <section
+      id={id}
+      aria-labelledby={`${id}-heading`}
+      className={styles.section}
+    >
       <header className={styles.header}>
         <span className={styles.question}>{question}</span>
         <h2 id={`${id}-heading`} className={styles.heading}>

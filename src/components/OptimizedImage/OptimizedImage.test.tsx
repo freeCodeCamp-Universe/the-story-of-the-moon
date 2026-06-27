@@ -29,13 +29,24 @@ describe('OptimizedImage', () => {
   });
 
   it('should keep lazy images on async decoding', () => {
-    render(<OptimizedImage src="/postcards/bootprint.jpg" alt="Bootprint" loading="lazy" />);
+    render(
+      <OptimizedImage
+        src="/postcards/bootprint.jpg"
+        alt="Bootprint"
+        loading="lazy"
+      />
+    );
 
-    chaiShould.equal(screen.getByRole('img', { name: 'Bootprint' }).getAttribute('decoding'), 'async');
+    chaiShould.equal(
+      screen.getByRole('img', { name: 'Bootprint' }).getAttribute('decoding'),
+      'async'
+    );
   });
 
   it('should render a plain img for svg inputs', () => {
-    const { container } = render(<OptimizedImage src="/ch3/with-moon.svg" alt="Diagram" />);
+    const { container } = render(
+      <OptimizedImage src="/ch3/with-moon.svg" alt="Diagram" />
+    );
     const image = screen.queryByRole('img', { name: 'Diagram' });
 
     chaiShould.equal(container.querySelector('source'), null);
@@ -46,7 +57,14 @@ describe('OptimizedImage', () => {
   });
 
   it('should honor a caller supplied avif srcSet', () => {
-    render(<OptimizedImage src="/ch2/hertzsprung.jpg" avifSrcSet="/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w" sizes="(min-width: 768px) 50vw, 100vw" alt="Hertzsprung basin" />);
+    render(
+      <OptimizedImage
+        src="/ch2/hertzsprung.jpg"
+        avifSrcSet="/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w"
+        sizes="(min-width: 768px) 50vw, 100vw"
+        alt="Hertzsprung basin"
+      />
+    );
 
     const image = screen.getByRole('img', { name: 'Hertzsprung basin' });
     const source = image.closest('picture')?.querySelector('source');
@@ -55,8 +73,14 @@ describe('OptimizedImage', () => {
       throw new Error('Expected an AVIF source element.');
     }
 
-    chaiShould.equal(source.getAttribute('srcset'), '/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w');
-    chaiShould.equal(source.getAttribute('sizes'), '(min-width: 768px) 50vw, 100vw');
+    chaiShould.equal(
+      source.getAttribute('srcset'),
+      '/ch2/hertzsprung-800.avif 800w, /ch2/hertzsprung-1600.avif 1600w'
+    );
+    chaiShould.equal(
+      source.getAttribute('sizes'),
+      '(min-width: 768px) 50vw, 100vw'
+    );
     chaiShould.equal(source.getAttribute('type'), 'image/avif');
   });
 });

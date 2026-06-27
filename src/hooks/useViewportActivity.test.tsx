@@ -3,7 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useViewportActivity } from '@/hooks/useViewportActivity';
 
-function createIntersectionEntry({ isIntersecting, target }: { isIntersecting: boolean; target: Element }): IntersectionObserverEntry {
+function createIntersectionEntry({
+  isIntersecting,
+  target,
+}: {
+  isIntersecting: boolean;
+  target: Element;
+}): IntersectionObserverEntry {
   return {
     time: 0,
     target,
@@ -15,13 +21,27 @@ function createIntersectionEntry({ isIntersecting, target }: { isIntersecting: b
   };
 }
 
-function HookHarness({ rootMargin, threshold }: { rootMargin?: string; threshold?: number | number[] }) {
-  const { targetRef, isNearViewport, isVisible } = useViewportActivity<HTMLDivElement>({
-    rootMargin,
-    threshold,
-  });
+function HookHarness({
+  rootMargin,
+  threshold,
+}: {
+  rootMargin?: string;
+  threshold?: number | number[];
+}) {
+  const { targetRef, isNearViewport, isVisible } =
+    useViewportActivity<HTMLDivElement>({
+      rootMargin,
+      threshold,
+    });
 
-  return <div ref={targetRef} data-testid="target" data-near-viewport={String(isNearViewport)} data-visible={String(isVisible)} />;
+  return (
+    <div
+      ref={targetRef}
+      data-testid="target"
+      data-near-viewport={String(isNearViewport)}
+      data-visible={String(isVisible)}
+    />
+  );
 }
 
 describe('useViewportActivity', () => {
@@ -52,7 +72,10 @@ describe('useViewportActivity', () => {
       rootMargin = '';
       thresholds: ReadonlyArray<number> = [];
 
-      constructor(cb: IntersectionObserverCallback, options: IntersectionObserverInit = {}) {
+      constructor(
+        cb: IntersectionObserverCallback,
+        options: IntersectionObserverInit = {}
+      ) {
         callback = cb;
         observerOptions = options;
       }
@@ -63,7 +86,10 @@ describe('useViewportActivity', () => {
       takeRecords = takeRecords;
     }
 
-    vi.stubGlobal('IntersectionObserver', IntersectionObserverMock as unknown as typeof IntersectionObserver);
+    vi.stubGlobal(
+      'IntersectionObserver',
+      IntersectionObserverMock as unknown as typeof IntersectionObserver
+    );
   });
 
   afterEach(() => {
@@ -72,7 +98,9 @@ describe('useViewportActivity', () => {
   });
 
   it('should observe the target element and combine viewport and document visibility', () => {
-    const { unmount } = render(<HookHarness rootMargin="200px" threshold={0.25} />);
+    const { unmount } = render(
+      <HookHarness rootMargin="200px" threshold={0.25} />
+    );
     const target = screen.getByTestId('target');
 
     expect(observe).toHaveBeenCalledWith(target);

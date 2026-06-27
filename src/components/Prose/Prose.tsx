@@ -23,9 +23,23 @@ const widthClass: Record<ProseWidth, string> = {
   full: styles.full,
 };
 
-export function Prose({ width = 'text', flush = false, as, className, children, ...rest }: ProseProps & Omit<ComponentPropsWithoutRef<ElementType>, keyof ProseProps>) {
+export function Prose({
+  width = 'text',
+  flush = false,
+  as,
+  className,
+  children,
+  ...rest
+}: ProseProps & Omit<ComponentPropsWithoutRef<ElementType>, keyof ProseProps>) {
   const Component = as ?? 'div';
-  const classes = [styles.prose, widthClass[width], flush ? styles.flush : '', className].filter(Boolean).join(' ');
+  const classes = [
+    styles.prose,
+    widthClass[width],
+    flush ? styles.flush : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <Component className={classes} {...rest}>

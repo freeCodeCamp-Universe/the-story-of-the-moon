@@ -22,8 +22,17 @@ function Harness({ activeIndex = 0 }: { activeIndex?: number }) {
       <button ref={triggerRef} type="button" onClick={() => setIsOpen(true)}>
         open menu
       </button>
-      <span data-testid="selected">{selected === null ? 'none' : String(selected)}</span>
-      <MissionDropdown isOpen={isOpen} onClose={() => setIsOpen(false)} triggerRef={triggerRef} items={items} activeIndex={activeIndex} onSelect={(index) => setSelected(index)} />
+      <span data-testid="selected">
+        {selected === null ? 'none' : String(selected)}
+      </span>
+      <MissionDropdown
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        triggerRef={triggerRef}
+        items={items}
+        activeIndex={activeIndex}
+        onSelect={(index) => setSelected(index)}
+      />
     </>
   );
 }
@@ -37,7 +46,9 @@ describe('MissionDropdown', () => {
   it('should not render any rows while closed', () => {
     render(<Harness />);
 
-    expect(screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render one button row per item with interlude exposed as a neutral row name', async () => {
@@ -46,11 +57,21 @@ describe('MissionDropdown', () => {
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: 'open menu' }));
 
-    expect(screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Interlude' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Artemis II · Apr 1–10, 2026' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Fifty-three years pass/i })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Interlude' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Artemis II · Apr 1–10, 2026' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Fifty-three years pass/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByText('···')).toBeInTheDocument();
   });
 
@@ -60,10 +81,14 @@ describe('MissionDropdown', () => {
     render(<Harness activeIndex={1} />);
     await user.click(screen.getByRole('button', { name: 'open menu' }));
 
-    const activeRow = screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' });
+    const activeRow = screen.getByRole('button', {
+      name: 'Apollo 9 · Mar 3–13, 1969',
+    });
     expect(activeRow).toHaveAttribute('aria-current', 'step');
     expect(activeRow).toHaveFocus();
-    expect(screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toHaveAttribute('aria-current');
+    expect(
+      screen.getByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })
+    ).not.toHaveAttribute('aria-current');
   });
 
   it('should mark the interlude row as the active step when it is the active index', async () => {
@@ -75,7 +100,9 @@ describe('MissionDropdown', () => {
     const interludeRow = screen.getByRole('button', { name: 'Interlude' });
     expect(interludeRow).toHaveAttribute('aria-current', 'step');
     expect(interludeRow).toHaveFocus();
-    expect(screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })).not.toHaveAttribute('aria-current');
+    expect(
+      screen.getByRole('button', { name: 'Apollo 9 · Mar 3–13, 1969' })
+    ).not.toHaveAttribute('aria-current');
   });
 
   it('should call onSelect with the interlude row index when that row is clicked', async () => {
@@ -95,7 +122,9 @@ describe('MissionDropdown', () => {
     await user.click(screen.getByRole('button', { name: 'open menu' }));
     await user.keyboard('{Escape}');
 
-    expect(screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })
+    ).not.toBeInTheDocument();
   });
 
   it('should close on outside pointerdown', async () => {
@@ -105,6 +134,8 @@ describe('MissionDropdown', () => {
     await user.click(screen.getByRole('button', { name: 'open menu' }));
     await user.pointer({ target: document.body, keys: '[MouseLeft]' });
 
-    expect(screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Apollo 8 · Dec 21–27, 1968' })
+    ).not.toBeInTheDocument();
   });
 });

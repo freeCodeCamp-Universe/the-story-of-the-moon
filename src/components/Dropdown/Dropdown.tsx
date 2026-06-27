@@ -14,9 +14,20 @@ export type DropdownProps = {
   children: React.ReactNode;
 };
 
-const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-export function Dropdown({ isOpen, onClose, triggerRef, id, className, overlayClassName, initialFocusRef, ariaLabel, children }: DropdownProps) {
+export function Dropdown({
+  isOpen,
+  onClose,
+  triggerRef,
+  id,
+  className,
+  overlayClassName,
+  initialFocusRef,
+  ariaLabel,
+  children,
+}: DropdownProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -62,7 +73,12 @@ export function Dropdown({ isOpen, onClose, triggerRef, id, className, overlayCl
   return (
     <>
       <div className={overlayClassName} aria-hidden="true" onClick={onClose} />
-      <div ref={panelRef} id={id} className={[styles.panel, className].filter(Boolean).join(' ')} aria-label={ariaLabel}>
+      <div
+        ref={panelRef}
+        id={id}
+        className={[styles.panel, className].filter(Boolean).join(' ')}
+        aria-label={ariaLabel}
+      >
         {children}
       </div>
     </>

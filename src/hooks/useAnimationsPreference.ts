@@ -13,11 +13,19 @@ function readAnimationsPreference() {
 }
 
 export function useAnimationsPreference() {
-  const [animationsEnabled, setAnimationsEnabled] = useState(readAnimationsPreference);
+  const [animationsEnabled, setAnimationsEnabled] = useState(
+    readAnimationsPreference
+  );
 
   useEffect(() => {
-    window.localStorage.setItem(ANIMATIONS_STORAGE_KEY, String(animationsEnabled));
-    document.documentElement.toggleAttribute(REDUCED_MOTION_ATTRIBUTE, !animationsEnabled);
+    window.localStorage.setItem(
+      ANIMATIONS_STORAGE_KEY,
+      String(animationsEnabled)
+    );
+    document.documentElement.toggleAttribute(
+      REDUCED_MOTION_ATTRIBUTE,
+      !animationsEnabled
+    );
     window.dispatchEvent(new Event(ANIMATIONS_PREFERENCE_EVENT));
   }, [animationsEnabled]);
 

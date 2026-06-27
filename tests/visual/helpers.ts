@@ -27,7 +27,8 @@ async function settlePage(page: Page) {
     const waitFrames = (n: number) =>
       new Promise<void>((resolve) => {
         let remaining = n;
-        const tick = () => (remaining-- <= 0 ? resolve() : requestAnimationFrame(tick));
+        const tick = () =>
+          remaining-- <= 0 ? resolve() : requestAnimationFrame(tick);
         requestAnimationFrame(tick);
       });
     const step = Math.max(1, Math.floor(window.innerHeight * 0.8));
@@ -49,7 +50,14 @@ async function settlePage(page: Page) {
   //    true after both load and error, so a broken src cannot hang the wait;
   //    images that never select a source (currentSrc === '', e.g. a stacked,
   //    never-revealed Ch4 deck slot) are intentionally skipped.
-  await page.waitForFunction(() => Array.from(document.images).every((img) => !img.currentSrc || img.complete), undefined, { timeout: 20_000 });
+  await page.waitForFunction(
+    () =>
+      Array.from(document.images).every(
+        (img) => !img.currentSrc || img.complete
+      ),
+    undefined,
+    { timeout: 20_000 }
+  );
 
   // 3. Decode the images whose bytes arrived so the first painted frame is final.
   await page.evaluate(async () => {
@@ -65,7 +73,10 @@ async function settlePage(page: Page) {
   //    after we return and be captured mid-shift.
   await page.waitForFunction(
     () => {
-      const store = window as unknown as { __vrHeight?: number; __vrStable?: number };
+      const store = window as unknown as {
+        __vrHeight?: number;
+        __vrStable?: number;
+      };
       const height = document.documentElement.scrollHeight;
       if (store.__vrHeight === height) {
         store.__vrStable = (store.__vrStable ?? 0) + 1;
@@ -83,9 +94,15 @@ async function settlePage(page: Page) {
 // reducedMotion defaults to 'reduce' so scroll-driven scenes freeze into a
 // deterministic frame. Pass { reducedMotion: false } for chapters whose
 // reduced-motion branch is a different layout we don't want to baseline (Ch4).
-export async function gotoStable(page: Page, path = '/', opts: { reducedMotion?: boolean } = {}) {
+export async function gotoStable(
+  page: Page,
+  path = '/',
+  opts: { reducedMotion?: boolean } = {}
+) {
   const { reducedMotion = true } = opts;
-  await page.emulateMedia({ reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
+  await page.emulateMedia({
+    reducedMotion: reducedMotion ? 'reduce' : 'no-preference',
+  });
   await page.goto(path);
   // StoryPage is lazy-loaded behind a Suspense fallback (the LoadingState
   // spinner, see src/App.tsx), and page.goto resolves on `load` — before that
@@ -122,7 +139,11 @@ export async function captureSection(page: Page, id: string, name: string) {
 // captureChapter4Stage handles Ch4's pinned deck. The ScrollyChapter container
 // is a role="group" whose accessible name comes from its aria-label or the
 // heading it is labelled by.
-export async function captureScrollyStage(page: Page, stageName: string, name: string) {
+export async function captureScrollyStage(
+  page: Page,
+  stageName: string,
+  name: string
+) {
   const stage = page.getByRole('group', { name: stageName });
   await stage.scrollIntoViewIfNeeded();
   await stage.evaluate((el) => el.scrollIntoView({ block: 'start' }));
@@ -134,7 +155,9 @@ export async function captureScrollyStage(page: Page, stageName: string, name: s
 // large to capture reliably. Align the section top to the viewport and capture a
 // bounded viewport screenshot of its opening instead.
 export async function captureSectionTop(page: Page, id: string, name: string) {
-  await page.locator(`#${id}`).evaluate((el) => el.scrollIntoView({ block: 'start' }));
+  await page
+    .locator(`#${id}`)
+    .evaluate((el) => el.scrollIntoView({ block: 'start' }));
   await expect(page).toHaveScreenshot(name, { mask: maskCanvas(page) });
 }
 
@@ -158,7 +181,9 @@ export async function gotoChapter4Animated(page: Page) {
 // deck cross-fades are CSS transitions, which Playwright's `animations:
 // 'disabled'` snaps to their end state, so the active card is deterministic.
 export async function captureChapter4Stage(page: Page, name: string) {
-  const section = page.getByRole('region', { name: 'Apollo and Artemis missions' });
+  const section = page.getByRole('region', {
+    name: 'Apollo and Artemis missions',
+  });
   await section.scrollIntoViewIfNeeded();
   await section.evaluate((el) => el.scrollIntoView({ block: 'start' }));
   await expect(page).toHaveScreenshot(name, { mask: maskCanvas(page) });

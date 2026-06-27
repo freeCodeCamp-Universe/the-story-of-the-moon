@@ -62,7 +62,10 @@
 .termDiptych {
   margin-block: var(--space-lg);
   align-self: center;
-  width: min(calc(100vw - (4 * var(--space-lg))), calc(100% + (4 * var(--space-2xl))));
+  width: min(
+    calc(100vw - (4 * var(--space-lg))),
+    calc(100% + (4 * var(--space-2xl)))
+  );
 }
 
 @media (max-width: 767px) {

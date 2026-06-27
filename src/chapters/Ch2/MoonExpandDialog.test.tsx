@@ -1,6 +1,14 @@
 import { createRef } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { MoonExpandDialog } from '@/chapters/Ch2/MoonExpandDialog';
 
@@ -15,7 +23,8 @@ const handle = {
 };
 
 const createMoonScene = vi.fn(() => handle);
-const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const originalDialogShowModal =
+  globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 vi.mock('@/three/moonScene', () => ({
@@ -27,7 +36,10 @@ type OverlayHarnessProps = {
   onClose?: () => void;
 };
 
-function DialogHarness({ isOpen = true, onClose = vi.fn() }: OverlayHarnessProps) {
+function DialogHarness({
+  isOpen = true,
+  onClose = vi.fn(),
+}: OverlayHarnessProps) {
   const triggerRef = createRef<HTMLButtonElement>();
 
   return (
@@ -35,23 +47,39 @@ function DialogHarness({ isOpen = true, onClose = vi.fn() }: OverlayHarnessProps
       <button ref={triggerRef} type="button">
         open expanded moon view
       </button>
-      <MoonExpandDialog isOpen={isOpen} onClose={onClose} triggerRef={triggerRef} initialTarget={{ lat: 0, lon: 0 }} reducedMotion={false} />
+      <MoonExpandDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        triggerRef={triggerRef}
+        initialTarget={{ lat: 0, lon: 0 }}
+        reducedMotion={false}
+      />
     </>
   );
 }
 
 describe('MoonExpandDialog', () => {
   beforeAll(() => {
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
-      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-        configurable: true,
-        value() {
-          this.setAttribute('open', '');
-        },
-      });
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function'
+    ) {
+      Object.defineProperty(
+        globalThis.HTMLDialogElement.prototype,
+        'showModal',
+        {
+          configurable: true,
+          value() {
+            this.setAttribute('open', '');
+          },
+        }
+      );
     }
 
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.close !== 'function'
+    ) {
       Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
         configurable: true,
         value() {
@@ -65,10 +93,14 @@ describe('MoonExpandDialog', () => {
   afterAll(() => {
     if (globalThis.HTMLDialogElement) {
       if (originalDialogShowModal) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-          configurable: true,
-          value: originalDialogShowModal,
-        });
+        Object.defineProperty(
+          globalThis.HTMLDialogElement.prototype,
+          'showModal',
+          {
+            configurable: true,
+            value: originalDialogShowModal,
+          }
+        );
       }
 
       if (originalDialogClose) {

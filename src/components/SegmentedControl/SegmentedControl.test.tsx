@@ -12,14 +12,24 @@ const OPTIONS = [
 
 function Harness() {
   const [value, setValue] = useState<'a' | 'b'>('a');
-  return <SegmentedControl name="test" label="Choose one" options={OPTIONS} value={value} onChange={setValue} />;
+  return (
+    <SegmentedControl
+      name="test"
+      label="Choose one"
+      options={OPTIONS}
+      value={value}
+      onChange={setValue}
+    />
+  );
 }
 
 describe('SegmentedControl', () => {
   it('should expose a labeled radiogroup with the current option checked', () => {
     render(<Harness />);
 
-    expect(screen.getByRole('radiogroup', { name: 'Choose one' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('radiogroup', { name: 'Choose one' })
+    ).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'First' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Second' })).not.toBeChecked();
   });

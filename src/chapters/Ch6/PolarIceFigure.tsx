@@ -26,18 +26,49 @@ export function PolarIceFigure() {
     return null;
   }
 
-  const current = pole === 'south' ? { ...south, ...POLES[0] } : { ...north, ...POLES[1] };
+  const current =
+    pole === 'south' ? { ...south, ...POLES[0] } : { ...north, ...POLES[1] };
 
   return (
     <figure className={styles.figure}>
       <div className={styles.controls}>
-        <SegmentedControl name="ch6-pole" label="Choose pole" options={POLES.map((option) => ({ value: option.id, label: option.label }))} value={pole} onChange={setPole} />
-        <Switch className={styles.highlightSwitch} label="Highlight ice" labelPosition="start" checked={highlight} onChange={setHighlight} />
+        <SegmentedControl
+          name="ch6-pole"
+          label="Choose pole"
+          options={POLES.map((option) => ({
+            value: option.id,
+            label: option.label,
+          }))}
+          value={pole}
+          onChange={setPole}
+        />
+        <Switch
+          className={styles.highlightSwitch}
+          label="Highlight ice"
+          labelPosition="start"
+          checked={highlight}
+          onChange={setHighlight}
+        />
       </div>
 
-      <div className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}>
-        <OptimizedImage className={styles.baseLayer} src={`/${current.file}`} alt={current.alt} draggable={false} loading="lazy" />
-        <OptimizedImage className={styles.iceLayer} src={current.mask} alt="" aria-hidden="true" draggable={false} loading="lazy" />
+      <div
+        className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}
+      >
+        <OptimizedImage
+          className={styles.baseLayer}
+          src={`/${current.file}`}
+          alt={current.alt}
+          draggable={false}
+          loading="lazy"
+        />
+        <OptimizedImage
+          className={styles.iceLayer}
+          src={current.mask}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          loading="lazy"
+        />
       </div>
 
       <figcaption className={styles.figcaption}>

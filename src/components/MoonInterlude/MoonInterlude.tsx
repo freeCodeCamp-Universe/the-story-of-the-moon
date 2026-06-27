@@ -79,11 +79,17 @@ function generateStars(): Star[] {
 
   const MAX_ATTEMPTS = 60;
   const placed: { x: number; y: number }[] = [];
-  const clearOfMoon = (x: number, y: number) => ((x - MOON_CX) / MOON_KEEPOUT_RX) ** 2 + ((y - MOON_CY) / MOON_KEEPOUT_RY) ** 2 >= 1;
+  const clearOfMoon = (x: number, y: number) =>
+    ((x - MOON_CX) / MOON_KEEPOUT_RX) ** 2 +
+      ((y - MOON_CY) / MOON_KEEPOUT_RY) ** 2 >=
+    1;
 
   const stars: Star[] = [];
   for (const { tier, count, minDistance } of STAR_TIERS) {
-    const farEnough = (x: number, y: number) => placed.every(({ x: px, y: py }) => (x - px) ** 2 + (y - py) ** 2 >= minDistance ** 2);
+    const farEnough = (x: number, y: number) =>
+      placed.every(
+        ({ x: px, y: py }) => (x - px) ** 2 + (y - py) ** 2 >= minDistance ** 2
+      );
     for (let i = 0; i < count; i += 1) {
       // Always require moon clearance; keep the best moon-clear sample as a
       // fallback if the spacing constraint can't also be met within the budget.
@@ -92,7 +98,11 @@ function generateStars(): Star[] {
       let fallbackX = x;
       let fallbackY = y;
       let haveFallback = clearOfMoon(x, y);
-      for (let attempt = 1; attempt < MAX_ATTEMPTS && !(clearOfMoon(x, y) && farEnough(x, y)); attempt += 1) {
+      for (
+        let attempt = 1;
+        attempt < MAX_ATTEMPTS && !(clearOfMoon(x, y) && farEnough(x, y));
+        attempt += 1
+      ) {
         x = FIELD_X0 + random() * FIELD_W;
         y = FIELD_Y0 + random() * FIELD_H;
         if (clearOfMoon(x, y) && !haveFallback) {
@@ -145,7 +155,15 @@ export function MoonInterlude() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <figure className={styles.container} role="img" aria-label={reducedMotion ? 'Static moon illustration with stars between chapter 6 and chapter 7.' : 'Animated moon illustration with softly blinking stars between chapter 6 and chapter 7.'}>
+    <figure
+      className={styles.container}
+      role="img"
+      aria-label={
+        reducedMotion
+          ? 'Static moon illustration with stars between chapter 6 and chapter 7.'
+          : 'Animated moon illustration with softly blinking stars between chapter 6 and chapter 7.'
+      }
+    >
       {STARS.map((star, index) => {
         const style: StarStyle = {
           '--moon-star-low': String(star.low),
@@ -159,12 +177,27 @@ export function MoonInterlude() {
           opacity: star.low,
           background: STAR_COLOR,
         };
-        const tierClass = star.tier === 'tablet' ? styles.starTablet : star.tier === 'desktop' ? styles.starDesktop : undefined;
-        return <span key={index} className={tierClass ? `${styles.star} ${tierClass}` : styles.star} style={style} aria-hidden="true" />;
+        const tierClass =
+          star.tier === 'tablet'
+            ? styles.starTablet
+            : star.tier === 'desktop'
+              ? styles.starDesktop
+              : undefined;
+        return (
+          <span
+            key={index}
+            className={tierClass ? `${styles.star} ${tierClass}` : styles.star}
+            style={style}
+            aria-hidden="true"
+          />
+        );
       })}
 
       <div className={styles.moonWrapper} aria-hidden="true">
-        <svg className={styles.moonSvg} viewBox={`0 0 ${MOON_VIEW} ${MOON_VIEW}`}>
+        <svg
+          className={styles.moonSvg}
+          viewBox={`0 0 ${MOON_VIEW} ${MOON_VIEW}`}
+        >
           <defs>
             <clipPath id={MOON_CLIP_ID}>
               <circle cx={MOON_CENTER} cy={MOON_CENTER} r={MOON_R} />
@@ -181,10 +214,22 @@ export function MoonInterlude() {
             })}
           </defs>
 
-          <circle cx={MOON_CENTER} cy={MOON_CENTER} r={MOON_R} fill={MOON_SHADE} />
+          <circle
+            cx={MOON_CENTER}
+            cy={MOON_CENTER}
+            r={MOON_R}
+            fill={MOON_SHADE}
+          />
 
           <g clipPath={`url(#${MOON_CLIP_ID})`}>
-            <ellipse cx={LIT_FACE_CX} cy={LIT_FACE_CY} rx={MOON_R * 0.98} ry={MOON_R * 1.02} fill={MOON_FILL} transform={`rotate(${LIT_FACE_ROTATION_DEG} ${LIT_FACE_CX} ${LIT_FACE_CY})`} />
+            <ellipse
+              cx={LIT_FACE_CX}
+              cy={LIT_FACE_CY}
+              rx={MOON_R * 0.98}
+              ry={MOON_R * 1.02}
+              fill={MOON_FILL}
+              transform={`rotate(${LIT_FACE_ROTATION_DEG} ${LIT_FACE_CX} ${LIT_FACE_CY})`}
+            />
             {CRATERS.map((crater, index) => {
               const cx = MOON_CENTER + crater.x * MOON_R;
               const cy = MOON_CENTER + crater.y * MOON_R;

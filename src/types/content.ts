@@ -30,7 +30,10 @@ export type CreditBackedImage<CreditId extends string = string> = {
   creditId: CreditId;
 };
 
-export type CreditBackedImageSource<CreditId extends string = string> = Omit<CreditBackedImage<CreditId>, 'alt'>;
+export type CreditBackedImageSource<CreditId extends string = string> = Omit<
+  CreditBackedImage<CreditId>,
+  'alt'
+>;
 
 export type Mission<CreditId extends string = string> = {
   key: string;
@@ -51,7 +54,10 @@ export type GapEntry = {
 
 export type MissionEntry = Mission | GapEntry;
 
-export type MissionSource<CreditId extends string = string> = Omit<Mission<CreditId>, 'photo'> & {
+export type MissionSource<CreditId extends string = string> = Omit<
+  Mission<CreditId>,
+  'photo'
+> & {
   photo: CreditBackedImageSource<CreditId>;
 };
 
@@ -67,7 +73,10 @@ export type MoonSample<CreditId extends string = string> = {
   creditId: CreditId;
 };
 
-export type MoonSampleSource<CreditId extends string = string> = Omit<MoonSample<CreditId>, 'alt'>;
+export type MoonSampleSource<CreditId extends string = string> = Omit<
+  MoonSample<CreditId>,
+  'alt'
+>;
 
 export type IsotopeBody = {
   id: string;
@@ -105,7 +114,10 @@ export type PostcardData<CreditId extends string = string> = {
   caption: string;
 };
 
-export type PostcardSource<CreditId extends string = string> = Omit<PostcardData<CreditId>, 'image'> & {
+export type PostcardSource<CreditId extends string = string> = Omit<
+  PostcardData<CreditId>,
+  'image'
+> & {
   image: CreditBackedImageSource<CreditId>;
 };
 

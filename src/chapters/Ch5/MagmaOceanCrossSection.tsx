@@ -48,7 +48,10 @@ const DRIFT_DOWN = [
 // Dark basalt pooled at the surface once the eruptions break through, shown at
 // the final step. Two shallow flood deposits centered where the plumes reach
 // the surface — the dark maria the reader sees on the Moon. Clipped to the wedge.
-const MARIA = ['M116,44 L164,44 L162,55 Q140,59 118,55 Z', 'M168,44 L206,44 L204,54 Q186,57 170,54 Z'];
+const MARIA = [
+  'M116,44 L164,44 L162,55 Q140,59 118,55 Z',
+  'M168,44 L206,44 L204,54 Q186,57 170,54 Z',
+];
 
 const LABEL_X = 252;
 const WEDGE_RIGHT = 230;
@@ -70,7 +73,12 @@ type Props = {
   descId: string;
 };
 
-export function MagmaOceanCrossSection({ step, animate, titleId, descId }: Props) {
+export function MagmaOceanCrossSection({
+  step,
+  animate,
+  titleId,
+  descId,
+}: Props) {
   // Without animation we always render the fully crystallized wedge.
   const activeStep = animate ? step : FRONT_FRACTION.length - 1;
   const hasSolidified = activeStep >= CRUST_FROM_STEP;
@@ -82,11 +90,21 @@ export function MagmaOceanCrossSection({ step, animate, titleId, descId }: Props
   const frontScale = FRONT_FRACTION[activeStep];
 
   return (
-    <svg className={`${styles.svg} ${animate ? styles.animated : ''}`} viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role="img" aria-labelledby={titleId} aria-describedby={descId}>
+    <svg
+      className={`${styles.svg} ${animate ? styles.animated : ''}`}
+      viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+      role="img"
+      aria-labelledby={titleId}
+      aria-describedby={descId}
+    >
       <title id={titleId}>Lunar magma ocean cross-section</title>
       <desc id={descId}>
-        A vertical slice of the young Moon&apos;s outer shell. It starts as a hot molten ocean. The Moon cools from the outside in: a solid mantle grows downward from the surface, light minerals float up to form a pale crust on top, and a pocket of
-        hot interior remains deep below. Much later that hot interior erupts up through the crust and floods the surface as the dark maria.
+        A vertical slice of the young Moon&apos;s outer shell. It starts as a
+        hot molten ocean. The Moon cools from the outside in: a solid mantle
+        grows downward from the surface, light minerals float up to form a pale
+        crust on top, and a pocket of hot interior remains deep below. Much
+        later that hot interior erupts up through the crust and floods the
+        surface as the dark maria.
       </desc>
 
       <defs>
@@ -115,34 +133,76 @@ export function MagmaOceanCrossSection({ step, animate, titleId, descId }: Props
       <g clipPath="url(#magma-wedge-clip)">
         {/* Hot molten interior, glowing from the deep base. Revealed wherever
             the solid mantle has not yet grown down over it. */}
-        <rect className={styles.molten} x="70" y={SURFACE_Y} width="172" height={SHELL_H} fill="url(#magma-molten)" />
+        <rect
+          className={styles.molten}
+          x="70"
+          y={SURFACE_Y}
+          width="172"
+          height={SHELL_H}
+          fill="url(#magma-molten)"
+        />
 
         {/* Solid mantle: grows down from the surface as the front descends. */}
-        <rect className={styles.mantle} style={{ '--front-scale': frontScale } as React.CSSProperties} x="70" y={SURFACE_Y} width="172" height={SHELL_H} />
+        <rect
+          className={styles.mantle}
+          style={{ '--front-scale': frontScale } as React.CSSProperties}
+          x="70"
+          y={SURFACE_Y}
+          width="172"
+          height={SHELL_H}
+        />
 
         {/* Float / sink: shown only at the cooling step. */}
         {isCooling && (
           <g className={styles.drift} aria-hidden="true">
             {DRIFT_UP.map((g, i) => (
-              <circle key={`up-${i}`} className={styles.driftUp} style={{ '--i': i } as React.CSSProperties} cx={g.cx} cy={g.cy} r="3.4" />
+              <circle
+                key={`up-${i}`}
+                className={styles.driftUp}
+                style={{ '--i': i } as React.CSSProperties}
+                cx={g.cx}
+                cy={g.cy}
+                r="3.4"
+              />
             ))}
             {DRIFT_DOWN.map((g, i) => (
-              <circle key={`down-${i}`} className={styles.driftDown} style={{ '--i': i } as React.CSSProperties} cx={g.cx} cy={g.cy} r="3.8" />
+              <circle
+                key={`down-${i}`}
+                className={styles.driftDown}
+                style={{ '--i': i } as React.CSSProperties}
+                cx={g.cx}
+                cy={g.cy}
+                r="3.8"
+              />
             ))}
           </g>
         )}
 
         {/* Pale anorthosite crust caps the surface once cooling begins. */}
-        <rect className={styles.crust} data-visible={hasSolidified ? '' : undefined} x="70" y={SURFACE_Y} width="172" height={CRUST_H} />
+        <rect
+          className={styles.crust}
+          data-visible={hasSolidified ? '' : undefined}
+          x="70"
+          y={SURFACE_Y}
+          width="172"
+          height={CRUST_H}
+        />
 
         {/* Maria tie-back: the hot interior erupts up through the crust. */}
-        <g className={styles.eruption} data-visible={isErupting ? '' : undefined}>
+        <g
+          className={styles.eruption}
+          data-visible={isErupting ? '' : undefined}
+        >
           <path className={styles.eruptionPlume} d="M138,330 Q134,150 142,44" />
           <path className={styles.eruptionPlume} d="M180,330 Q186,150 178,44" />
         </g>
 
         {/* Dark maria: basalt pooled at the surface where the plumes break through. */}
-        <g className={styles.maria} data-visible={isErupting ? '' : undefined} aria-hidden="true">
+        <g
+          className={styles.maria}
+          data-visible={isErupting ? '' : undefined}
+          aria-hidden="true"
+        >
           {MARIA.map((d, i) => (
             <path key={`maria-${i}`} className={styles.mariaPatch} d={d} />
           ))}
@@ -154,9 +214,24 @@ export function MagmaOceanCrossSection({ step, animate, titleId, descId }: Props
 
       {/* Region labels, fading in once the crust and mantle exist. */}
       {LABELS.map((label) => (
-        <g key={label.id} className={styles.regionLabel} data-visible={hasSolidified ? '' : undefined}>
-          <line className={styles.leader} x1={WEDGE_RIGHT - 12} y1={label.y} x2={LABEL_X - 6} y2={label.y} />
-          <text className={styles.regionLabelText} x={LABEL_X} y={label.y} dominantBaseline="central">
+        <g
+          key={label.id}
+          className={styles.regionLabel}
+          data-visible={hasSolidified ? '' : undefined}
+        >
+          <line
+            className={styles.leader}
+            x1={WEDGE_RIGHT - 12}
+            y1={label.y}
+            x2={LABEL_X - 6}
+            y2={label.y}
+          />
+          <text
+            className={styles.regionLabelText}
+            x={LABEL_X}
+            y={label.y}
+            dominantBaseline="central"
+          >
             {label.text}
           </text>
         </g>
@@ -164,9 +239,23 @@ export function MagmaOceanCrossSection({ step, animate, titleId, descId }: Props
 
       {/* Maria label: the dark surface patches, called out only once they erupt.
           Sits at the surface level, above the crust label. */}
-      <g className={styles.regionLabel} data-visible={isErupting ? '' : undefined}>
-        <line className={styles.leader} x1={WEDGE_RIGHT - 12} y1="46" x2={LABEL_X - 6} y2="46" />
-        <text className={styles.regionLabelText} x={LABEL_X} y="46" dominantBaseline="central">
+      <g
+        className={styles.regionLabel}
+        data-visible={isErupting ? '' : undefined}
+      >
+        <line
+          className={styles.leader}
+          x1={WEDGE_RIGHT - 12}
+          y1="46"
+          x2={LABEL_X - 6}
+          y2="46"
+        />
+        <text
+          className={styles.regionLabelText}
+          x={LABEL_X}
+          y="46"
+          dominantBaseline="central"
+        >
           maria
         </text>
       </g>

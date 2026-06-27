@@ -39,7 +39,8 @@ const arrowIconData = {
 
 type ArrowGlyph = keyof typeof arrowIconData;
 
-const fontAwesomeLicenseComment = '<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->';
+const fontAwesomeLicenseComment =
+  '<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->';
 
 function ArrowIcon({ glyph }: { glyph: ArrowGlyph }) {
   const icon = arrowIconData[glyph];
@@ -59,8 +60,12 @@ function ArrowIcon({ glyph }: { glyph: ArrowGlyph }) {
 }
 
 export function Kbd({ children, tone = 'default', label }: Props) {
-  const className = tone === 'muted' ? `${styles.kbd} ${styles.muted}` : styles.kbd;
-  const arrowGlyph = typeof children === 'string' && children in arrowIconData ? (children as ArrowGlyph) : null;
+  const className =
+    tone === 'muted' ? `${styles.kbd} ${styles.muted}` : styles.kbd;
+  const arrowGlyph =
+    typeof children === 'string' && children in arrowIconData
+      ? (children as ArrowGlyph)
+      : null;
 
   if (arrowGlyph) {
     return (

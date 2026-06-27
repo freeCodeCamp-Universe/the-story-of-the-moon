@@ -42,7 +42,8 @@
   --color-overlay: rgba(27, 27, 50, 0.85); /* fCC modal overlay */
 
   /* ── Typography ───────────────────────────────────────────────── */
-  --font-prose: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-prose:
+    'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace;
 
   --text-body: 1.125rem; /* 18px — fCC floor */
@@ -74,7 +75,11 @@
   --measure-wide: 56rem; /* a chart sitting beside a legend (IsotopeMatchPlot)  */
   --measure-frame: 84rem; /* multi-column framed sections + comparison grids    */
   --measure-stage: 120rem; /* full-bleed interactive stage (scroll-driven)       */
-  --gutter: clamp(1.5rem, 5vw, 5rem); /* continuous side safe-zone, no per-chapter steps */
+  --gutter: clamp(
+    1.5rem,
+    5vw,
+    5rem
+  ); /* continuous side safe-zone, no per-chapter steps */
   --nav-height: 3.25rem;
 
   /* ── Radius ───────────────────────────────────────────────────── */

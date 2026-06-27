@@ -7,6 +7,9 @@ export function getPrimaryModifierLabel() {
     userAgentData?: { platform?: string };
   };
 
-  const platform = safeNavigator.userAgentData?.platform ?? navigator.platform ?? navigator.userAgent;
+  const platform =
+    safeNavigator.userAgentData?.platform ??
+    navigator.platform ??
+    navigator.userAgent;
   return /Mac|iPhone|iPad|iPod/i.test(platform) ? 'Cmd' : 'Ctrl';
 }

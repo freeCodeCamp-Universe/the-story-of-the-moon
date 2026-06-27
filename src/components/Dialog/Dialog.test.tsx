@@ -5,7 +5,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { Dialog } from '@/components/Dialog/Dialog';
 
-const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const originalDialogShowModal =
+  globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 type DialogHarnessProps = {
@@ -21,7 +22,16 @@ function DialogHarness({ variant }: DialogHarnessProps) {
       <button ref={triggerRef} type="button" onClick={() => setIsOpen(true)}>
         open dialog
       </button>
-      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} triggerRef={triggerRef} id="test-dialog" titleId="test-dialog-title" title="Test dialog" closeLabel="close test dialog" variant={variant}>
+      <Dialog
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        triggerRef={triggerRef}
+        id="test-dialog"
+        titleId="test-dialog-title"
+        title="Test dialog"
+        closeLabel="close test dialog"
+        variant={variant}
+      >
         <button type="button">first action</button>
         <button type="button">second action</button>
       </Dialog>
@@ -31,16 +41,26 @@ function DialogHarness({ variant }: DialogHarnessProps) {
 
 describe('Dialog', () => {
   beforeAll(() => {
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
-      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-        configurable: true,
-        value() {
-          this.setAttribute('open', '');
-        },
-      });
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function'
+    ) {
+      Object.defineProperty(
+        globalThis.HTMLDialogElement.prototype,
+        'showModal',
+        {
+          configurable: true,
+          value() {
+            this.setAttribute('open', '');
+          },
+        }
+      );
     }
 
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.close !== 'function'
+    ) {
       Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
         configurable: true,
         value() {
@@ -54,11 +74,18 @@ describe('Dialog', () => {
   afterAll(() => {
     if (globalThis.HTMLDialogElement) {
       if (originalDialogShowModal) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', { configurable: true, value: originalDialogShowModal });
+        Object.defineProperty(
+          globalThis.HTMLDialogElement.prototype,
+          'showModal',
+          { configurable: true, value: originalDialogShowModal }
+        );
       }
 
       if (originalDialogClose) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', { configurable: true, value: originalDialogClose });
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+          configurable: true,
+          value: originalDialogClose,
+        });
       }
     }
   });
@@ -66,7 +93,9 @@ describe('Dialog', () => {
   it('should not render the dialog while closed', () => {
     render(<DialogHarness />);
 
-    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Test dialog' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render the title and content and focus the close button when opened', async () => {
@@ -76,9 +105,15 @@ describe('Dialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'open dialog' }));
 
-    expect(screen.getByRole('dialog', { name: 'Test dialog' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'first action' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /close test dialog/i })).toHaveFocus();
+    expect(
+      screen.getByRole('dialog', { name: 'Test dialog' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'first action' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /close test dialog/i })
+    ).toHaveFocus();
   });
 
   it('should close and restore focus to the trigger when the close button is clicked', async () => {
@@ -89,9 +124,13 @@ describe('Dialog', () => {
     const trigger = screen.getByRole('button', { name: 'open dialog' });
     await user.click(trigger);
 
-    await user.click(screen.getByRole('button', { name: /close test dialog/i }));
+    await user.click(
+      screen.getByRole('button', { name: /close test dialog/i })
+    );
 
-    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Test dialog' })
+    ).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
 
@@ -102,7 +141,9 @@ describe('Dialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'open dialog' }));
 
-    const closeButton = screen.getByRole('button', { name: /close test dialog/i });
+    const closeButton = screen.getByRole('button', {
+      name: /close test dialog/i,
+    });
     const firstAction = screen.getByRole('button', { name: 'first action' });
     const secondAction = screen.getByRole('button', { name: 'second action' });
 
@@ -130,7 +171,9 @@ describe('Dialog', () => {
     const dialog = screen.getByRole('dialog', { name: 'Test dialog' });
     fireEvent(dialog, new Event('cancel', { cancelable: true }));
 
-    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Test dialog' })
+    ).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
 
@@ -154,7 +197,9 @@ describe('Dialog', () => {
 
     fireEvent.click(dialog, { clientX: 10, clientY: 10 });
 
-    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Test dialog' })
+    ).not.toBeInTheDocument();
   });
 
   it('should keep an accessible name while visually hiding the title in the fluid variant', async () => {
@@ -164,11 +209,19 @@ describe('Dialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'open dialog' }));
 
-    expect(screen.getByRole('dialog', { name: 'Test dialog' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Test dialog' })).toHaveClass('sr-only');
+    expect(
+      screen.getByRole('dialog', { name: 'Test dialog' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Test dialog' })).toHaveClass(
+      'sr-only'
+    );
 
-    await user.click(screen.getByRole('button', { name: /close test dialog/i }));
+    await user.click(
+      screen.getByRole('button', { name: /close test dialog/i })
+    );
 
-    expect(screen.queryByRole('dialog', { name: 'Test dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Test dialog' })
+    ).not.toBeInTheDocument();
   });
 });

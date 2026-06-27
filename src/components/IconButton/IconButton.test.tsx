@@ -15,17 +15,24 @@ describe('IconButton', () => {
       </IconButton>
     );
 
-    expect(screen.getByRole('button', { name: 'open settings' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'open settings' })
+    ).toBeInTheDocument();
   });
 
   it('should default to type button and allow override', () => {
     const { rerender } = render(<IconButton aria-label="default type" />);
 
-    expect(screen.getByRole('button', { name: 'default type' })).toHaveAttribute('type', 'button');
+    expect(
+      screen.getByRole('button', { name: 'default type' })
+    ).toHaveAttribute('type', 'button');
 
     rerender(<IconButton aria-label="submit type" type="submit" />);
 
-    expect(screen.getByRole('button', { name: 'submit type' })).toHaveAttribute('type', 'submit');
+    expect(screen.getByRole('button', { name: 'submit type' })).toHaveAttribute(
+      'type',
+      'submit'
+    );
   });
 
   it('should call onClick when activated', async () => {
@@ -48,7 +55,13 @@ describe('IconButton', () => {
   });
 
   it('should forward arbitrary button props', () => {
-    render(<IconButton aria-label="expanded" aria-expanded="true" aria-controls="panel-a" />);
+    render(
+      <IconButton
+        aria-label="expanded"
+        aria-expanded="true"
+        aria-controls="panel-a"
+      />
+    );
 
     const button = screen.getByRole('button', { name: 'expanded' });
 

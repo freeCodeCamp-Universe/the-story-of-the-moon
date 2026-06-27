@@ -33,7 +33,11 @@ export type MoonSceneHandle = {
    * canvas pixel space, using the current camera.
    * Returns null when the scene isn't ready yet.
    */
-  projectFeature: (lat: number, lon: number, diameterKm: number) => FeatureProjection | null;
+  projectFeature: (
+    lat: number,
+    lon: number,
+    diameterKm: number
+  ) => FeatureProjection | null;
   dispose: () => void;
 } | null;
 
@@ -84,7 +88,12 @@ function fitCameraRadius(aspect: number): number {
   return Math.max(CAMERA_RADIUS_BASE, byHeight, byWidth);
 }
 
-function slerpOnSphere(out: THREE.Vector3, from: THREE.Vector3, to: THREE.Vector3, t: number) {
+function slerpOnSphere(
+  out: THREE.Vector3,
+  from: THREE.Vector3,
+  to: THREE.Vector3,
+  t: number
+) {
   const a = from.length();
   const b = to.length();
   if (a === 0 || b === 0) {
@@ -128,14 +137,22 @@ function normalizeLongitude(lon: number) {
   return lon;
 }
 
-export function cameraPositionToLatLon(position: { x: number; y: number; z: number }) {
+export function cameraPositionToLatLon(position: {
+  x: number;
+  y: number;
+  z: number;
+}) {
   const radius = Math.hypot(position.x, position.y, position.z);
   if (radius === 0) {
     return { lat: 0, lon: 0 };
   }
 
-  const lat = 90 - (Math.acos(Math.min(1, Math.max(-1, position.y / radius))) * 180) / Math.PI;
-  const lon = normalizeLongitude(-(Math.atan2(position.z, position.x) * 180) / Math.PI);
+  const lat =
+    90 -
+    (Math.acos(Math.min(1, Math.max(-1, position.y / radius))) * 180) / Math.PI;
+  const lon = normalizeLongitude(
+    -(Math.atan2(position.z, position.x) * 180) / Math.PI
+  );
 
   return {
     lat: Math.max(-90, Math.min(90, lat)),
@@ -143,7 +160,10 @@ export function cameraPositionToLatLon(position: { x: number; y: number; z: numb
   };
 }
 
-export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOptions): MoonSceneHandle {
+export function createMoonScene(
+  canvas: HTMLCanvasElement,
+  options?: MoonSceneOptions
+): MoonSceneHandle {
   if (!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))) {
     return null;
   }
@@ -167,7 +187,12 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
 
   let cameraRadius = fitCameraRadius(width / height);
 
-  const camera = new THREE.PerspectiveCamera(CAMERA_FOV_DEG, width / height, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(
+    CAMERA_FOV_DEG,
+    width / height,
+    0.1,
+    100
+  );
   camera.position.set(0, 0, cameraRadius);
   camera.lookAt(0, 0, 0);
 
@@ -193,14 +218,22 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   // The Moon texture already includes its own tonal shading, so render it
   // unlit to preserve the authored brightness and avoid scene-light shifts.
-  const material = new THREE.MeshBasicMaterial({ map: texture2k, transparent: true, opacity: 0 });
+  const material = new THREE.MeshBasicMaterial({
+    map: texture2k,
+    transparent: true,
+    opacity: 0,
+  });
   const moon = new THREE.Mesh(geometry, material);
   moon.position.set(0, 0, 0);
   scene.add(moon);
 
   const textureLoader = new THREE.TextureLoader();
 
-  const loadTexture = (primarySrc: string, fallbackSrc: string, onLoad: (texture: THREE.Texture) => void) => {
+  const loadTexture = (
+    primarySrc: string,
+    fallbackSrc: string,
+    onLoad: (texture: THREE.Texture) => void
+  ) => {
     const handleLoad = (loadedTexture: THREE.Texture) => {
       if (disposed) {
         loadedTexture.dispose();
@@ -237,7 +270,11 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
       moonRevealing = true;
     }
 
-    if (window.matchMedia(`(min-width: ${BP_DESKTOP}px) and (min-resolution: 2dppx)`).matches) {
+    if (
+      window.matchMedia(
+        `(min-width: ${BP_DESKTOP}px) and (min-resolution: 2dppx)`
+      ).matches
+    ) {
       loadTexture('/moon/moon-8k.avif', '/moon/moon-8k.jpg', (hiResTexture) => {
         hiResTexture.colorSpace = THREE.SRGBColorSpace;
         texture8k = hiResTexture;
@@ -276,8 +313,14 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
     // the annotation stays anchored.
     const isPolar = Math.abs(target.lat) > CAMERA_POLAR_THRESHOLD_DEG;
     tweenTargetLat = target.lat;
-    tweenTargetLon = isPolar ? cameraPositionToLatLon(camera.position).lon : target.lon;
-    const { x, y, z } = latLonToCameraPosition(tweenTargetLat, tweenTargetLon, cameraRadius);
+    tweenTargetLon = isPolar
+      ? cameraPositionToLatLon(camera.position).lon
+      : target.lon;
+    const { x, y, z } = latLonToCameraPosition(
+      tweenTargetLat,
+      tweenTargetLon,
+      cameraRadius
+    );
     tweenTo.set(x, y, z);
 
     // Reduced motion: snap straight to the target. No tween for the
@@ -308,7 +351,10 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
     // Dead-band: ignore sub-pixel jitter. fitCameraRadius is non-linear
     // in aspect, so even a fractional-pixel change pushes the camera
     // distance by a visible amount and reads as the Moon resizing.
-    if (Math.abs(nextSize.width - lastObservedWidth) < 1 && Math.abs(nextSize.height - lastObservedHeight) < 1) {
+    if (
+      Math.abs(nextSize.width - lastObservedWidth) < 1 &&
+      Math.abs(nextSize.height - lastObservedHeight) < 1
+    ) {
       return;
     }
     lastObservedWidth = nextSize.width;
@@ -322,7 +368,11 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
       cameraRadius = nextRadius;
       // Rescale whatever camera move is currently in flight (or at
       // rest) to the new fit distance, keeping the same lat/lon.
-      const { x, y, z } = latLonToCameraPosition(tweenTargetLat, tweenTargetLon, cameraRadius);
+      const { x, y, z } = latLonToCameraPosition(
+        tweenTargetLat,
+        tweenTargetLon,
+        cameraRadius
+      );
       tweenTo.set(x, y, z);
       // If not mid-tween, snap position; otherwise let the tween drive.
       if (tweenDuration === 0) {
@@ -350,7 +400,10 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
       if (t >= 1) tweenDuration = 0;
     }
     if (moonRevealing) {
-      const t = Math.min((performance.now() - moonRevealStart) / MOON_REVEAL_MS, 1);
+      const t = Math.min(
+        (performance.now() - moonRevealStart) / MOON_REVEAL_MS,
+        1
+      );
       // easeOutCubic, matching the camera tween's easing.
       material.opacity = 1 - Math.pow(1 - t, 3);
       if (t >= 1) {
@@ -418,17 +471,28 @@ export function createMoonScene(canvas: HTMLCanvasElement, options?: MoonSceneOp
       spherical.theta += deltaAzimuth;
       // Clamp polar angle away from the poles to avoid gimbal flip.
       const EPS = 0.05;
-      spherical.phi = Math.max(EPS, Math.min(Math.PI - EPS, spherical.phi + deltaPolar));
+      spherical.phi = Math.max(
+        EPS,
+        Math.min(Math.PI - EPS, spherical.phi + deltaPolar)
+      );
       camera.position.setFromSpherical(spherical);
       camera.lookAt(0, 0, 0);
     },
-    projectFeature(lat: number, lon: number, diameterKm: number): FeatureProjection | null {
+    projectFeature(
+      lat: number,
+      lon: number,
+      diameterKm: number
+    ): FeatureProjection | null {
       const phi = ((90 - lat) * Math.PI) / 180;
       // See latLonToCameraPosition for why longitude is negated.
       const theta = (-lon * Math.PI) / 180;
 
       // Unit vector from sphere center to the feature's surface point.
-      projCenter.set(Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta));
+      projCenter.set(
+        Math.sin(phi) * Math.cos(theta),
+        Math.cos(phi),
+        Math.sin(phi) * Math.sin(theta)
+      );
 
       // Visible if the surface normal at the feature has a component
       // toward the camera (dot product > 0).

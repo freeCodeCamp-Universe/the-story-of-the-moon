@@ -89,7 +89,9 @@ function makeOrbitRing(radius: number, color: number) {
   const points: THREE.Vector3[] = [];
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
-    points.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
+    points.push(
+      new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius)
+    );
   }
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const material = new THREE.LineDashedMaterial({
@@ -125,7 +127,14 @@ function createHaloCanvas(): HTMLCanvasElement {
   canvas.height = size;
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
-  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  const grad = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2
+  );
   grad.addColorStop(0, 'rgba(255, 244, 204, 1)');
   grad.addColorStop(0.2, 'rgba(255, 210, 122, 0.6)');
   grad.addColorStop(0.6, 'rgba(241, 190, 50, 0.15)');
@@ -173,7 +182,15 @@ function createEarthCanvas(): HTMLCanvasElement {
   for (const blob of blobs) {
     ctx.fillStyle = blob.fill;
     ctx.beginPath();
-    ctx.ellipse(blob.cx * width, blob.cy * height, blob.rx * width, blob.ry * height, 0, 0, Math.PI * 2);
+    ctx.ellipse(
+      blob.cx * width,
+      blob.cy * height,
+      blob.rx * width,
+      blob.ry * height,
+      0,
+      0,
+      Math.PI * 2
+    );
     ctx.fill();
   }
 
@@ -189,7 +206,10 @@ function createEarthCanvas(): HTMLCanvasElement {
   return canvas;
 }
 
-export function createEarthMoonScene(canvas: HTMLCanvasElement, options: { animate?: boolean } = {}): EarthMoonSceneHandle {
+export function createEarthMoonScene(
+  canvas: HTMLCanvasElement,
+  options: { animate?: boolean } = {}
+): EarthMoonSceneHandle {
   // animate=false (reduced motion): no rAF loop. The scene renders a single
   // resting frame, repainted on step change / resize via requestRender().
   const animate = options.animate ?? true;
@@ -214,7 +234,12 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement, options: { anima
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x1b1b32);
 
-  const camera = new THREE.PerspectiveCamera(CAMERA_FOV_DEG, width / height, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(
+    CAMERA_FOV_DEG,
+    width / height,
+    0.1,
+    200
+  );
 
   // ── Earth-Moon system group ───────────────────────────────────────
   // Wraps the Earth, Moon, orbit ring and umbra so the whole system
@@ -305,7 +330,9 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement, options: { anima
     const wideAspect = NARROW_VISIBLE_LEFT + halfViewWidth > 0;
     const TABLET_SUN_NUDGE = 0.2;
     const TABLET_EARTH_NUDGE = 1.0;
-    const visibleLeft = wideAspect ? NARROW_VISIBLE_LEFT - TABLET_SUN_NUDGE : NARROW_VISIBLE_LEFT;
+    const visibleLeft = wideAspect
+      ? NARROW_VISIBLE_LEFT - TABLET_SUN_NUDGE
+      : NARROW_VISIBLE_LEFT;
     const lookAtX = visibleLeft + halfViewWidth;
     systemGroup.position.x = wideAspect ? lookAtX + TABLET_EARTH_NUDGE : 0;
     // Align camera X with lookAt so the view direction has no X
@@ -457,21 +484,37 @@ export function createEarthMoonScene(canvas: HTMLCanvasElement, options: { anima
   const positionMoon = (angle: number) => {
     if (!withMoon) return;
     if (showEclipse) {
-      moon.position.set(-MOON_ORBIT * Math.cos(orbitTilt), -MOON_ORBIT * Math.sin(orbitTilt), 0);
+      moon.position.set(
+        -MOON_ORBIT * Math.cos(orbitTilt),
+        -MOON_ORBIT * Math.sin(orbitTilt),
+        0
+      );
       // Cone apex sits at the moon, base UMBRA_HEIGHT toward earth along
       // the moon→earth direction (cos t, sin t). Center is the midpoint.
       const dirX = Math.cos(orbitTilt);
       const dirY = Math.sin(orbitTilt);
-      umbra.position.set((UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX, (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY, 0);
+      umbra.position.set(
+        (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirX,
+        (UMBRA_HEIGHT / 2 - MOON_ORBIT) * dirY,
+        0
+      );
       // Default cone axis is +Y; rotating around Z by π/2 + tilt aligns
       // the apex with the moon and the base with the earthward end.
       umbra.rotation.set(0, 0, Math.PI / 2 + orbitTilt);
       umbra.visible = true;
     } else if (showFullMoon || showLunarEclipse) {
-      moon.position.set(MOON_ORBIT * Math.cos(orbitTilt), MOON_ORBIT * Math.sin(orbitTilt), 0);
+      moon.position.set(
+        MOON_ORBIT * Math.cos(orbitTilt),
+        MOON_ORBIT * Math.sin(orbitTilt),
+        0
+      );
       umbra.visible = false;
     } else {
-      moon.position.set(Math.cos(angle) * MOON_ORBIT * Math.cos(orbitTilt), Math.cos(angle) * MOON_ORBIT * Math.sin(orbitTilt), -Math.sin(angle) * MOON_ORBIT);
+      moon.position.set(
+        Math.cos(angle) * MOON_ORBIT * Math.cos(orbitTilt),
+        Math.cos(angle) * MOON_ORBIT * Math.sin(orbitTilt),
+        -Math.sin(angle) * MOON_ORBIT
+      );
       umbra.visible = false;
     }
   };

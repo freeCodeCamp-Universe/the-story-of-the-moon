@@ -5,7 +5,13 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Switch } from './Switch';
 
-function ControlledSwitch({ initial = false, label = 'Enable feature' }: { initial?: boolean; label?: string }) {
+function ControlledSwitch({
+  initial = false,
+  label = 'Enable feature',
+}: {
+  initial?: boolean;
+  label?: string;
+}) {
   const [checked, setChecked] = useState(initial);
   return <Switch label={label} checked={checked} onChange={setChecked} />;
 }
@@ -27,7 +33,9 @@ describe('Switch', () => {
   it('should call onChange with the next value when clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<Switch label="Highlight ice" checked={false} onChange={onChange} />);
+    render(
+      <Switch label="Highlight ice" checked={false} onChange={onChange} />
+    );
 
     await user.click(screen.getByRole('switch'));
 

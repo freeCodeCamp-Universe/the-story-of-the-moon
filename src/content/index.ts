@@ -4,7 +4,14 @@ import isotopeBodiesRaw from './isotope-bodies';
 import moonSamplesRaw from './moon-samples';
 import postcardsRaw from './postcards';
 import surfaceFeaturesRaw from './surface-features';
-import type { Mission, AssetCredit, IsotopeBody, MoonSample, PostcardData, SurfaceFeature } from '@/types/content';
+import type {
+  Mission,
+  AssetCredit,
+  IsotopeBody,
+  MoonSample,
+  PostcardData,
+  SurfaceFeature,
+} from '@/types/content';
 
 export const assets: readonly AssetCredit[] = assetsRaw;
 export const surfaceFeatures: readonly SurfaceFeature[] = surfaceFeaturesRaw;
@@ -13,7 +20,10 @@ export const isotopeBodies: readonly IsotopeBody[] = isotopeBodiesRaw;
 // so that alt is available alongside src while asset metadata stays centralized.
 export const missions: Mission[] = missionsRaw.map((m) => ({
   ...m,
-  photo: { ...m.photo, alt: assets.find((a) => a.id === m.photo.creditId)?.alt ?? '' },
+  photo: {
+    ...m.photo,
+    alt: assets.find((a) => a.id === m.photo.creditId)?.alt ?? '',
+  },
 }));
 
 export const moonSamples: MoonSample[] = moonSamplesRaw.map((s) => ({
@@ -23,7 +33,10 @@ export const moonSamples: MoonSample[] = moonSamplesRaw.map((s) => ({
 
 export const postcards: PostcardData[] = postcardsRaw.map((p) => ({
   ...p,
-  image: { ...p.image, alt: assets.find((a) => a.id === p.image.creditId)?.alt ?? '' },
+  image: {
+    ...p.image,
+    alt: assets.find((a) => a.id === p.image.creditId)?.alt ?? '',
+  },
 }));
 
 export function getAsset(id: string): AssetCredit | undefined {

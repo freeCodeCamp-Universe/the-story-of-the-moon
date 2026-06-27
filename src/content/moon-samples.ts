@@ -9,7 +9,8 @@ const moonSamples = [
     rockType: 'basalt',
     marker: 'basalt',
     properties: 'dark · heavy · iron · titanium',
-    detail: "This is rock that erupted as lava and flooded the Moon's low basins. When it cooled, it formed the smooth gray maria, which are the dark patches across the Moon's surface.",
+    detail:
+      "This is rock that erupted as lava and flooded the Moon's low basins. When it cooled, it formed the smooth gray maria, which are the dark patches across the Moon's surface.",
     creditId: 'ch5-basalt-70017',
   },
   {
@@ -19,7 +20,8 @@ const moonSamples = [
     rockType: 'anorthosite',
     marker: 'anorthosite',
     properties: 'pale · lighter · aluminum · calcium · silicon',
-    detail: "This is rock that crystallized early in the Moon's magma ocean and floated to the surface as it cooled. It formed the bright cratered highlands that surround the maria.",
+    detail:
+      "This is rock that crystallized early in the Moon's magma ocean and floated to the surface as it cooled. It formed the bright cratered highlands that surround the maria.",
     creditId: 'ch5-anorthosite-15415',
   },
 ] as const satisfies readonly MoonSampleSource<AssetCreditId>[];

@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { ImageCompareSlider } from '@/components/ImageCompareSlider/ImageCompareSlider';
 import { Kbd } from '@/components/Kbd/Kbd';
@@ -18,10 +26,22 @@ const surfaceFeaturesHeadingId = 'ch2-surface-features-heading';
 const basinCompareHintId = 'ch2-basin-compare-hint';
 const basinCompareLiveId = 'ch2-basin-compare-live';
 const compareImageSizes = '(min-width: 768px) 50vw, 100vw';
-const hertzsprungAvifSrcSet = ['/ch2/hertzsprung-800.avif 800w', '/ch2/hertzsprung-1600.avif 1600w'].join(', ');
-const hertzsprungTopographicAvifSrcSet = ['/ch2/hertzsprung-topographic-800.avif 800w', '/ch2/hertzsprung-topographic-1600.avif 1600w'].join(', ');
-const orientaleAvifSrcSet = ['/ch2/orientale-lro-800.avif 800w', '/ch2/orientale-lro-1600.avif 1600w'].join(', ');
-const orientaleTopographicAvifSrcSet = ['/ch2/orientale-topographic-800.avif 800w', '/ch2/orientale-topographic-1600.avif 1600w'].join(', ');
+const hertzsprungAvifSrcSet = [
+  '/ch2/hertzsprung-800.avif 800w',
+  '/ch2/hertzsprung-1600.avif 1600w',
+].join(', ');
+const hertzsprungTopographicAvifSrcSet = [
+  '/ch2/hertzsprung-topographic-800.avif 800w',
+  '/ch2/hertzsprung-topographic-1600.avif 1600w',
+].join(', ');
+const orientaleAvifSrcSet = [
+  '/ch2/orientale-lro-800.avif 800w',
+  '/ch2/orientale-lro-1600.avif 1600w',
+].join(', ');
+const orientaleTopographicAvifSrcSet = [
+  '/ch2/orientale-topographic-800.avif 800w',
+  '/ch2/orientale-topographic-1600.avif 1600w',
+].join(', ');
 
 function formatLatLon(lat: number, lon: number): string {
   const latDir = lat >= 0 ? 'N' : 'S';
@@ -29,14 +49,22 @@ function formatLatLon(lat: number, lon: number): string {
   return `${Math.abs(lat).toFixed(1)}°${latDir} ${Math.abs(lon).toFixed(1)}°${lonDir}`;
 }
 
-function getFeatureLabelText(feature: Pick<SurfaceFeature, 'name' | 'lat' | 'lon'>) {
+function getFeatureLabelText(
+  feature: Pick<SurfaceFeature, 'name' | 'lat' | 'lon'>
+) {
   return {
     name: feature.name,
     coords: formatLatLon(feature.lat, feature.lon),
   };
 }
 
-function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFeature; reducedMotion: boolean }) {
+function Ch2Visual({
+  activeFeature,
+  reducedMotion,
+}: {
+  activeFeature: SurfaceFeature;
+  reducedMotion: boolean;
+}) {
   // Reduced motion: the camera snaps to each feature with no tween, so the
   // annotation can appear immediately rather than waiting for a tween to land.
   const labelRevealDelay = reducedMotion ? 0 : 950;
@@ -55,16 +83,20 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
   const [sceneReady, setSceneReady] = useState(false);
   const [shouldLoadScene, setShouldLoadScene] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [initialTarget, setInitialTarget] = useState({ lat: activeFeature.lat, lon: activeFeature.lon });
+  const [initialTarget, setInitialTarget] = useState({
+    lat: activeFeature.lat,
+    lon: activeFeature.lon,
+  });
   const [labelText, setLabelText] = useState<{
     name: string;
     coords: string;
   } | null>(null);
   const [rotationAnnouncement, setRotationAnnouncement] = useState('');
   const expandButtonRef = useRef<HTMLButtonElement>(null);
-  const { targetRef, isNearViewport, isVisible } = useViewportActivity<HTMLDivElement>({
-    rootMargin: '320px 0px',
-  });
+  const { targetRef, isNearViewport, isVisible } =
+    useViewportActivity<HTMLDivElement>({
+      rootMargin: '320px 0px',
+    });
 
   // Active feature needs to be reachable from the RAF loop without
   // re-triggering the loop effect on every change.
@@ -96,9 +128,12 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       if (!cameraLatLon) {
         return;
       }
-      rotationAnnouncementToggleRef.current = !rotationAnnouncementToggleRef.current;
+      rotationAnnouncementToggleRef.current =
+        !rotationAnnouncementToggleRef.current;
       const suffix = rotationAnnouncementToggleRef.current ? '\u200B' : '';
-      setRotationAnnouncement(`Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`);
+      setRotationAnnouncement(
+        `Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`
+      );
     }, 600);
   }, []);
 
@@ -128,7 +163,13 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
 
     const nextLabel = getFeatureLabelText(activeFeatureRef.current);
 
-    setLabelText((current) => (current && current.name === nextLabel.name && current.coords === nextLabel.coords ? current : nextLabel));
+    setLabelText((current) =>
+      current &&
+      current.name === nextLabel.name &&
+      current.coords === nextLabel.coords
+        ? current
+        : nextLabel
+    );
   }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon]);
 
   useEffect(() => {
@@ -198,7 +239,10 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
 
   const handleExpand = useCallback(() => {
     const cameraLatLon = sceneRef.current?.getCameraLatLon();
-    const nextTarget = cameraLatLon ?? { lat: activeFeature.lat, lon: activeFeature.lon };
+    const nextTarget = cameraLatLon ?? {
+      lat: activeFeature.lat,
+      lon: activeFeature.lon,
+    };
     setInitialTarget(nextTarget);
     sceneRef.current?.pause();
     setExpanded(true);
@@ -359,7 +403,14 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
     return () => {
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [sceneReady, activeFeature.id, activeFeature.lat, activeFeature.lon, labelRevealDelay, reducedMotion]);
+  }, [
+    sceneReady,
+    activeFeature.id,
+    activeFeature.lat,
+    activeFeature.lon,
+    labelRevealDelay,
+    reducedMotion,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -384,7 +435,11 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       const feature = activeFeatureRef.current;
 
       if (handle && label && canvasRef.current) {
-        const proj = handle.projectFeature(feature.lat, feature.lon, feature.diameterKm);
+        const proj = handle.projectFeature(
+          feature.lat,
+          feature.lon,
+          feature.diameterKm
+        );
         if (proj) {
           // Label normally sits to the right of the feature point.
           // On narrow canvases (or for features near the right edge)
@@ -400,7 +455,10 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
           // sphere (e.g., South Pole–Aitken basin).
           const shouldShow = showAnnotationRef.current && proj.visible;
           if (annotationRef.current) {
-            annotationRef.current.classList.toggle(styles.annotationVisible, shouldShow);
+            annotationRef.current.classList.toggle(
+              styles.annotationVisible,
+              shouldShow
+            );
           }
         }
       }
@@ -415,28 +473,58 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
   if (!webglAvailable) {
     return (
       <div ref={targetRef} className={styles.visualSlot}>
-        <OptimizedImage className={styles.fallbackStatic} src="/moon/moon-2k.jpg" alt="" />
+        <OptimizedImage
+          className={styles.fallbackStatic}
+          src="/moon/moon-2k.jpg"
+          alt=""
+        />
       </div>
     );
   }
 
   return (
-    <div ref={targetRef} className={styles.visualSlot} tabIndex={0} role="group" aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature." onKeyDown={onKeyDown}>
+    <div
+      ref={targetRef}
+      className={styles.visualSlot}
+      tabIndex={0}
+      role="group"
+      aria-label="Interactive view of the Moon; use arrow keys to rotate, and after you stop the view re-centers on the active feature."
+      onKeyDown={onKeyDown}
+    >
       <p className={styles.hint} aria-hidden="true">
         <span className={styles.sceneHintMobile}>Drag to rotate</span>
         <span className={styles.sceneHintDesktop}>
-          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
+          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
+          <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
         </span>
       </p>
       <div className={styles.sceneStage}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
-        <button ref={expandButtonRef} type="button" className={styles.expandButton} aria-haspopup="dialog" aria-controls="ch2-moon-expand-dialog" aria-label="Expand the Moon to full screen" onClick={handleExpand}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
+        <button
+          ref={expandButtonRef}
+          type="button"
+          className={styles.expandButton}
+          aria-haspopup="dialog"
+          aria-controls="ch2-moon-expand-dialog"
+          aria-label="Expand the Moon to full screen"
+          onClick={handleExpand}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 640 640"
+            aria-hidden="true"
+            focusable="false"
+          >
             {/* !Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */}
             <path d="M128 96C110.3 96 96 110.3 96 128L96 224C96 241.7 110.3 256 128 256C145.7 256 160 241.7 160 224L160 160L224 160C241.7 160 256 145.7 256 128C256 110.3 241.7 96 224 96L128 96zM160 416C160 398.3 145.7 384 128 384C110.3 384 96 398.3 96 416L96 512C96 529.7 110.3 544 128 544L224 544C241.7 544 256 529.7 256 512C256 494.3 241.7 480 224 480L160 480L160 416zM416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160L480 160L480 224C480 241.7 494.3 256 512 256C529.7 256 544 241.7 544 224L544 128C544 110.3 529.7 96 512 96L416 96zM544 416C544 398.3 529.7 384 512 384C494.3 384 480 398.3 480 416L480 480L416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L512 544C529.7 544 544 529.7 544 512L544 416z" />
           </svg>
         </button>
-        <div ref={annotationRef} className={styles.annotation} aria-live="polite" aria-atomic="true">
+        <div
+          ref={annotationRef}
+          className={styles.annotation}
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <div ref={labelRef} className={styles.label}>
             {labelText ? (
               <>
@@ -450,7 +538,15 @@ function Ch2Visual({ activeFeature, reducedMotion }: { activeFeature: SurfaceFea
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {rotationAnnouncement}
       </p>
-      {expanded ? <MoonExpandDialog isOpen={expanded} onClose={handleCollapse} triggerRef={expandButtonRef} initialTarget={initialTarget} reducedMotion={reducedMotion} /> : null}
+      {expanded ? (
+        <MoonExpandDialog
+          isOpen={expanded}
+          onClose={handleCollapse}
+          triggerRef={expandButtonRef}
+          initialTarget={initialTarget}
+          reducedMotion={reducedMotion}
+        />
+      ) : null}
     </div>
   );
 }
@@ -483,7 +579,8 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
     setActiveId(id);
   }, []);
 
-  const activeFeature = surfaceFeatures.find((f) => f.id === activeId) ?? surfaceFeatures[0];
+  const activeFeature =
+    surfaceFeatures.find((f) => f.id === activeId) ?? surfaceFeatures[0];
 
   return (
     <>
@@ -498,7 +595,12 @@ export default function Ch2({ shortcutsEnabled = true }: Ch2Props) {
         initialStepId={surfaceFeatures[0].id}
         onActiveStepChange={handleActiveStepChange}
         visualAriaHidden={false}
-        visual={<Ch2Visual activeFeature={activeFeature} reducedMotion={reducedMotion} />}
+        visual={
+          <Ch2Visual
+            activeFeature={activeFeature}
+            reducedMotion={reducedMotion}
+          />
+        }
         visualBelow={<VisualBelow />}
         steps={surfaceFeatures.map((feature) => ({
           id: feature.id,
@@ -515,31 +617,41 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
   const orientaleAsset = getAsset('ch2-mare-orientale');
   const orientaleTopographicAsset = getAsset('ch2-mare-orientale-topographic');
   const hertzsprungAsset = getAsset('ch2-hertzsprung-basin');
-  const hertzsprungTopographicAsset = getAsset('ch2-hertzsprung-basin-topographic');
+  const hertzsprungTopographicAsset = getAsset(
+    'ch2-hertzsprung-basin-topographic'
+  );
   const [hertzsprungCompareValue, setHertzsprungCompareValue] = useState(50);
   const [orientaleCompareValue, setOrientaleCompareValue] = useState(50);
 
-  const formatCompareStatus = (value: number) => (value === 100 ? 'Full original view' : value === 0 ? 'Full topographic view' : `${value}% original, ${100 - value}% topographic`);
+  const formatCompareStatus = (value: number) =>
+    value === 100
+      ? 'Full original view'
+      : value === 0
+        ? 'Full topographic view'
+        : `${value}% original, ${100 - value}% topographic`;
 
   const basinCompareStatus = `Hertzsprung: ${formatCompareStatus(hertzsprungCompareValue)}. Mare Orientale: ${formatCompareStatus(orientaleCompareValue)}.`;
 
   const basinCompareRef = useRef<HTMLDivElement | null>(null);
   const hoveredFigureRef = useRef<string | null>(null);
 
-  const applyBasinCompareShortcut = useCallback((nextValue: number, scope: string | null) => {
-    if (scope === 'hertzsprung') {
+  const applyBasinCompareShortcut = useCallback(
+    (nextValue: number, scope: string | null) => {
+      if (scope === 'hertzsprung') {
+        setHertzsprungCompareValue(nextValue);
+        return;
+      }
+
+      if (scope === 'orientale') {
+        setOrientaleCompareValue(nextValue);
+        return;
+      }
+
       setHertzsprungCompareValue(nextValue);
-      return;
-    }
-
-    if (scope === 'orientale') {
       setOrientaleCompareValue(nextValue);
-      return;
-    }
-
-    setHertzsprungCompareValue(nextValue);
-    setOrientaleCompareValue(nextValue);
-  }, []);
+    },
+    []
+  );
 
   const handleBasinCompareKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.altKey || event.ctrlKey || event.metaKey) {
@@ -557,20 +669,29 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
 
     let scope: string | null = null;
 
-    if (event.target instanceof HTMLElement && event.target !== event.currentTarget) {
-      scope = event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset.basinCompare ?? null;
+    if (
+      event.target instanceof HTMLElement &&
+      event.target !== event.currentTarget
+    ) {
+      scope =
+        event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset
+          .basinCompare ?? null;
     }
 
     applyBasinCompareShortcut(nextValue, scope);
   };
 
-  const handleBasinComparePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+  const handleBasinComparePointerMove = (
+    event: ReactPointerEvent<HTMLDivElement>
+  ) => {
     if (!(event.target instanceof HTMLElement)) {
       hoveredFigureRef.current = null;
       return;
     }
 
-    hoveredFigureRef.current = event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset.basinCompare ?? null;
+    hoveredFigureRef.current =
+      event.target.closest<HTMLElement>('[data-basin-compare]')?.dataset
+        .basinCompare ?? null;
   };
 
   const handleBasinComparePointerLeave = () => {
@@ -605,7 +726,8 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
       }
 
       const activeElement = document.activeElement;
-      const focusInside = activeElement instanceof Node && basinCompare.contains(activeElement);
+      const focusInside =
+        activeElement instanceof Node && basinCompare.contains(activeElement);
 
       if (focusInside) {
         return;
@@ -629,8 +751,12 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
   return (
     <>
       <p>
-        For four billion years, asteroids, comets, and fragments from other worlds have bombarded both the Moon and Earth. Earth buried its wounds beneath shifting continents and deep oceans. The Moon, on the other hand, lacks the wind, rain, or seas
-        to wash the scars away. Its surface today is the record of every collision the inner solar system could throw at it.
+        For four billion years, asteroids, comets, and fragments from other
+        worlds have bombarded both the Moon and Earth. Earth buried its wounds
+        beneath shifting continents and deep oceans. The Moon, on the other
+        hand, lacks the wind, rain, or seas to wash the scars away. Its surface
+        today is the record of every collision the inner solar system could
+        throw at it.
       </p>
 
       <section className={styles.term} aria-labelledby="ch2-crater-heading">
@@ -638,11 +764,21 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           Crater
         </h3>
         <p>
-          A crater is a bowl-shaped depression on the surface of a planet or moon, typically formed by the high-speed impact of a meteorite, asteroid, or comet. These structures are characterized by a circular pit, a sunken floor, and a raised outer
-          rim created by the displacement of rock during the collision. In smaller craters, the interior is usually a simple, smooth curve, while slightly larger ones may feature a central peak where the ground rebounded after the hit.
+          A crater is a bowl-shaped depression on the surface of a planet or
+          moon, typically formed by the high-speed impact of a meteorite,
+          asteroid, or comet. These structures are characterized by a circular
+          pit, a sunken floor, and a raised outer rim created by the
+          displacement of rock during the collision. In smaller craters, the
+          interior is usually a simple, smooth curve, while slightly larger ones
+          may feature a central peak where the ground rebounded after the hit.
         </p>
         <figure className={styles.termFigure}>
-          <OptimizedImage className={styles.termImage} src="/ch2/aristarchus.jpg" alt={aristarchusAsset?.alt ?? ''} loading="lazy" />
+          <OptimizedImage
+            className={styles.termImage}
+            src="/ch2/aristarchus.jpg"
+            alt={aristarchusAsset?.alt ?? ''}
+            loading="lazy"
+          />
           {aristarchusAsset && <CreditCaption credit={aristarchusAsset} />}
         </figure>
       </section>
@@ -652,12 +788,20 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           Basin
         </h3>
         <p>
-          A basin is a massive impact structure that represents the largest and most complex class of craters, generally defined by a diameter exceeding 300 kilometers. Unlike standard craters, the immense energy required to form a basin causes the
-          crust to behave like a fluid, resulting in a flat interior floor and multiple concentric rings that resemble a bullseye.
+          A basin is a massive impact structure that represents the largest and
+          most complex class of craters, generally defined by a diameter
+          exceeding 300 kilometers. Unlike standard craters, the immense energy
+          required to form a basin causes the crust to behave like a fluid,
+          resulting in a flat interior floor and multiple concentric rings that
+          resemble a bullseye.
         </p>
         <p>
-          Over time, these giant depressions are often filled with lava rising from below, forming dark, smooth volcanic plains called maria (singular: mare). The maria are the dark areas that can be seen on the Moon without a telescope. They cover
-          about a sixth of the lunar surface, with almost all of the maria located on the near side facing Earth.
+          Over time, these giant depressions are often filled with lava rising
+          from below, forming dark, smooth volcanic plains called maria
+          (singular: mare). The maria are the dark areas that can be seen on the
+          Moon without a telescope. They cover about a sixth of the lunar
+          surface, with almost all of the maria located on the near side facing
+          Earth.
         </p>
         <div
           ref={basinCompareRef}
@@ -671,19 +815,27 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           onPointerMove={handleBasinComparePointerMove}
           onPointerLeave={handleBasinComparePointerLeave}
         >
-          <p id={basinCompareHintId} className={`${styles.hint} ${styles.basinCompareHint}`}>
+          <p
+            id={basinCompareHintId}
+            className={`${styles.hint} ${styles.basinCompareHint}`}
+          >
             <span>
-              Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> to slide.
+              Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
+              to slide.
             </span>
             <span>
-              Press <Kbd tone="muted">O</Kbd> for original or <Kbd tone="muted">T</Kbd> for topographic.
+              Press <Kbd tone="muted">O</Kbd> for original or{' '}
+              <Kbd tone="muted">T</Kbd> for topographic.
             </span>
           </p>
           <p id={basinCompareLiveId} className="sr-only" aria-live="polite">
             {basinCompareStatus}
           </p>
           {hertzsprungAsset && hertzsprungTopographicAsset && (
-            <figure className={styles.termDiptychFigure} data-basin-compare="hertzsprung">
+            <figure
+              className={styles.termDiptychFigure}
+              data-basin-compare="hertzsprung"
+            >
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
                 originalSrc="/ch2/hertzsprung.jpg"
@@ -705,7 +857,10 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
             </figure>
           )}
           {orientaleAsset && orientaleTopographicAsset && (
-            <figure className={styles.termDiptychFigure} data-basin-compare="orientale">
+            <figure
+              className={styles.termDiptychFigure}
+              data-basin-compare="orientale"
+            >
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
                 originalSrc="/ch2/orientale-lro.png"

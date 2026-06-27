@@ -35,7 +35,17 @@ type Props = {
   visualBelow?: ReactNode;
 };
 
-export function ScrollyChapter({ visual, steps, onActiveStepChange, initialStepId, ariaLabel, ariaLabelledBy, variant = 'side', visualAriaHidden = true, visualBelow }: Props) {
+export function ScrollyChapter({
+  visual,
+  steps,
+  onActiveStepChange,
+  initialStepId,
+  ariaLabel,
+  ariaLabelledBy,
+  variant = 'side',
+  visualAriaHidden = true,
+  visualBelow,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stepIds = steps.map((s) => s.id);
   const activeId = useScrollySteps(containerRef, stepIds, initialStepId);
@@ -44,13 +54,26 @@ export function ScrollyChapter({ visual, steps, onActiveStepChange, initialStepI
     if (activeId) onActiveStepChange?.(activeId);
   }, [activeId, onActiveStepChange]);
 
-  const containerClass = variant === 'immersive' ? `${styles.container} ${styles.containerImmersive}` : styles.container;
+  const containerClass =
+    variant === 'immersive'
+      ? `${styles.container} ${styles.containerImmersive}`
+      : styles.container;
 
   return (
-    <div ref={containerRef} className={containerClass} role="group" aria-label={ariaLabelledBy ? undefined : ariaLabel} aria-labelledby={ariaLabelledBy}>
+    <div
+      ref={containerRef}
+      className={containerClass}
+      role="group"
+      aria-label={ariaLabelledBy ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       <ol className={styles.steps}>
         {steps.map((step) => (
-          <li key={step.id} data-step-id={step.id} className={`${styles.step}${activeId === step.id ? ` ${styles.stepActive}` : ''}`}>
+          <li
+            key={step.id}
+            data-step-id={step.id}
+            className={`${styles.step}${activeId === step.id ? ` ${styles.stepActive}` : ''}`}
+          >
             {step.marker && (
               <span className={styles.marker}>
                 <span aria-hidden="true">&gt;</span> {step.marker}
@@ -61,7 +84,10 @@ export function ScrollyChapter({ visual, steps, onActiveStepChange, initialStepI
         ))}
       </ol>
       <div className={styles.visual}>
-        <div className={styles.visualFrame} aria-hidden={visualAriaHidden ? 'true' : undefined}>
+        <div
+          className={styles.visualFrame}
+          aria-hidden={visualAriaHidden ? 'true' : undefined}
+        >
           <div className={styles.visualInner}>{visual}</div>
         </div>
         {visualBelow && <div className={styles.visualBelow}>{visualBelow}</div>}

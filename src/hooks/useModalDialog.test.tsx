@@ -4,7 +4,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { useModalDialog } from '@/hooks/useModalDialog';
 
-const originalDialogShowModal = globalThis.HTMLDialogElement?.prototype.showModal;
+const originalDialogShowModal =
+  globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
 
 type HarnessProps = {
@@ -15,7 +16,11 @@ type HarnessProps = {
 
 function Harness({ isOpen, onClose, focusable = true }: HarnessProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const { dialogRef, closeButtonRef, dialogProps } = useModalDialog({ isOpen, onClose, triggerRef });
+  const { dialogRef, closeButtonRef, dialogProps } = useModalDialog({
+    isOpen,
+    onClose,
+    triggerRef,
+  });
 
   return (
     <>
@@ -43,16 +48,26 @@ function Harness({ isOpen, onClose, focusable = true }: HarnessProps) {
 
 describe('useModalDialog', () => {
   beforeAll(() => {
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function') {
-      Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', {
-        configurable: true,
-        value() {
-          this.setAttribute('open', '');
-        },
-      });
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.showModal !== 'function'
+    ) {
+      Object.defineProperty(
+        globalThis.HTMLDialogElement.prototype,
+        'showModal',
+        {
+          configurable: true,
+          value() {
+            this.setAttribute('open', '');
+          },
+        }
+      );
     }
 
-    if (globalThis.HTMLDialogElement && typeof globalThis.HTMLDialogElement.prototype.close !== 'function') {
+    if (
+      globalThis.HTMLDialogElement &&
+      typeof globalThis.HTMLDialogElement.prototype.close !== 'function'
+    ) {
       Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
         configurable: true,
         value() {
@@ -66,11 +81,18 @@ describe('useModalDialog', () => {
   afterAll(() => {
     if (globalThis.HTMLDialogElement) {
       if (originalDialogShowModal) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'showModal', { configurable: true, value: originalDialogShowModal });
+        Object.defineProperty(
+          globalThis.HTMLDialogElement.prototype,
+          'showModal',
+          { configurable: true, value: originalDialogShowModal }
+        );
       }
 
       if (originalDialogClose) {
-        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', { configurable: true, value: originalDialogClose });
+        Object.defineProperty(globalThis.HTMLDialogElement.prototype, 'close', {
+          configurable: true,
+          value: originalDialogClose,
+        });
       }
     }
   });
@@ -118,7 +140,9 @@ describe('useModalDialog', () => {
 
     rerender(<Harness isOpen={false} onClose={vi.fn()} />);
 
-    expect(screen.queryByRole('dialog', { name: 'hook dialog' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'hook dialog' })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'trigger' })).toHaveFocus();
   });
 
@@ -126,7 +150,10 @@ describe('useModalDialog', () => {
     const onClose = vi.fn();
     render(<Harness isOpen onClose={onClose} />);
 
-    fireEvent(screen.getByRole('dialog', { name: 'hook dialog' }), new Event('cancel', { cancelable: true }));
+    fireEvent(
+      screen.getByRole('dialog', { name: 'hook dialog' }),
+      new Event('cancel', { cancelable: true })
+    );
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -237,7 +264,9 @@ describe('useModalDialog', () => {
     const secondOnClose = vi.fn();
     const { rerender } = render(<Harness isOpen onClose={firstOnClose} />);
 
-    const dialog = screen.getByRole('dialog', { name: 'hook dialog' }) as HTMLDialogElement;
+    const dialog = screen.getByRole('dialog', {
+      name: 'hook dialog',
+    }) as HTMLDialogElement;
     const closeSpy = vi.spyOn(dialog, 'close');
 
     rerender(<Harness isOpen onClose={secondOnClose} />);

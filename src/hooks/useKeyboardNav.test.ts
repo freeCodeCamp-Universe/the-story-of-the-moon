@@ -25,7 +25,11 @@ function setupChapters() {
   return scrollSpies;
 }
 
-function pressKey(key: string, target: EventTarget = document.body, init: KeyboardEventInit = {}) {
+function pressKey(
+  key: string,
+  target: EventTarget = document.body,
+  init: KeyboardEventInit = {}
+) {
   const event = new KeyboardEvent('keydown', {
     key,
     bubbles: true,

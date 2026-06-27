@@ -37,14 +37,26 @@ function KeyboardIcon() {
 
 function SettingsIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 640 640"
+      aria-hidden="true"
+      focusable="false"
+    >
       {/* !Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */}
       <path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
     </svg>
   );
 }
 
-export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true, onShortcutsEnabledChange, animationsEnabled = true, onAnimationsEnabledChange }: Props) {
+export function NavStrip({
+  activeChapterId,
+  onNavigate,
+  shortcutsEnabled = true,
+  onShortcutsEnabledChange,
+  animationsEnabled = true,
+  onAnimationsEnabledChange,
+}: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -53,7 +65,10 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasOpenedDropdownRef = useRef(false);
 
-  const activeChapterIndex = useMemo(() => CHAPTERS.findIndex((chapter) => chapter.id === activeChapterId), [activeChapterId]);
+  const activeChapterIndex = useMemo(
+    () => CHAPTERS.findIndex((chapter) => chapter.id === activeChapterId),
+    [activeChapterId]
+  );
   const currentIndex = activeChapterIndex === -1 ? 0 : activeChapterIndex;
   const currentChapter = CHAPTERS[currentIndex];
 
@@ -94,19 +109,24 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
 
   function renderShortcutKeys(keys: string) {
     return keys.split(' / ').flatMap((shortcut, shortcutIndex) => {
-      const renderedShortcut = shortcut.split(' + ').flatMap((part, partIndex) => {
-        if (partIndex > 0) {
-          return [
-            <span key={`sep-${shortcutIndex}-${partIndex}`} className={styles.shortcutSeparator}>
-              {' '}
-              +{' '}
-            </span>,
-            <Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>,
-          ];
-        }
+      const renderedShortcut = shortcut
+        .split(' + ')
+        .flatMap((part, partIndex) => {
+          if (partIndex > 0) {
+            return [
+              <span
+                key={`sep-${shortcutIndex}-${partIndex}`}
+                className={styles.shortcutSeparator}
+              >
+                {' '}
+                +{' '}
+              </span>,
+              <Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>,
+            ];
+          }
 
-        return [<Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>];
-      });
+          return [<Kbd key={`key-${shortcutIndex}-${partIndex}`}>{part}</Kbd>];
+        });
 
       if (shortcutIndex > 0) {
         return [' / ', ...renderedShortcut];
@@ -117,7 +137,9 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
   }
 
   function navigateToChapter(chapterId: string) {
-    const chapterIndex = CHAPTERS.findIndex((chapter) => chapter.id === chapterId);
+    const chapterIndex = CHAPTERS.findIndex(
+      (chapter) => chapter.id === chapterId
+    );
     if (chapterIndex === -1) return;
 
     scrollToChapter(chapterIndex);
@@ -147,7 +169,9 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
               <span className={styles.chapterDesktopText}>
                 {currentChapter.index}. {currentChapter.title}
               </span>
-              <span className={styles.chapterMobileText}>Chapter {currentChapter.index}</span>
+              <span className={styles.chapterMobileText}>
+                Chapter {currentChapter.index}
+              </span>
             </button>
           </div>
 
@@ -165,22 +189,53 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
               <KeyboardIcon />
             </IconButton>
 
-            <IconButton ref={settingsButtonRef} active={isSettingsOpen} onClick={() => setIsSettingsOpen(true)} aria-label="open settings" aria-haspopup="dialog" aria-expanded={isSettingsOpen} aria-controls="settings-dialog">
+            <IconButton
+              ref={settingsButtonRef}
+              active={isSettingsOpen}
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label="open settings"
+              aria-haspopup="dialog"
+              aria-expanded={isSettingsOpen}
+              aria-controls="settings-dialog"
+            >
               <SettingsIcon />
             </IconButton>
           </div>
         </nav>
       </header>
 
-      <ChapterDropdown isOpen={isDropdownOpen} activeChapterId={activeChapterId} onSelect={handleSelect} onClose={() => setIsDropdownOpen(false)} triggerRef={chapterButtonRef} />
+      <ChapterDropdown
+        isOpen={isDropdownOpen}
+        activeChapterId={activeChapterId}
+        onSelect={handleSelect}
+        onClose={() => setIsDropdownOpen(false)}
+        triggerRef={chapterButtonRef}
+      />
 
-      <Dialog isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} triggerRef={shortcutsButtonRef} id="keyboard-shortcuts-dialog" titleId="keyboard-shortcuts-title" title="Keyboard shortcuts" closeLabel="close keyboard shortcuts">
-        <section className={styles.shortcutSection} aria-labelledby="global-shortcuts-title">
-          <p>{shortcutsEnabled ? 'These shortcuts work anywhere in the story.' : 'These shortcuts are currently off.'}</p>
+      <Dialog
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+        triggerRef={shortcutsButtonRef}
+        id="keyboard-shortcuts-dialog"
+        titleId="keyboard-shortcuts-title"
+        title="Keyboard shortcuts"
+        closeLabel="close keyboard shortcuts"
+      >
+        <section
+          className={styles.shortcutSection}
+          aria-labelledby="global-shortcuts-title"
+        >
+          <p>
+            {shortcutsEnabled
+              ? 'These shortcuts work anywhere in the story.'
+              : 'These shortcuts are currently off.'}
+          </p>
           <dl className={styles.shortcutList}>
             {GLOBAL_SHORTCUTS.map((shortcut) => (
               <div key={shortcut.keys} className={styles.shortcutRow}>
-                <dt className={styles.shortcutKeys}>{renderShortcutKeys(shortcut.keys)}</dt>
+                <dt className={styles.shortcutKeys}>
+                  {renderShortcutKeys(shortcut.keys)}
+                </dt>
                 <dd className={styles.shortcutAction}>{shortcut.action}</dd>
               </div>
             ))}
@@ -188,16 +243,37 @@ export function NavStrip({ activeChapterId, onNavigate, shortcutsEnabled = true,
         </section>
       </Dialog>
 
-      <Dialog isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} triggerRef={settingsButtonRef} id="settings-dialog" titleId="settings-title" title="Settings" closeLabel="close settings">
-        <div className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}>
-          <Switch label="Enable global keyboard shortcuts" checked={shortcutsEnabled} onChange={(checked) => onShortcutsEnabledChange?.(checked)} describedBy="settings-shortcuts-note" />
+      <Dialog
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        triggerRef={settingsButtonRef}
+        id="settings-dialog"
+        titleId="settings-title"
+        title="Settings"
+        closeLabel="close settings"
+      >
+        <div
+          className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}
+        >
+          <Switch
+            label="Enable global keyboard shortcuts"
+            checked={shortcutsEnabled}
+            onChange={(checked) => onShortcutsEnabledChange?.(checked)}
+            describedBy="settings-shortcuts-note"
+          />
           <p id="settings-shortcuts-note" className={styles.sectionNote}>
-            When on, the global keyboard shortcuts are active. Chapter shortcuts are unaffected.
+            When on, the global keyboard shortcuts are active. Chapter shortcuts
+            are unaffected.
           </p>
         </div>
 
         <div className={styles.preferenceCard}>
-          <Switch label="Enable animations" checked={animationsEnabled} onChange={(checked) => onAnimationsEnabledChange?.(checked)} describedBy="settings-animations-note" />
+          <Switch
+            label="Enable animations"
+            checked={animationsEnabled}
+            onChange={(checked) => onAnimationsEnabledChange?.(checked)}
+            describedBy="settings-animations-note"
+          />
           <p id="settings-animations-note" className={styles.sectionNote}>
             When on, motion and transitions play as you move through the story.
           </p>

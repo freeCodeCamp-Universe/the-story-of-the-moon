@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, type KeyboardEvent, type RefObject } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type KeyboardEvent,
+  type RefObject,
+} from 'react';
 import { Dialog } from '@/components/Dialog/Dialog';
 import { Kbd } from '@/components/Kbd/Kbd';
 import type { MoonSceneHandle } from '@/three/moonScene';
@@ -12,7 +18,13 @@ type Props = {
   reducedMotion: boolean;
 };
 
-export function MoonExpandDialog({ isOpen, onClose, triggerRef, initialTarget, reducedMotion }: Props) {
+export function MoonExpandDialog({
+  isOpen,
+  onClose,
+  triggerRef,
+  initialTarget,
+  reducedMotion,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<MoonSceneHandle>(null);
 
@@ -77,14 +89,30 @@ export function MoonExpandDialog({ isOpen, onClose, triggerRef, initialTarget, r
   }, [initialTarget, isOpen, reducedMotion]);
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} triggerRef={triggerRef} id="ch2-moon-expand-dialog" titleId="ch2-moon-expand-title" title="Explore the Moon" closeLabel="Close expanded view" variant="fluid">
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      triggerRef={triggerRef}
+      id="ch2-moon-expand-dialog"
+      titleId="ch2-moon-expand-title"
+      title="Explore the Moon"
+      closeLabel="Close expanded view"
+      variant="fluid"
+    >
       <p className={styles.hint} aria-hidden="true">
         <span className={styles.sceneHintMobile}>Drag to rotate</span>
         <span className={styles.sceneHintDesktop}>
-          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd> <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
+          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
+          <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
         </span>
       </p>
-      <div tabIndex={0} role="group" aria-label="Interactive view of the Moon; drag or use arrow keys to rotate" className={styles.sceneGroup} onKeyDown={onKeyDown}>
+      <div
+        tabIndex={0}
+        role="group"
+        aria-label="Interactive view of the Moon; drag or use arrow keys to rotate"
+        className={styles.sceneGroup}
+        onKeyDown={onKeyDown}
+      >
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
       </div>
     </Dialog>

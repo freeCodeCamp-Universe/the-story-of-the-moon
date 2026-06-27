@@ -1,8 +1,24 @@
 import { test } from '@playwright/test';
 import { BP_DESKTOP } from '../../src/utils/breakpoints';
-import { VIEWPORTS, gotoStable, gotoChapter4Animated, captureSection, captureSectionTop, captureScrollyStage, captureChapter4Stage } from './helpers';
+import {
+  VIEWPORTS,
+  gotoStable,
+  gotoChapter4Animated,
+  captureSection,
+  captureSectionTop,
+  captureScrollyStage,
+  captureChapter4Stage,
+} from './helpers';
 
-const CHAPTER_IDS = ['chapter-1', 'chapter-2', 'chapter-3', 'chapter-4', 'chapter-5', 'chapter-6', 'chapter-7'];
+const CHAPTER_IDS = [
+  'chapter-1',
+  'chapter-2',
+  'chapter-3',
+  'chapter-4',
+  'chapter-5',
+  'chapter-6',
+  'chapter-7',
+];
 
 // Ch2 and Ch3 render a ScrollyChapter, whose visual is pinned position: sticky
 // at every breakpoint. A full-element screenshot of the section stitches the
@@ -16,7 +32,10 @@ const SCROLLY_STAGE_NAME: Record<string, string> = {
 for (const viewport of VIEWPORTS) {
   for (const id of CHAPTER_IDS) {
     test(`${id} @ ${viewport.label}`, async ({ page }) => {
-      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.setViewportSize({
+        width: viewport.width,
+        height: viewport.height,
+      });
       const name = `${id}-${viewport.label}.png`;
 
       // Ch4 at desktop widths renders an animated pinned deck. Allow motion so

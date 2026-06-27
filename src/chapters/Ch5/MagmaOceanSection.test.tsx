@@ -8,22 +8,26 @@ const magmaOcean = [
   {
     id: 'molten',
     marker: 'Molten ocean',
-    caption: 'The young Moon is molten from the surface down, a global ocean of magma hundreds of kilometers deep.',
+    caption:
+      'The young Moon is molten from the surface down, a global ocean of magma hundreds of kilometers deep.',
   },
   {
     id: 'cooling',
     marker: 'Cooling from the surface',
-    caption: 'Heat escapes at the surface, so the Moon cools from the outside in. Light minerals float upward while heavy ones sink.',
+    caption:
+      'Heat escapes at the surface, so the Moon cools from the outside in. Light minerals float upward while heavy ones sink.',
   },
   {
     id: 'crust',
     marker: 'Crust over mantle',
-    caption: 'The floated minerals harden into a pale crust above a darker, denser mantle. Deep down, the interior is still hot.',
+    caption:
+      'The floated minerals harden into a pale crust above a darker, denser mantle. Deep down, the interior is still hot.',
   },
   {
     id: 'maria',
     marker: 'Maria erupt later',
-    caption: 'For a billion years more, basalt from the hot interior pushes up through the crust and floods the lowlands as the dark maria.',
+    caption:
+      'For a billion years more, basalt from the hot interior pushes up through the crust and floods the lowlands as the dark maria.',
   },
 ] as const;
 
@@ -51,10 +55,14 @@ describe('MagmaOceanSection (animated)', () => {
   it('should render a static cross-section, a button per step, and the first step caption', () => {
     render(<MagmaOceanSection steps={magmaOcean} />);
 
-    expect(screen.getByRole('img', { name: /magma ocean cross-section/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /magma ocean cross-section/i })
+    ).toBeInTheDocument();
 
     for (const s of magmaOcean) {
-      expect(screen.getByRole('button', { name: s.marker })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: s.marker })
+      ).toBeInTheDocument();
     }
 
     expect(screen.getByText(magmaOcean[0].caption)).toBeInTheDocument();
@@ -101,8 +109,13 @@ describe('MagmaOceanSection (animated)', () => {
     await user.click(screen.getByRole('button', { name: target.marker }));
 
     expect(screen.getByText(target.caption)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: target.marker })).toHaveAttribute('aria-current', 'step');
-    expect(screen.getByRole('button', { name: magmaOcean[0].marker })).not.toHaveAttribute('aria-current');
+    expect(screen.getByRole('button', { name: target.marker })).toHaveAttribute(
+      'aria-current',
+      'step'
+    );
+    expect(
+      screen.getByRole('button', { name: magmaOcean[0].marker })
+    ).not.toHaveAttribute('aria-current');
 
     // The live region mirrors the active step for assistive tech.
     const live = container.querySelector('[aria-live="polite"]');
@@ -118,7 +131,9 @@ describe('MagmaOceanSection (reduced motion)', () => {
   it('should show every step as static text and no step controls', () => {
     render(<MagmaOceanSection steps={magmaOcean} />);
 
-    expect(screen.getByRole('img', { name: /magma ocean cross-section/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /magma ocean cross-section/i })
+    ).toBeInTheDocument();
 
     for (const step of magmaOcean) {
       expect(screen.getByText(step.caption)).toBeInTheDocument();

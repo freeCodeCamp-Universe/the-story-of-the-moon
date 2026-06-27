@@ -141,7 +141,9 @@ function getRenderFrame(renderer = getRenderer()) {
 
 function getLatestSceneState(renderer = getRenderer()) {
   const scene = renderer.render.mock.lastCall?.[0] as THREE.Scene | undefined;
-  const camera = renderer.render.mock.lastCall?.[1] as THREE.PerspectiveCamera | undefined;
+  const camera = renderer.render.mock.lastCall?.[1] as
+    | THREE.PerspectiveCamera
+    | undefined;
 
   expect(scene).toBeDefined();
   expect(camera).toBeDefined();
@@ -179,20 +181,26 @@ describe('createEarthMoonScene', () => {
       value: 1,
     });
 
-    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(function getContext(this: HTMLCanvasElement, type: string) {
-      if (type === '2d') {
-        if (!allow2dContext) {
-          return null;
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(
+      function getContext(this: HTMLCanvasElement, type: string) {
+        if (type === '2d') {
+          if (!allow2dContext) {
+            return null;
+          }
+          return create2dContext() as unknown as ReturnType<
+            HTMLCanvasElement['getContext']
+          >;
         }
-        return create2dContext() as unknown as ReturnType<HTMLCanvasElement['getContext']>;
-      }
 
-      if (type === 'webgl2' || type === 'webgl') {
-        return this.dataset.webgl === 'enabled' ? ({} as ReturnType<HTMLCanvasElement['getContext']>) : null;
-      }
+        if (type === 'webgl2' || type === 'webgl') {
+          return this.dataset.webgl === 'enabled'
+            ? ({} as ReturnType<HTMLCanvasElement['getContext']>)
+            : null;
+        }
 
-      return null;
-    });
+        return null;
+      }
+    );
 
     vi.stubGlobal(
       'ResizeObserver',
@@ -249,9 +257,15 @@ describe('createEarthMoonScene', () => {
     handle?.resume();
     handle?.resume();
 
-    expect(renderer.setAnimationLoop).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(renderer.setAnimationLoop).toHaveBeenNthCalledWith(
+      1,
+      expect.any(Function)
+    );
     expect(renderer.setAnimationLoop).toHaveBeenNthCalledWith(2, null);
-    expect(renderer.setAnimationLoop).toHaveBeenNthCalledWith(3, expect.any(Function));
+    expect(renderer.setAnimationLoop).toHaveBeenNthCalledWith(
+      3,
+      expect.any(Function)
+    );
     expect(renderer.setAnimationLoop).toHaveBeenCalledTimes(3);
   });
 
@@ -308,7 +322,9 @@ describe('createEarthMoonScene', () => {
     ({ precessionGroup, tiltGroup, moon, orbitRing } = getLatestSceneState());
 
     expect(precessionGroup.rotation.y).toBeLessThan(wobblePrecession);
-    expect(Math.abs(tiltGroup.rotation.z - baselineTilt)).toBeLessThan(Math.abs(wobbleTilt - baselineTilt));
+    expect(Math.abs(tiltGroup.rotation.z - baselineTilt)).toBeLessThan(
+      Math.abs(wobbleTilt - baselineTilt)
+    );
     expect(moon.visible).toBe(true);
     expect(orbitRing.visible).toBe(true);
   });
@@ -495,14 +511,20 @@ describe('createEarthMoonScene', () => {
     const renderFrame = getRenderFrame(renderer);
     renderFrame();
 
-    const { camera, earth, moon, orbitRing, halo } = getLatestSceneState(renderer);
-    const earthMap = (earth.material as THREE.MeshStandardMaterial).map as THREE.Texture;
-    const haloTexture = (halo.material as THREE.SpriteMaterial).map as THREE.Texture;
+    const { camera, earth, moon, orbitRing, halo } =
+      getLatestSceneState(renderer);
+    const earthMap = (earth.material as THREE.MeshStandardMaterial)
+      .map as THREE.Texture;
+    const haloTexture = (halo.material as THREE.SpriteMaterial)
+      .map as THREE.Texture;
 
     const earthGeometryDispose = vi.spyOn(earth.geometry, 'dispose');
     const moonGeometryDispose = vi.spyOn(moon.geometry, 'dispose');
     const orbitGeometryDispose = vi.spyOn(orbitRing.geometry, 'dispose');
-    const orbitMaterialDispose = vi.spyOn(orbitRing.material as THREE.Material, 'dispose');
+    const orbitMaterialDispose = vi.spyOn(
+      orbitRing.material as THREE.Material,
+      'dispose'
+    );
     const earthTextureDispose = vi.spyOn(earthMap, 'dispose');
     const haloTextureDispose = vi.spyOn(haloTexture, 'dispose');
 

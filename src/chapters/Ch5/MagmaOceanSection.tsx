@@ -39,8 +39,10 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
   const handleKey = useCallback(
     (event: React.KeyboardEvent<HTMLOListElement>) => {
       let next: number;
-      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = step + 1;
-      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = step - 1;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown')
+        next = step + 1;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
+        next = step - 1;
       else return;
       event.preventDefault();
       goTo(next, true);
@@ -56,7 +58,12 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
         {reducedMotion ? (
           <div className={styles.layout}>
             <div className={styles.stage}>
-              <MagmaOceanCrossSection step={steps.length - 1} animate={false} titleId={titleId} descId={descId} />
+              <MagmaOceanCrossSection
+                step={steps.length - 1}
+                animate={false}
+                titleId={titleId}
+                descId={descId}
+              />
             </div>
             <ol className={styles.legend} aria-label="Crystallization sequence">
               {steps.map((s) => (
@@ -72,11 +79,20 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
         ) : (
           <div className={styles.layout}>
             <div className={styles.stage}>
-              <MagmaOceanCrossSection step={step} animate titleId={titleId} descId={descId} />
+              <MagmaOceanCrossSection
+                step={step}
+                animate
+                titleId={titleId}
+                descId={descId}
+              />
             </div>
 
             <div className={styles.controlsColumn}>
-              <ol className={styles.steps} aria-label="Crystallization sequence" onKeyDown={handleKey}>
+              <ol
+                className={styles.steps}
+                aria-label="Crystallization sequence"
+                onKeyDown={handleKey}
+              >
                 {steps.map((s, index) => {
                   const isActive = index === step;
                   return (
@@ -112,9 +128,17 @@ export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
         )}
       </div>
 
-      <figcaption className={styles.scaleNote}>Schematic, not to scale. Lunar magma ocean model after Elkins-Tanton et al. 2011.</figcaption>
+      <figcaption className={styles.scaleNote}>
+        Schematic, not to scale. Lunar magma ocean model after Elkins-Tanton et
+        al. 2011.
+      </figcaption>
 
-      <div ref={liveRef} className="sr-only" aria-live="polite" aria-atomic="true" />
+      <div
+        ref={liveRef}
+        className="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+      />
     </figure>
   );
 }

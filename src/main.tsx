@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { ANIMATIONS_STORAGE_KEY, REDUCED_MOTION_ATTRIBUTE } from './hooks/useAnimationsPreference';
+import {
+  ANIMATIONS_STORAGE_KEY,
+  REDUCED_MOTION_ATTRIBUTE,
+} from './hooks/useAnimationsPreference';
 import './styles/tokens.css';
 import './styles/globals.css';
 

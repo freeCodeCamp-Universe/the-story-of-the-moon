@@ -15,18 +15,28 @@ describe('LunarSwirlScene', () => {
   it('should render the real Reiner Gamma image with its credit', () => {
     render(<LunarSwirlScene />);
 
-    expect(screen.getByRole('img', { name: /Reiner Gamma/i })).toBeInTheDocument();
-    expect(screen.getByText(/NASA \/ GSFC \/ Arizona State University/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /Reiner Gamma/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/NASA \/ GSFC \/ Arizona State University/i)
+    ).toBeInTheDocument();
   });
 
   it('should show the original photo by default, with no caption or field switch', () => {
     render(<LunarSwirlScene />);
 
-    expect(screen.getByRole('radiogroup', { name: /Reiner Gamma view/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('radiogroup', { name: /Reiner Gamma view/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Original' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Annotated' })).not.toBeChecked();
-    expect(screen.queryByRole('switch', { name: /magnetic field/i })).not.toBeInTheDocument();
-    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('switch', { name: /magnetic field/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/turns the solar wind aside/i)
+    ).not.toBeInTheDocument();
   });
 
   it('should reveal the shielded explanation with the field on when Annotated is chosen', async () => {
@@ -35,9 +45,14 @@ describe('LunarSwirlScene', () => {
 
     await user.click(screen.getByRole('radio', { name: 'Annotated' }));
 
-    expect(screen.getByRole('switch', { name: /magnetic field/i })).toBeChecked();
+    expect(
+      screen.getByRole('switch', { name: /magnetic field/i })
+    ).toBeChecked();
     expect(screen.getByText(/turns the solar wind aside/i)).toBeInTheDocument();
-    expect(screen.getByText(/turns the solar wind aside/i)).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByText(/turns the solar wind aside/i)).toHaveAttribute(
+      'aria-live',
+      'polite'
+    );
   });
 
   it('should switch to the unshielded explanation when the magnetic field is turned off', async () => {
@@ -47,9 +62,13 @@ describe('LunarSwirlScene', () => {
     await user.click(screen.getByRole('radio', { name: 'Annotated' }));
     await user.click(screen.getByRole('switch', { name: /magnetic field/i }));
 
-    expect(screen.getByRole('switch', { name: /magnetic field/i })).not.toBeChecked();
+    expect(
+      screen.getByRole('switch', { name: /magnetic field/i })
+    ).not.toBeChecked();
     expect(screen.getByText(/Research suggests/i)).toBeInTheDocument();
-    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/turns the solar wind aside/i)
+    ).not.toBeInTheDocument();
   });
 
   it('should return to the bare photo when Original is reselected', async () => {
@@ -59,8 +78,12 @@ describe('LunarSwirlScene', () => {
     await user.click(screen.getByRole('radio', { name: 'Annotated' }));
     await user.click(screen.getByRole('radio', { name: 'Original' }));
 
-    expect(screen.queryByRole('switch', { name: /magnetic field/i })).not.toBeInTheDocument();
-    expect(screen.queryByText(/turns the solar wind aside/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('switch', { name: /magnetic field/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/turns the solar wind aside/i)
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/Research suggests/i)).not.toBeInTheDocument();
   });
 });

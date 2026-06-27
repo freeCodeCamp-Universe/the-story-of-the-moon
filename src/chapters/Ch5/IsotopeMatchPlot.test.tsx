@@ -42,7 +42,9 @@ describe('IsotopeMatchPlot', () => {
     render(<IsotopeMatchPlot />);
 
     const legend = screen.getByRole('list', { name: /bodies shown/i });
-    expect(within(legend).getAllByRole('button')).toHaveLength(isotopeBodies.length);
+    expect(within(legend).getAllByRole('button')).toHaveLength(
+      isotopeBodies.length
+    );
 
     const moon = within(legend).getByRole('button', { name: /^Moon/ });
     expect(moon).toHaveAccessibleName(/approximately 0 parts per thousand/);

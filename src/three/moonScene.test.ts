@@ -24,7 +24,9 @@ vi.mock('three', () => {
   const MockSphereGeometry = vi.fn(function MockSphereGeometry() {
     return { dispose: vi.fn() };
   });
-  const MockMeshBasicMaterial = vi.fn(function MockMeshBasicMaterial(params?: Record<string, unknown>) {
+  const MockMeshBasicMaterial = vi.fn(function MockMeshBasicMaterial(
+    params?: Record<string, unknown>
+  ) {
     return {
       map: null,
       needsUpdate: false,
@@ -98,7 +100,9 @@ vi.mock('three/addons/controls/OrbitControls.js', () => ({
 let lastResizeCallback: ResizeObserverCallback | null = null;
 let lastObserved: Element | null = null;
 
-globalThis.ResizeObserver = vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+globalThis.ResizeObserver = vi.fn(function ResizeObserver(
+  callback: ResizeObserverCallback
+) {
   lastResizeCallback = callback;
   return {
     observe: vi.fn((target: Element) => {
@@ -111,7 +115,11 @@ globalThis.ResizeObserver = vi.fn(function ResizeObserver(callback: ResizeObserv
 // The canvas fills its parent via CSS, so getCanvasSize measures the parent.
 // The mock parent carries the dimensions; the canvas mirrors them.
 function makeMockCanvas(webglAvailable = true) {
-  const parentElement = { addEventListener: vi.fn(), clientWidth: 800, clientHeight: 600 };
+  const parentElement = {
+    addEventListener: vi.fn(),
+    clientWidth: 800,
+    clientHeight: 600,
+  };
   return {
     getContext: vi.fn().mockReturnValue(webglAvailable ? {} : null),
     clientWidth: 800,
@@ -153,7 +161,9 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    expect(THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(1, 64, 64);
+    expect(
+      THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>
+    ).toHaveBeenCalledWith(1, 64, 64);
   });
 
   it('should render the moon with an unlit material', () => {
@@ -163,7 +173,9 @@ describe('createMoonScene', () => {
 
     // Starts transparent at opacity 0 and fades in once the texture lands, so
     // the un-textured (solid white) sphere never flashes on screen.
-    expect(THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({ map: null, transparent: true, opacity: 0 });
+    expect(
+      THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>
+    ).toHaveBeenCalledWith({ map: null, transparent: true, opacity: 0 });
   });
 
   it('should load the 2k moon texture', () => {
@@ -171,13 +183,20 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    const textureLoaderCtor = THREE.TextureLoader as unknown as ReturnType<typeof vi.fn>;
+    const textureLoaderCtor = THREE.TextureLoader as unknown as ReturnType<
+      typeof vi.fn
+    >;
     expect(textureLoaderCtor).toHaveBeenCalled();
 
     const textureLoaderInstance = textureLoaderCtor.mock.results[0]?.value as {
       load: ReturnType<typeof vi.fn>;
     };
-    expect(textureLoaderInstance.load).toHaveBeenCalledWith('/moon/moon-2k.avif', expect.any(Function), undefined, expect.any(Function));
+    expect(textureLoaderInstance.load).toHaveBeenCalledWith(
+      '/moon/moon-2k.avif',
+      expect.any(Function),
+      undefined,
+      expect.any(Function)
+    );
   });
 
   it('should hold the moon transparent until the texture reveal animates it in', () => {
@@ -188,8 +207,13 @@ describe('createMoonScene', () => {
     // The mocked loader resolves synchronously, so the reveal is armed but the
     // (no-op) animation loop has not advanced the fade: the moon is still
     // transparent rather than snapped to opaque.
-    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
-    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const materialInstance = materialCtor.mock.results[0]?.value as {
+      opacity: number;
+      transparent: boolean;
+    };
     expect(materialInstance.opacity).toBe(0);
     expect(materialInstance.transparent).toBe(true);
   });
@@ -201,8 +225,13 @@ describe('createMoonScene', () => {
 
     // No fade under reduced motion: the synchronous texture load reveals the
     // moon immediately at full opacity.
-    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
-    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const materialInstance = materialCtor.mock.results[0]?.value as {
+      opacity: number;
+      transparent: boolean;
+    };
     expect(materialInstance.opacity).toBe(1);
     expect(materialInstance.transparent).toBe(false);
   });
@@ -215,12 +244,22 @@ describe('createMoonScene', () => {
     const canvas = makeMockCanvas(true);
     createMoonScene(canvas);
 
-    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<typeof vi.fn>;
-    const materialInstance = materialCtor.mock.results[0]?.value as { opacity: number; transparent: boolean };
+    const materialCtor = THREE.MeshBasicMaterial as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const materialInstance = materialCtor.mock.results[0]?.value as {
+      opacity: number;
+      transparent: boolean;
+    };
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
-    const rendererInstance = rendererCtor.mock.results[0]?.value as { setAnimationLoop: ReturnType<typeof vi.fn> };
-    const renderFrame = rendererInstance.setAnimationLoop.mock.calls[0]?.[0] as () => void;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const rendererInstance = rendererCtor.mock.results[0]?.value as {
+      setAnimationLoop: ReturnType<typeof vi.fn>;
+    };
+    const renderFrame = rendererInstance.setAnimationLoop.mock
+      .calls[0]?.[0] as () => void;
     expect(renderFrame).toBeTypeOf('function');
 
     // Halfway through the 600ms window: eased (easeOutCubic), still animating.
@@ -245,8 +284,12 @@ describe('createMoonScene', () => {
     expect(handle).not.toBeNull();
     handle?.dispose();
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
-    const geometryCtor = THREE.SphereGeometry as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const geometryCtor = THREE.SphereGeometry as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       dispose: ReturnType<typeof vi.fn>;
     };
@@ -264,7 +307,9 @@ describe('createMoonScene', () => {
 
     expect(handle).not.toBeNull();
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       setAnimationLoop: ReturnType<typeof vi.fn>;
     };
@@ -272,9 +317,15 @@ describe('createMoonScene', () => {
     handle?.pause();
     handle?.resume();
 
-    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(
+      1,
+      expect.any(Function)
+    );
     expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(2, null);
-    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(3, expect.any(Function));
+    expect(rendererInstance.setAnimationLoop).toHaveBeenNthCalledWith(
+      3,
+      expect.any(Function)
+    );
   });
 
   it('should return null when WebGL is unavailable', () => {
@@ -309,7 +360,9 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       setSize: ReturnType<typeof vi.fn>;
     };
@@ -332,8 +385,12 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
-    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       setSize: ReturnType<typeof vi.fn>;
     };
@@ -346,7 +403,10 @@ describe('createMoonScene', () => {
     cameraInstance.updateProjectionMatrix.mockClear();
 
     // Simulate the viewport growing wider (e.g. portrait -> landscape).
-    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+    const parent = canvas.parentElement as unknown as {
+      clientWidth: number;
+      clientHeight: number;
+    };
     parent.clientWidth = 1200;
     parent.clientHeight = 600;
 
@@ -363,8 +423,12 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
-    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const cameraCtor = THREE.PerspectiveCamera as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       setSize: ReturnType<typeof vi.fn>;
     };
@@ -379,7 +443,10 @@ describe('createMoonScene', () => {
 
     // Simulate fractional-pixel jitter (e.g. mobile URL-bar animation
     // or pinch-zoom): both deltas under 1 CSS px.
-    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+    const parent = canvas.parentElement as unknown as {
+      clientWidth: number;
+      clientHeight: number;
+    };
     parent.clientWidth = 800.4;
     parent.clientHeight = 600.3;
 
@@ -396,14 +463,19 @@ describe('createMoonScene', () => {
 
     createMoonScene(canvas);
 
-    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<typeof vi.fn>;
+    const rendererCtor = THREE.WebGLRenderer as unknown as ReturnType<
+      typeof vi.fn
+    >;
     const rendererInstance = rendererCtor.mock.results[0]?.value as {
       setSize: ReturnType<typeof vi.fn>;
     };
 
     rendererInstance.setSize.mockClear();
 
-    const parent = canvas.parentElement as unknown as { clientWidth: number; clientHeight: number };
+    const parent = canvas.parentElement as unknown as {
+      clientWidth: number;
+      clientHeight: number;
+    };
 
     // First tick: 0.4 px wider — below the dead-band, ignored.
     parent.clientWidth = 800.4;

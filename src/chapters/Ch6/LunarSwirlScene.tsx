@@ -27,8 +27,10 @@ const MODES = [
   { value: 'explained', label: 'Annotated' },
 ] as const satisfies readonly { value: Mode; label: string }[];
 
-const SHIELDED_CAPTION = 'A magnetic field arcs over the swirl and turns the solar wind aside before it reaches the ground, so the surface stays bright.';
-const UNSHIELDED_CAPTION = 'Research suggests that with no field to turn it aside, the solar wind would reach the ground and slowly darken the swirl until it matched the plain around it.';
+const SHIELDED_CAPTION =
+  'A magnetic field arcs over the swirl and turns the solar wind aside before it reaches the ground, so the surface stays bright.';
+const UNSHIELDED_CAPTION =
+  'Research suggests that with no field to turn it aside, the solar wind would reach the ground and slowly darken the swirl until it matched the plain around it.';
 
 export function LunarSwirlScene() {
   const [mode, setMode] = useState<Mode>('original');
@@ -38,13 +40,31 @@ export function LunarSwirlScene() {
 
   const explained = mode === 'explained';
   const view = !explained ? 'photo' : field ? 'shielded' : 'unshielded';
-  const caption = !explained ? null : field ? SHIELDED_CAPTION : UNSHIELDED_CAPTION;
+  const caption = !explained
+    ? null
+    : field
+      ? SHIELDED_CAPTION
+      : UNSHIELDED_CAPTION;
 
   return (
     <div className={styles.viz}>
       <div className={styles.controls}>
-        <SegmentedControl name="ch6-swirl-view" label="Reiner Gamma view" options={MODES} value={mode} onChange={setMode} />
-        {explained && <Switch className={styles.fieldSwitch} label="Magnetic field" labelPosition="start" checked={field} onChange={setField} />}
+        <SegmentedControl
+          name="ch6-swirl-view"
+          label="Reiner Gamma view"
+          options={MODES}
+          value={mode}
+          onChange={setMode}
+        />
+        {explained && (
+          <Switch
+            className={styles.fieldSwitch}
+            label="Magnetic field"
+            labelPosition="start"
+            checked={field}
+            onChange={setField}
+          />
+        )}
       </div>
 
       {caption && (
@@ -56,10 +76,28 @@ export function LunarSwirlScene() {
       {credit && (
         <figure className={styles.figure}>
           <div className={styles.figureFrame}>
-            <OptimizedImage className={styles.figureImage} src={`/${credit.file}`} alt={credit.alt} loading="lazy" />
-            <svg className={styles.overlay} data-view={view} viewBox="0 0 800 700" preserveAspectRatio="none" aria-hidden="true">
+            <OptimizedImage
+              className={styles.figureImage}
+              src={`/${credit.file}`}
+              alt={credit.alt}
+              loading="lazy"
+            />
+            <svg
+              className={styles.overlay}
+              data-view={view}
+              viewBox="0 0 800 700"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
               <defs>
-                <marker id="swirl-arrowhead" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto">
+                <marker
+                  id="swirl-arrowhead"
+                  markerWidth="7"
+                  markerHeight="7"
+                  refX="3"
+                  refY="3"
+                  orient="auto"
+                >
                   <path d="M0,0 L6,3 L0,6 Z" fill="#f5f6f7" />
                 </marker>
                 <radialGradient id="swirl-darkblob" cx="50%" cy="50%" r="50%">
@@ -72,9 +110,30 @@ export function LunarSwirlScene() {
               {/* Darkening mask: sinks the bright swirl into the mare tone for the
                   "without the shield" view. Two rotated lobes follow the swirl axis. */}
               <g className={styles.darken}>
-                <ellipse cx="292" cy="505" rx="165" ry="78" transform="rotate(-16 292 505)" fill="url(#swirl-darkblob)" />
-                <ellipse cx="470" cy="370" rx="105" ry="46" transform="rotate(-30 470 370)" fill="url(#swirl-darkblob)" />
-                <ellipse cx="150" cy="600" rx="70" ry="34" transform="rotate(-10 150 600)" fill="url(#swirl-darkblob)" />
+                <ellipse
+                  cx="292"
+                  cy="505"
+                  rx="165"
+                  ry="78"
+                  transform="rotate(-16 292 505)"
+                  fill="url(#swirl-darkblob)"
+                />
+                <ellipse
+                  cx="470"
+                  cy="370"
+                  rx="105"
+                  ry="46"
+                  transform="rotate(-30 470 370)"
+                  fill="url(#swirl-darkblob)"
+                />
+                <ellipse
+                  cx="150"
+                  cy="600"
+                  rx="70"
+                  ry="34"
+                  transform="rotate(-10 150 600)"
+                  fill="url(#swirl-darkblob)"
+                />
               </g>
 
               {/* Magnetic field loops over the swirl (shielded view). */}
@@ -86,19 +145,64 @@ export function LunarSwirlScene() {
               </g>
 
               {/* Solar wind, deflected (shielded view): curves away, never lands. */}
-              <g className={styles.arrowsDeflected} fill="none" stroke="#f5f6f7" strokeWidth="2.5">
-                <path d="M180,70 Q180,300 90,470" markerEnd="url(#swirl-arrowhead)" />
-                <path d="M300,70 Q300,260 150,440" markerEnd="url(#swirl-arrowhead)" />
-                <path d="M420,70 Q420,250 560,440" markerEnd="url(#swirl-arrowhead)" />
-                <path d="M540,70 Q540,290 625,395" markerEnd="url(#swirl-arrowhead)" />
+              <g
+                className={styles.arrowsDeflected}
+                fill="none"
+                stroke="#f5f6f7"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M180,70 Q180,300 90,470"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <path
+                  d="M300,70 Q300,260 150,440"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <path
+                  d="M420,70 Q420,250 560,440"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <path
+                  d="M540,70 Q540,290 625,395"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
               </g>
 
               {/* Solar wind, straight (unshielded view): reaches the surface. */}
-              <g className={styles.arrowsStraight} stroke="#f5f6f7" strokeWidth="2.5">
-                <line x1="180" y1="70" x2="180" y2="560" markerEnd="url(#swirl-arrowhead)" />
-                <line x1="300" y1="70" x2="300" y2="500" markerEnd="url(#swirl-arrowhead)" />
-                <line x1="420" y1="70" x2="420" y2="470" markerEnd="url(#swirl-arrowhead)" />
-                <line x1="540" y1="70" x2="540" y2="540" markerEnd="url(#swirl-arrowhead)" />
+              <g
+                className={styles.arrowsStraight}
+                stroke="#f5f6f7"
+                strokeWidth="2.5"
+              >
+                <line
+                  x1="180"
+                  y1="70"
+                  x2="180"
+                  y2="560"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <line
+                  x1="300"
+                  y1="70"
+                  x2="300"
+                  y2="500"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <line
+                  x1="420"
+                  y1="70"
+                  x2="420"
+                  y2="470"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
+                <line
+                  x1="540"
+                  y1="70"
+                  x2="540"
+                  y2="540"
+                  markerEnd="url(#swirl-arrowhead)"
+                />
               </g>
             </svg>
           </div>

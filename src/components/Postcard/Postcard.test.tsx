@@ -68,14 +68,18 @@ describe('Postcard', () => {
       throw new Error('Expected the postcard image to be wrapped in a figure.');
     }
 
-    expect(within(figure).getByText('An eclipse framed the Earth and Moon together.')).toBeInTheDocument();
+    expect(
+      within(figure).getByText('An eclipse framed the Earth and Moon together.')
+    ).toBeInTheDocument();
     expect(within(figure).getByText('NASA, 1969')).toBeInTheDocument();
   });
 
   it('should leave the caption empty when both caption text and credit are missing', () => {
     vi.mocked(getAsset).mockReturnValue(undefined);
 
-    const { container } = render(<Postcard postcard={postcardWithoutCaption} />);
+    const { container } = render(
+      <Postcard postcard={postcardWithoutCaption} />
+    );
     const figcaption = container.querySelector('figcaption');
 
     expect(figcaption).not.toBeNull();

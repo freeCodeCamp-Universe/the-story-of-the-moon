@@ -9,14 +9,26 @@ type Props = {
 
 export function Postcard({ postcard }: Props) {
   const credit = getAsset(postcard.image.creditId);
-  const imageClassName = postcard.id === 'bootprint' ? `${styles.image} ${styles.bootprintImage}` : styles.image;
+  const imageClassName =
+    postcard.id === 'bootprint'
+      ? `${styles.image} ${styles.bootprintImage}`
+      : styles.image;
 
   return (
     <figure className={styles.container}>
-      <OptimizedImage className={imageClassName} src={postcard.image.src} alt={postcard.image.alt} loading="lazy" />
+      <OptimizedImage
+        className={imageClassName}
+        src={postcard.image.src}
+        alt={postcard.image.alt}
+        loading="lazy"
+      />
       <figcaption className={styles.caption}>
-        {postcard.caption && <span className={styles.captionText}>{postcard.caption}</span>}
-        {credit && <span className={styles.captionCredit}>{credit.attributionText}</span>}
+        {postcard.caption && (
+          <span className={styles.captionText}>{postcard.caption}</span>
+        )}
+        {credit && (
+          <span className={styles.captionCredit}>{credit.attributionText}</span>
+        )}
       </figcaption>
     </figure>
   );

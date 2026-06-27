@@ -12,7 +12,11 @@ function Harness() {
     <>
       <p id="compare-help">Use O for original and T for topographic.</p>
       <p className="sr-only" aria-live="polite">
-        {value === 100 ? 'Full original view' : value === 0 ? 'Full topographic view' : `${value}% original, ${100 - value}% topographic`}
+        {value === 100
+          ? 'Full original view'
+          : value === 0
+            ? 'Full topographic view'
+            : `${value}% original, ${100 - value}% topographic`}
       </p>
       <ImageCompareSlider
         label="Compare Hertzsprung views"
@@ -40,18 +44,27 @@ describe('ImageCompareSlider', () => {
     });
 
     expect(slider).toHaveAttribute('aria-valuenow', '50');
-    expect(slider).toHaveAttribute('aria-valuetext', '50% original, 50% topographic');
+    expect(slider).toHaveAttribute(
+      'aria-valuetext',
+      '50% original, 50% topographic'
+    );
 
     await user.tab();
     expect(slider).toHaveFocus();
     await user.keyboard('{ArrowRight}{ArrowRight}');
 
     expect(slider).toHaveAttribute('aria-valuenow', '52');
-    expect(slider).toHaveAttribute('aria-valuetext', '52% original, 48% topographic');
+    expect(slider).toHaveAttribute(
+      'aria-valuetext',
+      '52% original, 48% topographic'
+    );
 
     await user.keyboard('{PageDown}');
     expect(slider).toHaveAttribute('aria-valuenow', '42');
-    expect(slider).toHaveAttribute('aria-valuetext', '42% original, 58% topographic');
+    expect(slider).toHaveAttribute(
+      'aria-valuetext',
+      '42% original, 58% topographic'
+    );
   });
 
   it('should not snap back to a drag-time value when the value changes externally during pointer interaction', () => {
@@ -63,7 +76,16 @@ describe('ImageCompareSlider', () => {
           <button type="button" onClick={() => setValue(100)}>
             Force original
           </button>
-          <ImageCompareSlider label="Compare views" originalSrc="/o.jpg" originalAlt="" originalLabel="Original" topographicSrc="/t.jpg" topographicLabel="Topographic" value={value} onValueChange={setValue} />
+          <ImageCompareSlider
+            label="Compare views"
+            originalSrc="/o.jpg"
+            originalAlt=""
+            originalLabel="Original"
+            topographicSrc="/t.jpg"
+            topographicLabel="Topographic"
+            value={value}
+            onValueChange={setValue}
+          />
         </>
       );
     }
@@ -80,7 +102,17 @@ describe('ImageCompareSlider', () => {
     frame.setPointerCapture = setCaptureSpy;
     frame.releasePointerCapture = releaseCaptureSpy;
     frame.hasPointerCapture = hasCaptureSpy;
-    frame.getBoundingClientRect = () => ({ x: 0, y: 0, top: 0, left: 0, right: 400, bottom: 200, width: 400, height: 200, toJSON: () => '' });
+    frame.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 200,
+      width: 400,
+      height: 200,
+      toJSON: () => '',
+    });
 
     fireEvent.pointerDown(frame, { pointerId: 7, button: 0, clientX: 240 });
 

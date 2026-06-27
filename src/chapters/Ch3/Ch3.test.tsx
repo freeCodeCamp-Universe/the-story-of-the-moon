@@ -34,7 +34,13 @@ vi.mock('@/hooks/useViewportActivity', () => ({
 }));
 
 vi.mock('@/components/ScrollyChapter/ScrollyChapter', () => ({
-  ScrollyChapter: ({ visual, steps }: { visual: React.ReactNode; steps: Array<{ id: string; content: React.ReactNode }> }) => (
+  ScrollyChapter: ({
+    visual,
+    steps,
+  }: {
+    visual: React.ReactNode;
+    steps: Array<{ id: string; content: React.ReactNode }>;
+  }) => (
     <div>
       {visual}
       {steps.map((step) => (
@@ -61,7 +67,11 @@ describe('Ch3', () => {
   it('should render the chapter intro and step headings with their explanatory copy', () => {
     render(<Ch3 />);
 
-    expect(screen.getByText(/Most moons are too small for their gravity to influence the planets they orbit/)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Most moons are too small for their gravity to influence the planets they orbit/
+      )
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         level: 3,
@@ -75,7 +85,11 @@ describe('Ch3', () => {
       })
     ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(6);
-    expect(screen.getByText(/A solar eclipse occurs when the Moon passes directly between Earth and the Sun\./)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /A solar eclipse occurs when the Moon passes directly between Earth and the Sun\./
+      )
+    ).toBeInTheDocument();
   });
 
   it('should render a static scale note instead of the scroll-reactive status label', async () => {
@@ -87,7 +101,9 @@ describe('Ch3', () => {
     render(<Ch3 />);
 
     expect(screen.getByText('not to scale')).toBeInTheDocument();
-    expect(screen.queryByText('orbit · tidal pull active')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('orbit · tidal pull active')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(sceneHandle.setWithMoon).toHaveBeenCalledWith(true);
@@ -96,7 +112,9 @@ describe('Ch3', () => {
       expect(sceneHandle.setShowLunarEclipse).toHaveBeenCalledWith(false);
     });
 
-    expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), { animate: true });
+    expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), {
+      animate: true,
+    });
   });
 
   it('should keep the same stepped content under reduced motion while disabling scene animation', async () => {
@@ -111,7 +129,9 @@ describe('Ch3', () => {
     expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(6);
 
     await waitFor(() => {
-      expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), { animate: false });
+      expect(mockCreateEarthMoonScene).toHaveBeenCalledWith(expect.anything(), {
+        animate: false,
+      });
     });
   });
 });

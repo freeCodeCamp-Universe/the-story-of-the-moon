@@ -19,6 +19,9 @@ describe('LoadingState', () => {
   it('hides the SVG from assistive technology', () => {
     const { container } = render(<LoadingState />);
 
-    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('svg')).toHaveAttribute(
+      'aria-hidden',
+      'true'
+    );
   });
 });

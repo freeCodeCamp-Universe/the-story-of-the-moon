@@ -30,7 +30,9 @@ describe('ScrollyChapter', () => {
     const children = Array.from(group.children);
 
     expect(children[0]?.tagName).toBe('OL');
-    expect(children[0]).toContainElement(screen.getByRole('heading', { name: 'Tycho' }));
+    expect(children[0]).toContainElement(
+      screen.getByRole('heading', { name: 'Tycho' })
+    );
     expect(children[1]).toContainElement(screen.getByText('Moon visual'));
     expect(children[1]).toContainElement(screen.getByText('Image credit'));
   });

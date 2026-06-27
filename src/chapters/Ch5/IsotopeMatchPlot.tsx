@@ -37,11 +37,19 @@ const Y_MAX = 3.9;
 const X_TICKS = [3, 4, 5, 6];
 const Y_TICKS = [1, 2, 3];
 
-const xPix = (delta18O: number) => PLOT_L + ((delta18O - X_MIN) / (X_MAX - X_MIN)) * (PLOT_R - PLOT_L);
-const yPix = (delta17O: number) => PLOT_B - ((delta17O - Y_MIN) / (Y_MAX - Y_MIN)) * (PLOT_B - PLOT_T);
-const lineDelta17O = (delta18O: number, offset: number) => SLOPE * delta18O + offset;
+const xPix = (delta18O: number) =>
+  PLOT_L + ((delta18O - X_MIN) / (X_MAX - X_MIN)) * (PLOT_R - PLOT_L);
+const yPix = (delta17O: number) =>
+  PLOT_B - ((delta17O - Y_MIN) / (Y_MAX - Y_MIN)) * (PLOT_B - PLOT_T);
+const lineDelta17O = (delta18O: number, offset: number) =>
+  SLOPE * delta18O + offset;
 
-type BodyStyle = { fill: string; rim: string; centerD18O: number; beads: number };
+type BodyStyle = {
+  fill: string;
+  rim: string;
+  centerD18O: number;
+  beads: number;
+};
 
 // App-harmonious categorical palette: pale gray Moon, cyan Earth, slate Vesta,
 // amber Mars. centerD18O is a representative whole-rock δ18O used to place each
@@ -99,7 +107,10 @@ const ANCHORS: Record<string, Anchor> = (() => {
     const beads = BEADS[id];
     const cx = beads.reduce((sum, b) => sum + b.x, 0) / beads.length;
     const bottomY = Math.max(...beads.map((b) => b.y + b.r));
-    const xPct = Math.min(Math.max((cx / VIEW_W) * 100 + (CARD_X_NUDGE[id] ?? 0), 12), 84);
+    const xPct = Math.min(
+      Math.max((cx / VIEW_W) * 100 + (CARD_X_NUDGE[id] ?? 0), 12),
+      84
+    );
     out[id] = { xPct, bottomPct: (bottomY / VIEW_H) * 100 };
   }
   return out;
@@ -107,7 +118,12 @@ const ANCHORS: Record<string, Anchor> = (() => {
 
 // Spell the value for assistive tech: "≈ 0" → "approximately 0", "≡ 0" →
 // "defined as 0", "+0.30" → "plus 0.30", "−0.24" → "minus 0.24".
-const spokenValue = (label: string) => label.replace('≈', 'approximately').replace('≡', 'defined as').replace('+', 'plus ').replace('−', 'minus ');
+const spokenValue = (label: string) =>
+  label
+    .replace('≈', 'approximately')
+    .replace('≡', 'defined as')
+    .replace('+', 'plus ')
+    .replace('−', 'minus ');
 
 export function IsotopeMatchPlot() {
   const titleId = useId();
@@ -140,7 +156,10 @@ export function IsotopeMatchPlot() {
       if (event.key === 'Escape') setActiveId(null);
     };
     const onPointerDown = (event: PointerEvent) => {
-      if (figureRef.current && !figureRef.current.contains(event.target as Node)) {
+      if (
+        figureRef.current &&
+        !figureRef.current.contains(event.target as Node)
+      ) {
         setActiveId(null);
       }
     };
@@ -153,7 +172,9 @@ export function IsotopeMatchPlot() {
     };
   }, [activeId]);
 
-  const activeBody = activeId ? (isotopeBodies.find((b) => b.id === activeId) ?? null) : null;
+  const activeBody = activeId
+    ? (isotopeBodies.find((b) => b.id === activeId) ?? null)
+    : null;
   const activeAnchor = activeId ? ANCHORS[activeId] : null;
 
   // One definition of the card's content, rendered in two places: a floating
@@ -172,10 +193,17 @@ export function IsotopeMatchPlot() {
   ) : null;
 
   return (
-    <figure ref={figureRef} className={styles.figure} aria-label="Oxygen isotope fingerprint">
+    <figure
+      ref={figureRef}
+      className={styles.figure}
+      aria-label="Oxygen isotope fingerprint"
+    >
       <div className={styles.panel}>
         <div className={styles.chart}>
-          <p className={`${styles.axisLabel} ${styles.axisY}`} aria-hidden="true">
+          <p
+            className={`${styles.axisLabel} ${styles.axisY}`}
+            aria-hidden="true"
+          >
             <span className={styles.axisName}>
               δ<sup>17</sup>O
             </span>
@@ -183,46 +211,115 @@ export function IsotopeMatchPlot() {
           </p>
 
           <div className={styles.plotArea}>
-            <svg className={styles.svg} viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role="img" aria-labelledby={titleId} aria-describedby={descId}>
+            <svg
+              className={styles.svg}
+              viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+              role="img"
+              aria-labelledby={titleId}
+              aria-describedby={descId}
+            >
               <title id={titleId}>Oxygen three-isotope plot</title>
               <desc id={descId}>
-                A scatter plot of oxygen isotopes. The horizontal axis is δ18O and the vertical axis is δ17O, both in parts per thousand. Four clusters of sample marks, one per body, each lie along a straight line with the same gentle upward slope.
-                At any point along the axis the lines are stacked: Vesta the asteroid lowest, Earth and the Moon together on a single shared line in the middle, and Mars highest. Vesta&apos;s and Mars&apos;s lines stand clearly apart from
-                Earth&apos;s, but the Moon&apos;s marks fall directly on Earth&apos;s line and intermix with Earth&apos;s, showing that the Moon and Earth share one oxygen-isotope signature.
+                A scatter plot of oxygen isotopes. The horizontal axis is δ18O
+                and the vertical axis is δ17O, both in parts per thousand. Four
+                clusters of sample marks, one per body, each lie along a
+                straight line with the same gentle upward slope. At any point
+                along the axis the lines are stacked: Vesta the asteroid lowest,
+                Earth and the Moon together on a single shared line in the
+                middle, and Mars highest. Vesta&apos;s and Mars&apos;s lines
+                stand clearly apart from Earth&apos;s, but the Moon&apos;s marks
+                fall directly on Earth&apos;s line and intermix with
+                Earth&apos;s, showing that the Moon and Earth share one
+                oxygen-isotope signature.
               </desc>
 
               <defs>
                 <clipPath id="isotope-plot-clip">
-                  <rect x={PLOT_L} y={PLOT_T} width={PLOT_R - PLOT_L} height={PLOT_B - PLOT_T} />
+                  <rect
+                    x={PLOT_L}
+                    y={PLOT_T}
+                    width={PLOT_R - PLOT_L}
+                    height={PLOT_B - PLOT_T}
+                  />
                 </clipPath>
               </defs>
 
               {/* Gridlines at ticks. */}
               {X_TICKS.map((t) => (
-                <line key={`gx-${t}`} className={styles.grid} x1={xPix(t)} y1={PLOT_T} x2={xPix(t)} y2={PLOT_B} />
+                <line
+                  key={`gx-${t}`}
+                  className={styles.grid}
+                  x1={xPix(t)}
+                  y1={PLOT_T}
+                  x2={xPix(t)}
+                  y2={PLOT_B}
+                />
               ))}
               {Y_TICKS.map((t) => (
-                <line key={`gy-${t}`} className={styles.grid} x1={PLOT_L} y1={yPix(t)} x2={PLOT_R} y2={yPix(t)} />
+                <line
+                  key={`gy-${t}`}
+                  className={styles.grid}
+                  x1={PLOT_L}
+                  y1={yPix(t)}
+                  x2={PLOT_R}
+                  y2={yPix(t)}
+                />
               ))}
 
               {/* Axes. */}
-              <line className={styles.axis} x1={PLOT_L} y1={PLOT_T} x2={PLOT_L} y2={PLOT_B} />
-              <line className={styles.axis} x1={PLOT_L} y1={PLOT_B} x2={PLOT_R} y2={PLOT_B} />
+              <line
+                className={styles.axis}
+                x1={PLOT_L}
+                y1={PLOT_T}
+                x2={PLOT_L}
+                y2={PLOT_B}
+              />
+              <line
+                className={styles.axis}
+                x1={PLOT_L}
+                y1={PLOT_B}
+                x2={PLOT_R}
+                y2={PLOT_B}
+              />
 
               {/* Ticks + numeric labels. dominant-baseline keeps the gap to the
                   tick mark constant regardless of the responsive font size. */}
               {X_TICKS.map((t) => (
                 <g key={`tx-${t}`}>
-                  <line className={styles.axis} x1={xPix(t)} y1={PLOT_B} x2={xPix(t)} y2={PLOT_B + 6} />
-                  <text className={styles.tickLabel} x={xPix(t)} y={PLOT_B + 13} textAnchor="middle" dominantBaseline="hanging">
+                  <line
+                    className={styles.axis}
+                    x1={xPix(t)}
+                    y1={PLOT_B}
+                    x2={xPix(t)}
+                    y2={PLOT_B + 6}
+                  />
+                  <text
+                    className={styles.tickLabel}
+                    x={xPix(t)}
+                    y={PLOT_B + 13}
+                    textAnchor="middle"
+                    dominantBaseline="hanging"
+                  >
                     {t}
                   </text>
                 </g>
               ))}
               {Y_TICKS.map((t) => (
                 <g key={`ty-${t}`}>
-                  <line className={styles.axis} x1={PLOT_L - 6} y1={yPix(t)} x2={PLOT_L} y2={yPix(t)} />
-                  <text className={styles.tickLabel} x={PLOT_L - 12} y={yPix(t)} textAnchor="end" dominantBaseline="central">
+                  <line
+                    className={styles.axis}
+                    x1={PLOT_L - 6}
+                    y1={yPix(t)}
+                    x2={PLOT_L}
+                    y2={yPix(t)}
+                  />
+                  <text
+                    className={styles.tickLabel}
+                    x={PLOT_L - 12}
+                    y={yPix(t)}
+                    textAnchor="end"
+                    dominantBaseline="central"
+                  >
                     {t}
                   </text>
                 </g>
@@ -249,22 +346,51 @@ export function IsotopeMatchPlot() {
                   card. Keyboard and AT use the legend buttons, so the clusters
                   stay out of the tab order and the accessibility tree. */}
               {LEGEND_ORDER.map((id) => (
-                <g key={id} className={styles.beadGroup} aria-hidden="true" data-active={isEmphasized(id) ? '' : undefined} onPointerEnter={() => setHoveredId(id)} onPointerLeave={() => clearHover(id)} onClick={() => toggleActive(id)}>
+                <g
+                  key={id}
+                  className={styles.beadGroup}
+                  aria-hidden="true"
+                  data-active={isEmphasized(id) ? '' : undefined}
+                  onPointerEnter={() => setHoveredId(id)}
+                  onPointerLeave={() => clearHover(id)}
+                  onClick={() => toggleActive(id)}
+                >
                   {BEADS[id].map((bead, index) => (
-                    <circle key={`${id}-${index}`} className={styles.bead} cx={bead.x} cy={bead.y} r={bead.r} fill={BODY[id].fill} stroke={BODY[id].rim} />
+                    <circle
+                      key={`${id}-${index}`}
+                      className={styles.bead}
+                      cx={bead.x}
+                      cy={bead.y}
+                      r={bead.r}
+                      fill={BODY[id].fill}
+                      stroke={BODY[id].rim}
+                    />
                   ))}
                 </g>
               ))}
             </svg>
 
             {cardBody && activeAnchor && (
-              <div className={`${styles.card} ${styles.cardFloat}`} role="presentation" aria-hidden="true" style={{ '--card-x': `${activeAnchor.xPct}%`, '--card-bottom': `${activeAnchor.bottomPct}%` } as React.CSSProperties}>
+              <div
+                className={`${styles.card} ${styles.cardFloat}`}
+                role="presentation"
+                aria-hidden="true"
+                style={
+                  {
+                    '--card-x': `${activeAnchor.xPct}%`,
+                    '--card-bottom': `${activeAnchor.bottomPct}%`,
+                  } as React.CSSProperties
+                }
+              >
                 {cardBody}
               </div>
             )}
           </div>
 
-          <p className={`${styles.axisLabel} ${styles.axisX}`} aria-hidden="true">
+          <p
+            className={`${styles.axisLabel} ${styles.axisX}`}
+            aria-hidden="true"
+          >
             <span className={styles.axisName}>
               δ<sup>18</sup>O
             </span>
@@ -272,7 +398,11 @@ export function IsotopeMatchPlot() {
           </p>
 
           {cardBody && (
-            <div className={`${styles.card} ${styles.cardInline}`} role="presentation" aria-hidden="true">
+            <div
+              className={`${styles.card} ${styles.cardInline}`}
+              role="presentation"
+              aria-hidden="true"
+            >
               {cardBody}
             </div>
           )}
@@ -283,7 +413,11 @@ export function IsotopeMatchPlot() {
             const body = isotopeBodies.find((b) => b.id === id);
             if (!body) return null;
             return (
-              <li key={id} className={styles.legendItem} style={{ '--swatch': BODY[id].fill } as React.CSSProperties}>
+              <li
+                key={id}
+                className={styles.legendItem}
+                style={{ '--swatch': BODY[id].fill } as React.CSSProperties}
+              >
                 <button
                   type="button"
                   className={styles.legendButton}
@@ -305,7 +439,10 @@ export function IsotopeMatchPlot() {
         </ul>
       </div>
 
-      <figcaption className={styles.caption}>Oxygen isotope data: Wiechert et al. 2001; Herwartz et al. 2014; Cano et al. 2020. Individual marks are illustrative.</figcaption>
+      <figcaption className={styles.caption}>
+        Oxygen isotope data: Wiechert et al. 2001; Herwartz et al. 2014; Cano et
+        al. 2020. Individual marks are illustrative.
+      </figcaption>
     </figure>
   );
 }

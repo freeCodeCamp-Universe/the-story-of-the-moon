@@ -1,9 +1,24 @@
-import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type RefObject } from 'react';
+import {
+  useEffect,
+  useRef,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type RefObject,
+} from 'react';
 
-const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(', ');
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ');
 
 function getFocusableElements(container: HTMLElement) {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+  ).filter((element) => element.getAttribute('aria-hidden') !== 'true');
 }
 
 type Options = {
@@ -92,7 +107,8 @@ export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
     const activeElement = document.activeElement;
-    const isFocusInsideDialog = activeElement instanceof HTMLElement && dialog.contains(activeElement);
+    const isFocusInsideDialog =
+      activeElement instanceof HTMLElement && dialog.contains(activeElement);
 
     if (event.shiftKey) {
       if (!isFocusInsideDialog || activeElement === firstElement) {
@@ -117,12 +133,20 @@ export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
     }
 
     const rect = dialog.getBoundingClientRect();
-    const isBackdropClick = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    const isBackdropClick =
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom;
 
     if (isBackdropClick) {
       onCloseRef.current();
     }
   }
 
-  return { dialogRef, closeButtonRef, dialogProps: { onKeyDown: handleKeyDown, onClick: handleClick } };
+  return {
+    dialogRef,
+    closeButtonRef,
+    dialogProps: { onKeyDown: handleKeyDown, onClick: handleClick },
+  };
 }

@@ -4,7 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useKeyboardNav } from '@/hooks/useKeyboardNav';
 
-function KeyboardNavHarness({ shortcutsEnabled = true }: { shortcutsEnabled?: boolean }) {
+function KeyboardNavHarness({
+  shortcutsEnabled = true,
+}: {
+  shortcutsEnabled?: boolean;
+}) {
   useKeyboardNav(shortcutsEnabled);
   return null;
 }

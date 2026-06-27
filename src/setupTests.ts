@@ -12,5 +12,7 @@ if (typeof globalThis.PointerEvent === 'undefined') {
     }
   }
 
-  (globalThis as unknown as { PointerEvent: typeof PointerEventPolyfill }).PointerEvent = PointerEventPolyfill;
+  (
+    globalThis as unknown as { PointerEvent: typeof PointerEventPolyfill }
+  ).PointerEvent = PointerEventPolyfill;
 }

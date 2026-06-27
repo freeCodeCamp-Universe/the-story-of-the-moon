@@ -30,8 +30,14 @@ describe('PolarIceFigure', () => {
       render(<PolarIceFigure />);
 
       expect(screen.getByRole('radio', { name: /south pole/i })).toBeChecked();
-      expect(screen.getByRole('img', { name: /south pole/i })).toBeInTheDocument();
-      expect(screen.getByText(/Moon Mineralogy Mapper \(M3\)\. NASA \/ JPL-Caltech, Li et al\. 2018/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: /south pole/i })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          /Moon Mineralogy Mapper \(M3\)\. NASA \/ JPL-Caltech, Li et al\. 2018/i
+        )
+      ).toBeInTheDocument();
     });
 
     it('should switch the map to the north pole when its radio is chosen', async () => {
@@ -40,8 +46,12 @@ describe('PolarIceFigure', () => {
 
       await user.click(screen.getByRole('radio', { name: /north pole/i }));
 
-      expect(screen.getByRole('img', { name: /north pole/i })).toBeInTheDocument();
-      expect(screen.queryByRole('img', { name: /south pole/i })).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: /north pole/i })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('img', { name: /south pole/i })
+      ).not.toBeInTheDocument();
     });
 
     it('should toggle the ice highlight off and on', async () => {
@@ -73,7 +83,9 @@ describe('PolarIceFigure', () => {
       expect(highlight).not.toBeChecked();
 
       await user.click(screen.getByRole('radio', { name: /north pole/i }));
-      expect(screen.getByRole('img', { name: /north pole/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: /north pole/i })
+      ).toBeInTheDocument();
 
       await user.click(highlight);
       expect(highlight).toBeChecked();
