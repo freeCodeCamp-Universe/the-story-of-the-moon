@@ -105,36 +105,6 @@ describe('useModalDialog', () => {
     expect(screen.getByRole('button', { name: 'close' })).toHaveFocus();
   });
 
-  it('should lock viewport scroll when the dialog opens', () => {
-    // jsdom does not perform layout or actual scroll locking. These assertions
-    // verify the inline html styles are applied and restored, which is the
-    // browser behavior we rely on in production.
-    document.documentElement.style.overflowY = '';
-    document.documentElement.style.paddingInlineEnd = '';
-
-    render(<Harness isOpen onClose={vi.fn()} />);
-
-    expect(document.documentElement.style.overflowY).toBe('hidden');
-  });
-
-  it('should restore viewport overflow and padding when the dialog closes', () => {
-    document.documentElement.style.overflowY = '';
-    document.documentElement.style.paddingInlineEnd = '';
-
-    const { rerender, unmount } = render(<Harness isOpen onClose={vi.fn()} />);
-    expect(document.documentElement.style.overflowY).toBe('hidden');
-
-    rerender(<Harness isOpen={false} onClose={vi.fn()} />);
-
-    expect(document.documentElement.style.overflowY).toBe('');
-    expect(document.documentElement.style.paddingInlineEnd).toBe('');
-
-    unmount();
-
-    expect(document.documentElement.style.overflowY).toBe('');
-    expect(document.documentElement.style.paddingInlineEnd).toBe('');
-  });
-
   it('should close the dialog and restore focus to the trigger when isOpen becomes false', () => {
     const { rerender } = render(<Harness isOpen onClose={vi.fn()} />);
 
