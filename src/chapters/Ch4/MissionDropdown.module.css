@@ -47,7 +47,6 @@
 .rowInterlude {
   justify-content: center;
   color: var(--color-text-muted);
-  border-block: 1px solid var(--color-border);
 }
 
 .rowInterlude::before {
