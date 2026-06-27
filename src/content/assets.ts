@@ -102,7 +102,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Mare Orientale, Lunar Reconnaissance Orbiter mosaic. NASA.',
-    alt: 'A grayscale Lunar Reconnaissance Orbiter view of Mare Orientale, showing the circular basin, dark floor, and broad surrounding rings in the same framing as the topographic map.',
+    alt: 'A grayscale Lunar Reconnaissance Orbiter view of Mare Orientale: a bullseye of concentric mountain rings surrounding a darker central plain, set in the heavily cratered surrounding highlands.',
   },
   {
     id: 'ch2-mare-orientale-topographic',
@@ -163,7 +163,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Bootprint in the lunar soil, Apollo 11, 20 July 1969. NASA / Buzz Aldrin (AS11-40-5878).',
-    alt: "A close-up of an astronaut's bootprint pressed into the fine lunar soil during the Apollo 11 moonwalk.",
+    alt: 'A close-up of a single ridged bootprint pressed crisply into the fine gray lunar soil during the Apollo 11 moonwalk, with a fainter partial print above it.',
   },
   {
     id: 'apollo-8-launch',
@@ -177,7 +177,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/multimedia/guidelines/index.html',
     attributionText:
       'Apollo 8 liftoff from Kennedy Space Center, December 21, 1968. NASA (S69-15558).',
-    alt: "Apollo 8's Saturn V rocket lifts off from Kennedy Space Center in a towering column of flame and smoke.",
+    alt: "Apollo 8's white Saturn V rocket clears the pad beside the red service tower at Kennedy Space Center, riding a brilliant plume of flame with smoke billowing across the pad under a deep blue sky.",
   },
   {
     id: 'apollo-8-earthrise',
@@ -191,7 +191,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Earthrise, Apollo 8, Dec 24, 1968. NASA / William Anders (AS08-14-2383).',
-    alt: 'The rising Earth hangs above the gray lunar horizon in a telephoto view taken from Apollo 8.',
+    alt: 'A half-lit, blue-and-white Earth hangs in the black sky above the barren, gray, cratered lunar surface, in the telephoto Earthrise view taken from Apollo 8.',
   },
   {
     id: 'erlanger-crater',
@@ -265,7 +265,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'David Scott in the Command and Service Module hatch, March 1969. NASA (AS09-20-3064).',
-    alt: 'The docked Apollo 9 command and service module and lunar module are seen with Earth in the background, while David Scott stands in the open command-module hatch.',
+    alt: 'Apollo 9 astronaut David Scott leans out of the open hatch of the silver, cone-shaped command module, with the blue, cloud-streaked Earth filling the background. The shot is taken from the docked lunar module, whose hardware frames the foreground.',
   },
   {
     id: 'apollo-10-lm',
@@ -336,7 +336,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       "The Lunar Module 'Antares' on the lunar surface, February 1971. NASA (AS14-66-9306).",
-    alt: "A front view of Apollo 14's lunar module Antares on the Moon, with a bright circular lens flare and the slope of Cone Crater at far left.",
+    alt: "A front view of Apollo 14's lunar module Antares standing on the flat lunar plain, with a large bright circular lens flare from the Sun in the upper left and the black sky beyond.",
   },
   {
     id: 'apollo-15-rover',
@@ -405,7 +405,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Solar eclipse captured from a camera mounted on the Orion spacecraft. In the image, Venus can be spotted on the left, and Saturn on the right of the Moon. NASA (art002e016318).',
-    alt: 'A solar eclipse seen from Orion during Artemis II, with a glow around the Moon and Venus to the left and Saturn to the right.',
+    alt: "A solar eclipse photographed from the Orion spacecraft during Artemis II. The Moon is a large dark sphere at right, almost entirely in shadow, with only a thin crescent of its cratered surface lit along the upper edge while the hidden Sun's bright white glow fans out from behind its lower limb. Part of Orion, including a solar array, frames the dark left foreground against a star-filled black sky. The point of light to the left of the Moon is Venus, and a fainter one at lower right is Saturn.",
   },
   {
     id: 'ch5-anorthosite-15415',
