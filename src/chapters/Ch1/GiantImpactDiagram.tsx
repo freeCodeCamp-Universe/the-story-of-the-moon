@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import styles from './GiantImpactDiagram.module.css';
 
@@ -137,6 +137,15 @@ function StageDefs({ prefix }: { prefix: string }) {
   );
 }
 
+// Deterministic per-star rest brightness derived from position, so that with
+// animations disabled the field still reads as a sky with some stars lit and
+// some dim (a frozen twinkle) rather than a uniform dim wash. Stable across
+// reloads because it depends only on the star's coordinates.
+function restOpacity(star: Star): number {
+  const hash = (star.cx * 73 + star.cy * 151) % 100;
+  return 0.3 + (hash / 100) * 0.65;
+}
+
 function Stars({ stars }: { stars: readonly Star[] }) {
   return (
     <g className={styles.stars}>
@@ -148,10 +157,13 @@ function Stars({ stars }: { stars: readonly Star[] }) {
           cy={star.cy}
           r={star.r}
           fill="#ffffff"
-          style={{
-            animationDuration: star.duration,
-            animationDelay: star.delay,
-          }}
+          style={
+            {
+              '--star-rest': restOpacity(star),
+              animationDuration: star.duration,
+              animationDelay: star.delay,
+            } as CSSProperties
+          }
         />
       ))}
     </g>
