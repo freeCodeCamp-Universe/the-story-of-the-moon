@@ -99,6 +99,7 @@
 }
 
 .railMobile {
+  --rail-bar-height: 12px;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -119,14 +120,14 @@
   align-items: center;
   flex: 1 1 auto;
   min-inline-size: 0;
-  min-block-size: 16px;
+  min-block-size: var(--rail-bar-height);
   border-radius: var(--radius);
   overflow: hidden;
 }
 
 .triggerTick {
   flex: 1 1 0;
-  min-block-size: 16px;
+  min-block-size: var(--rail-bar-height);
   background-color: var(--color-border);
 }
 
