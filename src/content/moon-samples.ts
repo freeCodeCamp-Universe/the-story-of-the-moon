@@ -9,7 +9,7 @@ const moonSamples = [
     rockType: 'basalt',
     marker: 'basalt',
     properties: 'dark · heavy · iron · titanium',
-    detail: "This is rock that erupted as lava and flooded the Moon's low basins. When it cooled, it formed the smooth gray maria you see when you look up at the Moon.",
+    detail: "This is rock that erupted as lava and flooded the Moon's low basins. When it cooled, it formed the smooth gray maria, which are the dark patches across the Moon's surface.",
     creditId: 'ch5-basalt-70017',
   },
   {
