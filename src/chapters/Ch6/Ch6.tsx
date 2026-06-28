@@ -213,9 +213,7 @@ export default function Ch6() {
       </section>
 
       <section className={styles.section} aria-labelledby="ch6-halves-heading">
-        <div
-          className={`${styles.sectionContent} ${styles.sectionContentFlow}`}
-        >
+        <div className={styles.sectionContent}>
           <div className={styles.textColumn}>
             <div className={styles.sectionHeader}>
               <h3 id="ch6-halves-heading" className={styles.sectionTitle}>
@@ -231,16 +229,16 @@ export default function Ch6() {
                 Soviet Luna 3 spacecraft photographed the far side and revealed
                 a landscape no one expected.
               </p>
-              <div className={styles.figurePair}>
-                <ChapterFigure credit={moonNearSideCredit} />
-                <ChapterFigure credit={moonFarSideCredit} />
-              </div>
               <p>
                 The near side features wide, dark plains of ancient lava, warmer
                 internal temperatures, and abundant radioactive elements. The
                 far side is rougher, paler, heavily cratered, and carries a
                 crust tens of kilometers thicker.
               </p>
+              <div className={styles.figurePair}>
+                <ChapterFigure credit={moonNearSideCredit} />
+                <ChapterFigure credit={moonFarSideCredit} />
+              </div>
               <p>
                 For a body so small and so close to spherical, there is no clear
                 reason for the two halves to differ this much. Despite decades

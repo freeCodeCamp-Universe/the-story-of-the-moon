@@ -66,13 +66,6 @@
   justify-self: center;
 }
 
-.figureStack {
-  display: grid;
-  width: min(100%, 28rem);
-  justify-self: center;
-  gap: var(--space-lg);
-}
-
 .figurePair {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -123,49 +116,5 @@
 @media (min-width: 900px) {
   .section {
     padding-block: var(--space-2xl);
-  }
-
-  .sectionContent {
-    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-    align-items: start;
-    gap: var(--space-xl);
-  }
-
-  /* The grid cell owns the text width here; drop the single-column
-     measure cap + centering so the copy fills its column. */
-  .textColumn {
-    max-inline-size: none;
-    margin-inline: 0;
-  }
-
-  /* This section keeps the standard grid (1.1fr / 0.9fr) so textColumn
-     stays at the same width as other sections. The grid's second cell
-     stays empty for this section; the figurePair lives inside the text
-     flow and floats inline-end with a negative margin so it visually
-     overflows textColumn into the empty figureColumn area. */
-  .sectionContentFlow .textColumn {
-    display: flow-root;
-  }
-
-  .figure,
-  .figureStack {
-    justify-self: end;
-  }
-
-  .figurePair {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
-    float: inline-end;
-    /* Numbers come from the grid split: figureColumn width ≈ 81.8% of
-       textColumn width (0.9 / 1.1). Width = 23.2% of textColumn (the
-       wrap-overlap inside textColumn) + 81.8% (overflow into the empty
-       figureColumn) + gap. Margin-inline-end pushes the float past
-       textColumn's right edge by 81.8% + gap so the float's right edge
-       lines up with figureColumn's right edge. The wrapping copy fills
-       ~76.8% of textColumn width while sitting next to the float. */
-    width: calc(105% + var(--space-xl));
-    margin-inline-end: calc(-81.8% - var(--space-xl));
-    margin-inline-start: var(--space-xl);
-    margin-block-end: var(--space-lg);
   }
 }
