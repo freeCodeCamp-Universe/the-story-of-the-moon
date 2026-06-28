@@ -69,22 +69,42 @@ Ch1's `GiantImpactDiagram` and Ch5's `MagmaOceanStages` are deliberately mirrore
 - Use semantic HTML first, then add ARIA only where semantics are not enough.
 - Every meaningful image must have alt text. Decorative images should use an empty alt attribute.
 - Preserve or add visible or programmatic guidance for keyboard-operated interactions.
+- Custom interactive regions must be focusable, operable by keyboard, and exposed with an accessible name.
+- Avoid global shortcuts that interfere with typing in inputs, textareas, selects, buttons, links, or contenteditable elements.
 
 ### Staged Diagram Alt Text
 
-For multi-frame staged SVG diagrams, the figure-level aria-label carries the topic. Each frame's SVG <title> is the stage's short name only, with no topic prefix, and is the image's accessible name. Each frame's <desc> describes the exact graphic of that specific frame as a sighted reader would see it, not a gloss of the concept. The visible stage caption <p> repeats the <title> text, so it must be aria-hidden="true" to prevent a double screen-reader announcement. See src/chapters/Ch1/GiantImpactDiagram.tsx and src/chapters/Ch5/MagmaOceanCrossSection.tsx for reference implementations.
+For multi-frame staged SVG diagrams, the topic and each stage are announced by different elements:
 
-- Custom interactive regions must be focusable, operable by keyboard, and exposed with an accessible name.
-- Avoid global shortcuts that interfere with typing in inputs, textareas, selects, buttons, links, or contenteditable elements.
+- **The figure-level `aria-label`** carries the topic.
+- **Each frame's `<title>`** is the stage's short name only, with no topic prefix. It is the image's accessible name.
+- **Each frame's `<desc>`** describes the exact graphic of that specific frame as a sighted reader would see it, not a gloss of the concept.
+- **The visible stage caption `<p>`** repeats the `<title>` text, so it must be `aria-hidden="true"` to prevent a double screen-reader announcement.
+
+Reference implementations: `src/chapters/Ch1/GiantImpactDiagram.tsx` and `src/chapters/Ch5/MagmaOceanCrossSection.tsx`.
+
+### Image Comparison Slider Alt Text
+
+For a before/after or A/B comparison slider (`ImageCompareSlider` and any diptych built on it), the meaning is the comparison of the two images, not either one alone, and the reveal is a purely visual interaction. Treat the pair as one information-dense graphic with a single text alternative, following [WAI's complex-image guidance](https://www.w3.org/WAI/tutorials/images/complex/).
+
+- **Do not** expose the two layers as separately-navigable images. That makes a screen reader step through them one at a time, in DOM order rather than reading order.
+- **Mark both `<img>` layers decorative** (`alt=""` plus `aria-hidden="true"`).
+- **Give the figure one combined description** that covers both views in a single pass, ordered original then derived view (e.g. the photo, then the topographic map). The component composes this from the `originalAlt` and `topographicAlt` props, exposes it once as screen-reader-only text in reading order, and links it to the slider handle via `aria-describedby`.
+- **Keep the slider operable** by mouse, touch, and keyboard, but do not let its value (the percentage revealed) or any drag/key hint carry the image meaning or repeat per layer. Those describe a visual-only interaction.
+- **Each per-image description** still lives in `src/content/assets.ts`, keyed to that specific image.
+
+Reference implementation: `src/components/ImageCompareSlider/ImageCompareSlider.tsx` and its use in `src/chapters/Ch2/Ch2.tsx`.
 
 ## Images And Media
 
 - Prefer the shared `OptimizedImage` component for raster images rendered by the app.
 - For large raster images that render at multiple layout sizes, provide responsive sources and `sizes` instead of shipping a single oversized asset to every viewport.
-- For content-backed images, keep alt text in `src/content/assets.json`; that file is the single source of truth used to enrich other content models.
+- For content-backed images, keep alt text in `src/content/assets.ts`; that file is the single source of truth used to enrich other content models.
+- Alt text must describe what is visibly in the frame — the vantage point, the composition, and the notable features a sighted reader would pick out — not merely name the subject. "Aristarchus crater" is a label, not alt text.
+- Write one entry per image. When two or more images appear together (a comparison slider or diptych), every image needs its own entry and none may be left undescribed.
 - When adding or changing managed raster images under `public/`, run `pnpm optimize:images` so the source asset, AVIF sibling, and any configured responsive AVIF variants stay in sync with repo expectations.
 - If a raster asset needs responsive variants, declare that in `scripts/optimize-images.mjs` instead of adding one-off generated files by hand.
-- If you add a new content asset, update the relevant content JSON so the image, credit, and alt text remain wired together.
+- If you add a new content asset, update the relevant content model in `src/content/` so the image, credit, and alt text remain wired together.
 
 ## Performance
 
@@ -108,6 +128,6 @@ For multi-frame staged SVG diagrams, the figure-level aria-label carries the top
 ## Examples In This Repo
 
 - `src/components/OptimizedImage/index.tsx` shows the expected raster image wrapper behavior.
-- `src/content/index.ts` shows how alt text is merged from `src/content/assets.json`.
+- `src/content/index.ts` shows how alt text is merged from `src/content/assets.ts`.
 - `src/hooks/useKeyboardNav.ts` shows the current chapter keyboard navigation guardrails.
 - `src/chapters/Ch5/MagmaOceanStages.{tsx,module.css}` and `src/chapters/Ch1/GiantImpactDiagram.{tsx,module.css}` show the SVG-text-vs-HTML-caption scaling pattern: HTML `<p>` titles for token-exact sizing, capped grid tracks to keep in-SVG label scale stable.

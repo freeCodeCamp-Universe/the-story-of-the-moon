@@ -87,7 +87,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Aristarchus crater, Lunar Reconnaissance Orbiter. NASA / GSFC / Arizona State University.',
-    alt: 'View of Aristarchus crater from the Lunar Reconnaissance Orbiter, showing slumping terraced walls and peaks in its center. The terrain looks rubble-covered and pitted.',
+    alt: 'A black-and-white Lunar Reconnaissance Orbiter view looking across Aristarchus, a large bowl-shaped impact crater that fills most of the image. Step-like terraces descend its collapsed inner walls, and a cluster of bright, broken peaks rises from the rubble-covered floor near the center. The crater rim is sharp, and the surrounding plain is smoother and dotted with small craters.',
   },
   {
     id: 'ch2-mare-orientale',
@@ -102,7 +102,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Mare Orientale, Lunar Reconnaissance Orbiter mosaic. NASA.',
-    alt: 'A grayscale Lunar Reconnaissance Orbiter view of Mare Orientale: a bullseye of concentric mountain rings surrounding a darker central plain, set in the heavily cratered surrounding highlands.',
+    alt: 'A black-and-white view, seen from above, of Mare Orientale, a bullseye of concentric mountain rings around a darker, smoother central plain of hardened lava. The rugged rings rise above the heavily cratered highlands that fill the rest of the image.',
   },
   {
     id: 'ch2-mare-orientale-topographic',
@@ -118,7 +118,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Mare Orientale GLD100 topographic map, derived from Lunar Reconnaissance Orbiter data. NASA.',
-    alt: 'A color-shaded topographic map of Mare Orientale, showing its ringed basin structure in blue, green, yellow, and red elevation bands.',
+    alt: 'The same Mare Orientale shown as a false-color elevation map. Concentric bands step down from red and orange highlands on the outside, through a green middle ring, to a deep-blue central floor that is the lowest ground; a small purple spot near the center marks the deepest point, a crater sunk into the floor. The ring pattern is much clearer here than in the black-and-white image.',
   },
   {
     id: 'ch2-hertzsprung-basin',
@@ -133,7 +133,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Hertzsprung basin, Lunar Reconnaissance Orbiter WAC mosaic. NASA.',
-    alt: "A wide-angle Lunar Reconnaissance Orbiter mosaic of Hertzsprung basin on the Moon's far side, showing a broad circular basin ringed by lighter ridges and scattered impact craters.",
+    alt: "A black-and-white Lunar Reconnaissance Orbiter image, seen from above, of Hertzsprung, a large and very old impact basin on the Moon's far side. It appears as a wide, shallow, circular hollow with a paler, smoother floor, and its low rim is almost hidden among the many overlapping craters of every size. One sharp, bright, young crater with terraced walls stands out at the lower left.",
   },
   {
     id: 'ch2-hertzsprung-basin-topographic',
@@ -149,7 +149,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       'Hertzsprung GLD100 topographic map, derived from Lunar Reconnaissance Orbiter data. NASA.',
-    alt: "A color-shaded topographic map of Hertzsprung basin on the Moon's far side, with the basin rings and surrounding craters shown in contrasting elevation colors.",
+    alt: 'The same Hertzsprung basin shown as a false-color elevation map, where red and orange mark the highest ground, yellow and green the middle elevations, and blue and teal the lowest. The basin appears as a wide yellow-and-orange ring; small craters cut into it show as deep teal-green hollows, and a band of high red ground runs down the left edge.',
   },
   {
     id: 'apollo-11-bootprint',

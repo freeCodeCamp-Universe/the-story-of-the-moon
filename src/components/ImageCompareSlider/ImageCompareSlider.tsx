@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useId, useLayoutEffect, useRef } from 'react';
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react';
 
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
@@ -13,6 +13,7 @@ type Props = {
   originalLabel: string;
   topographicSrc: string;
   topographicAvifSrcSet?: string;
+  topographicAlt: string;
   topographicLabel: string;
   describedBy?: string;
   sizes?: string;
@@ -53,6 +54,7 @@ export function ImageCompareSlider({
   originalLabel,
   topographicSrc,
   topographicAvifSrcSet,
+  topographicAlt,
   topographicLabel,
   describedBy,
   sizes,
@@ -60,6 +62,11 @@ export function ImageCompareSlider({
   onValueChange,
 }: Props) {
   const valueText = getValueText(value, originalLabel, topographicLabel);
+  // The reveal interaction is purely visual, so the comparison's meaning is
+  // carried by one combined text alternative (read once, in reading order:
+  // original then derived view) rather than two separately-navigated images.
+  const descriptionId = useId();
+  const description = `${originalAlt} ${topographicAlt}`;
   const frameRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<HTMLDivElement | null>(null);
   const activePointerRef = useRef<number | null>(null);
@@ -170,6 +177,9 @@ export function ImageCompareSlider({
       className={styles.root}
       style={{ '--split-position': `${value}%` } as CSSProperties}
     >
+      <p id={descriptionId} className="sr-only">
+        {description}
+      </p>
       <div
         ref={frameRef}
         className={styles.frame}
@@ -194,7 +204,8 @@ export function ImageCompareSlider({
               src={originalSrc}
               avifSrcSet={originalAvifSrcSet}
               sizes={sizes}
-              alt={originalAlt}
+              alt=""
+              aria-hidden="true"
               loading="lazy"
             />
           </div>
@@ -205,7 +216,10 @@ export function ImageCompareSlider({
               role="slider"
               tabIndex={0}
               aria-label={label}
-              aria-describedby={describedBy}
+              aria-describedby={
+                [descriptionId, describedBy].filter(Boolean).join(' ') ||
+                undefined
+              }
               aria-valuemin={MIN_VALUE}
               aria-valuemax={MAX_VALUE}
               aria-valuenow={value}

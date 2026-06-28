@@ -183,7 +183,7 @@ describe('Ch2', () => {
       /A crater is a bowl-shaped depression/
     );
     const craterImage = within(craterSection).getByRole('img', {
-      name: /terraced walls and peaks in its center/i,
+      name: /a black-and-white Lunar Reconnaissance Orbiter view looking across Aristarchus/i,
     });
     expect(
       craterParagraph.compareDocumentPosition(craterImage) &
@@ -194,9 +194,11 @@ describe('Ch2', () => {
     const basinParagraph = within(basinSection).getByText(
       /Over time, these giant depressions are often filled/
     );
-    const basinImages = within(basinSection).getAllByRole('img');
-    expect(basinImages).toHaveLength(2);
-    expect(basinSection.querySelectorAll('img')).toHaveLength(4);
+    // The comparison layers are decorative; their meaning is carried by each
+    // slider's single combined description, so they are not exposed as images.
+    expect(within(basinSection).queryByRole('img')).not.toBeInTheDocument();
+    const basinImageElements = basinSection.querySelectorAll('img');
+    expect(basinImageElements).toHaveLength(4);
     expect(
       within(basinSection).getByRole('slider', {
         name: 'Compare Hertzsprung basin original and topographic views',
@@ -208,7 +210,7 @@ describe('Ch2', () => {
       })
     ).toBeInTheDocument();
     expect(
-      basinParagraph.compareDocumentPosition(basinImages[0]) &
+      basinParagraph.compareDocumentPosition(basinImageElements[0]) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).not.toBe(0);
   });

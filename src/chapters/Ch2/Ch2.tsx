@@ -844,8 +844,8 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
                 originalLabel="Original"
                 topographicSrc="/ch2/hertzsprung-topographic.jpg"
                 topographicAvifSrcSet={hertzsprungTopographicAvifSrcSet}
+                topographicAlt={hertzsprungTopographicAsset.alt}
                 topographicLabel="Topographic"
-                describedBy={basinCompareHintId}
                 sizes={compareImageSizes}
                 value={hertzsprungCompareValue}
                 onValueChange={setHertzsprungCompareValue}
@@ -869,8 +869,8 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
                 originalLabel="Original"
                 topographicSrc="/ch2/orientale-topographic.jpg"
                 topographicAvifSrcSet={orientaleTopographicAvifSrcSet}
+                topographicAlt={orientaleTopographicAsset.alt}
                 topographicLabel="Topographic"
-                describedBy={basinCompareHintId}
                 sizes={compareImageSizes}
                 value={orientaleCompareValue}
                 onValueChange={setOrientaleCompareValue}

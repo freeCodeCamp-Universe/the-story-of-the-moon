@@ -24,6 +24,7 @@ function Harness() {
         originalAlt="Original Hertzsprung basin photomosaic."
         originalLabel="Original"
         topographicSrc="/ch2/hertzsprung-topographic.jpg"
+        topographicAlt="Topographic elevation map of Hertzsprung basin."
         topographicLabel="Topographic"
         describedBy="compare-help"
         value={value}
@@ -67,6 +68,22 @@ describe('ImageCompareSlider', () => {
     );
   });
 
+  it('should describe both views in one combined text alternative and hide the raw images from assistive tech', () => {
+    render(<Harness />);
+
+    // The layered images are decorative; their meaning is carried once, in
+    // reading order (original then topographic), so a screen reader announces
+    // the whole comparison at once rather than stepping through two images.
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+
+    const slider = screen.getByRole('slider', {
+      name: 'Compare Hertzsprung views',
+    });
+    expect(slider).toHaveAccessibleDescription(
+      'Original Hertzsprung basin photomosaic. Topographic elevation map of Hertzsprung basin. Use O for original and T for topographic.'
+    );
+  });
+
   it('should not snap back to a drag-time value when the value changes externally during pointer interaction', () => {
     function ExternalDriver() {
       const [value, setValue] = useState(50);
@@ -82,6 +99,7 @@ describe('ImageCompareSlider', () => {
             originalAlt=""
             originalLabel="Original"
             topographicSrc="/t.jpg"
+            topographicAlt="Topographic view."
             topographicLabel="Topographic"
             value={value}
             onValueChange={setValue}

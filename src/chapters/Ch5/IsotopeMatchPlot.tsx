@@ -220,17 +220,17 @@ export function IsotopeMatchPlot() {
             >
               <title id={titleId}>Oxygen three-isotope plot</title>
               <desc id={descId}>
-                A scatter plot of oxygen isotopes. The horizontal axis is δ18O
-                and the vertical axis is δ17O, both in parts per thousand. Four
-                clusters of sample marks, one per body, each lie along a
-                straight line with the same gentle upward slope. At any point
-                along the axis the lines are stacked: Vesta the asteroid lowest,
-                Earth and the Moon together on a single shared line in the
-                middle, and Mars highest. Vesta&apos;s and Mars&apos;s lines
-                stand clearly apart from Earth&apos;s, but the Moon&apos;s marks
-                fall directly on Earth&apos;s line and intermix with
-                Earth&apos;s, showing that the Moon and Earth share one
-                oxygen-isotope signature.
+                A scatter plot of oxygen isotopes. The horizontal axis is
+                delta-18-O and the vertical axis is delta-17-O, both in parts
+                per thousand. Four clusters of sample marks, one per body, each
+                lie along a straight line with the same gentle upward slope. At
+                any point along the axis the lines are stacked: Vesta the
+                asteroid lowest, Earth and the Moon together on a single shared
+                line in the middle, and Mars highest. Vesta&apos;s and
+                Mars&apos;s lines stand clearly apart from Earth&apos;s, but the
+                Moon&apos;s marks fall directly on Earth&apos;s line and
+                intermix with Earth&apos;s, showing that the Moon and Earth
+                share one oxygen-isotope signature.
               </desc>
 
               <defs>

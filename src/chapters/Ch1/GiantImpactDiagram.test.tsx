@@ -24,21 +24,21 @@ describe('GiantImpactDiagram', () => {
       within(figure).getByRole('img', {
         name: 'Impact',
         description:
-          'Theia has crossed the scene and meets Earth just left of center, the two bodies touching as the grey planet begins to merge into the larger blue one. A spray of white rock fragments and dust blasts outward to the upper left, back along the path Theia came in on.',
+          'Theia has crossed the scene and now strikes Earth just left of center, the smaller grey planet overlapping the upper-left edge of the larger blue one. A spray of white rock fragments and dust blasts outward to the upper left, back along the path Theia came in on.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
         name: 'Debris ring',
         description:
-          'The blue Earth sits at the center, encircled by a tilted ring of grey rubble, dust, and angular chunks. The ring is drawn in two parts: its back half passes behind the planet and its front half crosses in front, so it appears to loop around Earth at an angle.',
+          'The blue Earth sits at the center, encircled by a tilted ring of grey rubble, dust, and angular chunks orbiting around it.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
         name: 'Coalesce',
         description:
-          'The debris is gone. The blue Earth sits at the right and a small grey, cratered Moon, labeled, sits at the upper left, the single body the ring has gathered into.',
+          'The debris is gone. The blue Earth sits at the right and a small grey, cratered Moon, labeled, sits at the upper left.',
       })
     ).toBeInTheDocument();
   });
