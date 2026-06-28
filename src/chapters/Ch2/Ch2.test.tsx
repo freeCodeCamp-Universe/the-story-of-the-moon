@@ -435,10 +435,10 @@ describe('Ch2', () => {
       surfaceFeatures[0].description.length
     );
     expect(descriptionParagraphs[0]).toHaveTextContent(
-      'Mare Imbrium is one of the largest dark plains on the side of the Moon that faces Earth'
+      'Mare Imbrium is one of the largest dark plains on the side of the Moon facing Earth, a nearly circular basin about 1,145 kilometers across, punched out by a massive impactor around 3.9 billion years ago.'
     );
     expect(descriptionParagraphs[1]).toHaveTextContent(
-      'Over the next several hundred million years, lava welled up from the lunar interior'
+      "Over the next several hundred million years, lava rose from the lunar interior and flooded the basin floor, hardening into the dark basalt visible today. The basin's outer rim is preserved as a ring of mountain ranges, including the Apennines and the Alps."
     );
   });
 
