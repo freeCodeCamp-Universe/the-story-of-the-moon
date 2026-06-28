@@ -2,17 +2,49 @@
   width: 100%;
   max-width: 76rem;
   margin: 0 auto;
-  padding: var(--space-lg) 0;
+  padding-block: var(--space-lg) var(--space-xl);
+  padding-inline: var(--space-md);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
 }
 
 .stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
   min-width: 0;
+  width: 100%;
+  max-width: 14rem;
+  margin-inline: auto;
+}
+
+/* Stack on phones; switch to a single centered row of all four stages at the
+   tablet tier (matches Ch5's MagmaOceanStages). */
+@media (min-width: 768px) {
+  .figure {
+    padding-block: var(--space-lg);
+    padding-inline: 0;
+  }
+
+  /* Cap each stage to a fixed track and center the row (matches Ch5's
+     MagmaOceanStages). A fixed render width keeps the viewBox scale stable, so
+     the in-SVG text size stays consistent across viewports instead of swelling
+     as the stages stretch. */
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 15rem));
+    justify-content: center;
+    gap: var(--space-md);
+  }
+
+  /* Release the stacked-tier cap so the grid track governs each stage width. */
+  .stage {
+    max-width: none;
+  }
 }
 
 .svg {
@@ -29,17 +61,24 @@
 .label {
   fill: var(--color-text);
   font-family: var(--font-prose);
-  font-size: 14px;
+  font-size: var(--text-sm);
   font-weight: 700;
   text-anchor: middle;
 }
 
 .stageTitle {
-  fill: var(--color-text);
+  margin: 0;
   font-family: var(--font-prose);
-  font-size: 19px;
+  font-size: var(--text-body);
   font-weight: 700;
-  text-anchor: middle;
+  color: var(--color-text);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .stageTitle {
+    font-size: var(--text-lg);
+  }
 }
 
 /* CSS keyframes make the twinkle easy to disable for reduced-motion users.
@@ -60,31 +99,6 @@
 
   50% {
     opacity: 1;
-  }
-}
-
-@media (max-width: 767px) {
-  .figure {
-    padding-inline: var(--space-md);
-    padding-bottom: var(--space-xl);
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-  }
-
-  .stage {
-    max-width: 20rem;
-    margin-inline: auto;
-  }
-
-  .label {
-    font-size: 12px;
-  }
-
-  .stageTitle {
-    font-size: 16px;
   }
 }
 

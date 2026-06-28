@@ -38,7 +38,7 @@ type PlanetProps = {
 };
 
 const stageWidth = 280;
-const stageHeight = 244;
+const stageHeight = 200;
 const stageViewBox = `0 0 ${stageWidth} ${stageHeight}`;
 
 const earthMarks = [
@@ -203,14 +203,6 @@ function Planet({
   );
 }
 
-function Caption({ stageTitle }: { stageTitle: string }) {
-  return (
-    <text className={styles.stageTitle} x="140" y="220">
-      {stageTitle}
-    </text>
-  );
-}
-
 function StageSvg({
   idPrefix,
   title,
@@ -223,26 +215,28 @@ function StageSvg({
   const descId = `${idPrefix}-desc`;
 
   return (
-    <svg
-      className={styles.svg}
-      viewBox={stageViewBox}
-      role="img"
-      aria-labelledby={titleId}
-      aria-describedby={descId}
-    >
-      <title id={titleId}>{title}</title>
-      <desc id={descId}>{desc}</desc>
-      <rect
-        width={stageWidth}
-        height={stageHeight}
-        rx="12"
-        style={{ fill: 'var(--color-bg)' }}
-      />
-      <StageDefs prefix={idPrefix} />
-      <Stars stars={stars} />
-      {children}
-      <Caption stageTitle={stageTitle} />
-    </svg>
+    <>
+      <svg
+        className={styles.svg}
+        viewBox={stageViewBox}
+        role="img"
+        aria-labelledby={titleId}
+        aria-describedby={descId}
+      >
+        <title id={titleId}>{title}</title>
+        <desc id={descId}>{desc}</desc>
+        <rect
+          width={stageWidth}
+          height={stageHeight}
+          rx="12"
+          style={{ fill: 'var(--color-bg)' }}
+        />
+        <StageDefs prefix={idPrefix} />
+        <Stars stars={stars} />
+        {children}
+      </svg>
+      <p className={styles.stageTitle}>{stageTitle}</p>
+    </>
   );
 }
 

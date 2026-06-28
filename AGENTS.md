@@ -21,6 +21,17 @@ These instructions apply to the whole repository unless a more specific instruct
 - For running prose, render the shared `<Prose>` component (`src/components/Prose/`) rather than re-declaring per-chapter measure + centering + gutter + `p + p` rhythm. Use `width="text|wide|frame"` for the tier and `flush` when a parent layout cell already owns the gutter.
 - Do not introduce inline styles unless there is a clear technical need that matches an existing repo pattern.
 
+### SVG Text And Diagram Scaling
+
+Keep text scale consistent across components that mix in-diagram SVG text with HTML text (captions, titles). The trap: an SVG `<text>` font size is measured in viewBox user units, so its rendered size is `token px × (render width ÷ viewBox width)`. It does **not** render at the literal token size; it swells and shrinks with the SVG's render width. HTML text always renders at the true CSS px. So sharing a token like `--text-body` between an SVG label and an HTML caption only looks consistent if you control the SVG's render width.
+
+Apply these two rules:
+
+- **Text that must match a token size exactly (titles, captions, anything that should read at the same size as adjacent prose): render it as an HTML sibling of the `<svg>`, not as in-SVG `<text>`.** A `<p className={styles.title}>` below the `<svg>` renders `var(--text-body)` / `var(--text-lg)` at literal px on every viewport. This is the fix when a title looks too small on phone/tablet even though it shares the prose token. Style it as HTML (`color`, `text-align`, `margin`), not SVG (`fill`, `text-anchor`).
+- **Text that must stay anchored to diagram geometry (region/axis labels inside the drawing): keep it as SVG `<text>`, but stabilize the render width so it does not drift across viewports.** Cap the stage with a fixed grid track (`grid-template-columns: repeat(N, minmax(0, 15rem))` + `justify-content: center`) rather than letting a `1fr` track stretch. A stable render width keeps the viewBox scale, and therefore the rendered label size, stable. Below the row tier, cap the stacked stage (`max-width: 14rem`) so the SVG never renders so wide that labels swell or run off a phone viewport.
+
+Ch1's `GiantImpactDiagram` and Ch5's `MagmaOceanStages` are deliberately mirrored references for this pattern; match one when building a similar staged diagram.
+
 ## Breakpoints
 
 - `src/utils/breakpoints.ts` is the single source of truth for viewport breakpoint values. Import the named constants (`BP_TABLET`, `BP_DESKTOP`, `BP_WIDE`, `BP_ULTRAWIDE`) in any JS/TS that needs to branch on viewport size.
@@ -94,3 +105,4 @@ These instructions apply to the whole repository unless a more specific instruct
 - `src/components/OptimizedImage/index.tsx` shows the expected raster image wrapper behavior.
 - `src/content/index.ts` shows how alt text is merged from `src/content/assets.json`.
 - `src/hooks/useKeyboardNav.ts` shows the current chapter keyboard navigation guardrails.
+- `src/chapters/Ch5/MagmaOceanStages.{tsx,module.css}` and `src/chapters/Ch1/GiantImpactDiagram.{tsx,module.css}` show the SVG-text-vs-HTML-caption scaling pattern: HTML `<p>` titles for token-exact sizing, capped grid tracks to keep in-SVG label scale stable.
