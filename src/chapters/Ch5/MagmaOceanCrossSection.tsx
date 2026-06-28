@@ -11,7 +11,7 @@ import styles from './MagmaOceanCrossSection.module.css';
 //
 // The SVG is decorative (role="img" with a static <desc>); the canonical text
 // equivalent is the stage marker rendered beneath each frame by
-// MagmaOceanSection.
+// MagmaOceanStages.
 
 // Wedge outline (a flat-topped slice of the shell, wider at the surface and
 // tapering with depth). Offset to the right so it clears the depth labels. The

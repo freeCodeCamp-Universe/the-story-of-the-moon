@@ -3,13 +3,13 @@ import { useId } from 'react';
 import type { MagmaOceanStep } from '@/types/content';
 
 import { MagmaOceanCrossSection } from './MagmaOceanCrossSection';
-import styles from './MagmaOceanSection.module.css';
+import styles from './MagmaOceanStages.module.css';
 
-type MagmaOceanSectionProps = {
+type MagmaOceanStagesProps = {
   steps: readonly MagmaOceanStep[];
 };
 
-export function MagmaOceanSection({ steps }: MagmaOceanSectionProps) {
+export function MagmaOceanStages({ steps }: MagmaOceanStagesProps) {
   const baseId = useId();
 
   return (

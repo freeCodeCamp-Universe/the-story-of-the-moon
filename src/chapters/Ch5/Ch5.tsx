@@ -3,7 +3,7 @@ import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
 import { getAsset, moonSamples } from '@/content';
 import { IsotopeMatchPlot } from './IsotopeMatchPlot';
-import { MagmaOceanSection } from './MagmaOceanSection';
+import { MagmaOceanStages } from './MagmaOceanStages';
 import styles from './Ch5.module.css';
 
 export default function Ch5() {
@@ -82,7 +82,7 @@ export default function Ch5() {
           This "lunar magma ocean" theory was proposed shortly after the first
           moon rocks were dated, and it remains the leading explanation.
         </Prose>
-        <MagmaOceanSection
+        <MagmaOceanStages
           steps={[
             { id: 'molten', marker: 'Molten ocean' },
             { id: 'cooling', marker: 'Cooling' },
