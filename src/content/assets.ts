@@ -451,6 +451,21 @@ const assets = [
     alt: 'A grayscale Lunar Reconnaissance Orbiter view of Reiner Gamma: a bright, tadpole-shaped swirl of high-reflectance material winding across the darker basalt plain of Oceanus Procellarum.',
   },
   {
+    id: 'ch6-high-latitude-water',
+    file: 'ch6/high-latitude-water.jpg',
+    source: 'NASA Image of the Day, via Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:Water_Detected_at_High_Latitudes_on_the_Moon.jpg',
+    originalImageUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/6/67/Water_Detected_at_High_Latitudes_on_the_Moon.jpg',
+    author: 'ISRO / NASA / JPL-Caltech / Brown Univ. / USGS',
+    license: 'PD-USGov-NASA',
+    licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
+    attributionText:
+      'Water and hydroxyl across the lunar near side, mapped in blue across the lunar near side by the Moon Mineralogy Mapper (M3) aboard Chandrayaan-1. ISRO / NASA / JPL-Caltech / Brown Univ. / USGS.',
+    alt: "False-color full-disc map of the Moon's near side from the Moon Mineralogy Mapper: blue marks water and hydroxyl, green marks surface brightness, and red marks pyroxene-rich rock. The blue water signal is concentrated toward the top and bottom of the disc near the poles and fades across the reddish equatorial middle.",
+  },
+  {
     id: 'ch6-south-pole-ice',
     file: 'ch6/south-pole-ice.jpg',
     source:

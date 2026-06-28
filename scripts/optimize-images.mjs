@@ -22,6 +22,7 @@ const widthOverrides = new Map([
   ['ch4/artemis-ii-eclipse.jpg', 2400],
   ['postcards/apollo-17-moon-disc.jpg', 2200],
   ['moon/erlanger-crater.jpg', 1800],
+  ['ch6/high-latitude-water.jpg', 900],
 ]);
 
 const qualityOverrides = new Map([

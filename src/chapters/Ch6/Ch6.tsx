@@ -37,6 +37,7 @@ export default function Ch6() {
   const tranquillitatisCredit = getAsset('tranquillitatis-pit');
   const moonNearSideCredit = getAsset('moon-near-side');
   const moonFarSideCredit = getAsset('moon-far-side');
+  const highLatWaterCredit = getAsset('ch6-high-latitude-water');
 
   return (
     <>
@@ -92,11 +93,19 @@ export default function Ch6() {
             </div>
             <Prose flush className={styles.copyBlock}>
               <p>
-                Despite looking bone-dry, the Moon hides water in three places:
-                trace molecules across the sunlit surface, water locked inside
-                impact glass beads in the soil, and ice frozen in permanently
-                shadowed polar craters. How it got there is a major scientific
-                debate with three main theories:
+                Despite looking bone-dry, the Moon harbors a hidden watery
+                landscape. In 2009, India's Chandrayaan-1 orbiter detected the
+                chemical signature of water and hydroxyl across the surface.
+                This faint signal grew stronger toward higher latitudes,
+                confirming that water primarily gathers in the cold ground
+                around the poles.
+              </p>
+              <ChapterFigure credit={highLatWaterCredit} />
+              <p>
+                This water takes three forms: trace molecules across the sunlit
+                surface, water locked inside impact glass beads in the soil, and
+                the ice frozen in permanently shadowed polar craters. How it got
+                there is a major scientific debate with three main theories:
               </p>
               <ul>
                 <li>
