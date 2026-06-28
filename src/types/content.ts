@@ -91,10 +91,8 @@ export type IsotopeBody = {
 
 export type MagmaOceanStep = {
   id: string;
-  /** Mono marker label shown above the controls and in the static legend, e.g. "Crust over mantle". */
+  /** Mono marker label shown beneath each static stage, e.g. "Crust forms". */
   marker: string;
-  /** One ESL-friendly sentence describing what happens at this stage. Depths are labeled "approximate". */
-  caption: string;
 };
 
 export type WaterOrigin = {

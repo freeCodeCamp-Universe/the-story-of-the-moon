@@ -1,12 +1,15 @@
 /* Magma-ocean cross-section. Temperature maps to the palette honestly: the
- * molten interior is the warm accent glow (brightest deep, where it stays hot),
- * the solid mantle is mid gray, and the floated crust is near-white (the bright
- * highlands). Three regions only — kept at the chapter's altitude. */
+ * molten interior is the warm accent glow (the band trapped between crust and
+ * mantle), the solid mantle is mid gray, and the floated crust is near-white
+ * (the bright highlands). Three regions only — kept at the chapter's altitude.
+ * Each frame is a fixed stage; the only motion is the float/sink grains at the
+ * cooling step. */
 
 .svg {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
 }
 
 /* Depth axis (surface → deeper). */
@@ -24,7 +27,7 @@
 .axisLabel {
   fill: var(--color-text-muted);
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: var(--text-body);
 }
 
 /* Molten interior. */
@@ -43,12 +46,12 @@
   stroke-width: 1.5;
 }
 
-/* Solid mantle: grows down from the surface as the cooling front descends. */
+/* Solid mantle: builds up from the base as the cooling front rises. */
 
 .mantle {
   fill: #54576a;
   transform-box: fill-box;
-  transform-origin: top;
+  transform-origin: bottom;
   transform: scaleY(var(--front-scale, 0));
 }
 
@@ -72,7 +75,7 @@
 .regionLabelText {
   fill: var(--color-text);
   font-family: var(--font-mono);
-  font-size: 17px;
+  font-size: var(--text-body);
 }
 
 .regionLabel:not([data-visible]) {
@@ -80,7 +83,8 @@
 }
 
 /* Float / sink grains at the cooling step. Light grains rise toward the crust,
- * dense grains settle toward the deep interior. */
+ * dense grains settle toward the mantle. The wedge itself is static; only these
+ * grains move, to show the sorting in action. */
 
 .driftUp,
 .driftDown {
@@ -156,17 +160,4 @@
 
 .maria:not([data-visible]) {
   opacity: 0;
-}
-
-/* Transitions run only in the animated render path; the reduced-motion path
- * renders the final state with everything already in place. */
-
-.animated .mantle,
-.animated .crust,
-.animated .regionLabel,
-.animated .eruption,
-.animated .maria {
-  transition:
-    transform var(--transition-slow),
-    opacity var(--transition-slow);
 }

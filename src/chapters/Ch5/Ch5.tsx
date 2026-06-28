@@ -70,13 +70,13 @@ export default function Ch5() {
           ocean of white-hot magma hundreds of kilometers deep.
         </Prose>
         <Prose as="p" className={styles.paragraph}>
-          As the small world slowly cooled from the outside inward, it behaved
-          like a giant pot of soup. Light, aluminum-rich minerals floated to the
-          top like foam, cooling into the pale, bright crust. Meanwhile, heavy
-          iron and magnesium sank into the depths. Deep underground, trapped
-          heat kept the interior molten for another billion years. Liquid rock
-          repeatedly burst through the crust, flooding low areas to form the
-          dark patches visible today.
+          As this ocean slowly cooled, crystals began to form. Lighter,
+          aluminum-rich minerals floated to the top and hardened into the pale,
+          bright crust. Heavy minerals rich in iron and magnesium sank to the
+          bottom, building the Moon's mantle. Deep underground, trapped heat
+          kept rock molten for another billion years. Liquid rock repeatedly
+          burst through the crust, flooding low areas to form the dark patches
+          visible today.
         </Prose>
         <Prose as="p" className={styles.paragraph}>
           This "lunar magma ocean" theory was proposed shortly after the first
@@ -84,30 +84,10 @@ export default function Ch5() {
         </Prose>
         <MagmaOceanSection
           steps={[
-            {
-              id: 'molten',
-              marker: 'Molten ocean',
-              caption:
-                'The young Moon is molten from the surface down, a global ocean of magma hundreds of kilometers deep.',
-            },
-            {
-              id: 'cooling',
-              marker: 'Cooling from the surface',
-              caption:
-                'Heat escapes at the surface, so the Moon cools from the outside in. Light minerals float upward while heavy ones sink.',
-            },
-            {
-              id: 'crust',
-              marker: 'Crust over mantle',
-              caption:
-                'The floated minerals harden into a pale crust above a darker, denser mantle. Deep down, the interior is still hot.',
-            },
-            {
-              id: 'maria',
-              marker: 'Maria erupt later',
-              caption:
-                'For a billion years more, basalt from the hot interior pushes up through the crust and floods the lowlands as the dark maria.',
-            },
+            { id: 'molten', marker: 'Molten ocean' },
+            { id: 'cooling', marker: 'Cooling' },
+            { id: 'crust', marker: 'Layers form' },
+            { id: 'maria', marker: 'Lava floods' },
           ]}
         />
       </section>
