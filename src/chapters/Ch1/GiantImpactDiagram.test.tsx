@@ -15,30 +15,30 @@ describe('GiantImpactDiagram', () => {
     expect(stageImages).toHaveLength(4);
     expect(
       within(figure).getByRole('img', {
-        name: 'Approach stage of the giant-impact hypothesis.',
+        name: 'Approach',
         description:
-          'Theia approaches the young Earth from the upper left on an angled path.',
+          'On a starfield, a small grey planet labeled Theia sits at the upper left and a larger blue-and-white planet labeled Earth at the lower right. A white dashed arrow runs from Theia down toward Earth, marking its slanted collision course.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
-        name: 'Impact stage of the giant-impact hypothesis.',
+        name: 'Impact',
         description:
-          'Theia is partly swallowed by Earth during the impact, while bright fragments spray outward.',
+          'Theia has crossed the scene and meets Earth just left of center, the two bodies touching as the grey planet begins to merge into the larger blue one. A spray of white rock fragments and dust blasts outward to the upper left, back along the path Theia came in on.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
-        name: 'Debris-ring stage of the giant-impact hypothesis.',
+        name: 'Debris ring',
         description:
-          'Earth sits inside a tilted debris ring, with the back half hidden behind the planet and the front half passing in front.',
+          'The blue Earth sits at the center, encircled by a tilted ring of grey rubble, dust, and angular chunks. The ring is drawn in two parts: its back half passes behind the planet and its front half crosses in front, so it appears to loop around Earth at an angle.',
       })
     ).toBeInTheDocument();
     expect(
       within(figure).getByRole('img', {
-        name: 'Coalescence stage of the giant-impact hypothesis.',
+        name: 'Coalesce',
         description:
-          'A small moon now orbits Earth after the debris ring gathers into one body.',
+          'The debris is gone. The blue Earth sits at the right and a small grey, cratered Moon, labeled, sits at the upper left, the single body the ring has gathered into.',
       })
     ).toBeInTheDocument();
   });
@@ -80,10 +80,27 @@ describe('GiantImpactDiagram', () => {
       name: 'The giant-impact hypothesis in four stages.',
     });
 
-    expect(within(figure).getByText('Approach')).toBeInTheDocument();
-    expect(within(figure).getByText('Impact')).toBeInTheDocument();
-    expect(within(figure).getByText('Debris ring')).toBeInTheDocument();
-    expect(within(figure).getByText('Coalesce')).toBeInTheDocument();
+    const approachCaption = within(figure).getByText('Approach', {
+      selector: 'p',
+    });
+    const impactCaption = within(figure).getByText('Impact', {
+      selector: 'p',
+    });
+    const debrisCaption = within(figure).getByText('Debris ring', {
+      selector: 'p',
+    });
+    const coalesceCaption = within(figure).getByText('Coalesce', {
+      selector: 'p',
+    });
+
+    expect(approachCaption).toBeInTheDocument();
+    expect(impactCaption).toBeInTheDocument();
+    expect(debrisCaption).toBeInTheDocument();
+    expect(coalesceCaption).toBeInTheDocument();
+    expect(approachCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(impactCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(debrisCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(coalesceCaption).toHaveAttribute('aria-hidden', 'true');
     expect(within(figure).getByText('Theia')).toBeInTheDocument();
     expect(within(figure).getByText('Earth')).toBeInTheDocument();
     expect(within(figure).getByText('Moon')).toBeInTheDocument();

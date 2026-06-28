@@ -15,7 +15,9 @@ describe('MagmaOceanStages', () => {
     render(<MagmaOceanStages steps={magmaOcean} />);
 
     expect(
-      screen.getAllByRole('img', { name: /magma ocean cross-section/i })
+      screen.getAllByRole('img', {
+        name: /molten ocean|cooling|layers form|lava floods/i,
+      })
     ).toHaveLength(magmaOcean.length);
   });
 
@@ -23,7 +25,9 @@ describe('MagmaOceanStages', () => {
     render(<MagmaOceanStages steps={magmaOcean} />);
 
     for (const step of magmaOcean) {
-      expect(screen.getByText(step.marker)).toBeInTheDocument();
+      const caption = screen.getByText(step.marker, { selector: 'p' });
+      expect(caption).toBeInTheDocument();
+      expect(caption).toHaveAttribute('aria-hidden', 'true');
     }
   });
 

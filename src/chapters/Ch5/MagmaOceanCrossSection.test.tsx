@@ -11,13 +11,14 @@ function renderCrossSection(
       step={0}
       titleId="magma-title"
       descId="magma-desc"
+      title="Molten ocean"
       {...props}
     />
   );
 }
 
 function getCrossSection() {
-  return screen.getByRole('img', { name: 'Lunar magma ocean cross-section' });
+  return screen.getByRole('img');
 }
 
 function driftCircles(svg: Element) {
@@ -35,9 +36,9 @@ describe('MagmaOceanCrossSection', () => {
     renderCrossSection();
 
     const svg = screen.getByRole('img', {
-      name: 'Lunar magma ocean cross-section',
+      name: 'Molten ocean',
       description:
-        /vertical slice of the young Moon.+builds up from the base.+pushes up through the crust/i,
+        /A wedge-shaped vertical slice of the young Moon's outer shell, wider at the surface along the top and tapering with depth toward the bottom\. The whole wedge glows as molten rock, brightest near the surface\. A depth axis at the left is marked from "surface" at the top to "deeper" at the bottom\./,
     });
 
     expect(svg).toBeInTheDocument();
@@ -58,6 +59,28 @@ describe('MagmaOceanCrossSection', () => {
     expect(group(svg, 'eruption')).not.toHaveAttribute('data-visible');
     expect(group(svg, 'maria')).not.toHaveAttribute('data-visible');
     expect(driftCircles(container.querySelector('svg')!)).toHaveLength(0);
+  });
+
+  it('should expose different descriptions for different steps', () => {
+    const { unmount } = renderCrossSection({ step: 1, title: 'Cooling' });
+    const coolingSvg = screen.getByRole('img', {
+      name: 'Cooling',
+      description:
+        /The same wedge\. A thin pale crust now caps the surface, and a solid mantle has built up from the base to about a third of the way, leaving a band of hot molten rock trapped between them\./,
+    });
+
+    expect(coolingSvg).toBeInTheDocument();
+    unmount();
+
+    renderCrossSection({ step: 3, title: 'Lava floods' });
+    const lavaSvg = screen.getByRole('img', {
+      name: 'Lava floods',
+      description:
+        /The same layered wedge\. Two curved plumes rise from the trapped hot interior up through the crust, and two dark patches of cooled lava, labeled "maria", pool on the surface where the plumes break through\./,
+    });
+
+    expect(lavaSvg).toBeInTheDocument();
+    expect(coolingSvg).not.toEqual(lavaSvg);
   });
 
   it('should cap the surface with a crust, label the regions, and drift grains at the cooling step', () => {

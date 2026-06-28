@@ -27,8 +27,12 @@ export function MagmaOceanStages({ steps }: MagmaOceanStagesProps) {
                 step={index}
                 titleId={titleId}
                 descId={descId}
+                title={s.marker}
               />
-              <p className={styles.stageTitle}>{s.marker}</p>
+              <p className={styles.stageTitle} aria-hidden="true">
+                {/* The visible caption repeats the SVG title, which is the image's accessible name. */}
+                {s.marker}
+              </p>
             </li>
           );
         })}

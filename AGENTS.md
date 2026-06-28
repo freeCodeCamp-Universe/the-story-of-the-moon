@@ -69,6 +69,11 @@ Ch1's `GiantImpactDiagram` and Ch5's `MagmaOceanStages` are deliberately mirrore
 - Use semantic HTML first, then add ARIA only where semantics are not enough.
 - Every meaningful image must have alt text. Decorative images should use an empty alt attribute.
 - Preserve or add visible or programmatic guidance for keyboard-operated interactions.
+
+### Staged Diagram Alt Text
+
+For multi-frame staged SVG diagrams, the figure-level aria-label carries the topic. Each frame's SVG <title> is the stage's short name only, with no topic prefix, and is the image's accessible name. Each frame's <desc> describes the exact graphic of that specific frame as a sighted reader would see it, not a gloss of the concept. The visible stage caption <p> repeats the <title> text, so it must be aria-hidden="true" to prevent a double screen-reader announcement. See src/chapters/Ch1/GiantImpactDiagram.tsx and src/chapters/Ch5/MagmaOceanCrossSection.tsx for reference implementations.
+
 - Custom interactive regions must be focusable, operable by keyboard, and exposed with an accessible name.
 - Avoid global shortcuts that interfere with typing in inputs, textareas, selects, buttons, links, or contenteditable elements.
 

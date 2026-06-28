@@ -53,29 +53,46 @@ describe('Ch1', () => {
     expect(stageSvgs).toHaveLength(4);
     expect(
       within(diagram).getByRole('img', {
-        name: 'Approach stage of the giant-impact hypothesis.',
+        name: 'Approach',
       })
     ).toBeInTheDocument();
     expect(
       within(diagram).getByRole('img', {
-        name: 'Impact stage of the giant-impact hypothesis.',
+        name: 'Impact',
       })
     ).toBeInTheDocument();
     expect(
       within(diagram).getByRole('img', {
-        name: 'Debris-ring stage of the giant-impact hypothesis.',
+        name: 'Debris ring',
       })
     ).toBeInTheDocument();
     expect(
       within(diagram).getByRole('img', {
-        name: 'Coalescence stage of the giant-impact hypothesis.',
+        name: 'Coalesce',
       })
     ).toBeInTheDocument();
 
-    expect(within(diagram).getByText('Approach')).toBeInTheDocument();
-    expect(within(diagram).getByText('Impact')).toBeInTheDocument();
-    expect(within(diagram).getByText('Debris ring')).toBeInTheDocument();
-    expect(within(diagram).getByText('Coalesce')).toBeInTheDocument();
+    const approachCaption = within(diagram).getByText('Approach', {
+      selector: 'p',
+    });
+    const impactCaption = within(diagram).getByText('Impact', {
+      selector: 'p',
+    });
+    const debrisCaption = within(diagram).getByText('Debris ring', {
+      selector: 'p',
+    });
+    const coalesceCaption = within(diagram).getByText('Coalesce', {
+      selector: 'p',
+    });
+
+    expect(approachCaption).toBeInTheDocument();
+    expect(impactCaption).toBeInTheDocument();
+    expect(debrisCaption).toBeInTheDocument();
+    expect(coalesceCaption).toBeInTheDocument();
+    expect(approachCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(impactCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(debrisCaption).toHaveAttribute('aria-hidden', 'true');
+    expect(coalesceCaption).toHaveAttribute('aria-hidden', 'true');
     expect(
       within(diagram).queryByText(/A Mars-sized body, Theia, approaches/i)
     ).not.toBeInTheDocument();

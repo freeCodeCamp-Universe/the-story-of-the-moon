@@ -9,9 +9,9 @@ import styles from './MagmaOceanCrossSection.module.css';
 // chapter's altitude: three regions (crust, hot interior, mantle), no mineral
 // names.
 //
-// The SVG is decorative (role="img" with a static <desc>); the canonical text
-// equivalent is the stage marker rendered beneath each frame by
-// MagmaOceanStages.
+// The <title> is the stage name, also shown as the visible caption, which is
+// aria-hidden to avoid a duplicate screen-reader announcement. The <desc> is a
+// per-step description of exactly what that frame draws.
 
 // Wedge outline (a flat-topped slice of the shell, wider at the surface and
 // tapering with depth). Offset to the right so it clears the depth labels. The
@@ -74,14 +74,27 @@ const LABELS = [
   { id: 'mantle', text: 'mantle', y: 285 },
 ];
 
+const STAGE_DESCRIPTIONS = [
+  'A wedge-shaped vertical slice of the young Moon\'s outer shell, wider at the surface along the top and tapering with depth toward the bottom. The whole wedge glows as molten rock, brightest near the surface. A depth axis at the left is marked from "surface" at the top to "deeper" at the bottom.',
+  'The same wedge. A thin pale crust now caps the surface, and a solid mantle has built up from the base to about a third of the way, leaving a band of hot molten rock trapped between them. Small grains drift through the band, light ones rising toward the crust and heavy ones sinking onto the mantle. Three labels mark, from top to bottom, the crust, the hot interior, and the mantle.',
+  'The same wedge, further cooled. The pale crust at the top is now a thicker cap, and the solid mantle has risen higher from the base, squeezing the trapped band of hot molten rock into a thinner layer between them.',
+  'The same layered wedge. Two curved plumes rise from the trapped hot interior up through the crust, and two dark patches of cooled lava, labeled "maria", pool on the surface where the plumes break through.',
+] as const;
+
 type Props = {
   /** Step index into `magmaOcean` (0–3); the wedge renders this stage statically. */
   step: number;
   titleId: string;
   descId: string;
+  title: string;
 };
 
-export function MagmaOceanCrossSection({ step, titleId, descId }: Props) {
+export function MagmaOceanCrossSection({
+  step,
+  titleId,
+  descId,
+  title,
+}: Props) {
   const hasSolidified = step >= CRUST_FROM_STEP;
   const isCooling = step === COOLING_STEP;
   const isErupting = step >= ERUPTS_FROM_STEP;
@@ -98,15 +111,8 @@ export function MagmaOceanCrossSection({ step, titleId, descId }: Props) {
       aria-labelledby={titleId}
       aria-describedby={descId}
     >
-      <title id={titleId}>Lunar magma ocean cross-section</title>
-      <desc id={descId}>
-        A vertical slice of the young Moon&apos;s outer shell. It starts as a
-        hot molten ocean. As it cools, a solid mantle builds up from the base
-        while light minerals float to the top and harden into a pale crust,
-        leaving a band of hot, molten rock trapped between them. Much later that
-        trapped heat pushes up through the crust and floods the surface as the
-        dark maria.
-      </desc>
+      <title id={titleId}>{title}</title>
+      <desc id={descId}>{STAGE_DESCRIPTIONS[step]}</desc>
 
       <defs>
         <clipPath id="magma-wedge-clip">
