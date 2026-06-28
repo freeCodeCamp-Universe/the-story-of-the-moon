@@ -494,7 +494,7 @@ function Ch2Visual({
       <p className={styles.hint} aria-hidden="true">
         <span className={styles.sceneHintMobile}>Drag to rotate</span>
         <span className={styles.sceneHintDesktop}>
-          Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
+          Drag, or use <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
           <Kbd tone="muted">↑</Kbd> <Kbd tone="muted">↓</Kbd> to rotate
         </span>
       </p>
@@ -820,7 +820,7 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
             className={`${styles.hint} ${styles.basinCompareHint}`}
           >
             <span>
-              Drag, or press <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
+              Drag, or use <Kbd tone="muted">←</Kbd> <Kbd tone="muted">→</Kbd>{' '}
               to slide.
             </span>
             <span>
