@@ -8,7 +8,6 @@ import {
 } from 'react';
 import { missions, getAsset } from '@/content';
 import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
-import { IconButton } from '@/components/IconButton/IconButton';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
@@ -16,7 +15,6 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { Mission } from '@/types/content';
 import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
 import { BP_TABLET } from '@/utils/breakpoints';
-import { MissionDropdown, type JumpItem } from './MissionDropdown';
 import styles from './Ch4.module.css';
 
 type Step = { kind: 'mission'; mission: Mission } | { kind: 'interlude' };
@@ -133,16 +131,13 @@ function StepContent({ step }: { step: Step }) {
   );
 }
 
-function ChevronDownIcon() {
+function StackedTimeline({ steps }: { steps: Step[] }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 640 640"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z" />
-    </svg>
+    <section className={styles.stack} aria-label="Apollo and Artemis missions">
+      {steps.map((step, i) => (
+        <StepContent key={i} step={step} />
+      ))}
+    </section>
   );
 }
 
@@ -178,11 +173,8 @@ function PinnedTimeline({
   reducedMotion: boolean;
 }) {
   const [active, setActive] = useState(0);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const showTicks = useShowTicks();
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const liveRef = useRef<HTMLDivElement | null>(null);
   const pendingJumpRef = useRef<{ index: number; scrollTop: number } | null>(
@@ -195,28 +187,6 @@ function PinnedTimeline({
     () => steps.filter((s) => s.kind === 'mission').length,
     [steps]
   );
-  const items = useMemo<JumpItem[]>(
-    () =>
-      steps.map((step) =>
-        step.kind === 'mission'
-          ? {
-              label: `${step.mission.label} · ${formatMissionDateRange(step.mission)}`,
-              isInterlude: false,
-            }
-          : { label: 'Interlude', isInterlude: true }
-      ),
-    [steps]
-  );
-
-  const activeMissionNumber = useMemo(
-    () => steps.slice(0, active + 1).filter((s) => s.kind === 'mission').length,
-    [steps, active]
-  );
-  const activeStep = steps[active];
-  const triggerLabel =
-    activeStep?.kind === 'mission'
-      ? `Jump to a mission. Step ${activeMissionNumber} of ${missionCount}: ${activeStep.mission.label}`
-      : 'Jump to a mission.';
 
   const clearPendingJump = useCallback(() => {
     pendingJumpRef.current = null;
@@ -419,54 +389,29 @@ function PinnedTimeline({
 
       <div ref={stageRef} className={styles.stage}>
         <div className={styles.rail}>
-          {showTicks ? (
-            <ol className={styles.railTicks} aria-label="Timeline progress">
-              {steps.map((step, i) => {
-                const isActive = i === active;
-                const label =
-                  step.kind === 'mission'
-                    ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}`
-                    : 'Interlude';
-                return (
-                  <li
-                    key={i}
-                    className={`${styles.tickItem} ${step.kind === 'interlude' ? styles.tickItemInterlude : ''}`}
-                  >
-                    <button
-                      type="button"
-                      className={`${styles.tick} ${isActive ? styles.tickActive : ''}`}
-                      aria-label={label}
-                      aria-current={isActive ? 'true' : undefined}
-                      onClick={() => jumpTo(i)}
-                    />
-                  </li>
-                );
-              })}
-            </ol>
-          ) : (
-            <div className={styles.railMobile}>
-              <div className={styles.railTriggerTicks} aria-hidden="true">
-                {steps.map((step, i) => (
-                  <span
-                    key={i}
-                    className={`${styles.triggerTick} ${i === active ? styles.triggerTickActive : ''} ${step.kind === 'interlude' ? styles.triggerTickInterlude : ''}`}
+          <ol className={styles.railTicks} aria-label="Timeline progress">
+            {steps.map((step, i) => {
+              const isActive = i === active;
+              const label =
+                step.kind === 'mission'
+                  ? `${step.mission.label}, ${formatMissionDateRange(step.mission)}`
+                  : 'Interlude';
+              return (
+                <li
+                  key={i}
+                  className={`${styles.tickItem} ${step.kind === 'interlude' ? styles.tickItemInterlude : ''}`}
+                >
+                  <button
+                    type="button"
+                    className={`${styles.tick} ${isActive ? styles.tickActive : ''}`}
+                    aria-label={label}
+                    aria-current={isActive ? 'true' : undefined}
+                    onClick={() => jumpTo(i)}
                   />
-                ))}
-              </div>
-              <IconButton
-                ref={triggerRef}
-                className={styles.railTrigger}
-                active={dropdownOpen}
-                aria-haspopup="true"
-                aria-expanded={dropdownOpen}
-                aria-controls="ch4-mission-dropdown"
-                aria-label={triggerLabel}
-                onClick={() => setDropdownOpen((open) => !open)}
-              >
-                <ChevronDownIcon />
-              </IconButton>
-            </div>
-          )}
+                </li>
+              );
+            })}
+          </ol>
           <p id={keyboardHintId} className={styles.keyboardHint}>
             Scroll up / down, or use <Kbd tone="muted">←</Kbd> /{' '}
             <Kbd tone="muted">→</Kbd> to move through the timeline. Use{' '}
@@ -479,19 +424,6 @@ function PinnedTimeline({
             </Kbd>{' '}
             to jump to first / last.
           </p>
-          {!showTicks && (
-            <MissionDropdown
-              isOpen={dropdownOpen}
-              onClose={() => setDropdownOpen(false)}
-              triggerRef={triggerRef}
-              items={items}
-              activeIndex={active}
-              onSelect={(i) => {
-                jumpTo(i);
-                setDropdownOpen(false);
-              }}
-            />
-          )}
         </div>
 
         <div
@@ -590,6 +522,7 @@ type Ch4Props = {
 export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
   const steps = useMemo(() => buildSteps(missions), []);
   const reducedMotion = useReducedMotion();
+  const showTicks = useShowTicks();
 
   return (
     <>
@@ -610,11 +543,15 @@ export default function Ch4({ shortcutsEnabled = true }: Ch4Props) {
         </p>
       </Prose>
 
-      <PinnedTimeline
-        steps={steps}
-        shortcutsEnabled={shortcutsEnabled}
-        reducedMotion={reducedMotion}
-      />
+      {showTicks ? (
+        <PinnedTimeline
+          steps={steps}
+          shortcutsEnabled={shortcutsEnabled}
+          reducedMotion={reducedMotion}
+        />
+      ) : (
+        <StackedTimeline steps={steps} />
+      )}
 
       <Diptych />
     </>
