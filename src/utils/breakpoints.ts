@@ -12,6 +12,9 @@
  * introduce new pixel values without adding them here first.
  */
 
+/** Phone / mini-tablet boundary; flagship phones top out around 430px. */
+export const BP_SMALL_TABLET = 600;
+
 /** Touch / phone tier ends, tablet tier begins. */
 export const BP_TABLET = 768;
 

@@ -2,9 +2,10 @@ import { expect, type Page } from '@playwright/test';
 
 export type Viewport = { label: string; width: number; height: number };
 
-// Widths from src/utils/breakpoints.ts (320 baseline / 768 / 900 / 1800).
+// Widths from src/utils/breakpoints.ts (320 baseline / 600 / 768 / 900 / 1800).
 export const VIEWPORTS: Viewport[] = [
   { label: '320', width: 320, height: 800 },
+  { label: '600', width: 600, height: 900 },
   { label: '768', width: 768, height: 1024 },
   { label: '900', width: 900, height: 900 },
   { label: '1800', width: 1800, height: 1000 },

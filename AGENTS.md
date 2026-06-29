@@ -34,9 +34,9 @@ Ch1's `GiantImpactDiagram` and Ch5's `MagmaOceanStages` are deliberately mirrore
 
 ## Breakpoints
 
-- `src/utils/breakpoints.ts` is the single source of truth for viewport breakpoint values. Import the named constants (`BP_TABLET`, `BP_DESKTOP`, `BP_WIDE`, `BP_ULTRAWIDE`) in any JS/TS that needs to branch on viewport size.
-- CSS cannot reference these constants natively — `@media` rules do not accept custom properties. CSS files must use the same pixel values literally (e.g. `@media (min-width: 900px)` to mean `BP_DESKTOP`). When a breakpoint value changes in the TS file, grep the old number in `*.module.css` and update each occurrence.
-- The canonical tiers are: `768px` (tablet), `900px` (desktop / immersive layout), `1800px` (wide), `2400px` (ultrawide). Mobile baseline (`<768px`) needs no query.
+- `src/utils/breakpoints.ts` is the single source of truth for viewport breakpoint values. Import the named constants (`BP_SMALL_TABLET`, `BP_TABLET`, `BP_DESKTOP`, `BP_WIDE`, `BP_ULTRAWIDE`) in any JS/TS that needs to branch on viewport size.
+- CSS cannot reference these constants natively — `@media` rules do not accept custom properties. CSS files must use the same pixel values literally (e.g. `@media (min-width: 900px)` to mean `BP_DESKTOP`). When a breakpoint value changes in the TS file, grep the old number in `*.module.css` and update each occurrence, including any `600px` uses.
+- The canonical tiers are: `600px` (small tablet / phone boundary, `BP_SMALL_TABLET`), `768px` (tablet), `900px` (desktop / immersive layout), `1800px` (wide), `2400px` (ultrawide). Mobile baseline needs no query.
 - Do not introduce new breakpoint values. If a layout genuinely needs a new tier, add it to the constants file first and document why.
 
 ## Testing
