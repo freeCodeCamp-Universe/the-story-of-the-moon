@@ -68,7 +68,7 @@
   );
 }
 
-@media (max-width: 767px) {
+@media (max-width: 599px) {
   .termFigure,
   .termDiptych {
     width: min(100%, var(--measure-text));
@@ -106,7 +106,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .basinCompareHint {
     display: flex;
     flex-direction: column;
@@ -142,7 +142,7 @@
   object-position: center center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .termDiptych {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
