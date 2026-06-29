@@ -589,8 +589,7 @@ describe('Ch4', () => {
     });
   });
 
-  it('should open the jump dropdown from the mobile rail trigger and reflect the active step in its name', async () => {
-    const user = userEvent.setup();
+  it('should not render tick buttons or the progress rail on mobile', async () => {
     setViewport({ desktop: false });
 
     render(<Ch4 />);
@@ -598,120 +597,18 @@ describe('Ch4', () => {
     const section = await screen.findByRole('region', {
       name: 'Apollo and Artemis missions',
     });
-    const sentinels = installTimelineLayout(section);
-
-    const trigger = await screen.findByRole('button', {
-      name: /Jump to a mission\. Step 1 of 11/i,
-    });
-    expect(trigger).toHaveAttribute('aria-haspopup', 'true');
-    expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    expect(trigger).toHaveAttribute('aria-controls', 'ch4-mission-dropdown');
-    expect(trigger).toHaveAccessibleName(
-      /Jump to a mission\. Step 1 of 11: Apollo 8/i
-    );
-    expect(trigger).not.toHaveAccessibleName(/Fifty-three years pass/i);
-
-    await user.click(trigger);
-
-    expect(trigger).toHaveAttribute('aria-expanded', 'true');
     expect(
-      screen.queryByRole('button', { name: /Fifty-three years pass/i })
+      within(section).queryByRole('list', { name: 'Timeline progress' })
     ).not.toBeInTheDocument();
+    expect(within(section).queryAllByRole('button')).toHaveLength(0);
+    expect(within(section).getAllByRole('article').length).toBeGreaterThan(0);
     expect(
-      screen.getByRole('button', { name: 'Interlude' })
+      within(section).getByText(/^Apollo 8 · Dec 21–27, 1968$/i)
     ).toBeInTheDocument();
-    const list = screen.getByRole('list');
-    expect(within(list).getAllByRole('button')).toHaveLength(sentinels.length);
-    expect(
-      screen.getByRole('button', { name: /Apollo 11/i })
-    ).toBeInTheDocument();
-  });
-
-  it('should close the jump dropdown when the rail trigger is clicked again', async () => {
-    const user = userEvent.setup();
-    setViewport({ desktop: false });
-
-    render(<Ch4 />);
-
-    const section = await screen.findByRole('region', {
-      name: 'Apollo and Artemis missions',
-    });
-    installTimelineLayout(section);
-
-    const trigger = await screen.findByRole('button', {
-      name: /Jump to a mission\. Step 1 of 11/i,
-    });
-
-    await user.click(trigger);
-    expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    expect(
-      screen.getByRole('button', { name: 'Interlude' })
-    ).toBeInTheDocument();
-
-    await user.click(trigger);
-    expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    expect(
-      screen.queryByRole('button', { name: 'Interlude' })
-    ).not.toBeInTheDocument();
-  });
-
-  it('should jump to the interlude row and close the dropdown on mobile', async () => {
-    const user = userEvent.setup();
-    setViewport({ desktop: false });
-
-    render(<Ch4 />);
-
-    const section = await screen.findByRole('region', {
-      name: 'Apollo and Artemis missions',
-    });
-    installTimelineLayout(section);
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: /Jump to a mission\. Step 1 of 11/i,
-      })
-    );
-    await user.click(screen.getByRole('button', { name: 'Interlude' }));
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole('button', { name: 'Interlude' })
-      ).not.toBeInTheDocument();
-    });
-
-    expect(
-      await screen.findByRole('button', { name: 'Jump to a mission.' })
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Fifty-three years pass/i })
-    ).not.toBeInTheDocument();
-    expect(screen.getByText('Fifty-three years pass.')).toBeInTheDocument();
-  });
-
-  it('should not render individual mission tick buttons on mobile', async () => {
-    setViewport({ desktop: false });
-
-    render(<Ch4 />);
-
-    await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
-    const trigger = screen.getByRole('button', {
-      name: /Jump to a mission\. Step 1 of 11/i,
-    });
-    expect(screen.getAllByRole('button')).toHaveLength(1);
-    const decorativeTicks = trigger.querySelector('[aria-hidden="true"]');
-    expect(decorativeTicks).not.toBeNull();
-    if (decorativeTicks) {
-      expect(
-        within(decorativeTicks as HTMLElement).queryAllByRole('button')
-      ).toHaveLength(0);
-    }
-    expect(
-      screen.queryByRole('button', { name: /Apollo 8, Dec 21–27, 1968/i })
-    ).not.toBeInTheDocument();
   });
 
   it('should apply the instant-cut deck class under reduced motion', async () => {
-    setViewport({ desktop: false, reducedMotion: true });
+    setViewport({ desktop: true, reducedMotion: true });
 
     const { container } = render(<Ch4 />);
     await screen.findByRole('region', { name: 'Apollo and Artemis missions' });
