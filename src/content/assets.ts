@@ -236,7 +236,7 @@ const assets = [
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
-      "Near side of Earth's Moon. NASA / Goddard Space Flight Center / Arizona State University.",
+      'Near side of the Moon. NASA / Goddard Space Flight Center / Arizona State University.',
     alt: "Near side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, with broad dark maria spread across the face.",
   },
   {
@@ -250,7 +250,7 @@ const assets = [
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
-      "Far side of Earth's Moon. NASA / Goddard Space Flight Center / Arizona State University.",
+      'Far side of the Moon. NASA / Goddard Space Flight Center / Arizona State University.',
     alt: "Far side of Earth's Moon as mapped from Lunar Reconnaissance Orbiter camera data, showing a brighter, densely cratered surface with almost no dark maria.",
   },
   {

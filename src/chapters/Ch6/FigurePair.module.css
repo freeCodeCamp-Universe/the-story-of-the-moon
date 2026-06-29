@@ -1,0 +1,37 @@
+.figurePair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  gap: var(--space-lg);
+  align-self: center;
+  width: min(
+    calc(100vw - (4 * var(--space-lg))),
+    calc(100% + (4 * var(--space-2xl)))
+  );
+  /* Wider than the prose column — center by shifting right half the parent
+     then back half our own width. */
+  position: relative;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.figurePair .figure {
+  width: 100%;
+}
+
+.figurePair .figureFrame {
+  aspect-ratio: 1 / 1;
+}
+
+.figurePair .figureImage,
+.figurePair .figureImage > img {
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .figurePair {
+    width: min(100%, var(--measure-text));
+    grid-template-columns: 1fr;
+  }
+}

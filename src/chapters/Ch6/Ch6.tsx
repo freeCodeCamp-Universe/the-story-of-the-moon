@@ -6,6 +6,7 @@ import type { AssetCredit } from '@/types/content';
 
 import { LunarSwirlScene } from './LunarSwirlScene';
 import { PolarIceFigure } from './PolarIceFigure';
+import { FigurePair } from './FigurePair';
 import styles from './Ch6.module.css';
 
 type ChapterFigureProps = {
@@ -35,8 +36,8 @@ function ChapterFigure({ credit }: ChapterFigureProps) {
 export default function Ch6() {
   const erlangerCredit = getAsset('erlanger-crater');
   const tranquillitatisCredit = getAsset('tranquillitatis-pit');
-  const moonNearSideCredit = getAsset('moon-near-side');
-  const moonFarSideCredit = getAsset('moon-far-side');
+  const moonNearSideCredit = getAsset('moon-near-side')!;
+  const moonFarSideCredit = getAsset('moon-far-side')!;
   const highLatWaterCredit = getAsset('ch6-high-latitude-water');
 
   return (
@@ -244,10 +245,10 @@ export default function Ch6() {
                 far side is rougher, paler, heavily cratered, and carries a
                 crust tens of kilometers thicker.
               </p>
-              <div className={styles.figurePair}>
-                <ChapterFigure credit={moonNearSideCredit} />
-                <ChapterFigure credit={moonFarSideCredit} />
-              </div>
+              <FigurePair
+                first={moonNearSideCredit}
+                second={moonFarSideCredit}
+              />
               <p>
                 For a body so small and so close to spherical, there is no clear
                 reason for the two halves to differ this much. Despite decades

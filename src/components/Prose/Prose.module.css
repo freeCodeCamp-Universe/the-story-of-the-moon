@@ -13,6 +13,11 @@
   margin-block-start: var(--space-lg);
 }
 
+.prose > div:not(:first-child):has(figure),
+.prose > figure:not(:first-child) {
+  margin-block: var(--space-xl);
+}
+
 /* Measure cap only — for prose nested in a cell whose parent already owns the
    gutter. Caps the text itself at --measure-text (no added gutter). */
 .flush {

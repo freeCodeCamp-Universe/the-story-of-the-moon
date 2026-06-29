@@ -67,27 +67,6 @@
   justify-self: center;
 }
 
-.figurePair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 100%;
-  gap: var(--space-lg);
-}
-
-.figurePair .figure {
-  width: 100%;
-}
-
-.figurePair .figureFrame {
-  aspect-ratio: 1 / 1;
-}
-
-.figurePair .figureImage,
-.figurePair .figureImage > img {
-  height: 100%;
-  object-fit: cover;
-}
-
 .figureFrame {
   overflow: hidden;
   border: 1px solid var(--color-border);
