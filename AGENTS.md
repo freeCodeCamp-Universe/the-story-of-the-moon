@@ -88,7 +88,7 @@ Reference implementations: `src/chapters/Ch1/GiantImpactDiagram.tsx` and `src/ch
 For a before/after or A/B comparison slider (`ImageCompareSlider` and any diptych built on it), the meaning is the comparison of the two images, not either one alone, and the reveal is a purely visual interaction. Treat the pair as one information-dense graphic with a single text alternative, following [WAI's complex-image guidance](https://www.w3.org/WAI/tutorials/images/complex/).
 
 - **Do not** expose the two layers as separately-navigable images. That makes a screen reader step through them one at a time, in DOM order rather than reading order.
-- **Mark both `<img>` layers decorative** (`alt=""` plus `aria-hidden="true"`).
+- **Mark both `<img>` layers decorative** (`alt=""`).
 - **Give the figure one combined description** that covers both views in a single pass, ordered original then derived view (e.g. the photo, then the topographic map). The component composes this from the `originalAlt` and `topographicAlt` props, exposes it once as screen-reader-only text in reading order, and links it to the slider handle via `aria-describedby`.
 - **Keep the slider operable** by mouse, touch, and keyboard, but do not let its value (the percentage revealed) or any drag/key hint carry the image meaning or repeat per layer. Those describe a visual-only interaction.
 - **Each per-image description** still lives in `src/content/assets.ts`, keyed to that specific image.

@@ -479,7 +479,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       "Surface water ice at the Moon's south pole, Moon Mineralogy Mapper (M3). NASA / JPL-Caltech, Li et al. 2018.",
-    alt: "Grayscale map of the Moon's south pole with cyan pixels marking detected water ice locations, densely clustered near the pole.",
+    alt: "Top-down polar-projection map of the Moon's south pole: a circular disc of grayscale, heavily cratered terrain centered on the pole, overlaid with small cyan dots that mark where the Moon Mineralogy Mapper detected surface-exposed water ice. The detections are relatively abundant and cluster tightly toward the pole, concentrated on the permanently shadowed floors of polar craters.",
   },
   {
     id: 'ch6-north-pole-ice',
@@ -495,7 +495,7 @@ const assets = [
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
       "Surface water ice at the Moon's north pole, Moon Mineralogy Mapper (M3). NASA / JPL-Caltech, Li et al. 2018.",
-    alt: "Grayscale map of the Moon's north pole with sparse cyan pixels marking scattered water ice detections.",
+    alt: "Top-down polar-projection map of the Moon's north pole: a circular disc of grayscale, heavily cratered terrain centered on the pole, overlaid with small cyan dots that mark where the Moon Mineralogy Mapper detected surface-exposed water ice. Here the detections are far sparser, thinly scattered and spread unevenly around the pole rather than gathered into a dense cluster.",
   },
 ] as const satisfies readonly AssetCredit[];
 

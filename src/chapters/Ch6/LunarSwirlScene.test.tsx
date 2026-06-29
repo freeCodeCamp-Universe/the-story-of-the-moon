@@ -4,42 +4,23 @@ import { describe, expect, it } from 'vitest';
 
 import { LunarSwirlScene } from './LunarSwirlScene';
 
-// Reduced motion is handled entirely in CSS (the overlay crossfade transitions
-// are removed under prefers-reduced-motion). The DOM and the control behavior
-// are identical either way, so there is no separate reduced-motion branch here.
-//
-// The section heading and prose (including the Lunar Vertex line) live in Ch6,
-// not in this interactive, so they are covered by Ch6's tests.
-
 describe('LunarSwirlScene', () => {
-  it('should render the real Reiner Gamma image with its credit', () => {
+  it('should render Original first with exactly one composite image and no switch', () => {
     render(<LunarSwirlScene />);
 
+    expect(screen.getAllByRole('img')).toHaveLength(1);
     expect(
-      screen.getByRole('img', { name: /Reiner Gamma/i })
+      screen.getByRole('img', { name: /reiner gamma/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/NASA \/ GSFC \/ Arizona State University/i)
-    ).toBeInTheDocument();
-  });
-
-  it('should show the original photo by default, with no caption or field switch', () => {
-    render(<LunarSwirlScene />);
-
-    expect(
-      screen.getByRole('radiogroup', { name: /Reiner Gamma view/i })
-    ).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Original' })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Annotated' })).not.toBeChecked();
+      screen.queryByRole('img', { name: /overlaid diagram/i })
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('switch', { name: /magnetic field/i })
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/turns the solar wind aside/i)
-    ).not.toBeInTheDocument();
   });
 
-  it('should reveal the shielded explanation with the field on when Annotated is chosen', async () => {
+  it('should show shielded annotated view with the field on and a polite consequence caption', async () => {
     const user = userEvent.setup();
     render(<LunarSwirlScene />);
 
@@ -48,14 +29,14 @@ describe('LunarSwirlScene', () => {
     expect(
       screen.getByRole('switch', { name: /magnetic field/i })
     ).toBeChecked();
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    expect(
+      screen.getByRole('img', { name: /arcs loop over the swirl/i })
+    ).toBeInTheDocument();
     expect(screen.getByText(/turns the solar wind aside/i)).toBeInTheDocument();
-    expect(screen.getByText(/turns the solar wind aside/i)).toHaveAttribute(
-      'aria-live',
-      'polite'
-    );
   });
 
-  it('should switch to the unshielded explanation when the magnetic field is turned off', async () => {
+  it('should switch to unshielded and update the accessible name and caption', async () => {
     const user = userEvent.setup();
     render(<LunarSwirlScene />);
 
@@ -65,25 +46,28 @@ describe('LunarSwirlScene', () => {
     expect(
       screen.getByRole('switch', { name: /magnetic field/i })
     ).not.toBeChecked();
-    expect(screen.getByText(/Research suggests/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/turns the solar wind aside/i)
-    ).not.toBeInTheDocument();
+      screen.getByRole('img', { name: /straight down onto the surface/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/reach the ground and slowly darken/i)
+    ).toBeInTheDocument();
   });
 
-  it('should return to the bare photo when Original is reselected', async () => {
+  it('should restore the shielded consequence when the field is turned back on', async () => {
     const user = userEvent.setup();
     render(<LunarSwirlScene />);
 
     await user.click(screen.getByRole('radio', { name: 'Annotated' }));
-    await user.click(screen.getByRole('radio', { name: 'Original' }));
+    await user.click(screen.getByRole('switch', { name: /magnetic field/i }));
+    await user.click(screen.getByRole('switch', { name: /magnetic field/i }));
 
     expect(
-      screen.queryByRole('switch', { name: /magnetic field/i })
-    ).not.toBeInTheDocument();
+      screen.getByRole('switch', { name: /magnetic field/i })
+    ).toBeChecked();
     expect(
-      screen.queryByText(/turns the solar wind aside/i)
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText(/Research suggests/i)).not.toBeInTheDocument();
+      screen.getByRole('img', { name: /arcs loop over the swirl/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/turns the solar wind aside/i)).toBeInTheDocument();
   });
 });

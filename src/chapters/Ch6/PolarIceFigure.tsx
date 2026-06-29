@@ -8,18 +8,18 @@ import { getAsset } from '@/content';
 
 import styles from './PolarIceFigure.module.css';
 
-type PoleId = 'south' | 'north';
+type PoleId = 'north' | 'south';
 
 const POLES = [
-  { id: 'south', label: 'South pole', mask: '/ch6/south-pole-ice-mask.png' },
   { id: 'north', label: 'North pole', mask: '/ch6/north-pole-ice-mask.png' },
+  { id: 'south', label: 'South pole', mask: '/ch6/south-pole-ice-mask.png' },
 ] as const satisfies readonly { id: PoleId; label: string; mask: string }[];
 
 export function PolarIceFigure() {
   const south = getAsset('ch6-south-pole-ice');
   const north = getAsset('ch6-north-pole-ice');
 
-  const [pole, setPole] = useState<PoleId>('south');
+  const [pole, setPole] = useState<PoleId>('north');
   const [highlight, setHighlight] = useState(false);
 
   if (!south || !north) {
@@ -27,7 +27,11 @@ export function PolarIceFigure() {
   }
 
   const current =
-    pole === 'south' ? { ...south, ...POLES[0] } : { ...north, ...POLES[1] };
+    pole === 'north' ? { ...north, ...POLES[0] } : { ...south, ...POLES[1] };
+
+  const figureLabel = highlight
+    ? `${current.alt} The detected water ice is highlighted in bright cyan against the dimmed relief.`
+    : current.alt;
 
   return (
     <figure className={styles.figure}>
@@ -51,13 +55,29 @@ export function PolarIceFigure() {
         />
       </div>
 
+      {/*
+       * The two stacked layers (base relief + brightened ice mask) are one
+       * composite graphic, exposed as a single image via role="img". Each <img>
+       * is alt="" ONLY: an <img> requires an alt attribute, alt="" already removes
+       * it from the accessibility tree, and aria-hidden would be redundant on a
+       * leaf image.
+       *
+       * The "Highlight ice" toggle is NOT decorative: dimming the relief and
+       * lighting the ice in cyan is how the figure communicates where the ice is
+       * and how it clusters. That information must reach screen readers, so the
+       * accessible name is state-aware (it gains the highlight clause when on) and
+       * the polite live region below announces the change on toggle and on pole
+       * switch. Do not revert this to a static, toggle-independent label.
+       */}
       <div
         className={`${styles.viewport}${highlight ? ` ${styles.isHighlighting}` : ''}`}
+        role="img"
+        aria-label={figureLabel}
       >
         <OptimizedImage
           className={styles.baseLayer}
           src={`/${current.file}`}
-          alt={current.alt}
+          alt=""
           draggable={false}
           loading="lazy"
         />
@@ -65,14 +85,13 @@ export function PolarIceFigure() {
           className={styles.iceLayer}
           src={current.mask}
           alt=""
-          aria-hidden="true"
           draggable={false}
           loading="lazy"
         />
       </div>
 
       <figcaption className={styles.figcaption}>
-        <CreditCaption credit={south} />
+        <CreditCaption credit={current} />
       </figcaption>
     </figure>
   );

@@ -195,7 +195,6 @@ export function ImageCompareSlider({
             avifSrcSet={topographicAvifSrcSet}
             sizes={sizes}
             alt=""
-            aria-hidden="true"
             loading="lazy"
           />
           <div className={styles.overlayLayer}>
@@ -205,7 +204,6 @@ export function ImageCompareSlider({
               avifSrcSet={originalAvifSrcSet}
               sizes={sizes}
               alt=""
-              aria-hidden="true"
               loading="lazy"
             />
           </div>

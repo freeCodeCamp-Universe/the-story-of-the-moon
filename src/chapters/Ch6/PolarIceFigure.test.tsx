@@ -26,69 +26,57 @@ describe('PolarIceFigure', () => {
       mockMatchMedia(false);
     });
 
-    it('should show the south pole by default with the source credit', () => {
+    it('should render the North pole first on initial mount', () => {
       render(<PolarIceFigure />);
 
-      expect(screen.getByRole('radio', { name: /south pole/i })).toBeChecked();
+      expect(screen.getByRole('radio', { name: /north pole/i })).toBeChecked();
+      expect(
+        screen.getByRole('img', { name: /north pole/i })
+      ).toBeInTheDocument();
+    });
+
+    it('should expose the composite as exactly one image', () => {
+      render(<PolarIceFigure />);
+
+      expect(screen.getAllByRole('img')).toHaveLength(1);
+      expect(
+        screen.getByRole('img', { name: /north pole/i })
+      ).toBeInTheDocument();
+    });
+
+    it('should update image name and credit when South is selected', async () => {
+      const user = userEvent.setup();
+      render(<PolarIceFigure />);
+
+      await user.click(screen.getByRole('radio', { name: /south pole/i }));
+
       expect(
         screen.getByRole('img', { name: /south pole/i })
       ).toBeInTheDocument();
       expect(
-        screen.getByText(
-          /Moon Mineralogy Mapper \(M3\)\. NASA \/ JPL-Caltech, Li et al\. 2018/i
-        )
+        screen.getByText(/Surface water ice at the Moon's south pole/i)
       ).toBeInTheDocument();
     });
 
-    it('should switch the map to the north pole when its radio is chosen', async () => {
+    it('should keep the composite image name and visible credit when Highlight ice is turned on', async () => {
       const user = userEvent.setup();
       render(<PolarIceFigure />);
 
-      await user.click(screen.getByRole('radio', { name: /north pole/i }));
+      await user.click(screen.getByRole('switch', { name: /highlight ice/i }));
 
-      expect(
-        screen.getByRole('img', { name: /north pole/i })
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByRole('img', { name: /south pole/i })
-      ).not.toBeInTheDocument();
+      expect(screen.getByRole('img')).toHaveAccessibleName(
+        /highlighted in bright cyan against the dimmed relief/i
+      );
+      expect(screen.getByRole('img')).toHaveAccessibleName(/north pole/i);
     });
 
-    it('should toggle the ice highlight off and on', async () => {
-      const user = userEvent.setup();
+    it('should not include highlight text in the image name when Highlight ice is off', async () => {
       render(<PolarIceFigure />);
 
-      const highlight = screen.getByRole('switch', { name: /highlight ice/i });
-      expect(highlight).not.toBeChecked();
-
-      await user.click(highlight);
-      expect(highlight).toBeChecked();
-
-      await user.click(highlight);
-      expect(highlight).not.toBeChecked();
-    });
-  });
-
-  describe('with reduced motion', () => {
-    beforeEach(() => {
-      mockMatchMedia(true);
-    });
-
-    it('should keep the pole and highlight controls (reduced motion only suppresses the transitions via CSS)', async () => {
-      const user = userEvent.setup();
-      render(<PolarIceFigure />);
-
-      expect(screen.getByRole('radio', { name: /south pole/i })).toBeChecked();
-      const highlight = screen.getByRole('switch', { name: /highlight ice/i });
-      expect(highlight).not.toBeChecked();
-
-      await user.click(screen.getByRole('radio', { name: /north pole/i }));
-      expect(
-        screen.getByRole('img', { name: /north pole/i })
-      ).toBeInTheDocument();
-
-      await user.click(highlight);
-      expect(highlight).toBeChecked();
+      expect(screen.getByRole('img')).toHaveAccessibleName(/north pole/i);
+      expect(screen.getByRole('img')).not.toHaveAccessibleName(
+        /highlighted in bright cyan against the dimmed relief/i
+      );
     });
   });
 });

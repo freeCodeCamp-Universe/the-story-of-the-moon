@@ -27,6 +27,11 @@ const MODES = [
   { value: 'explained', label: 'Annotated' },
 ] as const satisfies readonly { value: Mode; label: string }[];
 
+const SHIELDED_ANNOTATION =
+  'Overlaid diagram: white arcs loop over the swirl and incoming solar-wind arrows curve away to either side without reaching it.';
+const UNSHIELDED_ANNOTATION =
+  'Overlaid diagram: incoming solar-wind arrows run straight down onto the surface and dark blots settle over the swirl.';
+
 const SHIELDED_CAPTION =
   'A magnetic field arcs over the swirl and turns the solar wind aside before it reaches the ground, so the surface stays bright.';
 const UNSHIELDED_CAPTION =
@@ -37,6 +42,9 @@ export function LunarSwirlScene() {
   const [field, setField] = useState(true);
 
   const credit = getAsset('ch6-reiner-gamma');
+  if (!credit) {
+    return null;
+  }
 
   const explained = mode === 'explained';
   const view = !explained ? 'photo' : field ? 'shielded' : 'unshielded';
@@ -45,6 +53,12 @@ export function LunarSwirlScene() {
     : field
       ? SHIELDED_CAPTION
       : UNSHIELDED_CAPTION;
+  const figureLabel =
+    view === 'photo'
+      ? credit.alt
+      : view === 'shielded'
+        ? `${credit.alt} ${SHIELDED_ANNOTATION}`
+        : `${credit.alt} ${UNSHIELDED_ANNOTATION}`;
 
   return (
     <div className={styles.viz}>
@@ -67,19 +81,19 @@ export function LunarSwirlScene() {
         )}
       </div>
 
-      {caption && (
-        <p className={styles.caption} aria-live="polite">
-          {caption}
-        </p>
-      )}
+      {caption && <p className={styles.caption}>{caption}</p>}
 
       {credit && (
         <figure className={styles.figure}>
-          <div className={styles.figureFrame}>
+          <div
+            className={styles.figureFrame}
+            role="img"
+            aria-label={figureLabel}
+          >
             <OptimizedImage
               className={styles.figureImage}
               src={`/${credit.file}`}
-              alt={credit.alt}
+              alt=""
               loading="lazy"
             />
             <svg
