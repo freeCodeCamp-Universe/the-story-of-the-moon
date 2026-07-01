@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { Dialog } from '@/components/Dialog/Dialog';
 import { Kbd } from '@/components/Kbd/Kbd';
+import { useMoonRotationAnnouncement } from '@/hooks/useMoonRotationAnnouncement';
 import type { MoonSceneHandle } from '@/three/moonScene';
 import styles from './MoonExpandDialog.module.css';
 
@@ -27,32 +28,44 @@ export function MoonExpandDialog({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<MoonSceneHandle>(null);
+  const { announcement, scheduleAnnouncement } =
+    useMoonRotationAnnouncement(sceneRef);
 
-  const onKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
-    const STEP = (8 * Math.PI) / 180;
-    let deltaAzimuth = 0;
-    let deltaPolar = 0;
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      const STEP = (8 * Math.PI) / 180;
+      let deltaAzimuth = 0;
+      let deltaPolar = 0;
 
-    switch (event.key) {
-      case 'ArrowLeft':
-        deltaAzimuth = -STEP;
-        break;
-      case 'ArrowRight':
-        deltaAzimuth = STEP;
-        break;
-      case 'ArrowUp':
-        deltaPolar = -STEP;
-        break;
-      case 'ArrowDown':
-        deltaPolar = STEP;
-        break;
-      default:
-        return;
-    }
+      switch (event.key) {
+        case 'ArrowLeft':
+          deltaAzimuth = -STEP;
+          break;
+        case 'ArrowRight':
+          deltaAzimuth = STEP;
+          break;
+        case 'ArrowUp':
+          deltaPolar = -STEP;
+          break;
+        case 'ArrowDown':
+          deltaPolar = STEP;
+          break;
+        default:
+          return;
+      }
 
-    event.preventDefault();
-    sceneRef.current?.rotateBy({ deltaAzimuth, deltaPolar });
-  }, []);
+      event.preventDefault();
+      // Stop the keydown from bubbling to the background scene's own
+      // keyboard handler. Dialog renders a native <dialog> in place
+      // rather than through a portal, so it stays a DOM descendant of
+      // the background scene's key-handling wrapper — without this,
+      // one arrow press would rotate both scenes at once.
+      event.stopPropagation();
+      sceneRef.current?.rotateBy({ deltaAzimuth, deltaPolar });
+      scheduleAnnouncement();
+    },
+    [scheduleAnnouncement]
+  );
 
   useEffect(() => {
     if (!isOpen) {
@@ -115,6 +128,9 @@ export function MoonExpandDialog({
       >
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
       </div>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </p>
     </Dialog>
   );
 }

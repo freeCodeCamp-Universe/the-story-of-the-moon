@@ -1,7 +1,14 @@
 import { createRef } from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import {
   afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -116,6 +123,10 @@ describe('MoonExpandDialog', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should rotate the overlay scene with the arrow keys', async () => {
     const STEP = (8 * Math.PI) / 180;
 
@@ -169,6 +180,57 @@ describe('MoonExpandDialog', () => {
     fireEvent.keyDown(sceneGroup, { key: 'Enter' });
 
     expect(handle.rotateBy).not.toHaveBeenCalled();
+  });
+
+  it('should announce a debounced coordinate update to screen readers after keyboard rotation', async () => {
+    handle.getCameraLatLon.mockReturnValue({ lat: 12.3, lon: -45.6 });
+
+    render(<DialogHarness />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalled();
+    });
+
+    const sceneGroup = screen.getByRole('group', {
+      name: 'Interactive view of the Moon; drag or use arrow keys to rotate',
+    });
+    const liveRegion = document.querySelector('.sr-only[aria-live="polite"]');
+    if (!liveRegion) {
+      throw new Error('Expected a hidden rotation live region.');
+    }
+    expect(liveRegion.textContent).toBe('');
+
+    vi.useFakeTimers();
+    fireEvent.keyDown(sceneGroup, { key: 'ArrowRight' });
+
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+
+    expect(liveRegion.textContent).toContain('Viewing 12.3°N 45.6°W');
+  });
+
+  it('should not let arrow-key rotation bubble to an ancestor keydown handler', async () => {
+    const ancestorKeyDown = vi.fn();
+
+    render(
+      <div onKeyDown={ancestorKeyDown}>
+        <DialogHarness />
+      </div>
+    );
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalled();
+    });
+
+    const sceneGroup = screen.getByRole('group', {
+      name: 'Interactive view of the Moon; drag or use arrow keys to rotate',
+    });
+
+    fireEvent.keyDown(sceneGroup, { key: 'ArrowLeft' });
+
+    expect(handle.rotateBy).toHaveBeenCalledTimes(1);
+    expect(ancestorKeyDown).not.toHaveBeenCalled();
   });
 
   it('should dispose the overlay scene when it closes', async () => {

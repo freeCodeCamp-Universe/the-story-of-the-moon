@@ -747,4 +747,37 @@ describe('Ch2', () => {
     });
     expect(expandButton).toHaveFocus();
   });
+
+  it('should not also rotate the background scene when arrow keys are pressed inside the expanded dialog', async () => {
+    const user = userEvent.setup();
+    viewportState = {
+      isNearViewport: true,
+      isVisible: true,
+    };
+
+    render(<Ch2 />);
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Expand the Moon to full screen',
+      })
+    );
+
+    await waitFor(() => {
+      expect(createMoonScene).toHaveBeenCalledTimes(2);
+    });
+    sceneHandle.rotateBy.mockClear();
+
+    const dialogSceneGroup = screen.getByRole('group', {
+      name: 'Interactive view of the Moon; drag or use arrow keys to rotate',
+    });
+
+    fireEvent.keyDown(dialogSceneGroup, { key: 'ArrowLeft' });
+
+    expect(sceneHandle.rotateBy).toHaveBeenCalledTimes(1);
+  });
 });

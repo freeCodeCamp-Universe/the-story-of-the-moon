@@ -14,6 +14,10 @@ import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
 import { ScrollyChapter } from '@/components/ScrollyChapter/ScrollyChapter';
 import { getAsset, surfaceFeatures } from '@/content';
+import {
+  formatLatLon,
+  useMoonRotationAnnouncement,
+} from '@/hooks/useMoonRotationAnnouncement';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useViewportActivity } from '@/hooks/useViewportActivity';
 import type { SurfaceFeature } from '@/types/content';
@@ -43,12 +47,6 @@ const orientaleTopographicAvifSrcSet = [
   '/ch2/orientale-topographic-1600.avif 1600w',
 ].join(', ');
 
-function formatLatLon(lat: number, lon: number): string {
-  const latDir = lat >= 0 ? 'N' : 'S';
-  const lonDir = lon >= 0 ? 'E' : 'W';
-  return `${Math.abs(lat).toFixed(1)}°${latDir} ${Math.abs(lon).toFixed(1)}°${lonDir}`;
-}
-
 function getFeatureLabelText(
   feature: Pick<SurfaceFeature, 'name' | 'lat' | 'lon'>
 ) {
@@ -75,9 +73,7 @@ function Ch2Visual({
   const rafRef = useRef<number | null>(null);
   const showAnnotationRef = useRef(false);
   const hideTimer = useRef<number | null>(null);
-  const rotationAnnouncementTimerRef = useRef<number | null>(null);
   const idleTimerRef = useRef<number | null>(null);
-  const rotationAnnouncementToggleRef = useRef(false);
   const isInteractingRef = useRef(false);
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
@@ -91,7 +87,12 @@ function Ch2Visual({
     name: string;
     coords: string;
   } | null>(null);
-  const [rotationAnnouncement, setRotationAnnouncement] = useState('');
+  const {
+    announcement: rotationAnnouncement,
+    scheduleAnnouncement: scheduleRotationAnnouncement,
+    cancelAnnouncement: cancelRotationAnnouncement,
+    clearAnnouncement: clearRotationAnnouncement,
+  } = useMoonRotationAnnouncement(sceneRef);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
   const { targetRef, isNearViewport, isVisible } =
     useViewportActivity<HTMLDivElement>({
@@ -108,33 +109,6 @@ function Ch2Visual({
     if (annotationRef.current) {
       annotationRef.current.classList.toggle(styles.annotationVisible, visible);
     }
-  }, []);
-
-  const clearRotationAnnouncement = useCallback(() => {
-    if (rotationAnnouncementTimerRef.current) {
-      clearTimeout(rotationAnnouncementTimerRef.current);
-      rotationAnnouncementTimerRef.current = null;
-    }
-    setRotationAnnouncement('');
-  }, []);
-
-  const scheduleRotationAnnouncement = useCallback(() => {
-    if (rotationAnnouncementTimerRef.current) {
-      clearTimeout(rotationAnnouncementTimerRef.current);
-    }
-    rotationAnnouncementTimerRef.current = window.setTimeout(() => {
-      rotationAnnouncementTimerRef.current = null;
-      const cameraLatLon = sceneRef.current?.getCameraLatLon();
-      if (!cameraLatLon) {
-        return;
-      }
-      rotationAnnouncementToggleRef.current =
-        !rotationAnnouncementToggleRef.current;
-      const suffix = rotationAnnouncementToggleRef.current ? '\u200B' : '';
-      setRotationAnnouncement(
-        `Viewing ${formatLatLon(cameraLatLon.lat, cameraLatLon.lon)}${suffix}`
-      );
-    }, 600);
   }, []);
 
   const scheduleRecover = useCallback(() => {
@@ -273,10 +247,7 @@ function Ch2Visual({
       setAnnotationVisibility(false);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      if (rotationAnnouncementTimerRef.current) {
-        clearTimeout(rotationAnnouncementTimerRef.current);
-        rotationAnnouncementTimerRef.current = null;
-      }
+      cancelRotationAnnouncement();
     };
 
     const onPointerRelease = () => {
@@ -297,12 +268,14 @@ function Ch2Visual({
       canvas.removeEventListener('pointercancel', onPointerRelease);
       canvas.removeEventListener('pointerleave', onPointerRelease);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      if (rotationAnnouncementTimerRef.current) {
-        clearTimeout(rotationAnnouncementTimerRef.current);
-        rotationAnnouncementTimerRef.current = null;
-      }
+      cancelRotationAnnouncement();
     };
-  }, [scheduleRecover, scheduleRotationAnnouncement, setAnnotationVisibility]);
+  }, [
+    cancelRotationAnnouncement,
+    scheduleRecover,
+    scheduleRotationAnnouncement,
+    setAnnotationVisibility,
+  ]);
 
   // Keyboard rotation: arrow keys spin the Moon while the visual
   // region has focus. Same idle-recover behavior as drag — once the
@@ -411,15 +384,6 @@ function Ch2Visual({
     labelRevealDelay,
     reducedMotion,
   ]);
-
-  useEffect(() => {
-    return () => {
-      if (rotationAnnouncementTimerRef.current) {
-        clearTimeout(rotationAnnouncementTimerRef.current);
-        rotationAnnouncementTimerRef.current = null;
-      }
-    };
-  }, []);
 
   // RAF loop: keep the ring and label locked to the feature's projected
   // screen position each frame. Manipulating DOM directly avoids React
