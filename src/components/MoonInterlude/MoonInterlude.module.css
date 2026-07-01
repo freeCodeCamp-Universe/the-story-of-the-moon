@@ -4,7 +4,7 @@
   height: clamp(18rem, 54vh, 34rem);
   margin: 0;
   padding: 0;
-  background: transparent;
+  background: var(--gray-85);
   overflow: hidden;
   container-type: size;
 }
@@ -45,10 +45,17 @@
 .moonWrapper {
   position: absolute;
   inset-inline-start: 30cqi;
-  inset-block-start: 34cqb;
-  inline-size: min(31cqi, 57cqb);
-  block-size: min(31cqi, 57cqb);
+  inset-block-start: 38cqb;
+  inline-size: min(36cqi, 62cqb);
+  block-size: min(36cqi, 62cqb);
   transform: translate(-50%, -50%);
+}
+
+@media (min-width: 768px) {
+  .moonWrapper {
+    inline-size: min(31cqi, 57cqb);
+    block-size: min(31cqi, 57cqb);
+  }
 }
 
 .moonSvg {

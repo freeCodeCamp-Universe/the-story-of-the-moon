@@ -17,7 +17,7 @@
 
 .baseRing {
   /* very dim ring to keep focus on the spinning arc */
-  stroke: rgba(245, 246, 247, 0.12);
+  stroke: var(--color-loading-stroke);
   stroke-linecap: round;
 }
 

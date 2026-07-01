@@ -17,7 +17,7 @@
 }
 
 .dialog::backdrop {
-  background: rgba(10, 10, 35, 0.85);
+  background: var(--color-modal-backdrop);
 }
 
 .dialog[open] {

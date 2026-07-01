@@ -1,63 +1,90 @@
 /*
  * Design Tokens — The Story of the Moon
  *
- * Palette: freeCodeCamp "Command-line Chic" dark theme.
- * All hex values are the canonical fCC tokens (see the
- * command-line-chic SKILL reference). No invented blues.
+ * Three-layer architecture:
+ *   Layer 1  — Raw palette tokens (never change between themes)
+ *   Layer 2  — Semantic tokens with dark defaults
+ *   Layer 3  — Light overrides via media query and [data-theme] attribute
  *
- * Role mapping (dark mode):
- *   --color-bg            → gray-85  page body background
- *   --color-bg-raised     → gray-80  secondary background
- *   --color-bg-surface    → gray-75  cards, NavStrip, panels
- *   --color-border        → gray-75  subtle borders
- *   --color-text-muted    → gray-40  secondary text
- *   --color-text          → gray-05  primary foreground
- *   --color-accent        → blue     links, interactive, step markers
- *   --color-accent-warm   → yellow   CTAs, annotation rings
+ * freeCodeCamp "Command-line Chic" palette.
+ * Raw gray scale and accent pairs sourced from the canonical fCC token set.
  *
  * Contrast (WCAG 2.1 target: 7:1 for fCC):
- *   gray-05 (#f5f6f7) on gray-90 (#0a0a23)  ~17:1   ✓
- *   blue   (#99c9ff) on gray-90              ~10:1   ✓
- *   yellow (#f1be32) on gray-90              ~10:1   ✓
- *   gray-40 (#939393) on gray-90             ~6.32:1  ✓ (AA body)
+ *   Dark:  gray-05 (#f5f6f7) on gray-85 (#1b1b32)  ~13:1  ✓
+ *   Light: gray-90 (#0a0a23) on gray-05 (#f5f6f7)  ~17:1  ✓
+ *   gray-40 (#939393) on gray-85 (dark muted text)   ~5.5:1  ✓ AA body
+ *   gray-40 (#939393) on gray-80                     ~4.6:1  ✓ AA body
+ *   gray-50 (#626262) on gray-05 (light muted text)  ~5.6:1  ✓ AA body
+ *   gray-50 (#626262) on gray-10                     ~4.6:1  ✓ AA body
+ *   gray-45 (#858591) is reserved for disabled controls and code
+ *     comments (WCAG-exempt) — never use it for readable text.
+ *   blue-light (#99c9ff) on gray-85                 ~9:1   ✓
+ *   blue-dark  (#002ead) on gray-05                 ~9:1   ✓
  */
 
+/* ─────────────────────────────────────────────────────────────
+   Layer 1 — Raw palette (read-only, never used directly in
+   components — always reference a semantic token instead)
+   ───────────────────────────────────────────────────────────── */
 :root {
-  /* ── Colors: gray scale ───────────────────────────────────────── */
-  --color-bg: #1b1b32; /* gray-85 — page body */
-  --color-bg-raised: #2a2a40; /* gray-80 — cards, surfaces */
-  --color-bg-surface: #3b3b4f; /* gray-75 — highest elevation */
-  --color-disabled: #858591; /* gray-45 — disabled controls, inactive states */
-  --color-border: #3b3b4f; /* gray-75 */
-  --color-text-muted: #939393; /* gray-40 */
-  --color-text: #f5f6f7; /* gray-05 */
+  /* Gray scale */
+  --gray-00: #ffffff;
+  --gray-05: #f5f6f7;
+  --gray-10: #dfdfe2;
+  --gray-15: #d0d0d5;
+  --gray-40: #939393;
+  --gray-45: #858591;
+  --gray-50: #626262;
+  --gray-75: #3b3b4f;
+  --gray-80: #2a2a40;
+  --gray-85: #1b1b32;
+  --gray-90: #0a0a23;
 
-  /* ── Colors: accents ──────────────────────────────────────────── */
-  --color-accent: #99c9ff; /* blue — links, interactive, step marker */
-  --color-accent-warm: #f1be32; /* yellow — CTAs, annotation ring */
-  --color-accent-dim: #002ead; /* darker blue for active chrome on light accents */
-  --color-focus: #198eee; /* fCC focus ring */
+  /* Accent pairs */
+  --yellow-light: #f1be32;
+  --yellow-dark: #7b5e2c;
+  --blue-light: #99c9ff;
+  --blue-dark: #002ead;
+  --blue-mid: #198eee;
+}
 
-  /* ── Overlays ─────────────────────────────────────────────────── */
-  --color-overlay: rgba(27, 27, 50, 0.85); /* fCC modal overlay */
+/* ─────────────────────────────────────────────────────────────
+   Layer 2 — Semantic tokens (theme-independent)
+   Theme-dependent color tokens are declared only in the
+   [data-theme='light'] / [data-theme='dark'] blocks below.
+   `data-theme` is always set synchronously before first paint
+   (see the inline script in index.html), so there is no
+   rendered state that relies on a :root default for these.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --color-disabled: var(--gray-45);
+  --color-focus: var(--blue-mid);
 
-  /* ── Typography ───────────────────────────────────────────────── */
+  /* Modal/dialog dimming scrim. Always a dark tint regardless of
+     theme — it dims already-rendered page content rather than
+     matching the surface color, so it must not flip to a light
+     tint in light theme (that would wash dark text out instead
+     of dimming it). Unlike --color-overlay, this token has no
+     light-theme override. */
+  --color-modal-backdrop: rgba(10, 10, 35, 0.85);
+
+  /* ── Typography ───────────────────────────────────────────── */
   --font-prose:
     'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace;
 
-  --text-body: 1.125rem; /* 18px — fCC floor */
-  --text-body-mobile: 1.125rem; /* keep 18px — fCC floor */
-  --text-sm: 1rem; /* 16px — labels, captions (never body) */
-  --text-lg: 1.25rem; /* 20px */
-  --text-xl: 1.5rem; /* 24px */
-  --text-2xl: 2rem; /* 32px */
-  --text-3xl: 2.5rem; /* 40px */
+  --text-body: 1.125rem;
+  --text-body-mobile: 1.125rem;
+  --text-sm: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
 
   --line-height-prose: 1.7;
   --line-height-heading: 1.2;
 
-  /* ── Spacing ──────────────────────────────────────────────────── */
+  /* ── Spacing ──────────────────────────────────────────────── */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -68,43 +95,111 @@
   --space-4xl: 6rem;
   --space-5xl: 8rem;
 
-  /* ── Layout ───────────────────────────────────────────────────── */
-  /* Measure ladder — content-width tiers (see <Prose> + AGENTS.md). */
-  --measure-text: 36rem; /* body prose — reading column. Compact (≈64ch) up to the
-                            900px two-column breakpoint, widened to 42rem below. */
-  --measure-wide: 56rem; /* a chart sitting beside a legend (IsotopeMatchPlot)  */
-  --measure-frame: 84rem; /* multi-column framed sections + comparison grids    */
-  --measure-stage: 120rem; /* full-bleed interactive stage (scroll-driven)       */
-  --gutter: clamp(
-    1.5rem,
-    5vw,
-    5rem
-  ); /* continuous side safe-zone, no per-chapter steps */
+  /* ── Layout ───────────────────────────────────────────────── */
+  --measure-text: 36rem;
+  --measure-wide: 56rem;
+  --measure-frame: 84rem;
+  --measure-stage: 120rem;
+  --gutter: clamp(1.5rem, 5vw, 5rem);
   --nav-height: 3.25rem;
 
-  /* ── Radius ───────────────────────────────────────────────────── */
-  --radius: 4px; /* every rounded corner across the app */
-  --radius-pill: 999px; /* fully rounded pills (sliders, toggles) */
-  /* Circles use 50% inline; square resets use 0. */
+  /* ── Radius ───────────────────────────────────────────────── */
+  --radius: 4px;
+  --radius-pill: 999px;
 
-  /* ── Transitions ──────────────────────────────────────────────── */
+  /* ── Transitions ──────────────────────────────────────────── */
   --transition-fast: 80ms ease-out;
   --transition-base: 200ms ease-out;
   --transition-slow: 300ms ease-out;
 
-  /* ── Focus ────────────────────────────────────────────────────── */
+  /* ── Focus ────────────────────────────────────────────────── */
   --focus-ring: 2px solid var(--color-focus);
   --focus-ring-offset: 2px;
-
-  /* ── Active ────────────────────────────────────────────────────── */
-  --active-bg: rgba(153, 201, 255, 0.08);
 }
 
-/* Reading column widens once there's room for the two-column layout.
-   Below 900px (mobile + tablet, e.g. iPad portrait) the column stays
-   compact so lines don't run long against the full-width prose. */
+/* Reading column widens once there's room for the two-column layout. */
 @media (min-width: 900px) {
   :root {
     --measure-text: 42rem;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Layer 3 — Light/dark theme tokens
+   `data-theme` is always set on the root element before first
+   paint (see the inline script in index.html), so these are the
+   sole source of theme-dependent color values — no :root default
+   or prefers-color-scheme fallback is needed.
+   ───────────────────────────────────────────────────────────── */
+[data-theme='light'] {
+  /* ── Colors: surfaces ─────────────────────────────────────── */
+  --color-bg: var(--gray-05);
+  --color-bg-raised: var(--gray-10);
+  --color-bg-surface: var(--gray-15);
+  --color-border: var(--gray-15);
+
+  /* ── Colors: text ─────────────────────────────────────────── */
+  --color-text-muted: var(--gray-50);
+  --color-text: var(--gray-90);
+
+  /* ── Colors: accents ─────────────────────────────────────────── */
+  --color-accent: var(--blue-dark);
+  --color-accent-warm: var(--yellow-dark);
+  --color-accent-dim: var(--blue-light);
+  /* --yellow-light itself is too washed out against the light-theme
+     background, so magma gets its own deeper, still-saturated amber here
+     rather than reusing --color-accent-warm's muted light-theme value. */
+  --color-magma: #c27b00;
+
+  /* ── Colors: overlays ─────────────────────────────────────── */
+  --color-overlay: rgba(255, 255, 255, 0.85);
+  --active-bg: rgba(0, 46, 173, 0.08);
+
+  /* ── Colors: UI chrome ────────────────────────────────────── */
+  --color-nav-bg: rgba(245, 246, 247, 0.95);
+  --color-nav-border: rgba(59, 59, 79, 0.15);
+  --color-scrolly-overlay: var(--color-bg);
+  --color-loading-stroke: rgba(10, 10, 35, 0.12);
+  --color-slider-divider: rgba(10, 10, 35, 0.88);
+  --color-slider-handle-border: rgba(10, 10, 35, 0.92);
+  --color-slider-handle-fill: rgba(245, 246, 247, 0.9);
+  --color-slider-handle-stripe: rgba(10, 10, 35, 0.92);
+  --color-slider-badge-bg: rgba(245, 246, 247, 0.92);
+  --color-slider-badge-border: rgba(59, 59, 79, 0.35);
+  --color-dropdown-hover: rgba(0, 46, 173, 0.08);
+}
+
+[data-theme='dark'] {
+  /* ── Colors: surfaces ─────────────────────────────────────── */
+  --color-bg: var(--gray-85);
+  --color-bg-raised: var(--gray-80);
+  --color-bg-surface: var(--gray-75);
+  --color-border: var(--gray-75);
+
+  /* ── Colors: text ─────────────────────────────────────────── */
+  --color-text-muted: var(--gray-40);
+  --color-text: var(--gray-05);
+
+  /* ── Colors: accents ─────────────────────────────────────────── */
+  --color-accent: var(--blue-light);
+  --color-accent-warm: var(--yellow-light);
+  --color-accent-dim: var(--blue-dark);
+  --color-magma: var(--yellow-light);
+
+  /* ── Colors: overlays ─────────────────────────────────────── */
+  --color-overlay: rgba(10, 10, 35, 0.85);
+  --active-bg: rgba(153, 201, 255, 0.08);
+
+  /* ── Colors: UI chrome ────────────────────────────────────── */
+  --color-nav-bg: rgba(10, 10, 35, 0.92);
+  --color-nav-border: rgba(223, 223, 226, 0.08);
+  --color-scrolly-overlay: var(--color-bg);
+  --color-loading-stroke: rgba(245, 246, 247, 0.12);
+  --color-slider-divider: rgba(245, 246, 247, 0.88);
+  --color-slider-handle-border: rgba(245, 246, 247, 0.92);
+  --color-slider-handle-fill: rgba(27, 27, 50, 0.9);
+  --color-slider-handle-stripe: rgba(245, 246, 247, 0.92);
+  --color-slider-badge-bg: rgba(10, 10, 35, 0.82);
+  --color-slider-badge-border: rgba(223, 223, 226, 0.35);
+  --color-dropdown-hover: rgba(153, 201, 255, 0.08);
 }

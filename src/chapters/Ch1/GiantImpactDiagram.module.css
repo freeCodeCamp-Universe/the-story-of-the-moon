@@ -1,9 +1,13 @@
+/* One shared dark panel behind all four stages (space is dark regardless of
+   site theme). */
 .figure {
   width: 100%;
   max-width: 76rem;
   margin: 0 auto;
   padding-block: var(--space-lg) var(--space-xl);
   padding-inline: var(--space-md);
+  background-color: var(--gray-85);
+  border-radius: var(--radius);
 }
 
 .grid {
@@ -31,8 +35,7 @@
    tablet tier (matches Ch5's MagmaOceanStages). */
 @media (min-width: 768px) {
   .figure {
-    padding-block: var(--space-lg);
-    padding-inline: 0;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   /* Cap each stage to a fixed track and center the row (matches Ch5's
@@ -55,27 +58,31 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius);
 }
 
 .stars {
   isolation: isolate;
 }
 
+/* Labels sit on the forced-dark space background above, not the page
+   background, so they stay pinned to a fixed light color instead of
+   --color-text (which would flip to near-black in light theme). */
 .label {
-  fill: var(--color-text);
+  fill: var(--gray-05);
   font-family: var(--font-prose);
   font-size: var(--text-sm);
   font-weight: 700;
   text-anchor: middle;
 }
 
+/* Sits inside the same dark panel as the SVGs, so it stays pinned to a
+   fixed light color instead of --color-text. */
 .stageTitle {
   margin: 0;
   font-family: var(--font-prose);
   font-size: var(--text-body);
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--gray-05);
   text-align: center;
 }
 

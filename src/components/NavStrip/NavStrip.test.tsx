@@ -38,6 +38,7 @@ function setupChapterTargets() {
 function NavStripHarness() {
   const [shortcutsEnabled, setShortcutsEnabled] = useState(true);
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
+  const [darkThemeEnabled, setDarkThemeEnabled] = useState(true);
 
   return (
     <NavStrip
@@ -47,6 +48,8 @@ function NavStripHarness() {
       onShortcutsEnabledChange={setShortcutsEnabled}
       animationsEnabled={animationsEnabled}
       onAnimationsEnabledChange={setAnimationsEnabled}
+      darkThemeEnabled={darkThemeEnabled}
+      onDarkThemeEnabledChange={setDarkThemeEnabled}
     />
   );
 }
@@ -368,6 +371,9 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     const closeButton = screen.getByRole('button', { name: /close settings/i });
+    const darkThemeToggle = screen.getByRole('switch', {
+      name: /enable dark theme/i,
+    });
     const shortcutsToggle = screen.getByRole('switch', {
       name: /enable global keyboard shortcuts/i,
     });
@@ -378,6 +384,9 @@ describe('NavStrip', () => {
     expect(closeButton).toHaveFocus();
 
     await user.tab();
+    expect(darkThemeToggle).toHaveFocus();
+
+    await user.tab();
     expect(shortcutsToggle).toHaveFocus();
 
     await user.tab();
@@ -391,6 +400,9 @@ describe('NavStrip', () => {
 
     await user.tab({ shift: true });
     expect(shortcutsToggle).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(darkThemeToggle).toHaveFocus();
 
     await user.tab({ shift: true });
     expect(closeButton).toHaveFocus();
@@ -404,6 +416,24 @@ describe('NavStrip', () => {
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
     const toggle = screen.getByRole('switch', { name: /enable animations/i });
+    expect(toggle).toBeChecked();
+
+    await user.click(toggle);
+
+    expect(toggle).not.toBeChecked();
+    expect(
+      screen.getByRole('dialog', { name: 'Settings' })
+    ).toBeInTheDocument();
+  });
+
+  it('should let the user toggle the dark theme from the settings dialog', async () => {
+    const user = userEvent.setup();
+
+    render(<NavStripHarness />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+
+    const toggle = screen.getByRole('switch', { name: /enable dark theme/i });
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
@@ -447,11 +477,13 @@ describe('NavStrip', () => {
 
     await user.click(screen.getByRole('button', { name: /open settings/i }));
 
+    await user.tab();
+    await user.tab();
+
     const toggle = screen.getByRole('switch', {
       name: /enable global keyboard shortcuts/i,
     });
 
-    await user.tab();
     expect(toggle).toHaveFocus();
 
     await user.keyboard(' ');

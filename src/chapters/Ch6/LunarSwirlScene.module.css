@@ -79,7 +79,7 @@
    This dimmed steel-blue plus a dark halo keeps the lines legible on the image.
    Scene-local on purpose so the global palette stays the canonical fCC set. */
 .field {
-  stroke: #7aa7de;
+  stroke: #81bdff;
   filter: drop-shadow(0 0 2.5px #0d0d18) drop-shadow(0 0 1px #0d0d18);
 }
 

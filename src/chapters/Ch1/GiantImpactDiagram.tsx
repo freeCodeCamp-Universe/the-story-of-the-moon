@@ -223,12 +223,6 @@ function StageSvg({
       >
         <title id={titleId}>{stageTitle}</title>
         <desc id={descId}>{desc}</desc>
-        <rect
-          width={stageWidth}
-          height={stageHeight}
-          rx="12"
-          style={{ fill: 'var(--color-bg)' }}
-        />
         <StageDefs prefix={idPrefix} />
         <Stars stars={stars} />
         {children}

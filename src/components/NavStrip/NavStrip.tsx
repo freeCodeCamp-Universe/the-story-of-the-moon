@@ -16,6 +16,8 @@ type Props = {
   onShortcutsEnabledChange?: (enabled: boolean) => void;
   animationsEnabled?: boolean;
   onAnimationsEnabledChange?: (enabled: boolean) => void;
+  darkThemeEnabled?: boolean;
+  onDarkThemeEnabledChange?: (enabled: boolean) => void;
 };
 
 const GLOBAL_SHORTCUTS = [
@@ -56,6 +58,8 @@ export function NavStrip({
   onShortcutsEnabledChange,
   animationsEnabled = true,
   onAnimationsEnabledChange,
+  darkThemeEnabled = true,
+  onDarkThemeEnabledChange,
 }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
@@ -252,6 +256,18 @@ export function NavStrip({
         title="Settings"
         closeLabel="close settings"
       >
+        <div className={styles.preferenceCard}>
+          <Switch
+            label="Enable dark theme"
+            checked={darkThemeEnabled}
+            onChange={(checked) => onDarkThemeEnabledChange?.(checked)}
+            describedBy="settings-dark-theme-note"
+          />
+          <p id="settings-dark-theme-note" className={styles.sectionNote}>
+            When on, the dark theme is used.
+          </p>
+        </div>
+
         <div
           className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}
         >

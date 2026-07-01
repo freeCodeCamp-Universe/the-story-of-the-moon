@@ -6,7 +6,7 @@
   min-block-size: 1.6rem;
   padding-inline: var(--space-sm);
   padding-block: 0.3rem;
-  border: 1px solid rgba(223, 223, 226, 0.5);
+  border: 1px solid var(--color-text-muted);
   border-radius: var(--radius);
   background: var(--color-bg);
   font-family: var(--font-mono);

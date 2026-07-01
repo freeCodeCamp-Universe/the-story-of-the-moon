@@ -66,9 +66,9 @@ const FIELD_H = 0.9;
 // The disc scales with container aspect, so this keep-out ellipse is a tuned
 // approximation: sized to clear the moon on desktop, with extra halo on mobile.
 const MOON_CX = 0.3;
-const MOON_CY = 0.34;
+const MOON_CY = 0.38;
 const MOON_KEEPOUT_RX = 0.17;
-const MOON_KEEPOUT_RY = 0.24;
+const MOON_KEEPOUT_RY = 0.3;
 
 function generateStars(): Star[] {
   let seed = 1701;

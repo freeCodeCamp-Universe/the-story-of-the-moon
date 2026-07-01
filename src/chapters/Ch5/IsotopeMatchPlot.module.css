@@ -6,11 +6,31 @@
      renders near full scale. Axis titles and units are HTML, not SVG. */
   --chart-tick: 18px;
 
+  /* Per-body fill/rim, consumed by the [data-body] rules below for the beads,
+     lines, and legend swatches. The Moon's pale gray sits too close to the
+     light-theme panel background (--color-bg-raised, gray-10), so it gets an
+     override below: a brighter but still hueless (R=G=B) gray, not a warm
+     tone — a warm tint reads as orange once it sits next to gray-10's cool
+     cast, and it also drifts toward Mars's amber family. */
+  --isotope-moon-fill: #d6dade;
+  --isotope-moon-rim: #9aa1a8;
+  --isotope-earth-fill: #6fc3dd;
+  --isotope-earth-rim: #357f98;
+  --isotope-vesta-fill: #b0b57d;
+  --isotope-vesta-rim: #6e7344;
+  --isotope-mars-fill: #dd9b52;
+  --isotope-mars-rim: #a3672c;
+
   max-width: var(--measure-wide);
   /* Match the prose/.compare gutter so the panel never touches the edge. */
   padding-inline: var(--space-lg);
   margin-inline: auto;
   margin-block: var(--space-2xl);
+}
+
+:global([data-theme='light']) .figure {
+  --isotope-moon-fill: #c4c4c8;
+  --isotope-moon-rim: #6a6a70;
 }
 
 @media (min-width: 768px) {
@@ -63,6 +83,10 @@
   stroke: var(--color-border);
   stroke-width: 1;
   opacity: 0.5;
+}
+
+:global([data-theme='light']) .grid {
+  opacity: 0.7;
 }
 
 .axis {
@@ -120,6 +144,24 @@
     opacity 120ms ease;
 }
 
+/* Stroke is each body's rim (not fill) so the line reads clearly even for the
+   Moon, whose fill alone is too pale to show up as a line. */
+.bodyLine[data-body='moon'] {
+  stroke: var(--isotope-moon-rim);
+}
+
+.bodyLine[data-body='earth'] {
+  stroke: var(--isotope-earth-rim);
+}
+
+.bodyLine[data-body='vesta'] {
+  stroke: var(--isotope-vesta-rim);
+}
+
+.bodyLine[data-body='mars'] {
+  stroke: var(--isotope-mars-rim);
+}
+
 .bodyLine[data-active] {
   stroke-width: 2.75;
   opacity: 1;
@@ -134,6 +176,26 @@
 .bead {
   stroke-width: 1;
   transition: stroke-width 120ms ease;
+}
+
+.bead[data-body='moon'] {
+  fill: var(--isotope-moon-fill);
+  stroke: var(--isotope-moon-rim);
+}
+
+.bead[data-body='earth'] {
+  fill: var(--isotope-earth-fill);
+  stroke: var(--isotope-earth-rim);
+}
+
+.bead[data-body='vesta'] {
+  fill: var(--isotope-vesta-fill);
+  stroke: var(--isotope-vesta-rim);
+}
+
+.bead[data-body='mars'] {
+  fill: var(--isotope-mars-fill);
+  stroke: var(--isotope-mars-rim);
 }
 
 .beadGroup[data-active] .bead {
@@ -279,8 +341,27 @@
   inline-size: 0.85rem;
   block-size: 0.85rem;
   border-radius: 50%;
-  background-color: var(--swatch);
   flex: 0 0 auto;
+}
+
+.swatch[data-body='moon'] {
+  background-color: var(--isotope-moon-fill);
+  border: 1px solid var(--isotope-moon-rim);
+}
+
+.swatch[data-body='earth'] {
+  background-color: var(--isotope-earth-fill);
+  border: 1px solid var(--isotope-earth-rim);
+}
+
+.swatch[data-body='vesta'] {
+  background-color: var(--isotope-vesta-fill);
+  border: 1px solid var(--isotope-vesta-rim);
+}
+
+.swatch[data-body='mars'] {
+  background-color: var(--isotope-mars-fill);
+  border: 1px solid var(--isotope-mars-rim);
 }
 
 .legendName {

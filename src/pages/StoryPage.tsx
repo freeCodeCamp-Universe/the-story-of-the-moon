@@ -7,6 +7,7 @@ import { useAnimationsPreference } from '@/hooks/useAnimationsPreference';
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';
 import { useKeyboardNav } from '@/hooks/useKeyboardNav';
 import { useKeyboardShortcutsPreference } from '@/hooks/useKeyboardShortcutsPreference';
+import { useTheme } from '@/hooks/useTheme';
 import styles from './StoryPage.module.css';
 
 export default function StoryPage() {
@@ -14,6 +15,7 @@ export default function StoryPage() {
   const { shortcutsEnabled, setShortcutsEnabled } =
     useKeyboardShortcutsPreference();
   const { animationsEnabled, setAnimationsEnabled } = useAnimationsPreference();
+  const { darkThemeEnabled, setDarkThemeEnabled } = useTheme();
 
   useChapterFragmentSync(setActiveChapterId);
   useKeyboardNav(shortcutsEnabled);
@@ -62,6 +64,8 @@ export default function StoryPage() {
         onShortcutsEnabledChange={setShortcutsEnabled}
         animationsEnabled={animationsEnabled}
         onAnimationsEnabledChange={setAnimationsEnabled}
+        darkThemeEnabled={darkThemeEnabled}
+        onDarkThemeEnabledChange={setDarkThemeEnabled}
       />
       <main id="main" tabIndex={-1} className={styles.main}>
         <Chapter

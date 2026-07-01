@@ -220,8 +220,11 @@
   letter-spacing: 0.04em;
 }
 
-/* Matches the segmented controls in PolarIceFigure: transparent fill, a
-   hairline border, white glyph, and a surface fill on hover. */
+/* This button sits on the moon scene canvas, which is always rendered
+   dark regardless of the active light/dark theme. Pinned to the raw
+   dark-palette tokens (Layer 1 in tokens.css) instead of the
+   theme-flipping --color-* tokens, which would go illegible
+   (dark-on-dark) under the light theme. */
 .expandButton {
   position: absolute;
   inset-block-end: var(--space-sm);
@@ -233,10 +236,10 @@
   inline-size: 2.75rem;
   block-size: 2.75rem;
   padding: 0;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--gray-75);
   border-radius: var(--radius);
   background-color: transparent;
-  color: var(--color-text);
+  color: var(--gray-05);
   cursor: pointer;
   transition:
     border-color var(--transition-base),
@@ -253,12 +256,12 @@
 }
 
 .expandButton:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
+  color: var(--blue-light);
+  border-color: var(--blue-light);
 }
 
 .expandButton:active {
-  background-color: var(--active-bg);
+  background-color: rgba(153, 201, 255, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -333,6 +336,12 @@
   overflow-wrap: anywhere;
   background: var(--color-bg-raised);
   border-radius: var(--radius);
+  /* The label sits on the Moon photo, not the page background, and that
+   * photo is a fixed light/gray surface regardless of theme. A theme
+   * border alone (--color-border) is nearly as light as the box itself
+   * in light theme and disappears against bright terrain, so pin the
+   * edge to a raw dark-palette token for definition in both themes. */
+  border: 1px solid var(--gray-75);
 }
 
 @media (min-width: 768px) {
@@ -344,15 +353,19 @@
 }
 
 .label::before {
-  /* Leader dash from the feature point out to the text */
+  /* Leader dash from the feature point out to the text. It points at a
+   * spot on the Moon photo, which is always a light/gray surface no
+   * matter the active theme — --color-bg flips to a near-white value in
+   * light theme and the dash vanishes into the terrain. Pinned to a raw
+   * dark-palette token instead, same rationale as .label's border. */
   content: '';
   position: absolute;
   left: -16px;
   top: 50%;
   width: 14px;
   height: 2px;
-  background: var(--color-bg);
-  opacity: 0.8;
+  background: var(--gray-90);
+  opacity: 0.9;
 }
 
 /* When the feature sits in the right portion of the canvas, flip the

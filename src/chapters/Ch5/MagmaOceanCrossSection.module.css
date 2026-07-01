@@ -1,9 +1,9 @@
 /* Magma-ocean cross-section. Temperature maps to the palette honestly: the
- * molten interior is the warm accent glow (the band trapped between crust and
- * mantle), the solid mantle is mid gray, and the floated crust is near-white
- * (the bright highlands). Three regions only — kept at the chapter's altitude.
- * Each frame is a fixed stage; the only motion is the float/sink grains at the
- * cooling step. */
+ * molten interior is the --color-magma glow (the band trapped between crust
+ * and mantle), the solid mantle is mid gray, and the floated crust is
+ * near-white (the bright highlands). Three regions only — kept at the
+ * chapter's altitude. Each frame is a fixed stage; the only motion is the
+ * float/sink grains at the cooling step. */
 
 .svg {
   display: block;
@@ -33,7 +33,7 @@
 /* Molten interior. */
 
 .moltenHot {
-  stop-color: var(--color-accent-warm);
+  stop-color: var(--color-magma);
 }
 
 .moltenCool {
@@ -143,7 +143,7 @@
 
 .eruptionPlume {
   fill: none;
-  stroke: var(--color-accent-warm);
+  stroke: var(--color-magma);
   stroke-width: 3;
   stroke-linecap: round;
 }

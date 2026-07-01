@@ -45,20 +45,15 @@ const lineDelta17O = (delta18O: number, offset: number) =>
   SLOPE * delta18O + offset;
 
 type BodyStyle = {
-  fill: string;
-  rim: string;
   centerD18O: number;
   beads: number;
 };
 
-// App-harmonious categorical palette: pale gray Moon, cyan Earth, slate Vesta,
-// amber Mars. centerD18O is a representative whole-rock δ18O used to place each
-// cluster along its line.
 const BODY: Record<string, BodyStyle> = {
-  moon: { fill: '#d6dade', rim: '#9aa1a8', centerD18O: 5.7, beads: 11 },
-  earth: { fill: '#6fc3dd', rim: '#357f98', centerD18O: 5.3, beads: 11 },
-  vesta: { fill: '#b0b57d', rim: '#6e7344', centerD18O: 3.8, beads: 9 },
-  mars: { fill: '#dd9b52', rim: '#a3672c', centerD18O: 4.5, beads: 9 },
+  moon: { centerD18O: 5.7, beads: 11 },
+  earth: { centerD18O: 5.3, beads: 11 },
+  vesta: { centerD18O: 3.8, beads: 9 },
+  mars: { centerD18O: 4.5, beads: 9 },
 };
 
 // Legend order matches the lines top-to-bottom on the chart: Mars highest,
@@ -84,7 +79,7 @@ const BEADS: Record<string, Bead[]> = (() => {
     out[body.id] = Array.from({ length: style.beads }, () => {
       const d18 = style.centerD18O + (rng() - 0.5) * 0.9;
       const d17 = lineDelta17O(d18, body.delta17O) + (rng() - 0.5) * 0.12;
-      return { x: xPix(d18), y: yPix(d17), r: 4.5 + rng() * 2 };
+      return { x: xPix(d18), y: yPix(d17), r: 5.5 + rng() * 2.5 };
     });
   }
   return out;
@@ -331,12 +326,12 @@ export function IsotopeMatchPlot() {
                   <line
                     key={`line-${body.id}`}
                     className={styles.bodyLine}
+                    data-body={body.id}
                     data-active={isEmphasized(body.id) ? '' : undefined}
                     x1={xPix(X_MIN)}
                     y1={yPix(lineDelta17O(X_MIN, body.delta17O))}
                     x2={xPix(X_MAX)}
                     y2={yPix(lineDelta17O(X_MAX, body.delta17O))}
-                    stroke={BODY[body.id].fill}
                   />
                 ))}
               </g>
@@ -359,11 +354,10 @@ export function IsotopeMatchPlot() {
                     <circle
                       key={`${id}-${index}`}
                       className={styles.bead}
+                      data-body={id}
                       cx={bead.x}
                       cy={bead.y}
                       r={bead.r}
-                      fill={BODY[id].fill}
-                      stroke={BODY[id].rim}
                     />
                   ))}
                 </g>
@@ -413,11 +407,7 @@ export function IsotopeMatchPlot() {
             const body = isotopeBodies.find((b) => b.id === id);
             if (!body) return null;
             return (
-              <li
-                key={id}
-                className={styles.legendItem}
-                style={{ '--swatch': BODY[id].fill } as React.CSSProperties}
-              >
+              <li key={id} className={styles.legendItem}>
                 <button
                   type="button"
                   className={styles.legendButton}
@@ -429,7 +419,11 @@ export function IsotopeMatchPlot() {
                   onFocus={() => setHoveredId(id)}
                   onBlur={() => clearHover(id)}
                 >
-                  <span className={styles.swatch} aria-hidden="true" />
+                  <span
+                    className={styles.swatch}
+                    data-body={id}
+                    aria-hidden="true"
+                  />
                   <span className={styles.legendName}>{body.name}</span>
                   <span className="sr-only">{`, delta 17 O ${spokenValue(body.valueLabel)} parts per thousand. ${body.detail}`}</span>
                 </button>

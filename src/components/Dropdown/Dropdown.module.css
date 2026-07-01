@@ -27,7 +27,7 @@
 }
 
 .item:hover {
-  background-color: rgba(142, 203, 217, 0.08);
+  background-color: var(--color-dropdown-hover);
   color: var(--color-accent);
 }
 
