@@ -120,6 +120,15 @@ Reference implementation: `src/components/ImageCompareSlider/ImageCompareSlider.
 - Keep focus behavior intentional, especially for dialogs, dropdowns, and pinned, scroll-driven sections (the stage stays fixed while content advances).
 - Keyboard-hint UI is a desktop-tier (`900px`) affordance. The NavStrip keyboard-shortcuts button and the "Enable global keyboard shortcuts" settings toggle are hidden below `900px` (`NavStrip.module.css`). Any visible hint that advertises keys (e.g. Ch4's timeline hint, Ch2's arrow-key rotation glyphs) must follow the same boundary: hide it below `900px` and surface touch/tap guidance instead. Match the NavStrip pattern with `@media (max-width: 899px) { display: none }`, or reveal at `@media (min-width: 900px)`. This does not gate the keyboard behavior itself (chapter-local arrow/bracket handling still works with an attached keyboard); it only governs when the hint text is shown.
 
+### Chapter Drawer
+
+The primary navigation UI is the chapter drawer: a slide-in `<dialog>` panel (`ChapterDrawer`, built on the generic `Drawer` + `useModalDialog`) listing every chapter and its curated subsections, with scroll-spy highlighting and section-aware scrolling. It is spread across a data model, two shared components, two hooks, and a custom-event protocol. **Read `docs/chapter-drawer.md` before changing any of it.** The load-bearing contracts:
+
+- **Subsections live in `src/data/chapters.ts`.** Each `section.id` must be the `id` of a real heading element in that chapter's DOM (`useActiveSection` and section-scroll both resolve it via `getElementById`; a missing element is silently inert). To add one: put a stable `id` on the heading (convention: `ch<N>-...-heading`) and add the matching `{ id, title }` entry.
+- **Pinned/scrolly chapters must claim their own section navigation.** `scrollToSectionId` dispatches a cancelable `SECTION_NAV_EVENT`; a plain `scrollIntoView` is the fallback only if no chapter calls `preventDefault()`. A section anchor inside a tall pinned stage (Ch4) or a scrolly step (`ScrollyChapter`) lands mid-stage under the default scroll, so the owning chapter must listen, claim the event, and run its own scroll math.
+- **Reuse `Drawer` for any future edge panel** rather than re-implementing the `<dialog>`. It already provides the focus trap, scroll lock, backdrop/Escape close, and focus restore, and focuses the title (not the close button) on open for list reading order.
+- **Overlay stacking uses the z-index tokens** in `src/styles/tokens.css` (`--z-header`, `--z-overlay`, `--z-skip-link`), not literal values.
+
 ## Validation
 
 - Prefer targeted validation first: run the narrowest relevant test file for the change.

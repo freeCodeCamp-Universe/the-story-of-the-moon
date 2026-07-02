@@ -12,7 +12,7 @@ const READING_LINE = 0.5;
 /**
  * Tracks which chapter subsection the reader is currently in, to drive the
  * active-subsection highlight in the chapter drawer. Returns the id of the
- * section whose heading most recently scrolled above a reading line at 30% of
+ * section whose heading most recently scrolled above a reading line at 50% of
  * the viewport height, or `null` when the reader is still above the first
  * section.
  *
