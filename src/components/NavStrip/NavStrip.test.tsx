@@ -18,6 +18,9 @@ const originalNavigatorPlatform = window.navigator.platform;
 const originalDialogShowModal =
   globalThis.HTMLDialogElement?.prototype.showModal;
 const originalDialogClose = globalThis.HTMLDialogElement?.prototype.close;
+// jsdom does not implement scrollIntoView; the drawer calls it on open to reveal
+// the active row. Per-section instance mocks in setupChapterTargets shadow this.
+const originalScrollIntoView = globalThis.HTMLElement?.prototype.scrollIntoView;
 
 function setupChapterTargets() {
   const scrollSpies = new Map<string, ReturnType<typeof vi.fn>>();
@@ -84,9 +87,20 @@ describe('NavStrip', () => {
         },
       });
     }
+
+    globalThis.HTMLElement.prototype.scrollIntoView = () => {};
   });
 
   afterAll(() => {
+    if (originalScrollIntoView) {
+      globalThis.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+    } else {
+      Reflect.deleteProperty(
+        globalThis.HTMLElement.prototype,
+        'scrollIntoView'
+      );
+    }
+
     if (globalThis.HTMLDialogElement) {
       if (originalDialogShowModal) {
         Object.defineProperty(
@@ -149,7 +163,7 @@ describe('NavStrip', () => {
     expect(screen.queryByLabelText('next chapter')).not.toBeInTheDocument();
   });
 
-  it('should open the chapter dropdown and navigate to the selected chapter', async () => {
+  it('should open the chapter drawer and navigate to the selected chapter', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     const scrollSpies = setupChapterTargets();
@@ -166,6 +180,11 @@ describe('NavStrip', () => {
     await user.click(
       screen.getByRole('button', { name: /open chapter list/i })
     );
+
+    expect(
+      screen.getByRole('dialog', { name: 'Chapters' })
+    ).toBeInTheDocument();
+
     await user.click(
       screen.getByRole('button', { name: '3. A partner that steadies Earth' })
     );
@@ -174,10 +193,20 @@ describe('NavStrip', () => {
     expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
       behavior: 'smooth',
     });
+    expect(
+      screen.queryByRole('dialog', { name: 'Chapters' })
+    ).not.toBeInTheDocument();
   });
 
-  it('should close the chapter dropdown when clicking elsewhere in the header', async () => {
+  it('should scroll to a subsection and close the drawer when a subsection is selected', async () => {
     const user = userEvent.setup();
+    setupChapterTargets();
+
+    const sectionTarget = document.createElement('section');
+    sectionTarget.id = 'ch2-crater-heading';
+    const sectionScrollSpy = vi.fn();
+    sectionTarget.scrollIntoView = sectionScrollSpy;
+    document.body.append(sectionTarget);
 
     render(
       <NavStrip
@@ -191,15 +220,40 @@ describe('NavStrip', () => {
     await user.click(
       screen.getByRole('button', { name: /open chapter list/i })
     );
+    await user.click(screen.getByRole('button', { name: 'Crater' }));
+
+    expect(sectionScrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(
+      screen.queryByRole('dialog', { name: 'Chapters' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should close the chapter drawer and restore focus to the trigger via the close button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NavStrip
+        activeChapterId="chapter-2"
+        onNavigate={vi.fn()}
+        shortcutsEnabled
+        onShortcutsEnabledChange={vi.fn()}
+      />
+    );
+
+    const trigger = screen.getByRole('button', { name: /open chapter list/i });
+    await user.click(trigger);
     expect(
       screen.getByRole('button', { name: '3. A partner that steadies Earth' })
     ).toBeInTheDocument();
 
-    await user.click(screen.getByText('The Story of the Moon'));
+    await user.click(
+      screen.getByRole('button', { name: /close chapter list/i })
+    );
 
     expect(
-      screen.queryByRole('button', { name: '3. A partner that steadies Earth' })
+      screen.queryByRole('dialog', { name: 'Chapters' })
     ).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it('should show next, previous, and direct chapter keyboard shortcuts', async () => {
