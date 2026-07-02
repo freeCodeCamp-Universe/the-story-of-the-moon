@@ -1,7 +1,31 @@
-import { useRef, type ReactNode, type RefObject } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { IconButton } from '@/components/IconButton/IconButton';
 import { useModalDialog } from '@/hooks/useModalDialog';
 import styles from './Drawer.module.css';
+
+/**
+ * Longest transition duration (ms) declared on the element. Returns 0 when
+ * nothing transitions — reduced motion (CSS sets `transition: none`) or a test
+ * environment where no stylesheet is applied — so the drawer unmounts at once
+ * instead of waiting on a transitionend that will never fire.
+ */
+function getTransitionDurationMs(element: HTMLElement): number {
+  return getComputedStyle(element)
+    .transitionDuration.split(',')
+    .reduce((max, part) => {
+      const trimmed = part.trim();
+      const value = parseFloat(trimmed);
+      if (!Number.isFinite(value)) return max;
+      const ms = trimmed.endsWith('ms') ? value : value * 1000;
+      return Math.max(max, ms);
+    }, 0);
+}
 
 function CloseIcon() {
   return (
@@ -48,6 +72,7 @@ export function Drawer({
   children,
 }: Props) {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const [isRendered, setIsRendered] = useState(isOpen);
   const { dialogRef, closeButtonRef, dialogProps } = useModalDialog({
     isOpen,
     onClose,
@@ -55,7 +80,57 @@ export function Drawer({
     initialFocusRef: titleRef,
   });
 
-  if (!isOpen) return null;
+  // Mount synchronously the moment isOpen turns true (adjusting state during
+  // render), so useModalDialog sees the <dialog> and calls showModal on the
+  // same commit rather than a frame late.
+  if (isOpen && !isRendered) {
+    setIsRendered(true);
+  }
+
+  // Keep the <dialog> mounted through its slide-out, then unmount. Removing it
+  // the instant isOpen flips false would tear it from the DOM before the exit
+  // transition could play — only the enter half is covered by @starting-style.
+  useEffect(() => {
+    if (isOpen || !isRendered) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      setIsRendered(false);
+      return;
+    }
+
+    const durationMs = getTransitionDurationMs(dialog);
+    if (durationMs <= 0) {
+      setIsRendered(false);
+      return;
+    }
+
+    let settled = false;
+    const finish = (event?: TransitionEvent) => {
+      // Ignore transitionend bubbling up from row children (their background /
+      // color transitions); wait for the panel's own transform to land, with
+      // the timeout as the backstop.
+      if (
+        event &&
+        (event.target !== dialog || event.propertyName !== 'transform')
+      ) {
+        return;
+      }
+      if (settled) return;
+      settled = true;
+      setIsRendered(false);
+    };
+
+    dialog.addEventListener('transitionend', finish);
+    const timeoutId = window.setTimeout(finish, durationMs + 50);
+
+    return () => {
+      dialog.removeEventListener('transitionend', finish);
+      window.clearTimeout(timeoutId);
+    };
+  }, [isOpen, isRendered, dialogRef]);
+
+  if (!isRendered) return null;
 
   return (
     <dialog

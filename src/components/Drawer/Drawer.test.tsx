@@ -175,6 +175,59 @@ describe('Drawer', () => {
     expect(trigger).toHaveFocus();
   });
 
+  it('should stay mounted through the slide-out and unmount when it ends', async () => {
+    const user = userEvent.setup();
+
+    // jsdom applies no stylesheet, so the drawer normally reports a 0s exit and
+    // unmounts at once. Force a real duration to exercise the deferred path.
+    const originalGetComputedStyle = window.getComputedStyle.bind(window);
+    const getComputedStyleSpy = vi
+      .spyOn(window, 'getComputedStyle')
+      .mockImplementation((element, pseudoElement) => {
+        const style = originalGetComputedStyle(element, pseudoElement);
+        Object.defineProperty(style, 'transitionDuration', {
+          configurable: true,
+          value: '0.3s',
+        });
+        return style;
+      });
+
+    // jsdom's fireEvent.transitionEnd omits propertyName, so build the event by
+    // hand to exercise the property/target guards the way a browser fires them.
+    const transitionEnd = (target: Element, propertyName: string) => {
+      const event = new Event('transitionend', { bubbles: true });
+      Object.defineProperty(event, 'propertyName', { value: propertyName });
+      fireEvent(target, event);
+    };
+
+    render(<DrawerHarness />);
+
+    await user.click(screen.getByRole('button', { name: 'open drawer' }));
+    const drawer = screen.getByRole('dialog', { name: 'Test drawer' });
+    const childRow = screen.getByRole('button', { name: 'first action' });
+
+    await user.click(
+      screen.getByRole('button', { name: /close test drawer/i })
+    );
+
+    // Still in the DOM while the panel slides out.
+    expect(drawer).toBeInTheDocument();
+
+    // A child row's transform transition bubbling up must not cut it short.
+    transitionEnd(childRow, 'transform');
+    expect(drawer).toBeInTheDocument();
+
+    // Neither should a non-transform transition on the panel itself.
+    transitionEnd(drawer, 'background-color');
+    expect(drawer).toBeInTheDocument();
+
+    // The panel's own transform landing unmounts it.
+    transitionEnd(drawer, 'transform');
+    expect(drawer).not.toBeInTheDocument();
+
+    getComputedStyleSpy.mockRestore();
+  });
+
   it('should close when the backdrop is clicked', () => {
     render(<DrawerHarness />);
 

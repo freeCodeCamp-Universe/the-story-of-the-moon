@@ -22,13 +22,23 @@
   background: var(--color-bg-raised);
   color: var(--color-text);
   outline: none;
-  /* transform is exempt from the logical-property rule; the slide direction is
-     flipped for RTL via :dir(rtl) below. */
+  /* Closed rest state: parked off-screen past the inline-end edge. The panel
+     stays mounted through its slide-out (Drawer.tsx defers the unmount), so
+     this is the transform it animates back to on close — the exit counterpart
+     to the @starting-style enter below. transform is exempt from the
+     logical-property rule; the direction is flipped for RTL via :dir(rtl). */
+  transform: translateX(100%);
   transition: transform var(--transition-slow);
 }
 
+.drawer:dir(rtl) {
+  transform: translateX(-100%);
+}
+
+/* Open rest state. Declared after the :dir(rtl) closed rule (equal specificity)
+   so it wins for an open drawer in both writing directions. */
 .drawer[open] {
-  display: flex;
+  transform: none;
 }
 
 /* Enter slide: start off-screen past the inline-end edge, settle to 0. */
