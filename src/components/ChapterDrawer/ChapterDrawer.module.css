@@ -1,0 +1,84 @@
+/* ChapterDrawer — nested chapter + subsection list rendered inside the Drawer. */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding-block: var(--space-xs);
+  padding-inline: 0;
+}
+
+.sectionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  background: none;
+  border: none;
+  text-align: start;
+  white-space: normal;
+  cursor: pointer;
+  /* Wider start gutter reserves room for the absolute caret so active rows
+     never indent past inactive ones. */
+  padding-inline-end: var(--space-lg);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.item:hover {
+  background-color: var(--color-dropdown-hover);
+  color: var(--color-accent);
+}
+
+.item:active {
+  opacity: 0.6;
+  transition-duration: var(--transition-fast);
+}
+
+.item:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
+  border-radius: var(--radius);
+}
+
+.chapterItem {
+  padding-block: var(--space-sm);
+  padding-inline-start: calc(var(--space-xl) + var(--space-sm));
+  font-size: 1rem;
+}
+
+.sectionItem {
+  padding-block: var(--space-xs);
+  padding-inline-start: calc(var(--space-2xl) + var(--space-lg));
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.sectionItem:hover {
+  color: var(--color-accent);
+}
+
+.itemActive {
+  color: var(--color-accent);
+}
+
+/* Absolute so the caret lives in the start gutter and never shifts the label. */
+.itemActive::before {
+  content: '>';
+  position: absolute;
+}
+
+.chapterItem.itemActive::before {
+  inset-inline-start: var(--space-md);
+}
+
+.sectionItem.itemActive::before {
+  inset-inline-start: var(--space-xl);
+}
