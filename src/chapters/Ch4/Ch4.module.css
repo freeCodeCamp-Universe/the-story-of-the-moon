@@ -79,6 +79,14 @@
   flex: 1.5 1 0;
 }
 
+/* The first mission gets extra dwell so it stays the active step once the
+ * stage pins at the top. Without it, band 0 ends just above the mid-viewport
+ * trigger line at the pinned-top rest position, so the next mission would read
+ * as active there (e.g. after a jump to the start of the timeline). */
+.sentinelTrack > .sentinel:first-child {
+  flex: 2 1 0;
+}
+
 /* The final mission gets extra dwell so it doesn't fly past on a single
  * scroll gesture before the pin releases. */
 .sentinelTrack > .sentinel:last-child {

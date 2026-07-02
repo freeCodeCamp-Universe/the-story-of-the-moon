@@ -43,50 +43,63 @@ export function ChapterDrawer({
       closeLabel="close chapter list"
     >
       <ol className={styles.list}>
-        {CHAPTERS.map((chapter) => {
-          const isActiveChapter = chapter.id === activeChapterId;
-          const chapterHasActiveSection =
-            isActiveChapter &&
-            chapter.sections.some((section) => section.id === activeSectionId);
-          const markChapter = isActiveChapter && !chapterHasActiveSection;
+        {/* The section tracker reports the last heading scrolled past, which
+            lingers on a previous chapter's subsection after you move on. Honor
+            the active section only while its own chapter is the active chapter,
+            so the caret follows the reader instead of sticking. When a section
+            is active, no chapter row carries the caret. */}
+        {(() => {
+          const activeSectionOwnerId = activeSectionId
+            ? (CHAPTERS.find((chapter) =>
+                chapter.sections.some(
+                  (section) => section.id === activeSectionId
+                )
+              )?.id ?? null)
+            : null;
+          const currentSectionId =
+            activeSectionOwnerId === activeChapterId ? activeSectionId : null;
 
-          return (
-            <li key={chapter.id}>
-              <button
-                ref={markChapter ? activeItemRef : undefined}
-                type="button"
-                className={`${styles.item} ${styles.chapterItem}${markChapter ? ` ${styles.itemActive}` : ''}`}
-                aria-current={markChapter ? 'true' : undefined}
-                onClick={() => onSelectChapter(chapter.id)}
-              >
-                {chapter.index}. {chapter.title}
-              </button>
+          return CHAPTERS.map((chapter) => {
+            const markChapter =
+              chapter.id === activeChapterId && currentSectionId === null;
 
-              {chapter.sections.length > 0 && (
-                <ul className={styles.sectionList}>
-                  {chapter.sections.map((section) => {
-                    const isSectionActive =
-                      isActiveChapter && section.id === activeSectionId;
+            return (
+              <li key={chapter.id}>
+                <button
+                  ref={markChapter ? activeItemRef : undefined}
+                  type="button"
+                  className={`${styles.item} ${styles.chapterItem}${markChapter ? ` ${styles.itemActive}` : ''}`}
+                  aria-current={markChapter ? 'true' : undefined}
+                  onClick={() => onSelectChapter(chapter.id)}
+                >
+                  {chapter.index}. {chapter.title}
+                </button>
 
-                    return (
-                      <li key={section.id}>
-                        <button
-                          ref={isSectionActive ? activeItemRef : undefined}
-                          type="button"
-                          className={`${styles.item} ${styles.sectionItem}${isSectionActive ? ` ${styles.itemActive}` : ''}`}
-                          aria-current={isSectionActive ? 'true' : undefined}
-                          onClick={() => onSelectSection(section.id)}
-                        >
-                          {section.title}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          );
-        })}
+                {chapter.sections.length > 0 && (
+                  <ul className={styles.sectionList}>
+                    {chapter.sections.map((section) => {
+                      const isSectionActive = section.id === currentSectionId;
+
+                      return (
+                        <li key={section.id}>
+                          <button
+                            ref={isSectionActive ? activeItemRef : undefined}
+                            type="button"
+                            className={`${styles.item} ${styles.sectionItem}${isSectionActive ? ` ${styles.itemActive}` : ''}`}
+                            aria-current={isSectionActive ? 'true' : undefined}
+                            onClick={() => onSelectSection(section.id)}
+                          >
+                            {section.title}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            );
+          });
+        })()}
       </ol>
     </Drawer>
   );

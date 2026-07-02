@@ -17,12 +17,12 @@ export const CHAPTERS = [
     title: 'A face written by impacts',
     question: 'Why does it look like that?',
     sections: [
+      { id: 'ch2-crater-heading', title: 'Crater' },
+      { id: 'ch2-basin-heading', title: 'Basin' },
       {
         id: 'ch2-surface-features-heading',
         title: 'Surface features of the Moon',
       },
-      { id: 'ch2-crater-heading', title: 'Crater' },
-      { id: 'ch2-basin-heading', title: 'Basin' },
     ],
   },
   {
@@ -31,24 +31,12 @@ export const CHAPTERS = [
     title: 'A partner that steadies Earth',
     question: 'Why does the Moon matter to Earth?',
     sections: [
-      {
-        id: 'ch3-tides-heading',
-        title: "Tides are the Moon's most visible signature",
-      },
-      { id: 'ch3-tilt-heading', title: "The Moon steadies Earth's tilt" },
-      { id: 'ch3-wander-heading', title: 'A moonless Earth would wander' },
-      {
-        id: 'ch3-reflected-heading',
-        title: 'When sunlight is reflected straight back to Earth',
-      },
-      {
-        id: 'ch3-filtered-heading',
-        title: "When sunlight is filtered through Earth's atmosphere",
-      },
-      {
-        id: 'ch3-blocked-heading',
-        title: 'When sunlight is blocked by the Moon',
-      },
+      { id: 'ch3-tides-heading', title: 'Tides' },
+      { id: 'ch3-tilt-heading', title: 'Axial stabilization' },
+      { id: 'ch3-wander-heading', title: 'Without the Moon' },
+      { id: 'ch3-reflected-heading', title: 'Full moon' },
+      { id: 'ch3-filtered-heading', title: 'Lunar eclipse' },
+      { id: 'ch3-blocked-heading', title: 'Solar eclipse' },
     ],
   },
   {
@@ -57,7 +45,7 @@ export const CHAPTERS = [
     title: 'Going to the Moon',
     question: 'Why did we go, and what brought us back?',
     sections: [
-      { id: 'ch4-missions', title: 'Apollo and Artemis missions' },
+      { id: 'ch4-missions', title: 'NASA missions' },
       { id: 'diptych-title', title: 'The same horizon' },
     ],
   },
@@ -66,7 +54,11 @@ export const CHAPTERS = [
     index: 5,
     title: 'What the rocks told us',
     question: 'What did the Apollo samples reveal?',
-    sections: [],
+    sections: [
+      { id: 'ch5-samples-heading', title: 'What came back' },
+      { id: 'ch5-magma-ocean-heading', title: 'An ocean of molten rock' },
+      { id: 'ch5-chemical-match-heading', title: 'A chemical match' },
+    ],
   },
   {
     id: 'chapter-6',

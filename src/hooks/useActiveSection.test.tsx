@@ -17,7 +17,7 @@ function addSectionElements() {
   }
 }
 
-// Reading line sits at 30% of the viewport; with innerHeight 1000 that is 300px.
+// Reading line sits at 50% of the viewport; with innerHeight 1000 that is 500px.
 // Position each named section's top; any unlisted section sits far below.
 function setSectionTops(tops: Record<string, number>) {
   for (const id of SECTION_IDS) {
@@ -74,19 +74,20 @@ describe('useActiveSection', () => {
 
     expect(callback).toBeDefined();
 
+    // Sections are positioned in document order (crater, basin, surface).
+    // Crater and basin sit above the 500px line; surface stays below it, so
+    // the lower of the two above the line (basin) is the active one.
     setSectionTops({
-      'ch2-surface-features-heading': 50,
-      'ch2-crater-heading': 200,
-      'ch2-basin-heading': 500,
+      'ch2-crater-heading': 100,
+      'ch2-basin-heading': 400,
+      'ch2-surface-features-heading': 900,
     });
 
     act(() => {
       callback?.([], {} as IntersectionObserver);
     });
 
-    expect(screen.getByTestId('active')).toHaveTextContent(
-      'ch2-crater-heading'
-    );
+    expect(screen.getByTestId('active')).toHaveTextContent('ch2-basin-heading');
   });
 
   it('should ignore sections still below the reading line', () => {

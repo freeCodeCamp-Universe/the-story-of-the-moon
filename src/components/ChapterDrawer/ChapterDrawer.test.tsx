@@ -176,7 +176,11 @@ describe('ChapterDrawer', () => {
     ).not.toHaveAttribute('aria-current');
   });
 
-  it('should not mark a subsection whose chapter is not the active chapter', () => {
+  it('should not mark a lingering subsection once its chapter is no longer active', () => {
+    // The section tracker reports the last heading scrolled past, which can
+    // still name a previous chapter's subsection after the reader moves on.
+    // The drawer must not keep that subsection marked; the active chapter owns
+    // the caret instead.
     renderDrawer({
       activeChapterId: 'chapter-5',
       activeSectionId: 'ch2-crater-heading',

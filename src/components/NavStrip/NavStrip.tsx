@@ -22,6 +22,7 @@ type Props = {
 };
 
 const GLOBAL_SHORTCUTS = [
+  { keys: 'Shift + K', action: 'Open the chapter list' },
   { keys: 'Shift + /', action: 'Show keyboard shortcuts' },
   { keys: '1-7', action: 'Jump directly to chapters 1 through 7' },
   { keys: 'Shift + N', action: 'Go to the next chapter' },
@@ -108,6 +109,12 @@ export function NavStrip({
       if (event.key === '?') {
         event.preventDefault();
         setIsShortcutsOpen(true);
+        return;
+      }
+
+      if (event.shiftKey && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setIsDrawerOpen((open) => !open);
       }
     }
 

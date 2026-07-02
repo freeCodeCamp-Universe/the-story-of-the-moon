@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import { SECTION_IDS } from '@/data/chapters';
 
-/** Reading line as a fraction of viewport height, measured from the top. */
-const READING_LINE = 0.3;
+/**
+ * Reading line as a fraction of viewport height, measured from the top.
+ * Kept at 50% to match the scrollytelling step trigger (`useScrollySteps`),
+ * so the drawer's active-subsection indicator agrees with which step is
+ * visually active, including after a drawer link centers its step.
+ */
+const READING_LINE = 0.5;
 
 /**
  * Tracks which chapter subsection the reader is currently in, to drive the
@@ -38,11 +43,11 @@ export function useActiveSection(): string | null {
       setActiveSectionId(current);
     };
 
-    // Top inset of 30% puts the observer boundary on the reading line, so a
+    // Top inset of 50% puts the observer boundary on the reading line, so a
     // crossing wakes the callback; `recompute` then reads positions directly.
     const observer = new IntersectionObserver(recompute, {
       threshold: 0,
-      rootMargin: '-30% 0px 0px 0px',
+      rootMargin: '-50% 0px 0px 0px',
     });
 
     elements.forEach((el) => observer.observe(el));

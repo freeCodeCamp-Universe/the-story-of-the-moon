@@ -13,8 +13,24 @@ export function scrollToChapter(index: number) {
   section.scrollIntoView({ behavior: 'smooth' });
 }
 
+/**
+ * Event a chapter can listen for to take over navigation to one of its
+ * subsections. A pinned/scrolly chapter (e.g. Ch4) whose section anchor is a
+ * tall stage cannot be reached with a plain `scrollIntoView` — it must run its
+ * own scroll math. Such a chapter listens for this event and calls
+ * `preventDefault()` to claim the target; otherwise the default scroll runs.
+ */
+export const SECTION_NAV_EVENT = 'story:section-nav';
+
 export function scrollToSectionId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const event = new CustomEvent<{ id: string }>(SECTION_NAV_EVENT, {
+    detail: { id },
+    cancelable: true,
+  });
+  const notClaimed = window.dispatchEvent(event);
+  if (notClaimed) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 function getCurrentChapterIndex() {

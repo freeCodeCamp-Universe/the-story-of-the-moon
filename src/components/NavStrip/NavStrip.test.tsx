@@ -309,6 +309,45 @@ describe('NavStrip', () => {
     expect(screen.getByText('Show keyboard shortcuts')).toBeInTheDocument();
   });
 
+  it('should open the chapter drawer with the shift+k shortcut', () => {
+    render(
+      <NavStrip
+        activeChapterId="chapter-2"
+        onNavigate={vi.fn()}
+        shortcutsEnabled
+        onShortcutsEnabledChange={vi.fn()}
+      />
+    );
+
+    fireEvent.keyDown(window, { key: 'K', shiftKey: true });
+
+    expect(
+      screen.getByRole('dialog', { name: 'Chapters' })
+    ).toBeInTheDocument();
+  });
+
+  it('should not open the chapter drawer on shift+k while typing in an input', () => {
+    render(
+      <>
+        <input aria-label="scratch" />
+        <NavStrip
+          activeChapterId="chapter-2"
+          onNavigate={vi.fn()}
+          shortcutsEnabled
+          onShortcutsEnabledChange={vi.fn()}
+        />
+      </>
+    );
+
+    const input = screen.getByRole('textbox', { name: 'scratch' });
+    input.focus();
+    fireEvent.keyDown(input, { key: 'K', shiftKey: true });
+
+    expect(
+      screen.queryByRole('dialog', { name: 'Chapters' })
+    ).not.toBeInTheDocument();
+  });
+
   it('should open the keyboard shortcuts dialog when focus is on nav buttons', () => {
     render(
       <NavStrip

@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { SECTION_NAV_EVENT } from '@/hooks/useKeyboardNav';
 import { useScrollySteps } from '@/hooks/useScrollySteps';
 import styles from './ScrollyChapter.module.css';
 
@@ -53,6 +54,30 @@ export function ScrollyChapter({
   useEffect(() => {
     if (activeId) onActiveStepChange?.(activeId);
   }, [activeId, onActiveStepChange]);
+
+  // A drawer link to a heading inside a step must land on that step. The step
+  // is active only when its box crosses the mid-viewport trigger line, and the
+  // immersive cards are spaced by tall gaps, so aligning the heading to the top
+  // leaves the reader between steps. Claim the nav event and center the owning
+  // step instead. Smooth so the scroll tracks content that mounts on the way.
+  useEffect(() => {
+    function handleSectionNav(event: Event) {
+      const detail = (event as CustomEvent<{ id: string }>).detail;
+      const container = containerRef.current;
+      if (!detail?.id || !container) return;
+
+      const target = document.getElementById(detail.id);
+      const stepEl = target?.closest<HTMLElement>('[data-step-id]');
+      if (!stepEl || !container.contains(stepEl)) return;
+
+      event.preventDefault();
+      stepEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+
+    window.addEventListener(SECTION_NAV_EVENT, handleSectionNav);
+    return () =>
+      window.removeEventListener(SECTION_NAV_EVENT, handleSectionNav);
+  }, []);
 
   const containerClass =
     variant === 'immersive'

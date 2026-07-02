@@ -15,7 +15,7 @@ export default function Ch5() {
       </Prose>
 
       <section className={styles.section}>
-        <Prose as="h3" className={styles.heading}>
+        <Prose as="h3" id="ch5-samples-heading" className={styles.heading}>
           What came back
         </Prose>
 
@@ -60,7 +60,7 @@ export default function Ch5() {
       </div>
 
       <section className={styles.section}>
-        <Prose as="h3" className={styles.heading}>
+        <Prose as="h3" id="ch5-magma-ocean-heading" className={styles.heading}>
           An ocean of molten rock
         </Prose>
         <Prose as="p" className={styles.paragraph}>
@@ -93,7 +93,11 @@ export default function Ch5() {
       </section>
 
       <section className={styles.section}>
-        <Prose as="h3" className={styles.heading}>
+        <Prose
+          as="h3"
+          id="ch5-chemical-match-heading"
+          className={styles.heading}
+        >
           A chemical match
         </Prose>
         <Prose as="p" className={styles.paragraph}>

@@ -11,6 +11,7 @@ import { CreditCaption } from '@/components/CreditCaption/CreditCaption';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { Prose } from '@/components/Prose';
+import { SECTION_NAV_EVENT } from '@/hooks/useKeyboardNav';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { Mission } from '@/types/content';
 import { shouldIgnoreInteractiveShortcutTarget } from '@/utils/keyboardShortcuts';
@@ -185,6 +186,7 @@ function PinnedTimeline({
     null
   );
   const pendingJumpTimeoutRef = useRef<number | null>(null);
+  const pendingScrollEndRef = useRef<(() => void) | null>(null);
   const keyboardHintId = useId();
 
   const missionCount = useMemo(
@@ -197,6 +199,10 @@ function PinnedTimeline({
     if (pendingJumpTimeoutRef.current !== null) {
       window.clearTimeout(pendingJumpTimeoutRef.current);
       pendingJumpTimeoutRef.current = null;
+    }
+    if (pendingScrollEndRef.current) {
+      window.removeEventListener('scrollend', pendingScrollEndRef.current);
+      pendingScrollEndRef.current = null;
     }
   }, []);
 
@@ -287,10 +293,30 @@ function PinnedTimeline({
 
       clearPendingJump();
       pendingJumpRef.current = { index, scrollTop: clamped };
-      pendingJumpTimeoutRef.current = window.setTimeout(() => {
-        pendingJumpRef.current = null;
-        pendingJumpTimeoutRef.current = null;
-      }, 1000);
+
+      // Hold the target step active until the scroll actually finishes.
+      // At the clamped rest position the naturally-centered sentinel is not
+      // always the target (step 0 clamps to the section top, where the next
+      // sentinel sits on the trigger line), so the observer must stay
+      // suppressed for the whole scroll. A fixed timeout is too short for a
+      // long cross-page jump from the chapter drawer; `scrollend` fires
+      // exactly when motion stops. Fall back to a timeout only where
+      // `scrollend` is unavailable or no scroll will occur.
+      const commit = () => {
+        const pending = pendingJumpRef.current;
+        if (pending) setActive(pending.index);
+        clearPendingJump();
+      };
+      const willScroll = Math.abs(window.scrollY - clamped) > 2;
+      if (willScroll && 'onscrollend' in window) {
+        pendingScrollEndRef.current = commit;
+        window.addEventListener('scrollend', commit, { once: true });
+      } else {
+        pendingJumpTimeoutRef.current = window.setTimeout(
+          commit,
+          willScroll ? 1000 : 0
+        );
+      }
 
       setActive(index);
       window.scrollTo({
@@ -352,6 +378,22 @@ function PinnedTimeline({
     window.addEventListener('keydown', handleWindowKeyDown);
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [handleKey, shortcutsEnabled]);
+
+  // The section anchor is a tall pinned stage, so a plain scrollIntoView from
+  // the chapter drawer lands mid-stage on the wrong step. Claim the event and
+  // run the same nav-aware jump the keyboard uses, landing on the first step.
+  useEffect(() => {
+    function handleSectionNav(event: Event) {
+      const detail = (event as CustomEvent<{ id: string }>).detail;
+      if (detail?.id !== 'ch4-missions') return;
+      event.preventDefault();
+      jumpTo(0);
+    }
+
+    window.addEventListener(SECTION_NAV_EVENT, handleSectionNav);
+    return () =>
+      window.removeEventListener(SECTION_NAV_EVENT, handleSectionNav);
+  }, [jumpTo]);
 
   useEffect(() => {
     const section = sectionRef.current;
