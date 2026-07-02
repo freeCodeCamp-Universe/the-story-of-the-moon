@@ -3,6 +3,7 @@ import { Ch1, Ch2, Ch3, Ch4, Ch5, Ch6, Ch7 } from '@/chapters';
 import { Chapter, MoonInterlude, NavStrip, Postcard } from '@/components';
 import { postcards } from '@/content';
 import { CHAPTERS } from '@/data/chapters';
+import { useActiveSection } from '@/hooks/useActiveSection';
 import { useAnimationsPreference } from '@/hooks/useAnimationsPreference';
 import { useChapterFragmentSync } from '@/hooks/useChapterFragmentSync';
 import { useKeyboardNav } from '@/hooks/useKeyboardNav';
@@ -16,6 +17,7 @@ export default function StoryPage() {
     useKeyboardShortcutsPreference();
   const { animationsEnabled, setAnimationsEnabled } = useAnimationsPreference();
   const { darkThemeEnabled, setDarkThemeEnabled } = useTheme();
+  const activeSectionId = useActiveSection();
 
   useChapterFragmentSync(setActiveChapterId);
   useKeyboardNav(shortcutsEnabled);
@@ -59,6 +61,7 @@ export default function StoryPage() {
       </a>
       <NavStrip
         activeChapterId={activeChapterId}
+        activeSectionId={activeSectionId}
         onNavigate={handleNavigate}
         shortcutsEnabled={shortcutsEnabled}
         onShortcutsEnabledChange={setShortcutsEnabled}

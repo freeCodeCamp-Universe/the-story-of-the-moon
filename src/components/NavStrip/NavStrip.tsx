@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChapterDropdown } from '@/components/ChapterDropdown/ChapterDropdown';
+import { ChapterDrawer } from '@/components/ChapterDrawer/ChapterDrawer';
 import { Dialog } from '@/components/Dialog/Dialog';
 import { IconButton } from '@/components/IconButton/IconButton';
 import { Kbd } from '@/components/Kbd/Kbd';
 import { Switch } from '@/components/Switch/Switch';
 import { CHAPTERS } from '@/data/chapters';
-import { scrollToChapter } from '@/hooks/useKeyboardNav';
+import { scrollToChapter, scrollToSectionId } from '@/hooks/useKeyboardNav';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 import styles from './NavStrip.module.css';
 
 type Props = {
   activeChapterId: string;
+  activeSectionId?: string | null;
   onNavigate: (chapterId: string) => void;
   shortcutsEnabled?: boolean;
   onShortcutsEnabledChange?: (enabled: boolean) => void;
@@ -26,6 +27,20 @@ const GLOBAL_SHORTCUTS = [
   { keys: 'Shift + N', action: 'Go to the next chapter' },
   { keys: 'Shift + P', action: 'Go to the previous chapter' },
 ];
+
+function MenuIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 640 640"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* !Font Awesome Free v7.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */}
+      <path d="M96 160C96 142.3 110.3 128 128 128L512 128C529.7 128 544 142.3 544 160C544 177.7 529.7 192 512 192L128 192C110.3 192 96 177.7 96 160zM96 320C96 302.3 110.3 288 128 288L512 288C529.7 288 544 302.3 544 320C544 337.7 529.7 352 512 352L128 352C110.3 352 96 337.7 96 320zM544 480C544 497.7 529.7 512 512 512L128 512C110.3 512 96 497.7 96 480C96 462.3 110.3 448 128 448L512 448C529.7 448 544 462.3 544 480z" />
+    </svg>
+  );
+}
 
 function KeyboardIcon() {
   return (
@@ -53,6 +68,7 @@ function SettingsIcon() {
 
 export function NavStrip({
   activeChapterId,
+  activeSectionId = null,
   onNavigate,
   shortcutsEnabled = true,
   onShortcutsEnabledChange,
@@ -61,13 +77,12 @@ export function NavStrip({
   darkThemeEnabled = true,
   onDarkThemeEnabledChange,
 }: Props) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const chapterButtonRef = useRef<HTMLButtonElement | null>(null);
+  const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
   const shortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
-  const hasOpenedDropdownRef = useRef(false);
 
   const activeChapterIndex = useMemo(
     () => CHAPTERS.findIndex((chapter) => chapter.id === activeChapterId),
@@ -75,17 +90,6 @@ export function NavStrip({
   );
   const currentIndex = activeChapterIndex === -1 ? 0 : activeChapterIndex;
   const currentChapter = CHAPTERS[currentIndex];
-
-  useEffect(() => {
-    if (isDropdownOpen) {
-      hasOpenedDropdownRef.current = true;
-      return;
-    }
-
-    if (hasOpenedDropdownRef.current) {
-      chapterButtonRef.current?.focus();
-    }
-  }, [isDropdownOpen]);
 
   useEffect(() => {
     if (!shortcutsEnabled) {
@@ -140,7 +144,7 @@ export function NavStrip({
     });
   }
 
-  function navigateToChapter(chapterId: string) {
+  function handleSelectChapter(chapterId: string) {
     const chapterIndex = CHAPTERS.findIndex(
       (chapter) => chapter.id === chapterId
     );
@@ -148,11 +152,12 @@ export function NavStrip({
 
     scrollToChapter(chapterIndex);
     onNavigate(chapterId);
+    setIsDrawerOpen(false);
   }
 
-  function handleSelect(chapterId: string) {
-    navigateToChapter(chapterId);
-    setIsDropdownOpen(false);
+  function handleSelectSection(sectionId: string) {
+    scrollToSectionId(sectionId);
+    setIsDrawerOpen(false);
   }
 
   return (
@@ -160,26 +165,19 @@ export function NavStrip({
       <header className={styles.header}>
         <h1 className={styles.brand}>The Story of the Moon</h1>
         <nav className={styles.nav} aria-label="Chapters">
-          <div className={styles.centerControls}>
-            <button
-              ref={chapterButtonRef}
-              type="button"
-              className={`${styles.chapterButton}${isDropdownOpen ? ` ${styles.chapterButtonActive}` : ''}`}
-              onClick={() => setIsDropdownOpen((value) => !value)}
-              aria-expanded={isDropdownOpen}
-              aria-controls="chapter-dropdown"
-              aria-label={`open chapter list, current chapter ${currentChapter.index}: ${currentChapter.title}`}
-            >
-              <span className={styles.chapterDesktopText}>
-                {currentChapter.index}. {currentChapter.title}
-              </span>
-              <span className={styles.chapterMobileText}>
-                Chapter {currentChapter.index}
-              </span>
-            </button>
-          </div>
-
           <div className={styles.endControls}>
+            <IconButton
+              ref={drawerButtonRef}
+              active={isDrawerOpen}
+              onClick={() => setIsDrawerOpen((value) => !value)}
+              aria-label={`open chapter list, current chapter ${currentChapter.index}: ${currentChapter.title}`}
+              aria-haspopup="dialog"
+              aria-expanded={isDrawerOpen}
+              aria-controls="chapter-drawer"
+            >
+              <MenuIcon />
+            </IconButton>
+
             <IconButton
               ref={shortcutsButtonRef}
               className={styles.shortcutsButton}
@@ -208,12 +206,14 @@ export function NavStrip({
         </nav>
       </header>
 
-      <ChapterDropdown
-        isOpen={isDropdownOpen}
+      <ChapterDrawer
+        isOpen={isDrawerOpen}
         activeChapterId={activeChapterId}
-        onSelect={handleSelect}
-        onClose={() => setIsDropdownOpen(false)}
-        triggerRef={chapterButtonRef}
+        activeSectionId={activeSectionId}
+        onSelectChapter={handleSelectChapter}
+        onSelectSection={handleSelectSection}
+        onClose={() => setIsDrawerOpen(false)}
+        triggerRef={drawerButtonRef}
       />
 
       <Dialog

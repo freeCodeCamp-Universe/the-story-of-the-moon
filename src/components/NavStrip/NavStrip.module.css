@@ -9,7 +9,7 @@
   z-index: 100;
   border-bottom: 1px solid var(--color-border);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-md);
   padding-inline: var(--space-2xl);
@@ -33,31 +33,6 @@
   color: var(--color-text);
 }
 
-.centerControls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  justify-self: center;
-}
-
-.chapterButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  color: var(--color-text);
-  transition:
-    border-color var(--transition-base),
-    color var(--transition-base),
-    background-color var(--transition-base);
-}
-
-.chapterButton {
-  border: 1px solid transparent;
-  background: transparent;
-}
-
 .endControls {
   display: flex;
   align-items: center;
@@ -65,44 +40,8 @@
   justify-self: end;
 }
 
-.chapterButton:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.chapterButtonActive {
-  background-color: var(--active-bg);
-  border-color: var(--color-accent);
-}
-
-.chapterButton {
-  align-items: center;
-  height: calc(var(--nav-height) - var(--space-sm));
-  min-width: min(26rem, calc(100vw - 14rem));
-  max-width: min(26rem, calc(100vw - 14rem));
-  padding-inline: var(--space-md);
-  padding-block: 0;
-  border-radius: var(--radius);
-  justify-content: center;
-  line-height: 1.2;
-}
-
 .shortcutKeys {
   font-family: var(--font-mono);
-}
-
-.chapterDesktopText,
-.chapterMobileText {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 1rem;
-  color: inherit;
-}
-
-.chapterMobileText {
-  display: none;
 }
 
 .shortcutSection {
@@ -154,33 +93,18 @@
 
 /* Settings stays visible at all widths. Below 900px, no physical keyboard is
   expected, so the keyboard-shortcuts button and keyboard-shortcuts settings
-  toggle are hidden, the title absorbs all slack (inline-start), and the
-  chapter button + settings sit together at the inline-end.
+  toggle are hidden. The chapter-list and settings buttons sit together at the
+  inline-end while the title absorbs the slack.
    Boundary matches the codebase-wide 900px tablet/desktop split
    (ScrollyChapter, earthMoonScene's IMMERSIVE_MIN_WIDTH, etc.). */
 @media (max-width: 899px) {
   .header {
-    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: var(--space-sm);
     padding-inline: var(--space-sm);
   }
 
   .brand {
     font-size: 0.9375rem;
-  }
-
-  .chapterButton {
-    min-width: 0;
-    max-width: min(9rem, calc(100vw - 7rem));
-    padding-inline: var(--space-sm);
-  }
-
-  .chapterDesktopText {
-    display: none;
-  }
-
-  .chapterMobileText {
-    display: block;
   }
 
   .shortcutsButton {
