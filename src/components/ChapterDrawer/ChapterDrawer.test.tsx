@@ -176,6 +176,20 @@ describe('ChapterDrawer', () => {
     ).not.toHaveAttribute('aria-current');
   });
 
+  it('should not mark a subsection whose chapter is not the active chapter', () => {
+    renderDrawer({
+      activeChapterId: 'chapter-5',
+      activeSectionId: 'ch2-crater-heading',
+    });
+
+    expect(screen.getByRole('button', { name: 'Crater' })).not.toHaveAttribute(
+      'aria-current'
+    );
+    expect(
+      screen.getByRole('button', { name: '5. What the rocks told us' })
+    ).toHaveAttribute('aria-current', 'true');
+  });
+
   it('should mark the active chapter when no subsection is active', () => {
     renderDrawer({ activeChapterId: 'chapter-1', activeSectionId: null });
 

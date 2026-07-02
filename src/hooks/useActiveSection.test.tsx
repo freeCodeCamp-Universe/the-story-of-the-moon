@@ -17,6 +17,17 @@ function addSectionElements() {
   }
 }
 
+// Reading line sits at 30% of the viewport; with innerHeight 1000 that is 300px.
+// Position each named section's top; any unlisted section sits far below.
+function setSectionTops(tops: Record<string, number>) {
+  for (const id of SECTION_IDS) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const top = tops[id] ?? Number.POSITIVE_INFINITY;
+    el.getBoundingClientRect = () => ({ top }) as DOMRect;
+  }
+}
+
 describe('useActiveSection', () => {
   let callback: IntersectionObserverCallback | undefined;
   const observe = vi.fn();
@@ -25,6 +36,7 @@ describe('useActiveSection', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     addSectionElements();
+    vi.stubGlobal('innerHeight', 1000);
 
     class IntersectionObserverMock {
       root: Element | Document | null = null;
@@ -51,27 +63,25 @@ describe('useActiveSection', () => {
     vi.unstubAllGlobals();
   });
 
-  it('should return null before any section intersects', () => {
+  it('should return null before any section reaches the reading line', () => {
     render(<HookHarness />);
 
     expect(screen.getByTestId('active')).toHaveTextContent('');
   });
 
-  it('should return the id of the intersecting section', () => {
+  it('should return the last section whose heading is above the reading line', () => {
     render(<HookHarness />);
 
     expect(callback).toBeDefined();
 
+    setSectionTops({
+      'ch2-surface-features-heading': 50,
+      'ch2-crater-heading': 200,
+      'ch2-basin-heading': 500,
+    });
+
     act(() => {
-      callback?.(
-        [
-          {
-            isIntersecting: true,
-            target: document.getElementById('ch2-crater-heading') as Element,
-          } as IntersectionObserverEntry,
-        ],
-        {} as IntersectionObserver
-      );
+      callback?.([], {} as IntersectionObserver);
     });
 
     expect(screen.getByTestId('active')).toHaveTextContent(
@@ -79,26 +89,16 @@ describe('useActiveSection', () => {
     );
   });
 
-  it('should use only the first intersecting entry', () => {
+  it('should ignore sections still below the reading line', () => {
     render(<HookHarness />);
 
+    setSectionTops({ 'ch2-crater-heading': 800 });
+
     act(() => {
-      callback?.(
-        [
-          {
-            isIntersecting: true,
-            target: document.getElementById('ch3-tides-heading') as Element,
-          } as IntersectionObserverEntry,
-          {
-            isIntersecting: true,
-            target: document.getElementById('ch3-tilt-heading') as Element,
-          } as IntersectionObserverEntry,
-        ],
-        {} as IntersectionObserver
-      );
+      callback?.([], {} as IntersectionObserver);
     });
 
-    expect(screen.getByTestId('active')).toHaveTextContent('ch3-tides-heading');
+    expect(screen.getByTestId('active')).toHaveTextContent('');
   });
 
   it('should disconnect the observer on unmount', () => {

@@ -3,7 +3,7 @@
 .dialog {
   position: fixed;
   inset: calc(var(--nav-height) + var(--space-md)) var(--space-md) auto auto;
-  z-index: 150;
+  z-index: var(--z-overlay);
   margin: 0;
   width: min(36rem, calc(100vw - (2 * var(--space-md))));
   max-height: calc(100dvh - var(--nav-height) - (2 * var(--space-md)));

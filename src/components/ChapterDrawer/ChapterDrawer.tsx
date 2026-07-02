@@ -44,11 +44,11 @@ export function ChapterDrawer({
     >
       <ol className={styles.list}>
         {CHAPTERS.map((chapter) => {
-          const chapterHasActiveSection = chapter.sections.some(
-            (section) => section.id === activeSectionId
-          );
-          const markChapter =
-            chapter.id === activeChapterId && !chapterHasActiveSection;
+          const isActiveChapter = chapter.id === activeChapterId;
+          const chapterHasActiveSection =
+            isActiveChapter &&
+            chapter.sections.some((section) => section.id === activeSectionId);
+          const markChapter = isActiveChapter && !chapterHasActiveSection;
 
           return (
             <li key={chapter.id}>
@@ -65,7 +65,8 @@ export function ChapterDrawer({
               {chapter.sections.length > 0 && (
                 <ul className={styles.sectionList}>
                   {chapter.sections.map((section) => {
-                    const isSectionActive = section.id === activeSectionId;
+                    const isSectionActive =
+                      isActiveChapter && section.id === activeSectionId;
 
                     return (
                       <li key={section.id}>

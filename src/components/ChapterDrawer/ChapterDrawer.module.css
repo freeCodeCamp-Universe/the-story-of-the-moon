@@ -17,7 +17,7 @@
   position: relative;
   display: block;
   inline-size: 100%;
-  font-family: var(--font-mono);
+  font-family: var(--font-prose);
   color: var(--color-text);
   background: none;
   border: none;
@@ -51,14 +51,13 @@
 .chapterItem {
   padding-block: var(--space-sm);
   padding-inline-start: calc(var(--space-xl) + var(--space-sm));
-  font-size: 1rem;
+  font-size: var(--text-body);
 }
 
 .sectionItem {
   padding-block: var(--space-xs);
   padding-inline-start: calc(var(--space-2xl) + var(--space-lg));
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
 .sectionItem:hover {

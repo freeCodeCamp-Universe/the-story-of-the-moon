@@ -115,7 +115,7 @@ button:focus-visible {
 .sr-only:focus-visible {
   top: var(--space-sm);
   left: var(--space-sm);
-  z-index: 250;
+  z-index: var(--z-skip-link);
   width: auto;
   height: auto;
   margin: 0;

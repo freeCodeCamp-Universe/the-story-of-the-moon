@@ -115,61 +115,6 @@
   margin-bottom: var(--space-lg);
 }
 
-.railMobile {
-  --rail-bar-height: 12px;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  inline-size: 100%;
-}
-
-/* Lift the trigger above the dropdown overlay (z-index 99) so a click on it
- * is not intercepted by the overlay's close-on-pointerdown, which would
- * unmount the menu and let the trailing click fall through and reopen it. */
-.railTrigger {
-  position: relative;
-  z-index: 100;
-}
-
-.railTriggerTicks {
-  display: flex;
-  align-items: center;
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  min-block-size: var(--rail-bar-height);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.triggerTick {
-  flex: 1 1 0;
-  min-block-size: var(--rail-bar-height);
-  background-color: var(--color-border);
-}
-
-.triggerTickActive {
-  background-color: var(--color-accent);
-}
-
-.triggerTickInterlude {
-  /* Bar only renders below 768px and project rules forbid a sub-768 tier, so
-   * scale fluidly instead of switching: ~space-md on small phones, ramping to
-   * space-xl by ~640px (the small-tablet end of the range). */
-  flex: 0 0 clamp(var(--space-md), 5vw, var(--space-xl));
-  /* Stretch to the full rail height (the row centers items) so the dotted
-   * top/bottom borders sit flush on the rail edges instead of floating. */
-  align-self: stretch;
-  background-color: transparent;
-  border-block: 1px dashed var(--color-border);
-}
-
-/* Light up when scrolled to. Both classes are applied together, so this
- * combined selector outranks .triggerTickInterlude's transparent fill. */
-.triggerTickInterlude.triggerTickActive {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
 .railTicks {
   list-style: none;
   padding: 0;

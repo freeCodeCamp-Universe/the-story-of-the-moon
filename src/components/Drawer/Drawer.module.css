@@ -5,12 +5,16 @@
   inset-block: 0;
   inset-inline-end: 0;
   inset-inline-start: auto;
-  z-index: 150;
+  z-index: var(--z-overlay);
   margin: 0;
   display: flex;
   flex-direction: column;
   block-size: 100dvh;
-  inline-size: min(24rem, calc(100vw - var(--space-2xl)));
+  /* Full-viewport height: the native <dialog> UA style caps max-height, which
+     would otherwise leave a gap below a 100dvh panel. */
+  max-block-size: 100dvh;
+  /* Phone/phablet baseline: full width. Widens by tier below. */
+  inline-size: 100vw;
   max-inline-size: 100vw;
   padding: 0;
   border: none;
@@ -51,8 +55,28 @@
   border-block-end: 1px solid var(--color-border);
 }
 
+/* Tablet: half viewport. Desktop: a third. Wide: a quarter. Each tier stays
+   wide enough for a trailing row action (e.g. a bookmark button). */
+@media (min-width: 768px) {
+  .drawer {
+    inline-size: 50vw;
+  }
+}
+
+@media (min-width: 900px) {
+  .drawer {
+    inline-size: calc(100vw / 3);
+  }
+}
+
+@media (min-width: 1800px) {
+  .drawer {
+    inline-size: 25vw;
+  }
+}
+
 .title {
-  font-family: var(--font-mono);
+  font-family: var(--font-prose);
   font-size: var(--text-xl);
   line-height: 1.2;
 }

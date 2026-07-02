@@ -116,6 +116,14 @@
   /* ── Focus ────────────────────────────────────────────────── */
   --focus-ring: 2px solid var(--color-focus);
   --focus-ring-offset: 2px;
+
+  /* ── Elevation (z-index) ──────────────────────────────────────
+     Global overlay tiers, low to high. Component-internal sibling
+     ordering (values 1/2 inside an isolated stacking context) stays
+     literal and is intentionally not listed here. */
+  --z-header: 100; /* sticky site header (NavStrip) */
+  --z-overlay: 150; /* modal dialog + edge drawer surfaces */
+  --z-skip-link: 250; /* skip-to-content link, above all overlays */
 }
 
 /* Reading column widens once there's room for the two-column layout. */
