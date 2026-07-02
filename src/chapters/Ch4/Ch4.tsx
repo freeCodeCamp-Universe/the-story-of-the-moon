@@ -133,7 +133,11 @@ function StepContent({ step }: { step: Step }) {
 
 function StackedTimeline({ steps }: { steps: Step[] }) {
   return (
-    <section className={styles.stack} aria-label="Apollo and Artemis missions">
+    <section
+      id="ch4-missions"
+      className={styles.stack}
+      aria-label="Apollo and Artemis missions"
+    >
       {steps.map((step, i) => (
         <StepContent key={i} step={step} />
       ))}
@@ -368,6 +372,7 @@ function PinnedTimeline({
   return (
     <section
       ref={sectionRef}
+      id="ch4-missions"
       className={styles.pinSection}
       aria-label="Apollo and Artemis missions"
       aria-describedby={keyboardHintId}

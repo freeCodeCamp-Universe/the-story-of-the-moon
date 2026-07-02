@@ -61,7 +61,9 @@ const STEPS: ScrollyStep[] = [
     marker: 'tides',
     content: (
       <>
-        <h3>Tides are the Moon&apos;s most visible signature</h3>
+        <h3 id="ch3-tides-heading">
+          Tides are the Moon&apos;s most visible signature
+        </h3>
         <p>
           The Moon's gravity pulls Earth unevenly. The side facing the Moon
           receives the strongest tug, pulling ocean water into a high-tide
@@ -82,7 +84,7 @@ const STEPS: ScrollyStep[] = [
     marker: 'axial stabilization',
     content: (
       <>
-        <h3>The Moon steadies Earth&apos;s tilt</h3>
+        <h3 id="ch3-tilt-heading">The Moon steadies Earth&apos;s tilt</h3>
         <p>
           Earth spins at a tilt, leaning about 23.5 degrees away from an upright
           position relative to its orbit around the Sun. That lean is what gives
@@ -102,7 +104,7 @@ const STEPS: ScrollyStep[] = [
     marker: 'without the moon',
     content: (
       <>
-        <h3>A moonless Earth would wander</h3>
+        <h3 id="ch3-wander-heading">A moonless Earth would wander</h3>
         <p>
           Early models predicted that without the Moon, Earth's tilt could swing
           chaotically by as much as 85 degrees, and for decades a massive moon
@@ -122,7 +124,9 @@ const STEPS: ScrollyStep[] = [
     marker: 'full moon',
     content: (
       <>
-        <h3>When sunlight is reflected straight back to Earth</h3>
+        <h3 id="ch3-reflected-heading">
+          When sunlight is reflected straight back to Earth
+        </h3>
         <p>
           Every 29.5 days, the Moon moves directly opposite the Sun with Earth
           positioned in the middle. While this alignment seems like it would
@@ -139,7 +143,9 @@ const STEPS: ScrollyStep[] = [
     marker: 'lunar eclipse',
     content: (
       <>
-        <h3>When sunlight is filtered through Earth's atmosphere</h3>
+        <h3 id="ch3-filtered-heading">
+          When sunlight is filtered through Earth&apos;s atmosphere
+        </h3>
         <p>
           Two to five times a year, the Moon crosses into Earth's shadow instead
           of passing above or below it. This creates a lunar eclipse. If the
@@ -163,7 +169,7 @@ const STEPS: ScrollyStep[] = [
     marker: 'solar eclipse',
     content: (
       <>
-        <h3>When sunlight is blocked by the Moon</h3>
+        <h3 id="ch3-blocked-heading">When sunlight is blocked by the Moon</h3>
         <p>
           A solar eclipse occurs when the Moon passes directly between Earth and
           the Sun. This alignment is possible because of a coincidence: the Moon
