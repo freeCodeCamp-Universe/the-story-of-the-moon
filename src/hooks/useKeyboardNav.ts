@@ -13,6 +13,10 @@ export function scrollToChapter(index: number) {
   section.scrollIntoView({ behavior: 'smooth' });
 }
 
+export function scrollToSectionId(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+
 function getCurrentChapterIndex() {
   const chapterId = window.location.hash.replace('#', '');
   const index = CHAPTER_IDS.indexOf(chapterId);
