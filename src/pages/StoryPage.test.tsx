@@ -26,6 +26,14 @@ describe('StoryPage', () => {
     window.location.hash = '';
     useChapterFragmentSync.mockClear();
     HTMLElement.prototype.scrollIntoView = vi.fn();
+    // jsdom implements neither of these; the chapter drawer is a native <dialog>.
+    HTMLDialogElement.prototype.showModal = function showModal() {
+      this.setAttribute('open', '');
+    };
+    HTMLDialogElement.prototype.close = function close() {
+      this.removeAttribute('open');
+      this.dispatchEvent(new Event('close'));
+    };
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation(() => ({
@@ -41,7 +49,7 @@ describe('StoryPage', () => {
     });
   });
 
-  it('should update the chapter picker when the hash changes and when selecting from the dropdown', () => {
+  it('should update the chapter picker when the hash changes and when selecting from the drawer', () => {
     window.location.hash = '#chapter-3';
     render(<StoryPage />);
 
