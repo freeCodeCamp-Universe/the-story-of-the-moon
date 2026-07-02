@@ -22,8 +22,8 @@ type Props = {
 };
 
 const GLOBAL_SHORTCUTS = [
-  { keys: 'Shift + K', action: 'Open the chapter list' },
   { keys: 'Shift + /', action: 'Show keyboard shortcuts' },
+  { keys: 'Shift + K', action: 'Open the chapter list' },
   { keys: '1-7', action: 'Jump directly to chapters 1 through 7' },
   { keys: 'Shift + N', action: 'Go to the next chapter' },
   { keys: 'Shift + P', action: 'Go to the previous chapter' },
