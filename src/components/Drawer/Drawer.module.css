@@ -1,0 +1,92 @@
+/* Drawer — edge-anchored panel built on the native <dialog> element. */
+
+.drawer {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+  z-index: 150;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  block-size: 100dvh;
+  inline-size: min(24rem, calc(100vw - var(--space-2xl)));
+  max-inline-size: 100vw;
+  padding: 0;
+  border: none;
+  border-inline-start: 1px solid var(--color-border);
+  background: var(--color-bg-raised);
+  color: var(--color-text);
+  outline: none;
+  /* transform is exempt from the logical-property rule; the slide direction is
+     flipped for RTL via :dir(rtl) below. */
+  transition: transform var(--transition-slow);
+}
+
+.drawer[open] {
+  display: flex;
+}
+
+/* Enter slide: start off-screen past the inline-end edge, settle to 0. */
+@starting-style {
+  .drawer[open] {
+    transform: translateX(100%);
+  }
+
+  .drawer[open]:dir(rtl) {
+    transform: translateX(-100%);
+  }
+}
+
+.drawer::backdrop {
+  background: var(--color-modal-backdrop);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  line-height: 1.2;
+}
+
+.body {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.body::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    transition: none;
+  }
+
+  @starting-style {
+    .drawer[open],
+    .drawer[open]:dir(rtl) {
+      transform: none;
+    }
+  }
+}
