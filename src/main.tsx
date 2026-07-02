@@ -8,8 +8,6 @@ import {
 import './styles/tokens.css';
 import './styles/globals.css';
 
-document.documentElement.setAttribute('data-theme', 'dark');
-
 // Apply the saved "disable animations" preference before first paint to avoid a flash of motion.
 if (window.localStorage.getItem(ANIMATIONS_STORAGE_KEY) === 'false') {
   document.documentElement.setAttribute(REDUCED_MOTION_ATTRIBUTE, '');
