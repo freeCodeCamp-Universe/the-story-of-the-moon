@@ -125,8 +125,7 @@
 
 /* Lift the trigger above the dropdown overlay (z-index 99) so a click on it
  * is not intercepted by the overlay's close-on-pointerdown, which would
- * unmount the menu and let the trailing click fall through and reopen it.
- * Mirrors how ChapterDropdown's trigger sits outside its overlay. */
+ * unmount the menu and let the trailing click fall through and reopen it. */
 .railTrigger {
   position: relative;
   z-index: 100;

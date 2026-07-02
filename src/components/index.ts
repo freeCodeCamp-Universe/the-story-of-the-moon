@@ -1,6 +1,5 @@
 export { Chapter } from './Chapter/Chapter';
 export { ChapterDrawer } from './ChapterDrawer/ChapterDrawer';
-export { ChapterDropdown } from './ChapterDropdown/ChapterDropdown';
 export { CreditCaption } from './CreditCaption/CreditCaption';
 export { ImageCompareSlider } from './ImageCompareSlider/ImageCompareSlider';
 export { IconButton } from './IconButton/IconButton';
