@@ -1,4 +1,4 @@
-import { type ReactNode, type RefObject } from 'react';
+import { useRef, type ReactNode, type RefObject } from 'react';
 import { IconButton } from '@/components/IconButton/IconButton';
 import { useModalDialog } from '@/hooks/useModalDialog';
 import styles from './Drawer.module.css';
@@ -47,10 +47,12 @@ export function Drawer({
   closeLabel,
   children,
 }: Props) {
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
   const { dialogRef, closeButtonRef, dialogProps } = useModalDialog({
     isOpen,
     onClose,
     triggerRef,
+    initialFocusRef: titleRef,
   });
 
   if (!isOpen) return null;
@@ -64,12 +66,13 @@ export function Drawer({
       {...dialogProps}
     >
       <div className={styles.header}>
-        <h2 id={titleId} className={styles.title}>
+        {/* tabIndex=-1 so open focus can land on the title, letting a screen
+            reader read the drawer's list content from the top (ARIA APG). */}
+        <h2 ref={titleRef} id={titleId} className={styles.title} tabIndex={-1}>
           {title}
         </h2>
         <IconButton
           ref={closeButtonRef}
-          autoFocus
           aria-label={closeLabel}
           onClick={onClose}
         >

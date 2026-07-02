@@ -93,7 +93,7 @@ describe('Drawer', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should render the title and content and focus the close button when opened', async () => {
+  it('should render the title and content and focus the title when opened', async () => {
     const user = userEvent.setup();
 
     render(<DrawerHarness />);
@@ -106,9 +106,8 @@ describe('Drawer', () => {
     expect(
       screen.getByRole('button', { name: 'first action' })
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /close test drawer/i })
-    ).toHaveFocus();
+    // Focus lands on the title so the drawer's list content reads from the top.
+    expect(screen.getByRole('heading', { name: 'Test drawer' })).toHaveFocus();
   });
 
   it('should close and restore focus to the trigger when the close button is clicked', async () => {
@@ -142,6 +141,10 @@ describe('Drawer', () => {
     const firstAction = screen.getByRole('button', { name: 'first action' });
     const secondAction = screen.getByRole('button', { name: 'second action' });
 
+    // Opens with the title focused; the close button is the first tab stop.
+    expect(screen.getByRole('heading', { name: 'Test drawer' })).toHaveFocus();
+
+    await user.tab();
     expect(closeButton).toHaveFocus();
 
     await user.tab();

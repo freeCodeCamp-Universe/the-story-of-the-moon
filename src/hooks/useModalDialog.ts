@@ -26,15 +26,28 @@ type Options = {
   onClose: () => void;
   /** Element to return focus to after the dialog closes. */
   triggerRef: RefObject<HTMLElement | null>;
+  /**
+   * Element to focus on open instead of the close button. Use for dialogs whose
+   * content is a semantic structure (e.g. a list) that should be read from the
+   * top, per the ARIA APG dialog guidance. Falls back to the close button when
+   * absent or null.
+   */
+  initialFocusRef?: RefObject<HTMLElement | null>;
 };
 
 /**
  * Drives a native <dialog> as a modal: shows/closes it in step with `isOpen`,
- * focuses the close button on open, restores focus to the trigger on close,
- * traps Tab focus, and closes on backdrop click. Spread `dialogProps` onto the
- * <dialog> and wire `dialogRef`/`closeButtonRef` to the element and its close button.
+ * focuses the close button (or `initialFocusRef`) on open, restores focus to the
+ * trigger on close, traps Tab focus, and closes on backdrop click. Spread
+ * `dialogProps` onto the <dialog> and wire `dialogRef`/`closeButtonRef` to the
+ * element and its close button.
  */
-export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
+export function useModalDialog({
+  isOpen,
+  onClose,
+  triggerRef,
+  initialFocusRef,
+}: Options) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasOpenedRef = useRef(false);
@@ -71,7 +84,9 @@ export function useModalDialog({ isOpen, onClose, triggerRef }: Options) {
       dialog.showModal();
     }
 
-    closeButtonRef.current?.focus();
+    const initialFocusTarget =
+      initialFocusRef?.current ?? closeButtonRef.current;
+    initialFocusTarget?.focus();
 
     return () => {
       dialog.removeEventListener('cancel', handleCancel);
