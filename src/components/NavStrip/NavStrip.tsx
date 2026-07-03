@@ -256,43 +256,44 @@ export function NavStrip({
         title="Settings"
         closeLabel="close settings"
       >
-        <div className={styles.preferenceCard}>
-          <Switch
-            label="Enable dark theme"
-            checked={darkThemeEnabled}
-            onChange={(checked) => onDarkThemeEnabledChange?.(checked)}
-            describedBy="settings-dark-theme-note"
-          />
-          <p id="settings-dark-theme-note" className={styles.sectionNote}>
-            When on, the dark theme is used.
-          </p>
-        </div>
+        <div className={styles.preferences}>
+          <div>
+            <Switch
+              label="Enable dark theme"
+              checked={darkThemeEnabled}
+              onChange={(checked) => onDarkThemeEnabledChange?.(checked)}
+              describedBy="settings-dark-theme-note"
+            />
+            <p id="settings-dark-theme-note" className={styles.sectionNote}>
+              When on, the dark theme is used.
+            </p>
+          </div>
 
-        <div
-          className={`${styles.preferenceCard} ${styles.shortcutsPreference}`}
-        >
-          <Switch
-            label="Enable global keyboard shortcuts"
-            checked={shortcutsEnabled}
-            onChange={(checked) => onShortcutsEnabledChange?.(checked)}
-            describedBy="settings-shortcuts-note"
-          />
-          <p id="settings-shortcuts-note" className={styles.sectionNote}>
-            When on, the global keyboard shortcuts are active. Chapter shortcuts
-            are unaffected.
-          </p>
-        </div>
+          <div className={styles.shortcutsPreference}>
+            <Switch
+              label="Enable global keyboard shortcuts"
+              checked={shortcutsEnabled}
+              onChange={(checked) => onShortcutsEnabledChange?.(checked)}
+              describedBy="settings-shortcuts-note"
+            />
+            <p id="settings-shortcuts-note" className={styles.sectionNote}>
+              When on, the global keyboard shortcuts are active. Chapter
+              shortcuts are unaffected.
+            </p>
+          </div>
 
-        <div className={styles.preferenceCard}>
-          <Switch
-            label="Enable animations"
-            checked={animationsEnabled}
-            onChange={(checked) => onAnimationsEnabledChange?.(checked)}
-            describedBy="settings-animations-note"
-          />
-          <p id="settings-animations-note" className={styles.sectionNote}>
-            When on, motion and transitions play as you move through the story.
-          </p>
+          <div>
+            <Switch
+              label="Enable animations"
+              checked={animationsEnabled}
+              onChange={(checked) => onAnimationsEnabledChange?.(checked)}
+              describedBy="settings-animations-note"
+            />
+            <p id="settings-animations-note" className={styles.sectionNote}>
+              When on, motion and transitions play as you move through the
+              story.
+            </p>
+          </div>
         </div>
       </Dialog>
     </>

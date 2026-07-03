@@ -145,8 +145,11 @@
   color: var(--color-text);
 }
 
-.preferenceCard {
-  margin-top: var(--space-2xl);
+.preferences {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  margin-block-start: var(--space-xl);
 }
 
 /* Settings stays visible at all widths. Below 900px, no physical keyboard is
