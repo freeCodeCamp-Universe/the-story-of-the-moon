@@ -54,6 +54,9 @@ describe('useKeyboardNav', () => {
   });
 
   afterEach(() => {
+    // Cancel any settle watcher a scroll call left armed, so its timers and
+    // window listeners cannot leak into the next test.
+    window.dispatchEvent(new Event('wheel'));
     window.location.hash = '';
     vi.restoreAllMocks();
   });
@@ -65,6 +68,7 @@ describe('useKeyboardNav', () => {
     for (let i = 1; i <= 7; i += 1) {
       pressKey(String(i));
       expect(scrollSpies.get(`chapter-${i}`)).toHaveBeenCalledWith({
+        block: 'start',
         behavior: 'smooth',
       });
     }
@@ -101,9 +105,11 @@ describe('useKeyboardNav', () => {
     pressKey('P', document.body, { shiftKey: true });
 
     expect(scrollSpies.get('chapter-4')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
     expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
   });
@@ -151,12 +157,15 @@ describe('useKeyboardNav', () => {
     pressKey('P', button, { shiftKey: true });
 
     expect(scrollSpies.get('chapter-2')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
     expect(scrollSpies.get('chapter-4')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
     expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
   });
@@ -195,62 +204,38 @@ describe('useKeyboardNav', () => {
     expect(getElementByIdSpy).not.toHaveBeenCalled();
   });
 
-  describe('scrollToSectionId scrollend correction', () => {
-    function setupSection(topAtRest: number) {
+  // Landing correction, drift guards, and reduced motion are covered by
+  // settleScrollIntoView's own tests; here only the delegation is asserted.
+  describe('scrollToSectionId', () => {
+    function setupSection() {
       const section = document.createElement('section');
       section.id = 'ch2-basin-heading';
       const scrollSpy = vi.fn();
       section.scrollIntoView = scrollSpy;
-      section.getBoundingClientRect = () => ({ top: topAtRest }) as DOMRect;
       document.body.append(section);
       return scrollSpy;
     }
 
-    beforeEach(() => {
-      // jsdom has no scrollend; expose the handler property so the feature
-      // detection in scrollToSectionId passes.
-      Object.defineProperty(window, 'onscrollend', {
-        value: null,
-        configurable: true,
-        writable: true,
+    it('should scroll the section into view when no chapter claims the event', () => {
+      const scrollSpy = setupSection();
+
+      scrollToSectionId('ch2-basin-heading');
+
+      expect(scrollSpy).toHaveBeenCalledWith({
+        block: 'start',
+        behavior: 'smooth',
       });
-      vi.stubGlobal('innerHeight', 1000);
     });
 
-    afterEach(() => {
-      delete (window as { onscrollend?: unknown }).onscrollend;
-      vi.unstubAllGlobals();
-    });
-
-    it('should re-snap when the section lands short of its rest position', () => {
-      // Lazy content mounting mid-flight left the heading 300px below the
-      // top instead of at the scroll-padding offset.
-      const scrollSpy = setupSection(300);
+    it('should not scroll when a chapter claims the event', () => {
+      const scrollSpy = setupSection();
+      const claim = (event: Event) => event.preventDefault();
+      window.addEventListener('story:section-nav', claim);
 
       scrollToSectionId('ch2-basin-heading');
-      window.dispatchEvent(new Event('scrollend'));
+      window.removeEventListener('story:section-nav', claim);
 
-      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
-      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'instant' });
-    });
-
-    it('should not re-snap when the reader has moved far from the section', () => {
-      const scrollSpy = setupSection(2500);
-
-      scrollToSectionId('ch2-basin-heading');
-      window.dispatchEvent(new Event('scrollend'));
-
-      expect(scrollSpy).toHaveBeenCalledTimes(1);
-      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
-    });
-
-    it('should not re-snap when the section already rests at its target position', () => {
-      const scrollSpy = setupSection(0);
-
-      scrollToSectionId('ch2-basin-heading');
-      window.dispatchEvent(new Event('scrollend'));
-
-      expect(scrollSpy).toHaveBeenCalledTimes(1);
+      expect(scrollSpy).not.toHaveBeenCalled();
     });
   });
 });

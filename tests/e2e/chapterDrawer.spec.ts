@@ -3,14 +3,21 @@ import { test, expect, type Page } from '@playwright/test';
 // Desktop tier so Chapter 4 renders the pinned timeline with its progress rail.
 test.use({ viewport: { width: 1280, height: 900 } });
 
+// The app's scrolls honor reduced motion, so forcing it here makes drawer
+// navigation land instantly (plus a short bounded settle window) instead of
+// animating across the page. That removes the main timing flake vector:
+// polling a long smooth scroll for stability. The claiming, landing, and
+// indicator logic under test is identical in both modes; the animated path
+// keeps one smoke test in its own describe below.
+test.use({ reducedMotion: 'reduce' });
+
 function openDrawer(page: Page) {
   return page.getByRole('button', { name: /open chapter list/i }).click();
 }
 
-// Drawer navigation scrolls smoothly, and chapter visuals mount as they near
-// the viewport, so the target's final position is only known once scrolling has
-// stopped. Wait for scrollY to hold steady before reading the drawer indicator,
-// which otherwise would be read against a locked, mid-flight scroll position.
+// Even with instant scrolls, the settle watcher may re-snap the landing for a
+// few hundred milliseconds while late-mounting visuals shift layout. Wait for
+// scrollY to hold steady before reading the drawer indicator.
 async function settleScroll(page: Page) {
   let prev = Number.NaN;
   let stableReads = 0;
@@ -131,4 +138,56 @@ test('should reflect the selected section in the drawer', async ({ page }) => {
   await expect(
     page.getByRole('button', { name: 'NASA missions' })
   ).not.toHaveAttribute('aria-current', 'true');
+});
+
+// Regression: after visiting a scrolly chapter, navigating to a later
+// chapter's section used to land the heading short of its rest position —
+// visuals mounting under the scroll shifted layout after the one-shot
+// correction had already run. The settle watcher now re-snaps until the
+// layout stops moving, so the heading must end at the scroll-padding offset.
+test('should land a later section at its rest position after visiting a scrolly chapter', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  await openDrawer(page);
+  await page.getByRole('button', { name: 'NASA missions' }).click();
+  await settleScroll(page);
+
+  await openDrawer(page);
+  await page.getByRole('button', { name: 'Water on the Moon' }).click();
+  await settleScroll(page);
+
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => {
+          const navOffset =
+            parseFloat(
+              getComputedStyle(document.documentElement).scrollPaddingTop
+            ) || 0;
+          const heading = document.getElementById('ch6-water-heading');
+          if (!heading) return Number.POSITIVE_INFINITY;
+          return Math.abs(heading.getBoundingClientRect().top - navOffset);
+        }),
+      { timeout: 5000 }
+    )
+    .toBeLessThanOrEqual(2);
+});
+
+// One animated-path smoke test: with real smooth scrolling, the landing may
+// take seconds, so assert only through the auto-retrying toBeInViewport.
+test.describe('with animated scrolling', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('should scroll a section into view under a smooth flight', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    await openDrawer(page);
+    await page.getByRole('button', { name: 'Water on the Moon' }).click();
+
+    await expect(page.locator('#ch6-water-heading')).toBeInViewport();
+  });
 });

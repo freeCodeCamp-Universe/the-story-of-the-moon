@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { SECTION_NAV_EVENT } from '@/hooks/useKeyboardNav';
 import { useScrollySteps } from '@/hooks/useScrollySteps';
+import { settleScrollIntoView } from '@/utils/settleScrollIntoView';
 import styles from './ScrollyChapter.module.css';
 
 export type ScrollyStep = {
@@ -59,7 +60,8 @@ export function ScrollyChapter({
   // is active only when its box crosses the mid-viewport trigger line, and the
   // immersive cards are spaced by tall gaps, so aligning the heading to the top
   // leaves the reader between steps. Claim the nav event and center the owning
-  // step instead. Smooth so the scroll tracks content that mounts on the way.
+  // step instead, with the settle correction re-centering it after content
+  // that mounts mid-flight shifts the layout.
   useEffect(() => {
     function handleSectionNav(event: Event) {
       const detail = (event as CustomEvent<{ id: string }>).detail;
@@ -71,7 +73,7 @@ export function ScrollyChapter({
       if (!stepEl || !container.contains(stepEl)) return;
 
       event.preventDefault();
-      stepEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      settleScrollIntoView(stepEl, { block: 'center' });
     }
 
     window.addEventListener(SECTION_NAV_EVENT, handleSectionNav);

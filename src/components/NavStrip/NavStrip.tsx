@@ -38,14 +38,14 @@ function MenuIcon() {
       height="64"
       viewBox="0 0 24 24"
     >
-      <g fill="none" stroke="currentColor" stroke-width="2">
+      <g fill="none" stroke="currentColor" strokeWidth="2">
         <rect
           width="20"
           height="18"
           x="2"
           y="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           rx="2"
         ></rect>
         <path d="M15 3v18"></path>

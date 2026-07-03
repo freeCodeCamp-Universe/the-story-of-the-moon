@@ -134,6 +134,9 @@ describe('NavStrip', () => {
   });
 
   afterEach(() => {
+    // Cancel any settle watcher a navigation click left armed, so its timers
+    // and window listeners cannot leak into the next test.
+    window.dispatchEvent(new Event('wheel'));
     Object.defineProperty(window.navigator, 'platform', {
       configurable: true,
       value: originalNavigatorPlatform,
@@ -191,6 +194,7 @@ describe('NavStrip', () => {
 
     expect(onNavigate).toHaveBeenCalledWith('chapter-3');
     expect(scrollSpies.get('chapter-3')).toHaveBeenCalledWith({
+      block: 'start',
       behavior: 'smooth',
     });
     expect(
@@ -222,7 +226,10 @@ describe('NavStrip', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Crater' }));
 
-    expect(sectionScrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(sectionScrollSpy).toHaveBeenCalledWith({
+      block: 'start',
+      behavior: 'smooth',
+    });
     expect(
       screen.queryByRole('dialog', { name: 'Chapters' })
     ).not.toBeInTheDocument();

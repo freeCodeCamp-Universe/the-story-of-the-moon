@@ -150,7 +150,10 @@ button:focus-visible {
 }
 
 /* In-page opt-in: the settings toggle sets data-reduced-motion on <html>,
-   independent of (and in addition to) the OS prefers-reduced-motion setting. */
+   independent of (and in addition to) the OS prefers-reduced-motion setting.
+   :root itself is included so scroll-behavior on the html scroller resets
+   too — descendant selectors alone would miss it. */
+:root[data-reduced-motion],
 :root[data-reduced-motion] *,
 :root[data-reduced-motion] *::before,
 :root[data-reduced-motion] *::after {

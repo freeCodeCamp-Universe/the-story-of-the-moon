@@ -63,6 +63,9 @@ describe('ScrollyChapter', () => {
     });
 
     afterEach(() => {
+      // Cancel any settle watcher a claimed nav left armed, so its timers and
+      // window listeners cannot leak into the next test.
+      window.dispatchEvent(new Event('wheel'));
       document.body.innerHTML = '';
     });
 

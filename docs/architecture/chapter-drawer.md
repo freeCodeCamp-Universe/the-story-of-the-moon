@@ -153,22 +153,27 @@ take over navigation to its own sections.
 (`SECTION_NAV_EVENT = 'story:section-nav'`) on `window` with `{ id }`:
 
 - If no listener calls `preventDefault()`, `dispatchEvent` returns `true` and
-  `scrollToSectionId` falls back to a plain `scrollIntoView({ behavior: 'smooth' })`.
-  Chapter visuals lazy-mount as they near the viewport and shift layout under
-  the smooth scroll, so the heading can settle short of its scroll-padding
-  rest position — sometimes just below the scroll-spy's reading line, leaving
-  the previous section highlighted. A one-shot `scrollend` listener re-snaps
-  the heading (instant) when it lands near, but not at, that rest position; a
-  large drift means the reader scrolled elsewhere mid-flight and is left
-  alone. Browsers without `scrollend` keep the uncorrected landing.
+  `scrollToSectionId` falls back to `settleScrollIntoView(target)`
+  (`src/utils/settleScrollIntoView.ts`), a `scrollIntoView` with a landing
+  correction. Chapter visuals lazy-mount as they near the viewport and shift
+  layout under (and shortly after) the smooth scroll, so the heading can
+  settle short of its scroll-padding rest position — sometimes just below the
+  scroll-spy's reading line, leaving the previous section highlighted. Once
+  motion stops (`scrollend`, with a timeout fallback for browsers without it),
+  the helper re-snaps the heading instantly, then keeps watching for ~600ms so
+  a mount that completes after the landing is corrected too. Any reader input
+  (wheel, touch, key, pointer) or a newer `settleScrollIntoView` call cancels
+  the correction outright, so it never fights the reader for control. It
+  scrolls instantly under reduced motion (OS setting or the in-app toggle).
 - A chapter that owns a tall stage adds a `window` listener, checks the id,
   calls `event.preventDefault()` to **claim** it, and runs its own scroll math.
 
 Current claimants:
 
 - **`ScrollyChapter`** — if the target id lives inside one of its steps
-  (`[data-step-id]`), it centers the owning step (`scrollIntoView({ block:
-'center' })`) so the mid-viewport step trigger fires on the right step.
+  (`[data-step-id]`), it centers the owning step
+  (`settleScrollIntoView(stepEl, { block: 'center' })`) so the mid-viewport
+  step trigger fires on the right step, with the same settle correction.
 - **Ch4's `PinnedTimeline`** — claims `ch4-missions` and runs `jumpTo(0)`, the
   same nav-aware jump the keyboard uses, landing on the first mission step.
 

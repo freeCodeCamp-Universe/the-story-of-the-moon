@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
 import { CHAPTER_IDS } from '@/data/chapters';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
+import { settleScrollIntoView } from '@/utils/settleScrollIntoView';
 
 export function scrollToChapter(index: number) {
   const id = CHAPTER_IDS[index];
   if (!id) return;
-  const section = document.getElementById(id);
-  if (!section) return;
+  const target = document.getElementById(id);
+  if (!target) return;
   // Move focus so screen readers announce the chapter (the section is
   // labelled by its heading); scrolling alone is silent to assistive tech.
-  section.focus({ preventScroll: true });
-  section.scrollIntoView({ behavior: 'smooth' });
+  target.focus({ preventScroll: true });
+  settleScrollIntoView(target);
 }
 
 /**
@@ -32,32 +33,7 @@ export function scrollToSectionId(id: string) {
 
   const target = document.getElementById(id);
   if (!target) return;
-  target.scrollIntoView({ behavior: 'smooth' });
-
-  // Chapter visuals lazy-mount as they near the viewport, shifting layout
-  // under the smooth scroll, so the heading can settle short of its
-  // scroll-padding rest position — sometimes just below the scroll-spy's
-  // reading line, leaving the previous section highlighted in the drawer.
-  // Once motion stops, re-snap if the heading landed near, but not at, its
-  // rest position. A large drift means the reader scrolled elsewhere
-  // mid-flight, so leave their position alone. Where `scrollend` is
-  // unsupported (Safari), the uncorrected landing stands.
-  if ('onscrollend' in window) {
-    window.addEventListener(
-      'scrollend',
-      () => {
-        const navOffset =
-          parseFloat(
-            getComputedStyle(document.documentElement).scrollPaddingTop
-          ) || 0;
-        const drift = Math.abs(target.getBoundingClientRect().top - navOffset);
-        if (drift > 1 && drift < window.innerHeight / 2) {
-          target.scrollIntoView({ behavior: 'instant' });
-        }
-      },
-      { once: true }
-    );
-  }
+  settleScrollIntoView(target);
 }
 
 function getCurrentChapterIndex() {
