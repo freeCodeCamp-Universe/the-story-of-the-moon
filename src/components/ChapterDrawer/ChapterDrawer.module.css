@@ -66,6 +66,7 @@
 
 .itemActive {
   color: var(--color-accent);
+  background-color: var(--color-dropdown-hover);
 }
 
 /* Absolute so the caret lives in the start gutter and never shifts the label.
@@ -75,5 +76,7 @@
   content: '>';
   position: absolute;
   inset-inline-start: var(--space-md);
-  font-size: var(--text-body);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  font-size: var(--text-lg);
 }

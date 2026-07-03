@@ -101,7 +101,7 @@ const STEPS: ScrollyStep[] = [
   },
   {
     id: 'without-moon',
-    marker: 'without the moon',
+    marker: 'without the Moon',
     content: (
       <>
         <h3 id="ch3-wander-heading">A moonless Earth would wander</h3>
