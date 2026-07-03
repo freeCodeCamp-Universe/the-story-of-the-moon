@@ -419,7 +419,7 @@ const assets = [
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
-      'Apollo 15 sample 15415, the Genesis Rock, an anorthosite from Spur Crater. NASA (S71-42951).',
+      'Apollo 15 sample 15415, an anorthosite from Spur Crater dubbed the Genesis Rock. It weighed 269.4 grams and is about 4 billion years old. NASA (S71-42951).',
     alt: 'The Genesis Rock, a pale angular anorthosite with a dark dust-coated area along one side, and a scale block on the right.',
   },
   {
@@ -433,7 +433,7 @@ const assets = [
     license: 'PD-USGov-NASA',
     licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',
     attributionText:
-      'Apollo 17 sample 70017, a vesicular high-titanium mare basalt. NASA Lunar Sample Curator, JSC.',
+      'Apollo 17 sample 70017, a vesicular high-titanium mare basalt dubbed the Goodwill Rock. It weighed 2,957 grams and is about 3.7 billion years old. NASA Lunar Sample Curator, JSC.',
     alt: 'A dark lunar basalt sample from Apollo 17 with a rough, pitted surface, visible vesicles, and a small scale block at the lower right.',
   },
   {

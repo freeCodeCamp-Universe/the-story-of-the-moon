@@ -83,6 +83,7 @@
 
   --line-height-prose: 1.7;
   --line-height-heading: 1.2;
+  --line-height-caption: 1.5;
 
   /* ── Spacing ──────────────────────────────────────────────── */
   --space-xs: 0.25rem;
@@ -98,7 +99,7 @@
   /* ── Layout ───────────────────────────────────────────────── */
   --measure-text: 36rem;
   --measure-wide: 56rem;
-  --measure-frame: 84rem;
+  --measure-frame: 86rem;
   --measure-stage: 120rem;
   --gutter: clamp(1.5rem, 5vw, 5rem);
   --nav-height: 3.25rem;
