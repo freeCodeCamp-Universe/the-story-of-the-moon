@@ -68,16 +68,12 @@
   color: var(--color-accent);
 }
 
-/* Absolute so the caret lives in the start gutter and never shifts the label. */
+/* Absolute so the caret lives in the start gutter and never shifts the label.
+   One shared column and size for chapter and section rows, so the caret does
+   not drift or shrink when the highlight moves to a subsection. */
 .itemActive::before {
   content: '>';
   position: absolute;
-}
-
-.chapterItem.itemActive::before {
   inset-inline-start: var(--space-md);
-}
-
-.sectionItem.itemActive::before {
-  inset-inline-start: var(--space-xl);
+  font-size: var(--text-body);
 }

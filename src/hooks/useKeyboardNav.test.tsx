@@ -1,7 +1,11 @@
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { scrollToChapter, useKeyboardNav } from '@/hooks/useKeyboardNav';
+import {
+  scrollToChapter,
+  scrollToSectionId,
+  useKeyboardNav,
+} from '@/hooks/useKeyboardNav';
 
 function KeyboardNavHarness({
   shortcutsEnabled = true,
@@ -189,5 +193,64 @@ describe('useKeyboardNav', () => {
     scrollToChapter(9);
 
     expect(getElementByIdSpy).not.toHaveBeenCalled();
+  });
+
+  describe('scrollToSectionId scrollend correction', () => {
+    function setupSection(topAtRest: number) {
+      const section = document.createElement('section');
+      section.id = 'ch2-basin-heading';
+      const scrollSpy = vi.fn();
+      section.scrollIntoView = scrollSpy;
+      section.getBoundingClientRect = () => ({ top: topAtRest }) as DOMRect;
+      document.body.append(section);
+      return scrollSpy;
+    }
+
+    beforeEach(() => {
+      // jsdom has no scrollend; expose the handler property so the feature
+      // detection in scrollToSectionId passes.
+      Object.defineProperty(window, 'onscrollend', {
+        value: null,
+        configurable: true,
+        writable: true,
+      });
+      vi.stubGlobal('innerHeight', 1000);
+    });
+
+    afterEach(() => {
+      delete (window as { onscrollend?: unknown }).onscrollend;
+      vi.unstubAllGlobals();
+    });
+
+    it('should re-snap when the section lands short of its rest position', () => {
+      // Lazy content mounting mid-flight left the heading 300px below the
+      // top instead of at the scroll-padding offset.
+      const scrollSpy = setupSection(300);
+
+      scrollToSectionId('ch2-basin-heading');
+      window.dispatchEvent(new Event('scrollend'));
+
+      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
+      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'instant' });
+    });
+
+    it('should not re-snap when the reader has moved far from the section', () => {
+      const scrollSpy = setupSection(2500);
+
+      scrollToSectionId('ch2-basin-heading');
+      window.dispatchEvent(new Event('scrollend'));
+
+      expect(scrollSpy).toHaveBeenCalledTimes(1);
+      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth' });
+    });
+
+    it('should not re-snap when the section already rests at its target position', () => {
+      const scrollSpy = setupSection(0);
+
+      scrollToSectionId('ch2-basin-heading');
+      window.dispatchEvent(new Event('scrollend'));
+
+      expect(scrollSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });

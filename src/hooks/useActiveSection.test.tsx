@@ -17,6 +17,14 @@ function addSectionElements() {
   }
 }
 
+// Chapter headers render as `<h2 id="chapter-N-heading">` (Chapter component).
+function addChapterHeading(chapterId: string, bottom: number) {
+  const heading = document.createElement('h2');
+  heading.id = `${chapterId}-heading`;
+  heading.getBoundingClientRect = () => ({ bottom }) as DOMRect;
+  document.body.prepend(heading);
+}
+
 // Reading line sits at 50% of the viewport; with innerHeight 1000 that is 500px.
 // Position each named section's top; any unlisted section sits far below.
 function setSectionTops(tops: Record<string, number>) {
@@ -100,6 +108,102 @@ describe('useActiveSection', () => {
     });
 
     expect(screen.getByTestId('active')).toHaveTextContent('');
+  });
+
+  it('should ignore a section element removed from the document after mount', () => {
+    render(<HookHarness />);
+
+    // Simulate Ch4 swapping its stacked timeline for the pinned one after
+    // mount: the original ch4-missions element detaches. A detached rect
+    // reads top 0, which sits permanently above the reading line and would
+    // mask every earlier chapter's sections.
+    document.getElementById('ch4-missions')?.remove();
+
+    setSectionTops({
+      'ch2-crater-heading': 100,
+      'ch2-basin-heading': 400,
+    });
+
+    act(() => {
+      callback?.([], {} as IntersectionObserver);
+    });
+
+    expect(screen.getByTestId('active')).toHaveTextContent('ch2-basin-heading');
+  });
+
+  it('should track a section element that remounts after the hook attaches', () => {
+    render(<HookHarness />);
+
+    document.getElementById('ch4-missions')?.remove();
+    const remounted = document.createElement('section');
+    remounted.id = 'ch4-missions';
+    document.getElementById('diptych-title')?.before(remounted);
+
+    setSectionTops({
+      'ch2-crater-heading': 100,
+      'ch4-missions': 300,
+    });
+
+    act(() => {
+      callback?.([], {} as IntersectionObserver);
+    });
+
+    expect(screen.getByTestId('active')).toHaveTextContent('ch4-missions');
+    // Future reading-line crossings of the remounted element must wake the
+    // observer, so it has to be observed, not just read once. Compare by
+    // identity: deep equality would also match the removed original.
+    expect(observe.mock.calls.some(([el]) => el === remounted)).toBe(true);
+  });
+
+  it('should report no active section while the owning chapter header is still on screen', () => {
+    // Reader clicked the chapter row: the chapter header sits at the top of
+    // the viewport (bottom edge at 250px) and the short intro leaves the
+    // first heading already above the 500px reading line.
+    addChapterHeading('chapter-2', 250);
+    render(<HookHarness />);
+
+    setSectionTops({ 'ch2-crater-heading': 400 });
+
+    act(() => {
+      callback?.([], {} as IntersectionObserver);
+    });
+
+    expect(screen.getByTestId('active')).toBeEmptyDOMElement();
+  });
+
+  it('should report the section once the owning chapter header scrolls past the viewport top', () => {
+    addChapterHeading('chapter-2', -60);
+    render(<HookHarness />);
+
+    setSectionTops({ 'ch2-crater-heading': 400 });
+
+    act(() => {
+      callback?.([], {} as IntersectionObserver);
+    });
+
+    expect(screen.getByTestId('active')).toHaveTextContent(
+      'ch2-crater-heading'
+    );
+  });
+
+  it('should report the section when the chapter header only peeks under the fixed nav', () => {
+    // `html` carries `scroll-padding-top: var(--nav-height)`; a header sliver
+    // above that line is covered by the NavStrip and must not suppress the
+    // section (Ch4's timeline jump rests exactly like this).
+    document.documentElement.style.scrollPaddingTop = '52px';
+    addChapterHeading('chapter-2', 45);
+    render(<HookHarness />);
+
+    setSectionTops({ 'ch2-crater-heading': 400 });
+
+    act(() => {
+      callback?.([], {} as IntersectionObserver);
+    });
+
+    expect(screen.getByTestId('active')).toHaveTextContent(
+      'ch2-crater-heading'
+    );
+    document.documentElement.style.scrollPaddingTop = '';
   });
 
   it('should disconnect the observer on unmount', () => {

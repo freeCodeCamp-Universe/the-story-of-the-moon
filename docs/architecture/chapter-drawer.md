@@ -126,9 +126,21 @@ the reading line, and the callback recomputes the active section directly from
 `getBoundingClientRect().top` — the last heading in document order still at or
 above the line.
 
-> Note: the JSDoc in this file currently says "30% of the viewport height" in
-> two places. That is stale; the constant and `rootMargin` are both 50%. Trust
-> the code. (Worth correcting the comment.)
+Two guards inside the recompute are load-bearing:
+
+- **Elements are re-resolved from the DOM on every recompute, and the observer
+  target set is refreshed to match.** A section anchor can remount after the
+  hook attaches — Ch4 swaps its stacked timeline for the pinned one once the
+  tablet media query resolves, remounting `ch4-missions`. A stale detached
+  element reads `getBoundingClientRect().top === 0`, which sits permanently
+  "above" the reading line and masks every earlier chapter's sections (this
+  once silently disabled all Ch2/Ch3 highlighting). Never cache the element
+  list across recomputes.
+- **No section is active while the owning chapter's own header
+  (`chapter-N-heading`) is still on screen** (`rect.bottom > 0`). At a
+  chapter's top a short intro can leave the first heading already above the
+  reading line; the reader is still in the chapter intro, so the drawer
+  highlights the chapter row instead of the first subsection.
 
 ## The section-nav claim protocol
 
@@ -142,6 +154,13 @@ take over navigation to its own sections.
 
 - If no listener calls `preventDefault()`, `dispatchEvent` returns `true` and
   `scrollToSectionId` falls back to a plain `scrollIntoView({ behavior: 'smooth' })`.
+  Chapter visuals lazy-mount as they near the viewport and shift layout under
+  the smooth scroll, so the heading can settle short of its scroll-padding
+  rest position — sometimes just below the scroll-spy's reading line, leaving
+  the previous section highlighted. A one-shot `scrollend` listener re-snaps
+  the heading (instant) when it lands near, but not at, that rest position; a
+  large drift means the reader scrolled elsewhere mid-flight and is left
+  alone. Browsers without `scrollend` keep the uncorrected landing.
 - A chapter that owns a tall stage adds a `window` listener, checks the id,
   calls `event.preventDefault()` to **claim** it, and runs its own scroll math.
 

@@ -67,6 +67,46 @@ test('should navigate to the start of the timeline, not a later item', async ({
   await expect(ticks.nth(1)).not.toHaveAttribute('aria-current', 'true');
 });
 
+test('should reflect a plain selected section in the drawer', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  await openDrawer(page);
+  await page.getByRole('button', { name: 'Basin' }).click();
+  await settleScroll(page);
+
+  await openDrawer(page);
+  await expect(page.getByRole('button', { name: 'Basin' })).toHaveAttribute(
+    'aria-current',
+    'true'
+  );
+});
+
+test('should highlight the chapter row, not its first subsection, at the top of a chapter', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  // The drawer trigger's label also contains the chapter title, so scope
+  // queries to the drawer itself.
+  const drawer = page.locator('#chapter-drawer');
+
+  await openDrawer(page);
+  await drawer
+    .getByRole('button', { name: '2. A face written by impacts' })
+    .click();
+  await settleScroll(page);
+
+  await openDrawer(page);
+  await expect(
+    drawer.getByRole('button', { name: '2. A face written by impacts' })
+  ).toHaveAttribute('aria-current', 'true');
+  await expect(
+    drawer.getByRole('button', { name: 'Crater' })
+  ).not.toHaveAttribute('aria-current', 'true');
+});
+
 test('should reflect the selected section in the drawer', async ({ page }) => {
   await page.goto('/');
 
