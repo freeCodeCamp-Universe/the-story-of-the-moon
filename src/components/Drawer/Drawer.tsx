@@ -58,7 +58,7 @@ type Props = {
 
 /**
  * Edge-anchored panel built on the native <dialog> element. Slides in from the
- * inline-end edge and fills the viewport height. Reuses `useModalDialog` for the
+ * inline-start edge and fills the viewport height. Reuses `useModalDialog` for the
  * focus trap, Escape/backdrop close, scroll lock, and focus restore.
  */
 export function Drawer({

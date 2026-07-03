@@ -2,7 +2,7 @@
 
 The chapter drawer is the story's primary navigation surface. It replaced the
 old `ChapterDropdown`/`Dropdown` (both removed). It is a slide-in panel, anchored
-to the inline-end edge, that lists every chapter and its curated subsections,
+to the inline-start edge, that lists every chapter and its curated subsections,
 highlights where the reader currently is, and scrolls to any chapter or
 subsection when picked.
 

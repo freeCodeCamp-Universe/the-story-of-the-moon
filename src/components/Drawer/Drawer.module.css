@@ -3,8 +3,8 @@
 .drawer {
   position: fixed;
   inset-block: 0;
-  inset-inline-end: 0;
-  inset-inline-start: auto;
+  inset-inline-start: 0;
+  inset-inline-end: auto;
   z-index: var(--z-overlay);
   margin: 0;
   display: flex;
@@ -18,21 +18,21 @@
   max-inline-size: 100vw;
   padding: 0;
   border: none;
-  border-inline-start: 1px solid var(--color-border);
+  border-inline-end: 1px solid var(--color-border);
   background: var(--color-bg-raised);
   color: var(--color-text);
   outline: none;
-  /* Closed rest state: parked off-screen past the inline-end edge. The panel
+  /* Closed rest state: parked off-screen past the inline-start edge. The panel
      stays mounted through its slide-out (Drawer.tsx defers the unmount), so
      this is the transform it animates back to on close — the exit counterpart
      to the @starting-style enter below. transform is exempt from the
      logical-property rule; the direction is flipped for RTL via :dir(rtl). */
-  transform: translateX(100%);
+  transform: translateX(-100%);
   transition: transform var(--transition-slow);
 }
 
 .drawer:dir(rtl) {
-  transform: translateX(-100%);
+  transform: translateX(100%);
 }
 
 /* Open rest state. Declared after the :dir(rtl) closed rule (equal specificity)
@@ -41,14 +41,14 @@
   transform: none;
 }
 
-/* Enter slide: start off-screen past the inline-end edge, settle to 0. */
+/* Enter slide: start off-screen past the inline-start edge, settle to 0. */
 @starting-style {
   .drawer[open] {
-    transform: translateX(100%);
+    transform: translateX(-100%);
   }
 
   .drawer[open]:dir(rtl) {
-    transform: translateX(-100%);
+    transform: translateX(100%);
   }
 }
 
