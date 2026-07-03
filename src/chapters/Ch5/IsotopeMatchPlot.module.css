@@ -6,6 +6,13 @@
      renders near full scale. Axis titles and units are HTML, not SVG. */
   --chart-tick: 18px;
 
+  /* Beads and body lines read too thin at small sizes once the SVG scales
+     down, so both grow on mobile/small-tablet and settle to their design
+     size at 768px, mirroring --chart-tick above. */
+  --bead-scale: 1.35;
+  --body-line-width: 2.25;
+  --body-line-width-active: 3.5;
+
   /* Per-body fill/rim, consumed by the [data-body] rules below for the beads,
      lines, and legend swatches. The Moon's pale gray sits too close to the
      light-theme panel background (--color-bg-raised, gray-10), so it gets an
@@ -36,6 +43,9 @@
 @media (min-width: 768px) {
   .figure {
     --chart-tick: 12px;
+    --bead-scale: 1;
+    --body-line-width: 1.5;
+    --body-line-width-active: 2.75;
   }
 
   /* Roomier padding once there is width to spare. */
@@ -137,7 +147,7 @@
 }
 
 .bodyLine {
-  stroke-width: 1.5;
+  stroke-width: var(--body-line-width);
   opacity: 0.65;
   transition:
     stroke-width 120ms ease,
@@ -163,7 +173,7 @@
 }
 
 .bodyLine[data-active] {
-  stroke-width: 2.75;
+  stroke-width: var(--body-line-width-active);
   opacity: 1;
 }
 
@@ -175,6 +185,9 @@
 
 .bead {
   stroke-width: 1;
+  scale: var(--bead-scale);
+  transform-box: fill-box;
+  transform-origin: center;
   transition: stroke-width 120ms ease;
 }
 
@@ -253,7 +266,7 @@
   color: var(--color-text);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   /* The legend sits beside the chart, so hide the inline copy and float the
      other just below the active cluster. Physical left aligns to the SVG's
      fixed plot geometry, which does not mirror in RTL; block axis stays logical. */
