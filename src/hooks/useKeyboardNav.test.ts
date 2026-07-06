@@ -16,6 +16,7 @@ function setupChapters() {
     const id = `chapter-${i}`;
     const section = document.createElement('section');
     section.id = id;
+    section.tabIndex = -1;
     const scrollSpy = vi.fn();
     section.scrollIntoView = scrollSpy;
     scrollSpies.set(id, scrollSpy);
@@ -65,6 +66,20 @@ describe('useKeyboardNav', () => {
 
     expect(scrollSpies.get('chapter-8')).not.toHaveBeenCalled();
     expect(scrollSpies.get('chapter-9')).not.toHaveBeenCalled();
+  });
+
+  it('should move focus to the target chapter so screen readers announce it', () => {
+    setupChapters();
+    render(createElement(HookHarness));
+
+    pressKey('3');
+
+    expect(document.activeElement).toBe(document.getElementById('chapter-3'));
+
+    window.location.hash = '#chapter-3';
+    pressKey('N', document.body, { shiftKey: true });
+
+    expect(document.activeElement).toBe(document.getElementById('chapter-4'));
   });
 
   it('should move to the next or previous chapter with shift+n and shift+p from the current hash', () => {

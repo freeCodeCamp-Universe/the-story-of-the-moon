@@ -5,7 +5,12 @@ import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 export function scrollToChapter(index: number) {
   const id = CHAPTER_IDS[index];
   if (!id) return;
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const section = document.getElementById(id);
+  if (!section) return;
+  // Move focus so screen readers announce the chapter (the section is
+  // labelled by its heading); scrolling alone is silent to assistive tech.
+  section.focus({ preventScroll: true });
+  section.scrollIntoView({ behavior: 'smooth' });
 }
 
 function getCurrentChapterIndex() {

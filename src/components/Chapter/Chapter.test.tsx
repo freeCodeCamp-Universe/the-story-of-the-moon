@@ -29,6 +29,27 @@ describe('Chapter', () => {
     ).toBe('How did the Moon form?');
   });
 
+  it('should accept programmatic focus without joining the tab order', () => {
+    render(
+      <Chapter
+        id="chapter-4"
+        question="How did we get there?"
+        title="Missions to the Moon"
+      >
+        <p>Body copy</p>
+      </Chapter>
+    );
+
+    const chapter = screen.getByRole('region', {
+      name: 'Missions to the Moon',
+    });
+
+    chapter.focus();
+
+    expect(chapter).toHaveFocus();
+    expect(chapter.tabIndex).toBe(-1);
+  });
+
   it('should render body content after the chapter header', () => {
     render(
       <Chapter

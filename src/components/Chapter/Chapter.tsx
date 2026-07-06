@@ -13,6 +13,7 @@ export function Chapter({ id, question, title, children }: Props) {
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
+      tabIndex={-1}
       className={styles.section}
     >
       <header className={styles.header}>

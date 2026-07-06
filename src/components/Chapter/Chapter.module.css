@@ -11,6 +11,13 @@
   padding-bottom: var(--space-2xl);
 }
 
+/* The section is a programmatic focus target for chapter navigation
+   (tabindex="-1", never in the tab order); the scroll to the chapter is
+   the visible feedback, so skip the ring around the whole section. */
+.section:focus-visible {
+  outline: none;
+}
+
 /* ── Header strip (eyebrow + heading), constrained to prose column ── */
 
 /* Mirror the <Prose> text tier exactly (measure + gutter + centering) so the
