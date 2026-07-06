@@ -237,5 +237,26 @@ describe('useKeyboardNav', () => {
 
       expect(scrollSpy).not.toHaveBeenCalled();
     });
+
+    it('should focus the target so screen readers announce it, making it focusable first', () => {
+      setupSection();
+
+      scrollToSectionId('ch2-basin-heading');
+
+      const target = document.getElementById('ch2-basin-heading');
+      expect(target).toHaveAttribute('tabindex', '-1');
+      expect(target).toHaveFocus();
+    });
+
+    it('should focus the target even when a chapter claims the scroll', () => {
+      setupSection();
+      const claim = (event: Event) => event.preventDefault();
+      window.addEventListener('story:section-nav', claim);
+
+      scrollToSectionId('ch2-basin-heading');
+      window.removeEventListener('story:section-nav', claim);
+
+      expect(document.getElementById('ch2-basin-heading')).toHaveFocus();
+    });
   });
 });

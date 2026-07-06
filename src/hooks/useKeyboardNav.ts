@@ -3,14 +3,26 @@ import { CHAPTER_IDS } from '@/data/chapters';
 import { shouldIgnoreTextEntryShortcutTarget } from '@/utils/keyboardShortcuts';
 import { settleScrollIntoView } from '@/utils/settleScrollIntoView';
 
+/**
+ * Move focus to a navigation target so screen readers announce the arrival;
+ * scrolling alone is silent to assistive tech. Targets are plain sections and
+ * headings (which carry their own accessible names), so grant programmatic
+ * focusability here instead of requiring tabIndex={-1} on every registered
+ * heading.
+ */
+function focusNavTarget(target: HTMLElement) {
+  if (!target.hasAttribute('tabindex')) {
+    target.setAttribute('tabindex', '-1');
+  }
+  target.focus({ preventScroll: true });
+}
+
 export function scrollToChapter(index: number) {
   const id = CHAPTER_IDS[index];
   if (!id) return;
   const target = document.getElementById(id);
   if (!target) return;
-  // Move focus so screen readers announce the chapter (the section is
-  // labelled by its heading); scrolling alone is silent to assistive tech.
-  target.focus({ preventScroll: true });
+  focusNavTarget(target);
   settleScrollIntoView(target);
 }
 
@@ -20,10 +32,20 @@ export function scrollToChapter(index: number) {
  * tall stage cannot be reached with a plain `scrollIntoView` — it must run its
  * own scroll math. Such a chapter listens for this event and calls
  * `preventDefault()` to claim the target; otherwise the default scroll runs.
+ * A claiming chapter owns only the scroll: `scrollToSectionId` has already
+ * focused the target for the screen-reader announcement by the time the event
+ * fires.
  */
 export const SECTION_NAV_EVENT = 'story:section-nav';
 
 export function scrollToSectionId(id: string) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  // Focus before dispatching: the announcement is owed no matter who scrolls,
+  // so a claiming chapter only has to run its scroll math, never focus.
+  focusNavTarget(target);
+
   const event = new CustomEvent<{ id: string }>(SECTION_NAV_EVENT, {
     detail: { id },
     cancelable: true,
@@ -31,8 +53,6 @@ export function scrollToSectionId(id: string) {
   const notClaimed = window.dispatchEvent(event);
   if (!notClaimed) return;
 
-  const target = document.getElementById(id);
-  if (!target) return;
   settleScrollIntoView(target);
 }
 

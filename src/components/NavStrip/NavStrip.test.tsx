@@ -200,6 +200,9 @@ describe('NavStrip', () => {
     expect(
       screen.queryByRole('dialog', { name: 'Chapters' })
     ).not.toBeInTheDocument();
+    // Focus must land on the chapter so screen readers announce the arrival;
+    // the dialog-close focus restore to the trigger must not win.
+    expect(document.getElementById('chapter-3')).toHaveFocus();
   });
 
   it('should scroll to a subsection and close the drawer when a subsection is selected', async () => {
@@ -233,6 +236,7 @@ describe('NavStrip', () => {
     expect(
       screen.queryByRole('dialog', { name: 'Chapters' })
     ).not.toBeInTheDocument();
+    expect(sectionTarget).toHaveFocus();
   });
 
   it('should close the chapter drawer and restore focus to the trigger via the close button', async () => {

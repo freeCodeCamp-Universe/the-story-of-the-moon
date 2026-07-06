@@ -42,6 +42,11 @@ picked chapter/section into a scroll:
 - `handleSelectSection` → `scrollToSectionId(id)` (the claim protocol below) and
   closes the drawer.
 
+Both handlers stash the navigation in a ref and run it from an effect **after**
+the drawer's close commit, not inline — the close-then-navigate pattern from
+[navigation-focus.md](./navigation-focus.md), which also owns the app-wide rule
+that every navigation must land focus on its target for screen readers.
+
 ## The section model (`src/data/chapters.ts`)
 
 Each chapter now carries a `sections: { id, title }[]` array. Two derived lists
@@ -149,7 +154,10 @@ pinned or scrolly chapter's section anchor is a tall stage, and a naive scroll
 lands the reader mid-stage on the wrong step. The protocol lets such a chapter
 take over navigation to its own sections.
 
-`scrollToSectionId(id)` dispatches a **cancelable** `CustomEvent`
+`scrollToSectionId(id)` resolves the target (bailing if the id has no element),
+focuses it for the screen-reader announcement (see
+[navigation-focus.md](./navigation-focus.md) — a claiming chapter owns only the
+scroll math, never the focus), then dispatches a **cancelable** `CustomEvent`
 (`SECTION_NAV_EVENT = 'story:section-nav'`) on `window` with `{ id }`:
 
 - If no listener calls `preventDefault()`, `dispatchEvent` returns `true` and

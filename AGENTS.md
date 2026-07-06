@@ -118,6 +118,7 @@ Reference implementation: `src/components/ImageCompareSlider/ImageCompareSlider.
 - Ensure new chapter navigation or interactive storytelling UI supports keyboard use.
 - If a component reacts to arrow keys, number keys, or custom shortcuts, add tests that verify the behavior and its guardrails.
 - Keep focus behavior intentional, especially for dialogs, dropdowns, and pinned, scroll-driven sections (the stage stays fixed while content advances).
+- Any navigation that scrolls the reader somewhere must also land focus on a named target so screen readers announce the arrival. Route new navigation through `scrollToChapter`/`scrollToSectionId` (`src/hooks/useKeyboardNav.ts`), which handle this centrally; see `docs/architecture/navigation-focus.md`, including the close-then-navigate pattern for navigating from inside a modal dialog.
 - Keyboard-hint UI is a desktop-tier (`900px`) affordance. The NavStrip keyboard-shortcuts button and the "Enable global keyboard shortcuts" settings toggle are hidden below `900px` (`NavStrip.module.css`). Any visible hint that advertises keys (e.g. Ch4's timeline hint, Ch2's arrow-key rotation glyphs) must follow the same boundary: hide it below `900px` and surface touch/tap guidance instead. Match the NavStrip pattern with `@media (max-width: 899px) { display: none }`, or reveal at `@media (min-width: 900px)`. This does not gate the keyboard behavior itself (chapter-local arrow/bracket handling still works with an attached keyboard); it only governs when the hint text is shown.
 
 ### Chapter Drawer

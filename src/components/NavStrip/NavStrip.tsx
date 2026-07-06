@@ -95,6 +95,19 @@ export function NavStrip({
   const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
   const shortcutsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const pendingDrawerNavRef = useRef<(() => void) | null>(null);
+
+  // Navigation picked in the drawer runs after the close commit: while the
+  // modal <dialog> is open the rest of the document is inert and refuses
+  // focus, and useModalDialog restores focus to the trigger on close. Child
+  // effects run first, so by the time this effect fires the dialog is closed
+  // and the trigger restore has run — the target focus lands last and wins.
+  useEffect(() => {
+    if (isDrawerOpen || !pendingDrawerNavRef.current) return;
+    const navigate = pendingDrawerNavRef.current;
+    pendingDrawerNavRef.current = null;
+    navigate();
+  }, [isDrawerOpen]);
 
   const activeChapterIndex = useMemo(
     () => CHAPTERS.findIndex((chapter) => chapter.id === activeChapterId),
@@ -168,13 +181,13 @@ export function NavStrip({
     );
     if (chapterIndex === -1) return;
 
-    scrollToChapter(chapterIndex);
+    pendingDrawerNavRef.current = () => scrollToChapter(chapterIndex);
     onNavigate(chapterId);
     setIsDrawerOpen(false);
   }
 
   function handleSelectSection(sectionId: string) {
-    scrollToSectionId(sectionId);
+    pendingDrawerNavRef.current = () => scrollToSectionId(sectionId);
     setIsDrawerOpen(false);
   }
 
