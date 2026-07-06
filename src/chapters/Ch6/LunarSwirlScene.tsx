@@ -84,7 +84,7 @@ export function LunarSwirlScene() {
       {caption && <p className={styles.caption}>{caption}</p>}
 
       {credit && (
-        <figure className={styles.figure}>
+        <figure className={styles.figure} aria-label="Reiner Gamma swirl">
           <div
             className={styles.figureFrame}
             role="img"

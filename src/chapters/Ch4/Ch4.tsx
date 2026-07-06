@@ -95,7 +95,10 @@ function MissionPanel({ mission }: { mission: Mission }) {
             </Prose>
           ))}
         </div>
-        <figure className={styles.panelPhoto}>
+        <figure
+          className={styles.panelPhoto}
+          aria-label={`${mission.label} photo`}
+        >
           <div className={styles.photoFrame}>
             <OptimizedImage
               src={mission.photo.src}
@@ -468,7 +471,10 @@ function Diptych() {
       </h3>
       <div className={styles.diptychImages}>
         {earthrise && (
-          <figure className={styles.diptychFigure}>
+          <figure
+            className={styles.diptychFigure}
+            aria-label="Apollo 8 Earthrise"
+          >
             <div className={styles.diptychFrame}>
               <OptimizedImage
                 src={`/${earthrise.file}`}
@@ -483,7 +489,10 @@ function Diptych() {
           </figure>
         )}
         {earthset && (
-          <figure className={styles.diptychFigure}>
+          <figure
+            className={styles.diptychFigure}
+            aria-label="Artemis II Earthset"
+          >
             <div className={styles.diptychFrame}>
               <OptimizedImage
                 src={`/${earthset.file}`}

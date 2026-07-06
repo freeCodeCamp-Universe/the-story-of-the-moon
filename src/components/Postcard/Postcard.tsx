@@ -15,7 +15,7 @@ export function Postcard({ postcard }: Props) {
       : styles.image;
 
   return (
-    <figure className={styles.container}>
+    <figure className={styles.container} aria-label={postcard.title}>
       <OptimizedImage
         className={imageClassName}
         src={postcard.image.src}

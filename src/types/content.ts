@@ -110,6 +110,9 @@ export type PostcardData<CreditId extends string = string> = {
   placement: { after: PostcardPlacementAfter };
   image: CreditBackedImage<CreditId>;
   caption: string;
+  /** Short accessible name for the figure group. Screen readers announce it
+      instead of falling back to the full img alt or credit text. */
+  title: string;
 };
 
 export type PostcardSource<CreditId extends string = string> = Omit<

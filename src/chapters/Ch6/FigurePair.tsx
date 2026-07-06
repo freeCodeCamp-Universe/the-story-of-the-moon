@@ -7,12 +7,21 @@ import styles from './FigurePair.module.css';
 type FigurePairProps = {
   first: AssetCredit;
   second: AssetCredit;
+  /** Short figure names. Without one, screen readers might name each group with the
+      full img alt and read it twice. */
+  firstLabel: string;
+  secondLabel: string;
 };
 
-export function FigurePair({ first, second }: FigurePairProps) {
+export function FigurePair({
+  first,
+  second,
+  firstLabel,
+  secondLabel,
+}: FigurePairProps) {
   return (
     <div className={styles.figurePair}>
-      <figure className={styles.figure}>
+      <figure className={styles.figure} aria-label={firstLabel}>
         <div className={styles.figureFrame}>
           <OptimizedImage
             className={styles.figureImage}
@@ -21,10 +30,12 @@ export function FigurePair({ first, second }: FigurePairProps) {
             loading="lazy"
           />
         </div>
-        <CreditCaption credit={first} />
+        <figcaption>
+          <CreditCaption credit={first} />
+        </figcaption>
       </figure>
 
-      <figure className={styles.figure}>
+      <figure className={styles.figure} aria-label={secondLabel}>
         <div className={styles.figureFrame}>
           <OptimizedImage
             className={styles.figureImage}
@@ -33,7 +44,9 @@ export function FigurePair({ first, second }: FigurePairProps) {
             loading="lazy"
           />
         </div>
-        <CreditCaption credit={second} />
+        <figcaption>
+          <CreditCaption credit={second} />
+        </figcaption>
       </figure>
     </div>
   );

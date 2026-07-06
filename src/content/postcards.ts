@@ -12,6 +12,7 @@ const postcards = [
       creditId: 'apollo-17-moon-disc',
     },
     caption: '',
+    title: 'The Moon from Apollo 17',
   },
   {
     id: 'eclipse',
@@ -23,6 +24,7 @@ const postcards = [
       creditId: 'eclipse-photo',
     },
     caption: '',
+    title: 'Solar eclipse',
   },
   {
     id: 'bootprint',
@@ -34,6 +36,7 @@ const postcards = [
       creditId: 'apollo-11-bootprint',
     },
     caption: '',
+    title: 'Apollo 11 bootprint',
   },
 ] as const satisfies readonly PostcardSource<AssetCreditId>[];
 

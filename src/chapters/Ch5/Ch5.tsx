@@ -39,7 +39,9 @@ export default function Ch5() {
         {moonSamples.map((s) => {
           const credit = getAsset(s.creditId);
           return (
-            <figure key={s.id} className={styles.sample}>
+            // The short marker names the figure so VoiceOver does not fall
+            // back to naming the group with the img alt + full caption.
+            <figure key={s.id} className={styles.sample} aria-label={s.marker}>
               <OptimizedImage
                 className={styles.sampleImage}
                 src={credit ? `/${credit.file}` : undefined}

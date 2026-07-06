@@ -72,6 +72,18 @@ Ch1's `GiantImpactDiagram` and Ch5's `MagmaOceanStages` are deliberately mirrore
 - Custom interactive regions must be focusable, operable by keyboard, and exposed with an accessible name.
 - Avoid global shortcuts that interfere with typing in inputs, textareas, selects, buttons, links, or contenteditable elements.
 
+### Figures And Figure Names
+
+When adding an image to the app, decide the wrapper first, then the names:
+
+- **Use `<figure>` only when the image has a caption or credit** (or is a self-contained graphic the prose refers to). A purely decorative or structural image goes in a plain `<div>`; a figure with nothing captioning it buys only screen-reader noise.
+- **Every `<figure>` needs a short explicit accessible name via `aria-label`.** It is a title for the group ("Erlanger crater", "Apollo 8 Earthrise"), a few words, not a description. Without one, WebKit/VoiceOver falls back to name-from-contents and announces the entire img alt as the group name — once entering the figure, again on the image, and again leaving it. Keep accessible names short; long text belongs in the alt or the caption.
+- **The long visual description stays on the `<img>` alt**, sourced from `src/content/assets.ts` as usual. The figure name is presentation wording for one spot in the story, so it lives at the call site (an `aria-label` string or a `label` prop), or in a content model field when the figure is fully content-driven (`title` in `src/content/postcards.ts`).
+- **Render credits inside `<figcaption>`** (wrap `CreditCaption`, which outputs a plain `<p>`). The figcaption does not become the group name — `aria-label` outranks it, and HTML-AAM is removing figcaption from figure name computation entirely — but it exposes the text with caption semantics and is read once as content.
+- Do not repeat the figure's `aria-label` as the img alt or the caption text; each of the three carries different information (title, visual description, credit).
+
+Reference implementations: `Ch6.tsx` `ChapterFigure`, `src/components/Postcard/Postcard.tsx`, and the Diptych figures in `src/chapters/Ch4/Ch4.tsx`.
+
 ### Staged Diagram Alt Text
 
 For multi-frame staged SVG diagrams, the topic and each stage are announced by different elements:
@@ -98,6 +110,7 @@ Reference implementation: `src/components/ImageCompareSlider/ImageCompareSlider.
 ## Images And Media
 
 - Prefer the shared `OptimizedImage` component for raster images rendered by the app.
+- When wrapping an image in `<figure>`, follow the Figures And Figure Names rules in the Accessibility section: short `aria-label` on the figure, long description on the img alt, credit inside `<figcaption>`.
 - For large raster images that render at multiple layout sizes, provide responsive sources and `sizes` instead of shipping a single oversized asset to every viewport.
 - For content-backed images, keep alt text in `src/content/assets.ts`; that file is the single source of truth used to enrich other content models.
 - Alt text must describe what is visibly in the frame — the vantage point, the composition, and the notable features a sighted reader would pick out — not merely name the subject. "Aristarchus crater" is a label, not alt text.

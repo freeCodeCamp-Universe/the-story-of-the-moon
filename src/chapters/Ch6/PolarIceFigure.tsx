@@ -34,7 +34,7 @@ export function PolarIceFigure() {
     : current.alt;
 
   return (
-    <figure className={styles.figure}>
+    <figure className={styles.figure} aria-label="Ice at the lunar poles">
       <div className={styles.controls}>
         <SegmentedControl
           name="ch6-pole"

@@ -32,6 +32,7 @@ const postcardWithCaption: PostcardData = {
     creditId: 'eclipse-photo',
   },
   caption: 'An eclipse framed the Earth and Moon together.',
+  title: 'Solar eclipse',
 };
 
 const postcardWithoutCaption: PostcardData = {
@@ -43,6 +44,7 @@ const postcardWithoutCaption: PostcardData = {
     creditId: 'apollo-17-moon-disc',
   },
   caption: '',
+  title: 'The Moon from Apollo 17',
 };
 
 describe('Postcard', () => {
@@ -59,6 +61,10 @@ describe('Postcard', () => {
       name: 'A solar eclipse seen above Earth',
     });
     const figure = image.closest('figure');
+
+    expect(
+      screen.getByRole('figure', { name: 'Solar eclipse' })
+    ).toBeInTheDocument();
 
     expect(image).toHaveAttribute('src', '/postcards/eclipse.jpg');
     expect(image).toHaveAttribute('loading', 'lazy');

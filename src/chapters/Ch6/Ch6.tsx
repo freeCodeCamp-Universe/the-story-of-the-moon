@@ -11,15 +11,18 @@ import styles from './Ch6.module.css';
 
 type ChapterFigureProps = {
   credit?: AssetCredit;
+  /** Short figure name. Without one, screen readers might name the group with the full
+      img alt and read it twice. */
+  label: string;
 };
 
-function ChapterFigure({ credit }: ChapterFigureProps) {
+function ChapterFigure({ credit, label }: ChapterFigureProps) {
   if (!credit) {
     return null;
   }
 
   return (
-    <figure className={styles.figure}>
+    <figure className={styles.figure} aria-label={label}>
       <div className={styles.figureFrame}>
         <OptimizedImage
           className={styles.figureImage}
@@ -28,7 +31,9 @@ function ChapterFigure({ credit }: ChapterFigureProps) {
           loading="lazy"
         />
       </div>
-      <CreditCaption credit={credit} />
+      <figcaption>
+        <CreditCaption credit={credit} />
+      </figcaption>
     </figure>
   );
 }
@@ -80,7 +85,7 @@ export default function Ch6() {
               </p>
             </Prose>
           </div>
-          <ChapterFigure credit={erlangerCredit} />
+          <ChapterFigure credit={erlangerCredit} label="Erlanger crater" />
         </div>
       </section>
 
@@ -101,7 +106,10 @@ export default function Ch6() {
                 confirming that water primarily gathers in the cold ground
                 around the poles.
               </p>
-              <ChapterFigure credit={highLatWaterCredit} />
+              <ChapterFigure
+                credit={highLatWaterCredit}
+                label="Water at high latitudes"
+              />
               <p>
                 This water takes three forms: trace molecules across the sunlit
                 surface, water locked inside impact glass beads in the soil, and
@@ -178,7 +186,10 @@ export default function Ch6() {
               </p>
             </Prose>
           </div>
-          <ChapterFigure credit={tranquillitatisCredit} />
+          <ChapterFigure
+            credit={tranquillitatisCredit}
+            label="Mare Tranquillitatis pit"
+          />
         </div>
       </section>
 
@@ -248,6 +259,8 @@ export default function Ch6() {
               <FigurePair
                 first={moonNearSideCredit}
                 second={moonFarSideCredit}
+                firstLabel="The near side"
+                secondLabel="The far side"
               />
               <p>
                 For a body so small and so close to spherical, there is no clear

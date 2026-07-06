@@ -736,14 +736,18 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
           interior is usually a simple, smooth curve, while slightly larger ones
           may feature a central peak where the ground rebounded after the hit.
         </p>
-        <figure className={styles.termFigure}>
+        <figure className={styles.termFigure} aria-label="Aristarchus crater">
           <OptimizedImage
             className={styles.termImage}
             src="/ch2/aristarchus.jpg"
             alt={aristarchusAsset?.alt ?? ''}
             loading="lazy"
           />
-          {aristarchusAsset && <CreditCaption credit={aristarchusAsset} />}
+          {aristarchusAsset && (
+            <figcaption>
+              <CreditCaption credit={aristarchusAsset} />
+            </figcaption>
+          )}
         </figure>
       </section>
 
@@ -799,6 +803,7 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
             <figure
               className={styles.termDiptychFigure}
               data-basin-compare="hertzsprung"
+              aria-label="Hertzsprung basin"
             >
               <ImageCompareSlider
                 label="Compare Hertzsprung basin original and topographic views"
@@ -824,6 +829,7 @@ function IntroProse({ shortcutsEnabled }: Required<Ch2Props>) {
             <figure
               className={styles.termDiptychFigure}
               data-basin-compare="orientale"
+              aria-label="Mare Orientale"
             >
               <ImageCompareSlider
                 label="Compare Mare Orientale original and topographic views"
